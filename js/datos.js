@@ -27,7 +27,13 @@ function enviarDatos() {
             .then(data => {
                 // Maneja la respuesta del servidor
                 console.log("Registro exitoso:", data);
-                alert("Registro exitoso"); // Alerta para cuando los datos se envían correctamente
+
+                // Comprobar el estado de la respuesta
+                if (data.status === 'success') {
+                    alert("Registro exitoso: " + data.message); // Mensaje de éxito
+                } else {
+                    alert("Error en el registro: " + data.message); // Mensaje de error
+                }
             })
             .catch(error => {
                 console.error('Hubo un problema con el registro:', error);

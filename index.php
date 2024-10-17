@@ -37,6 +37,6 @@
 </form>
 </div>
 <script src="js/datos.js"></script>
-<script src="js/validacion%20de%20usuarios.js"></script>
+<script src="js/validacionUsuarios.js"></script>
 </body>
 </html>
