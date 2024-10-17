@@ -28,8 +28,8 @@
             <div class="invalid-feedback"></div>
         </div>
         <div>
-            <label for="contrasena">Contraseña: </label>
-            <input name="contrasena" id="contrasena" type = "password" placeholder="ingresa tu contraseña" data-error="ingrese una contraseña correcta">
+            <label for="password">password: </label>
+            <input name="password" id="password" type = "password" placeholder="ingresa tu contraseña" data-error="ingrese una contraseña correcta">
             <div class="invalid-feedback"></div>
         </div>
 
