@@ -43,3 +43,4 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
 
     return $response; // Retorna la respuesta
 }
+?>
