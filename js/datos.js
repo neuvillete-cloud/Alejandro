@@ -11,7 +11,7 @@ function enviarDatos() {
         data.append('nomina', nomina.value.trim());
         data.append('nombre', nombre.value.trim());
         data.append('email', email.value.trim());
-        data.append('contraseña', contrasena.value.trim());
+        data.append('contrasena', contrasena.value.trim());
 
         fetch('dao/registroUsuario.php', {
             method: 'POST',

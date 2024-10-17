@@ -8,7 +8,7 @@ if(isset($_POST['nomina'], $_POST['nombre'], $_POST['email'], $_POST['contrasena
     $nomina = $_POST['nomina'];
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $contrasena = $_POST['contrasena'];
     $response = RegistrarUsuario($nomina, $nombre, $email, $contrasena);
 } else {
     $response = array('status' => 'error', 'message' => 'Error faltan datos');
