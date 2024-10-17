@@ -12,7 +12,7 @@ function enviarDatos() {
         data.append('nombre', nombre.value.trim());
         data.append('email', email.value.trim());
         data.append('password', password.value.trim());
-        alert("nomina: "+nomina.value.trim()+ ' nombre '+ nombre.value.trim()+ ' email '+ email.value.trim()+' password ' + password.value.trim())
+
 
         fetch('dao/registroUsuario.php', {
             method: 'POST',
