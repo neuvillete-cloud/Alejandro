@@ -20,9 +20,10 @@ echo json_encode($response);
 exit;
 
 */
+echo "hola";
 
-$response = RegistrarUsuario("123","Alejandro","aletj","contra");
-echo json_encode($response);
+//$response = RegistrarUsuario("123","Alejandro","aletj","contra");
+//echo json_encode($response);
 function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
 {
     $con = new LocalConector();
