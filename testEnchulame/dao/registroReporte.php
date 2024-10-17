@@ -21,7 +21,7 @@ function RegistrarReporte($objeto, $fecha, $descripcion, $area) {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    $insertReporte = $conex->prepare("INSERT INTO Reportes (objeto, fecha, descripcion, area)
+    $insertReporte = $conex->prepare("INSERT INTO Reporte (objeto, fecha, descripcion, area)
                                        VALUES (?, ?, ?, ?)");
     $insertReporte->bind_param("ssss", $objeto, $fecha, $descripcion, $area);
     $resultado = $insertReporte->execute();
