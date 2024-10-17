@@ -29,7 +29,7 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    $insertUsuario = $conex->prepare("INSERT INTO Usuario (nomina, nombre, email, contrasena)
+   /* $insertUsuario = $conex->prepare("INSERT INTO Usuario (nomina, nombre, email, contrasena)
                                       VALUES (?, ?, ?, ?)");
     $insertUsuario->bind_param("ssss", $nomina, $nombre, $email, $contrasena);
     $resultado = $insertUsuario->execute();
@@ -41,7 +41,8 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
     } else {
         $response = array('status' => 'error', 'message' => 'error al registrar usuario');
     }
-
+*/
+    $response="holaaaaaaaaa";
     return $response; // Retorna la respuesta
 }
 ?>
