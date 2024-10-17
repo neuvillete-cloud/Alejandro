@@ -14,7 +14,7 @@ function enviarDatos() {
         data.append('email',email.value.trim())
         data.append('contraseña',contrasena.value.trim())
 
-        fetch('/dao/conexion_prueba.php', {
+        fetch('/dao/connection.php', {
             method: 'POST',
             body: data
         })
