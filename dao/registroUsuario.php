@@ -9,7 +9,8 @@ if(isset($_POST['nomina'], $_POST['nombre'], $_POST['email'], $_POST['contrasena
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
     $contrasena = $_POST['contrasena'];
-    $response = RegistrarUsuario($nomina, $nombre, $email, $contrasena);
+    //$response = RegistrarUsuario($nomina, $nombre, $email, $contrasena);
+    $response = $nomina . $nombre . $email . $contrasena;
 } else {
     $response = array('status' => 'error', 'message' => 'Error faltan datos');
 }
