@@ -1,0 +1,7 @@
+https://www.w3schools.com/css/
+https://flexboxfroggy.com/
+https://fonts.google.com/
+https://icons8.com/line-awesome
+https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+http://flexboxgrid.com/
+https://getbootstrap.com/docs/4.0/getting-started/introduction/

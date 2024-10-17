@@ -1,0 +1,20 @@
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    background-color: cornflowerblue;
+    font-family: inherit;
+
+
+}
+.container{
+    display: flex;
+
+    flex-flow: column wrap;
+    justify-content: center;
+    align-content: center;
+}
+input,label,button{
+
+}

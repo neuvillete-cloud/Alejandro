@@ -1,0 +1,6 @@
+1. crear funcion js para validarInputs(que no esten vacios) -> archivo js
+2. asignar funcion en onclick al boton del formulario -> html
+3. mandar los datos en el formdata con la funcion enviarDatos() en js  -> archivo js
+4. conexion a la BD con php
+5. validar el metodo post y validar que existan los valores en php
+6. insertar los datos en php
