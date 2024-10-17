@@ -27,7 +27,7 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
     $con = new LocalConector();
     $conex = $con -> conectar();
 
-    $insertUsuario = $conex -> prepare("INSERT INTO usuario (nomina, nombre, email, contrasena)
+    $insertUsuario = $conex -> prepare("INSERT INTO Usuario (nomina, nombre, email, contrasena)
                                       VALUES (?, ?, ?, ?)");
     $insertUsuario -> bind_param("ssss", $nomina, $nombre, $email, $contrasena);
     $resultado = $insertUsuario -> execute();
