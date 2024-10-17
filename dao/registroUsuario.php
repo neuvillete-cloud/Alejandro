@@ -28,16 +28,16 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
     $conex = $con -> conectar();
 
     $insertUsuario = $conex -> prepare("INSERT INTO usuario (nomina, nombre, email, contrasena)
-                                      VALUES (:?, :?, :?, :?)");
+                                      VALUES (?, ?, ?, ?)");
     $insertUsuario -> bind_param("ssss", $nomina, $nombre, $email, $contrasena);
     $resultado = $insertUsuario -> execute();
 
     $conex -> close();
 
     if ($resultado) {
-        $response = array('status' => 'error', 'message' => 'error al registrar usuario');
-    } else {
         $response = array('status' => 'success', 'message' => 'usuario registrado exitosamente');
+    } else {
+        $response = array('status' => 'error', 'message' => 'error al registrar usuario');
     }
-    return $response;
+
 }
