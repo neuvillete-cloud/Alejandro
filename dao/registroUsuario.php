@@ -19,20 +19,15 @@ exit;
 
 function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
 {
-    /*$password = sha1($password);
-    $nomina = str_pad($nomina, 10, '0', STR_PAD_LEFT);
-    $nombre = str_pad($nombre, 10, '0', STR_PAD_LEFT);
-    $email =;*/
-
     $con = new LocalConector();
-    $conex = $con -> conectar();
+    $conex = $con->conectar();
 
-    $insertUsuario = $conex -> prepare("INSERT INTO Usuario (nomina, nombre, email, contrasena)
+    $insertUsuario = $conex->prepare("INSERT INTO Usuario (nomina, nombre, email, contrasena)
                                       VALUES (?, ?, ?, ?)");
-    $insertUsuario -> bind_param("ssss", $nomina, $nombre, $email, $contrasena);
-    $resultado = $insertUsuario -> execute();
+    $insertUsuario->bind_param("ssss", $nomina, $nombre, $email, $contrasena);
+    $resultado = $insertUsuario->execute();
 
-    $conex -> close();
+    $conex->close();
 
     if ($resultado) {
         $response = array('status' => 'success', 'message' => 'usuario registrado exitosamente');
@@ -40,4 +35,5 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
         $response = array('status' => 'error', 'message' => 'error al registrar usuario');
     }
 
+    return $response; // Retorna la respuesta
 }
