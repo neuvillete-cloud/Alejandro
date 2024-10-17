@@ -5,7 +5,7 @@ include_once ("connection.php");
 header('Content-type: application/json');
 
 //if(isset($_POST['nomina'], $_POST['nombre'], $_POST['email'], $_POST['contrasena'])){
-    $nomina = $_POST['nomina'];
+ /*  $nomina = $_POST['nomina'];
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
     $contrasena = $_POST['contrasena'];
@@ -19,6 +19,10 @@ header('Content-type: application/json');
 echo json_encode($response);
 exit;
 
+*/
+
+$response = RegistrarUsuario("123","Alejandro","aletj","contra");
+echo json_encode($response);
 function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
 {
     $con = new LocalConector();
