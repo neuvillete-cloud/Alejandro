@@ -4,34 +4,29 @@ include_once ("connection.php");
 
 header('Content-type: application/json');
 
-//if(isset($_POST['nomina'], $_POST['nombre'], $_POST['email'], $_POST['contrasena'])){
- /*  $nomina = $_POST['nomina'];
+if(isset($_POST['nomina'], $_POST['nombre'], $_POST['email'], $_POST['password'])) {
+  $nomina = $_POST['nomina'];
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
-    $contrasena = $_POST['contrasena'];
-    $response = RegistrarUsuario($nomina, $nombre, $email, $contrasena);
+    $password = $_POST['password'];
+    $response = RegistrarUsuario($nomina, $nombre, $email, $password);
 
-//} else {
-  //  $response = array('status' => 'error', 'message' => 'Error faltan datos');
+} else {
+   $response = array('status' => 'error', 'message' => 'Error faltan datos');
 
-//}
+}
 
 echo json_encode($response);
 exit;
 
-*/
-echo "hola";
-
-$response = RegistrarUsuario("123","Alejandro","aletj","contra");
-echo json_encode($response);
-function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
+function RegistrarUsuario($nomina, $nombre, $email, $password)
 {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-   /* $insertUsuario = $conex->prepare("INSERT INTO Usuario (nomina, nombre, email, contrasena)
+   $insertUsuario = $conex->prepare("INSERT INTO Usuario (nomina, nombre, email, password)
                                       VALUES (?, ?, ?, ?)");
-    $insertUsuario->bind_param("ssss", $nomina, $nombre, $email, $contrasena);
+    $insertUsuario->bind_param("ssss", $nomina, $nombre, $email, $password);
     $resultado = $insertUsuario->execute();
 
     $conex->close();
@@ -41,8 +36,6 @@ function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
     } else {
         $response = array('status' => 'error', 'message' => 'error al registrar usuario');
     }
-*/
-    $response="holaaaaaaaaa";
     return $response; // Retorna la respuesta
 }
 ?>

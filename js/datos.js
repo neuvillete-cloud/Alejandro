@@ -1,18 +1,18 @@
 function enviarDatos() {
-    let inputsvalidos = validarinput("nomina") && validarinput("nombre") && validarinput("email") && validarinput("contrasena");
+    let inputsvalidos = validarinput("nomina") && validarinput("nombre") && validarinput("email") && validarinput("password");
 
     if (inputsvalidos) {
         let nomina = document.getElementById("nomina");
         let nombre = document.getElementById("nombre");
         let email = document.getElementById("email");
-        let contrasena = document.getElementById("contrasena");
+        let password = document.getElementById("password");
 
         const data = new FormData();
         data.append('nomina', nomina.value.trim());
         data.append('nombre', nombre.value.trim());
         data.append('email', email.value.trim());
-        data.append('contrasena', contrasena.value.trim());
-        alert("nomina: "+nomina.value.trim()+ ' nombre '+ nombre.value.trim()+ ' email '+ email.value.trim()+' contrasena ' + contrasena.value.trim())
+        data.append('password', password.value.trim());
+        alert("nomina: "+nomina.value.trim()+ ' nombre '+ nombre.value.trim()+ ' email '+ email.value.trim()+' password ' + password.value.trim())
 
         fetch('dao/registroUsuario.php', {
             method: 'POST',
