@@ -35,5 +35,6 @@
     </form>
 </div>
 <script src="js/envioDatos.js"></script>
+<script src="js/validacionCampos.js"></script>
 </body>
 </html>
