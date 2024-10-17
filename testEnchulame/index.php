@@ -34,5 +34,6 @@
         <button type="button" name="Guardar" onclick="enviarDatos()">Guardar</button>
     </form>
 </div>
+<script src="js/envioDatos.js"></script>
 </body>
 </html>
