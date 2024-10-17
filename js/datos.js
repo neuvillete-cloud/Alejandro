@@ -14,7 +14,7 @@ function enviarDatos() {
         data.append('email',email.value.trim())
         data.append('contraseña',contrasena.value.trim())
 
-        fetch('../dao/registroUsuario.php', {
+        fetch('/dao/registroUsuario.php', {
             method: 'POST',
             body: data
         })
