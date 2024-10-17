@@ -19,7 +19,7 @@ if(isset($_POST['nomina'], $_POST['nombre'], $_POST['correo'], $_POST['password'
 echo json_encode($response);
 exit;
 
-function RegistrarUsuario($nomina, $nombre, $email, $password)
+function RegistrarUsuario($nomina, $nombre, $correo, $password)
 {
     $con = new LocalConector();
     $conex = $con->conectar();
