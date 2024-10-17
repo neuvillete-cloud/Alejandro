@@ -23,8 +23,8 @@
             <div class="invalid-feedback"></div>
         </div>
         <div>
-            <label for="email"> email:</label>
-            <input name="email" id="email" type = "email" placeholder="ingresa tu correo" data-error="ingresa un correo valido">
+            <label for="correo"> correo:</label>
+            <input name="correo" id="correo" type = "email" placeholder="ingresa tu correo" data-error="ingresa un correo valido">
             <div class="invalid-feedback"></div>
         </div>
         <div>

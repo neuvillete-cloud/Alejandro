@@ -1,16 +1,16 @@
 function enviarDatos() {
-    let inputsvalidos = validarinput("nomina") && validarinput("nombre") && validarinput("email") && validarinput("password");
+    let inputsvalidos = validarinput("nomina") && validarinput("nombre") && validarinput("correo") && validarinput("password");
 
     if (inputsvalidos) {
         let nomina = document.getElementById("nomina");
         let nombre = document.getElementById("nombre");
-        let email = document.getElementById("email");
+        let correo = document.getElementById("correo");
         let password = document.getElementById("password");
 
         const data = new FormData();
         data.append('nomina', nomina.value.trim());
         data.append('nombre', nombre.value.trim());
-        data.append('email', email.value.trim());
+        data.append('correo', correo.value.trim());
         data.append('password', password.value.trim());
 
 
