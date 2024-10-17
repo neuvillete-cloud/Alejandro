@@ -17,7 +17,7 @@ if(isset($_POST['nomina'], $_POST['nombre'], $_POST['email'], $_POST['password']
 echo json_encode($response);
 exit;
 
-function RegistrarUsuario($nomina, $nombre, $email, $password)
+function RegistrarUsuario($nomina, $nombre, $email, $contrasena)
 {
     /*$password = sha1($password);
     $nomina = str_pad($nomina, 10, '0', STR_PAD_LEFT);
@@ -27,9 +27,9 @@ function RegistrarUsuario($nomina, $nombre, $email, $password)
     $con = new LocalConector();
     $conex = $con -> conectar();
 
-    $insertUsuario = $conex -> prepare("INSERT INTO usuario (nomina, nombre, email, password)
+    $insertUsuario = $conex -> prepare("INSERT INTO usuario (nomina, nombre, email, contrasena)
                                       VALUES (:?, :?, :?, :?)");
-    $insertUsuario -> bind_param("ssss", $nomina, $nombre, $email, $password);
+    $insertUsuario -> bind_param("ssss", $nomina, $nombre, $email, $contrasena);
     $resultado = $insertUsuario -> execute();
 
     $conex -> close();
