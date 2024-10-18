@@ -8,12 +8,10 @@
 </head>
 <body>
 <div class="container">
-    <!-- Título enmarcado -->
     <fieldset class="title-fieldset">
         <legend class="title-legend">Formulario de Reporte</legend>
     </fieldset>
 
-    <!-- Formulario -->
     <form name="REPORTES" method="post" action="">
         <label for="objeto">Objeto:</label>
         <input name="objeto" id="objeto" type="text" placeholder="Objeto" data-error="ingresa un objeto válido">
@@ -35,7 +33,6 @@
         <button type="button" name="Consultar" onclick="consultarDatos()">Consultar</button>
     </form>
 
-    <!-- Tabla para mostrar resultados (inicialmente oculta) -->
     <table id="tablaResultados" border="1" style="display:none; margin-top: 20px;">
         <thead>
         <tr>
@@ -44,20 +41,15 @@
             <th>Fecha</th>
             <th>Descripción</th>
             <th>Área</th>
-            <th>Acciones</th> <!-- Nueva columna para las acciones -->
+            <th>Acciones</th>
         </tr>
         </thead>
-        <tbody id="contenidoTabla">
-        <!-- Aquí se insertarán los datos de la base de datos -->
-        </tbody>
+        <tbody id="contenidoTabla"></tbody>
     </table>
 </div>
 
 <!-- Scripts -->
 <script src="js/envioDatos.js"></script>
-<script src="js/consultarDatos.js"></script> <!-- Enlace al archivo consultarDatos.js -->
+<script src="js/consultarDatos.js"></script>
 </body>
 </html>
-
-
-
