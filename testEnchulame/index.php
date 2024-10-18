@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Enculame la nave</title>
+    <title>Formulario de Reporte</title>
     <link rel="icon" href="imagenes/balance%20(1).png" type="image/x-icon">
     <link rel="stylesheet" href="css/estilos.css">
 </head>
@@ -32,9 +32,33 @@
         <div class="invalid-feedback"></div>
 
         <button type="button" name="Guardar" onclick="enviarDatos()">Guardar</button>
+        <button type="button" name="Consultar" onclick="consultarDatos()">Consultar</button>
     </form>
+
+    <!-- Tabla para mostrar resultados (inicialmente oculta) -->
+    <table id="tablaResultados" border="1" style="display:none; margin-top: 20px;">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Objeto</th>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Área</th>
+        </tr>
+        </thead>
+        <tbody id="contenidoTabla">
+        <!-- Aquí se insertarán los datos de la base de datos -->
+        </tbody>
+    </table>
 </div>
+
 <script src="js/envioDatos.js"></script>
 <script src="js/validacionCampos.js"></script>
+
+<script>
+
+
+</script>
 </body>
 </html>
+

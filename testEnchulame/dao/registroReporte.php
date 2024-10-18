@@ -35,5 +35,7 @@ function RegistrarReporte($objeto, $fecha, $descripcion, $area) {
     }
     return $response; // Retorna la respuesta
 }
+
 ?>
+
 
