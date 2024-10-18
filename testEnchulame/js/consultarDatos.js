@@ -15,7 +15,6 @@ function consultarDatos() {
             contenidoTabla.innerHTML = '';
 
             // Recorremos los datos recibidos y los insertamos en la tabla
-            // Recorremos los datos recibidos y los insertamos en la tabla
             data.forEach(reporte => {
                 let fila = `
                     <tr>
@@ -26,7 +25,7 @@ function consultarDatos() {
                         <td>${reporte.area}</td>
                         <td><button onclick="window.location.href='actualizar_reporte.php?id=${reporte.id}'">Actualizar</button></td>
                     </tr>`;
-                                contenidoTabla.insertAdjacentHTML('beforeend', fila);
+                contenidoTabla.insertAdjacentHTML('beforeend', fila);
             });
 
         })

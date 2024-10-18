@@ -16,19 +16,19 @@
     <!-- Formulario -->
     <form name="REPORTES" method="post" action="">
         <label for="objeto">Objeto:</label>
-        <input name="objeto" id="objeto" type="text" placeholder="Objeto" data-error="ingresa un objeto valido">
+        <input name="objeto" id="objeto" type="text" placeholder="Objeto" data-error="ingresa un objeto válido">
         <div class="invalid-feedback"></div>
 
         <label for="Fecha">Fecha:</label>
-        <input name="Fecha" id="Fecha" type="date" placeholder="Fecha" data-error="ingresa una fecha valida">
+        <input name="Fecha" id="Fecha" type="date" placeholder="Fecha" data-error="ingresa una fecha válida">
         <div class="invalid-feedback"></div>
 
         <label for="Descripcion">Descripción:</label>
-        <input name="Descripcion" id="Descripcion" type="text" placeholder="Descripción del problema" data-error="ingresa un texto valido">
+        <input name="Descripcion" id="Descripcion" type="text" placeholder="Descripción del problema" data-error="ingresa un texto válido">
         <div class="invalid-feedback"></div>
 
         <label for="Area">Área:</label>
-        <input name="Area" id="Area" type="text" placeholder="Área" data-error="ingresa un área valida">
+        <input name="Area" id="Area" type="text" placeholder="Área" data-error="ingresa un área válida">
         <div class="invalid-feedback"></div>
 
         <button type="button" name="Guardar" onclick="enviarDatos()">Guardar</button>
@@ -53,11 +53,11 @@
     </table>
 </div>
 
+<!-- Scripts -->
 <script src="js/envioDatos.js"></script>
-<script src="js/validacionCampos.js"></script>
-<script src="js/consultarDatos.js"></script>
-<script src="dao/actualizar_reporte.php"
+<script src="js/consultarDatos.js"></script> <!-- Enlace al archivo consultarDatos.js -->
 </body>
 </html>
+
 
 

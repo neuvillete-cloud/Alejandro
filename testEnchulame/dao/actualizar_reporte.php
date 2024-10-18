@@ -4,15 +4,17 @@ include_once("conexion.php");
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Aquí puedes obtener los datos del reporte usando el ID
+    // Conexión a la base de datos
     $con = new LocalConector();
     $conex = $con->conectar();
 
+    // Consulta para obtener los datos del reporte
     $stmt = $conex->prepare("SELECT objeto, fecha, descripcion, area FROM Reporte WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
+    // Verifica si el reporte existe
     if ($resultado->num_rows > 0) {
         $reporte = $resultado->fetch_assoc();
     } else {
@@ -61,4 +63,3 @@ if (isset($_GET['id'])) {
 </div>
 </body>
 </html>
-
