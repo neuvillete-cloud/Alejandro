@@ -49,8 +49,8 @@ function enviarDatos() {
     }
 }
 
+// Función para consultar los datos de la base de datos
 function consultarDatos() {
-    // Realizar petición al servidor (puedes modificar la URL para ajustarla a tu API)
     fetch('dao/conexion.php', { method: 'GET' })
         .then(response => response.json())
         .then(data => {
@@ -64,13 +64,13 @@ function consultarDatos() {
             // Insertar los datos recibidos en la tabla
             data.forEach(reporte => {
                 let fila = `
-                        <tr>
-                            <td>${reporte.id}</td>
-                            <td>${reporte.objeto}</td>
-                            <td>${reporte.fecha}</td>
-                            <td>${reporte.descripcion}</td>
-                            <td>${reporte.area}</td>
-                        </tr>`;
+                    <tr>
+                        <td>${reporte.id}</td>
+                        <td>${reporte.objeto}</td>
+                        <td>${reporte.fecha}</td>
+                        <td>${reporte.descripcion}</td>
+                        <td>${reporte.area}</td>
+                    </tr>`;
                 contenidoTabla.insertAdjacentHTML('beforeend', fila);
             });
         })
