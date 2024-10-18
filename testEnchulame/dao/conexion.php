@@ -15,7 +15,7 @@ class LocalConector{
         $this->conexion = mysqli_connect($this->host, $this->usuario, $this->clave, $this->db);
         if($this->conexion->connect_error){
             die("Error al conectar con la base de datos".$this->conexion->connect_error);
-        } echo "conectado";
+        }
         return $this->conexion;
 
     }
