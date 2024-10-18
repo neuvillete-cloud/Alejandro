@@ -49,32 +49,3 @@ function enviarDatos() {
     }
 }
 
-// Función para consultar los datos de la base de datos
-function consultarDatos() {
-    fetch('dao/conexion.php', { method: 'GET' })
-        .then(response => response.json())
-        .then(data => {
-            // Mostrar la tabla
-            document.getElementById('tablaResultados').style.display = 'table';
-
-            // Limpiar contenido previo
-            const contenidoTabla = document.getElementById('contenidoTabla');
-            contenidoTabla.innerHTML = '';
-
-            // Insertar los datos recibidos en la tabla
-            data.forEach(reporte => {
-                let fila = `
-                    <tr>
-                        <td>${reporte.id}</td>
-                        <td>${reporte.objeto}</td>
-                        <td>${reporte.fecha}</td>
-                        <td>${reporte.descripcion}</td>
-                        <td>${reporte.area}</td>
-                    </tr>`;
-                contenidoTabla.insertAdjacentHTML('beforeend', fila);
-            });
-        })
-        .catch(error => {
-            console.error('Error al consultar los datos:', error);
-        });
-}
