@@ -1,6 +1,6 @@
 function consultarDatos() {
     // Realizamos la solicitud GET al archivo PHP para obtener los datos
-    fetch('consultar_reporte.php', {
+    fetch('dao/consultar_reporte.php', {
         method: 'GET'
     })
         .then(response => response.json()) // Convertimos la respuesta a JSON
