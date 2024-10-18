@@ -35,6 +35,6 @@ function consultarDatos() {
 }
 
 function cargarReporte(idReporte){
-    $.getJSON('https://grammermx.com/RH/CajitaGrammer/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
+    $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
         $('#nombreSol').val(response.data[0].NomUser);
     });}
