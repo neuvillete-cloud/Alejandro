@@ -31,13 +31,3 @@ function enviarDatos() {
         alert("Por favor, llena todos los campos correctamente.");
     }
 }
-
-function validarinput(id) {
-    let input = document.getElementById(id);
-    if (input && input.value.trim() === "") {
-        input.classList.add("error");
-        return false;
-    }
-    input.classList.remove("error");
-    return true;
-}
