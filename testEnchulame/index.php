@@ -44,6 +44,7 @@
             <th>Fecha</th>
             <th>Descripción</th>
             <th>Área</th>
+            <th>Acciones</th> <!-- Nueva columna para las acciones -->
         </tr>
         </thead>
         <tbody id="contenidoTabla">
@@ -57,4 +58,5 @@
 <script src="js/consultarDatos.js"></script>
 </body>
 </html>
+
 
