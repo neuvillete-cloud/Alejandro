@@ -55,9 +55,6 @@
 <script src="js/envioDatos.js"></script>
 <script src="js/validacionCampos.js"></script>
 <script src="js/consultarDatos.js"></script>
-
-
-</script>
 </body>
 </html>
 
