@@ -17,19 +17,24 @@ function consultarDatos() {
             // Recorremos los datos recibidos y los insertamos en la tabla
             data.forEach(reporte => {
                 let fila = `
-                    <tr>
-                        <td>${reporte.id}</td>
-                        <td>${reporte.objeto}</td>
-                        <td>${reporte.fecha}</td>
-                        <td>${reporte.descripcion}</td>
-                        <td>${reporte.area}</td>
-                        <td><button onclick="window.location.href='actualizar_reporte.php?id=${reporte.id}'">Actualizar</button></td>
-                    </tr>`;
+                <tr>
+                    <td>${reporte.id}</td>
+                    <td>${reporte.objeto}</td>
+                    <td>${reporte.fecha}</td>
+                    <td>${reporte.descripcion}</td>
+                    <td>${reporte.area}</td>
+                    <td><button onclick="cargarReporte(${reporte.id})">Actualizar</button></td>
+                </tr>`;
                 contenidoTabla.insertAdjacentHTML('beforeend', fila);
-            });
 
+            });
         })
         .catch(error => {
             console.error('Error al consultar los datos:', error);
         });
 }
+
+function cargarReporte(idReporte){
+    $.getJSON('https://grammermx.com/RH/CajitaGrammer/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
+        $('#nombreSol').val(response.data[0].NomUser);
+    });}
