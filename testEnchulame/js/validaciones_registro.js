@@ -1,4 +1,6 @@
-document.getElementById('registerBtn').addEventListener('click', function () {
+document.getElementById('registerForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Evitar el envío del formulario por defecto
+
     const nomina = document.getElementById('nomina').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
     const correo = document.getElementById('correo').value.trim();
@@ -23,14 +25,13 @@ document.getElementById('registerBtn').addEventListener('click', function () {
         return;
     }
 
-    // Crear un objeto FormData para enviar los datos
+    // Enviar los datos al PHP
     const formData = new FormData();
     formData.append('nomina', nomina);
     formData.append('nombre', nombre);
     formData.append('correo', correo);
     formData.append('password', password);
 
-    // Enviar los datos al PHP
     fetch('dao/registroUsuario.php', {
         method: 'POST',
         body: formData
@@ -53,3 +54,4 @@ function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
 }
+

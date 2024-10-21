@@ -1,41 +1,48 @@
 <?php
 session_start(); // Iniciar sesión
 
+// Habilitar la visualización de errores (puedes quitar esto en producción)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Obtener los datos del formulario enviados por FormData
-    $nomina = isset($_POST['nomina']) ? trim($_POST['nomina']) : '';
-    $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
-    $correo = isset($_POST['correo']) ? trim($_POST['correo']) : '';
-    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+    // Obtener los datos del formulario
+    $nomina = $_POST['nomina'];
+    $nombre = $_POST['nombre'];
+    $correo = $_POST['correo'];
+    $password = $_POST['password'];
 
     // Validar que los campos no estén vacíos
     if (empty($nomina) || empty($nombre) || empty($correo) || empty($password)) {
-        http_response_code(400); // Código de respuesta 400 Bad Request
-        echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
+        $response = array('status' => 'error', 'message' => 'Por favor, complete todos los campos.');
+        echo json_encode($response);
         exit();
     }
 
     // Validar formato del correo
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-        http_response_code(400); // Código de respuesta 400 Bad Request
-        echo json_encode(array('status' => 'error', 'message' => 'Por favor, ingrese un correo electrónico válido.'));
+        $response = array('status' => 'error', 'message' => 'Por favor, ingrese un correo electrónico válido.');
+        echo json_encode($response);
         exit();
     }
 
     // Validar que la nómina tenga exactamente 8 caracteres
     if (strlen($nomina) !== 8) {
-        http_response_code(400); // Código de respuesta 400 Bad Request
-        echo json_encode(array('status' => 'error', 'message' => 'La nómina debe tener exactamente 8 caracteres.'));
+        $response = array('status' => 'error', 'message' => 'La nómina debe tener exactamente 8 caracteres.');
+        echo json_encode($response);
         exit();
     }
 
     // Lógica para registrar al usuario en la base de datos
     if (registrarUsuarioEnDB($nomina, $nombre, $correo, $password)) {
-        echo json_encode(array('status' => 'success'));
+        $response = array('status' => 'success', 'message' => 'Registro exitoso.');
+        echo json_encode($response);
         exit();
     } else {
-        http_response_code(400); // Código de respuesta 400 Bad Request
-        echo json_encode(array('status' => 'error', 'message' => 'Error al registrar al usuario. Puede que el número de nómina ya esté en uso.'));
+        $response = array('status' => 'error', 'message' => 'Error al registrar al usuario. Puede que el número de nómina ya esté en uso.');
+        echo json_encode($response);
         exit();
     }
 }
@@ -45,8 +52,9 @@ function registrarUsuarioEnDB($nomina, $nombre, $correo, $password) {
     // Conectar a la base de datos (ajusta esto según tu implementación)
     $con = new mysqli('localhost', 'tu_usuario', 'tu_contraseña', 'tu_base_de_datos');
 
+    // Verificar la conexión
     if ($con->connect_error) {
-        die('Error de conexión: ' . $con->connect_error);
+        return false;
     }
 
     // Comprobar si el usuario ya existe
@@ -56,7 +64,7 @@ function registrarUsuarioEnDB($nomina, $nombre, $correo, $password) {
     $resultado = $stmt->get_result();
 
     if ($resultado->num_rows > 0) {
-        return false; // Usuario ya existe
+        return false; // El usuario ya existe
     }
 
     // Encriptar la contraseña
@@ -67,7 +75,7 @@ function registrarUsuarioEnDB($nomina, $nombre, $correo, $password) {
     $stmt->bind_param("ssss", $nomina, $nombre, $correo, $hashedPassword);
     $stmt->execute();
 
-    // Cerrar conexión
+    // Cerrar la conexión
     $stmt->close();
     $con->close();
 
