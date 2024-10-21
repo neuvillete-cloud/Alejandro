@@ -47,7 +47,11 @@ function cargarDatosReporte(){
 
     console.log(idReporte); // Imprime: 123
     $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
-        $('#id').val(response.data[0].id);
+        let data = response.data[0];
+        alert(response.data[0]);
+        alert(response.data[0].id);
+        $('#id').val(data.id);
+
     });
 
 }
