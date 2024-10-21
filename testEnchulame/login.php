@@ -20,6 +20,14 @@
         .login-title {
             text-align: center;
             margin-bottom: 20px;
+            color: #6A1B9A; /* Color personalizado */
+        }
+        .btn-custom {
+            background-color: #6A1B9A; /* Color personalizado */
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #5c0e87; /* Color más oscuro para el hover */
         }
     </style>
 </head>
@@ -40,7 +48,7 @@
             <label for="email">Correo Electrónico</label>
             <input type="email" class="form-control" id="email" name="email" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+        <button type="submit" class="btn btn-custom btn-block">Iniciar Sesión</button>
     </form>
 </div>
 
