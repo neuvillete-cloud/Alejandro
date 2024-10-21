@@ -1,29 +1,42 @@
 <?php
 include_once("conexion.php");
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+header('Content-type: application/json');
 
-    // Aquí puedes obtener los datos del reporte usando el ID
+try {
+    // Obtener los datos enviados por el formulario
+    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    $objeto = isset($_POST['objeto']) ? $_POST['objeto'] : '';
+    $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : '';
+    $area = isset($_POST['area']) ? $_POST['area'] : '';
+
+    // Validar que los campos requeridos no estén vacíos
+    if (empty($objeto) || empty($descripcion) || empty($area)) {
+        throw new Exception('Todos los campos son obligatorios.');
+    }
+
+    // Conectar a la base de datos
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    $stmt = $conex->prepare("SELECT objeto, fecha, descripcion, area FROM Reporte WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+    // Preparar la consulta SQL
+    $query = "UPDATE Reporte SET objeto = ?, descripcion = ?, area = ? WHERE id = ?";
+    $stmt = $conex->prepare($query);
+    $stmt->bind_param("sssi", $objeto, $descripcion, $area, $id);
 
-    if ($resultado->num_rows > 0) {
-        $reporte = $resultado->fetch_assoc();
+    // Ejecutar la consulta
+    if ($stmt->execute()) {
+        echo json_encode(array("success" => true));
     } else {
-        echo "Reporte no encontrado.";
-        exit;
+        throw new Exception('No se pudo actualizar el reporte.');
     }
 
+    // Cerrar la conexión
+    $stmt->close();
     $conex->close();
-} else {
-    echo "ID no especificado.";
-    exit;
+} catch (Exception $e) {
+    echo json_encode(array("success" => false, "message" => $e->getMessage()));
 }
 ?>
+
 

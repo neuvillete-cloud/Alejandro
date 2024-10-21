@@ -29,7 +29,8 @@
         <label for="area">Área:</label>
         <input name="area" id="area" type="text"  required>
 
-        <button type="submit">Actualizar</button>
+        <button type="button" onclick="actualizarReporte()">Guardar cambios</button>
+
     </form>
 </div>
 

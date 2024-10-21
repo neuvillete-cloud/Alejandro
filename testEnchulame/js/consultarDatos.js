@@ -66,3 +66,33 @@ function cargarDatosReporte(){
         console.error("Error en la solicitud: ", textStatus, errorThrown);
     });
 }
+
+function actualizarReporte() {
+    // Crear un objeto FormData
+    let formData = new FormData();
+
+    // Recuperar los datos de los inputs
+    formData.append('id', $('#id').val()); // ID no se modificará pero es necesario enviarlo
+    formData.append('objeto', $('#objeto').val());
+    formData.append('fecha', $('#fecha').val()); // Fecha no se modificará
+    formData.append('descripcion', $('#descripcion').val());
+    formData.append('area', $('#area').val());
+
+    // Realizar la solicitud POST para actualizar el reporte
+    fetch('https://grammermx.com/AleTest/testEnchulame/dao/actualizar_reporte.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Reporte actualizado exitosamente');
+            } else {
+                alert('Error al actualizar el reporte: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error en la solicitud:', error);
+            alert('Ocurrió un error al actualizar el reporte.');
+        });
+}
