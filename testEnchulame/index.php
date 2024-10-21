@@ -19,10 +19,6 @@
         <input name="objeto" id="objeto" type="text" placeholder="Objeto" data-error="ingresa un objeto valido">
         <div class="invalid-feedback"></div>
 
-        <label for="Fecha">Fecha:</label>
-        <input name="Fecha" id="Fecha" type="date" placeholder="Fecha" data-error="ingresa una fecha valida">
-        <div class="invalid-feedback"></div>
-
         <label for="Descripcion">Descripción:</label>
         <input name="Descripcion" id="Descripcion" type="text" placeholder="Descripción del problema" data-error="ingresa un texto valido">
         <div class="invalid-feedback"></div>

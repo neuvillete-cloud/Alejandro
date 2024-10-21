@@ -20,9 +20,6 @@
         <label for="objeto">Objeto:</label>
         <input name="objeto" id="objeto" type="text"  required>
 
-        <label for="fecha">Fecha:</label>
-        <input name="fecha" id="fecha" type="date"  required>
-
         <label for="descripcion">Descripción:</label>
         <input name="descripcion" id="descripcion" type="text"  required>
 
