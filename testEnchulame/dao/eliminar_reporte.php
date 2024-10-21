@@ -11,7 +11,7 @@ try {
     $idReporte = $_POST['id'];
 
     // Actualizar el campo status a 0 (eliminación lógica)
-    $query = "UPDATE Reporte SET status = 0 WHERE id = ?";
+    $query = "UPDATE Reporte SET estatus = 0 WHERE id = ?";
     $stmt = $conex->prepare($query);
     $stmt->bind_param("i", $idReporte);
 
