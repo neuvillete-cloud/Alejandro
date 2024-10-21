@@ -10,18 +10,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validar que los campos no estén vacíos
     if (empty($nomina) || empty($nombre) || empty($correo) || empty($password)) {
+        http_response_code(400); // Código de respuesta 400 Bad Request
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
 
     // Validar formato del correo
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        http_response_code(400); // Código de respuesta 400 Bad Request
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, ingrese un correo electrónico válido.'));
         exit();
     }
 
     // Validar que la nómina tenga exactamente 8 caracteres
     if (strlen($nomina) !== 8) {
+        http_response_code(400); // Código de respuesta 400 Bad Request
         echo json_encode(array('status' => 'error', 'message' => 'La nómina debe tener exactamente 8 caracteres.'));
         exit();
     }
@@ -31,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode(array('status' => 'success'));
         exit();
     } else {
+        http_response_code(400); // Código de respuesta 400 Bad Request
         echo json_encode(array('status' => 'error', 'message' => 'Error al registrar al usuario. Puede que el número de nómina ya esté en uso.'));
         exit();
     }
