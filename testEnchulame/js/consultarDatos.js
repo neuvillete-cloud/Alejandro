@@ -24,7 +24,7 @@ function consultarDatos() {
                     <td>${reporte.descripcion}</td>
                     <td>${reporte.area}</td>
                     <td><button onclick="cargarReporte(${reporte.id})">Actualizar</button></td>
-                    <button class="btn btn-danger" onclick="eliminarReporte(${reporte.id})">Eliminar</button>
+                    <td><button class="btn btn-danger" onclick="eliminarReporte(${reporte.id})">Eliminar</button></td>
                 </tr>`;
                 contenidoTabla.insertAdjacentHTML('beforeend', fila);
 
