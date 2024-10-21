@@ -23,18 +23,17 @@ document.getElementById('registerBtn').addEventListener('click', function () {
         return;
     }
 
+    // Crear un objeto FormData para enviar los datos
+    const formData = new FormData();
+    formData.append('nomina', nomina);
+    formData.append('nombre', nombre);
+    formData.append('correo', correo);
+    formData.append('password', password);
+
     // Enviar los datos al PHP
     fetch('dao/registroUsuario.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            nomina: nomina,
-            nombre: nombre,
-            correo: correo,
-            password: password
-        })
+        body: formData
     })
         .then(response => response.json())
         .then(data => {
@@ -54,4 +53,3 @@ function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
 }
-
