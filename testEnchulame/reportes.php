@@ -42,7 +42,14 @@
 <script src="js/validacionCampos.js"></script>
 <script src="js/consultarDatos.js"></script>
 <script>
-    $(document).ready(function() { cargarDatosReporte() });
+    document.
+    addEventListener
+    (
+        "DOMContentLoaded"
+        ,
+        function
+            () {cargarDatosReporte()
+             });
     </script>
 
 </body>
