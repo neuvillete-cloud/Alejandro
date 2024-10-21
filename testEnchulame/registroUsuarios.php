@@ -70,9 +70,9 @@
             .then(data => {
                 // Comprobar si el registro fue exitoso
                 if (data.includes("Error")) {
-                    alert(data); // Mostrar mensaje de error
+                    alert(data.message); // Mostrar mensaje de error
                 } else {
-                    alert("Registro exitoso. Redirigiendo a inicio de sesión...");
+                    alert(data.message);
                     setTimeout(() => {
                         window.location.href = 'login.php'; // Redirigir a inicio de sesión
                     }, 2000); // Redirigir después de 2 segundos
