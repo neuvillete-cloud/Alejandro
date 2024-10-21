@@ -8,7 +8,7 @@ try {
     $conex = $con->conectar();
 
     // Consulta para obtener los reportes con status = 1
-    $query = "SELECT id, objeto, fecha, descripcion, area FROM Reporte WHERE status = 1";
+    $query = "SELECT id, objeto, fecha, descripcion, area FROM Reporte WHERE estatus = 1";
     $resultado = $conex->query($query);
 
     $reportes = array();
