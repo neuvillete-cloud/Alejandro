@@ -7,24 +7,27 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Solo seleccionar reportes con status = 1 (reportes activos)
+    // Consulta para obtener los reportes con status = 1
     $query = "SELECT id, objeto, fecha, descripcion, area FROM Reporte WHERE status = 1";
     $resultado = $conex->query($query);
 
     $reportes = array();
+
+    // Si hay resultados, los añadimos al array
     if ($resultado->num_rows > 0) {
-        // Recorremos los resultados y los guardamos en un array
         while ($fila = $resultado->fetch_assoc()) {
             $reportes[] = $fila;
         }
     }
 
     $conex->close();
-    // Devolvemos el array como JSON
+
+    // Devolvemos siempre un array
     echo json_encode($reportes);
+
 } catch (Exception $e) {
-    // Si ocurre algún error, lo devolvemos como JSON
-    echo json_encode(array("error" => $e->getMessage()));
+    // En caso de error, devolvemos un array vacío y el mensaje de error
+    echo json_encode(array());
 }
 exit;
 ?>
