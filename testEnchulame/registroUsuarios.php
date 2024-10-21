@@ -20,22 +20,27 @@
         .register-title {
             text-align: center;
             margin-bottom: 20px;
-            color: #6A1B9A; /* Color personalizado */
+            color: #6A1B9A;
         }
         .btn-custom {
-            background-color: #6A1B9A; /* Color personalizado */
+            background-color: #6A1B9A;
             color: white;
         }
         .btn-custom:hover {
-            background-color: #5c0e87; /* Color más oscuro para el hover */
+            background-color: #5c0e87;
+        }
+        .status-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
 <div class="register-container">
-    <h2 class="register-title">Registrarse</h2>
-    <form action="register.php" method="POST" id="registerForm">
+    <h2 class="register-title">Registro</h2>
+    <form id="registerForm">
         <div class="form-group">
             <label for="nomina">Número de Nómina</label>
             <input type="text" class="form-control" id="nomina" name="nomina" required>
@@ -52,38 +57,13 @@
             <label for="password">Contraseña</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-custom btn-block">Registrar</button>
+        <button type="button" class="btn btn-custom btn-block" id="registerBtn">Registrarse</button>
+        <div class="status-message" id="statusMessage"></div>
     </form>
-    <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="login.php">Iniciar Sesión</a></p>
 </div>
 
-<script>
-    document.getElementById('registerForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Evitar el envío del formulario tradicional
-        const formData = new FormData(this);
-
-        fetch(this.action, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.text()) // Cambia a text() para manejar redirección
-            .then(data => {
-                // Comprobar si el registro fue exitoso
-                if (data.includes("Error")) {
-                    alert(data.message); // Mostrar mensaje de error
-                } else {
-                    alert(data.message);
-                    setTimeout(() => {
-                        window.location.href = 'login.php'; // Redirigir a inicio de sesión
-                    }, 2000); // Redirigir después de 2 segundos
-                }
-            })
-            .catch(error => {
-                console.error('Error al enviar el formulario:', error);
-                alert('Hubo un error en el proceso de registro.');
-            });
-    });
-</script>
+<script src="js/validaciones_registro.js"></script>
 
 </body>
 </html>
+

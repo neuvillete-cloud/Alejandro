@@ -1,72 +1,73 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Evitar el envío del formulario tradicional
+document.getElementById('registerBtn').addEventListener('click', function () {
     const nomina = document.getElementById('nomina').value;
     const nombre = document.getElementById('nombre').value;
     const correo = document.getElementById('correo').value;
-    const password = document.getElementById('password').value; // Cambiado de "contrasena" a "password"
+    const password = document.getElementById('password').value;
+    const statusMessage = document.getElementById('statusMessage');
 
-    if (validarCampos(nomina, nombre, correo, password)) {
-        enviarFormulario(nomina, nombre, correo, password); // Pasar el password al enviar el formulario
-    }
-});
-
-// Función para validar los campos
-function validarCampos(nomina, nombre, correo, password) {
+    // Validar que los campos no estén vacíos
     if (!nomina || !nombre || !correo || !password) {
-        alert('Por favor, complete todos los campos.');
-        return false;
+        statusMessage.textContent = 'Por favor, complete todos los campos.';
+        return;
     }
 
-    if (!validarCorreo(correo)) {
-        alert('Por favor, ingrese un correo electrónico válido.');
-        return false;
+    // Validar formato del correo
+    if (!validateEmail(correo)) {
+        statusMessage.textContent = 'Por favor, ingrese un correo electrónico válido.';
+        return;
     }
 
-    if (nomina.length < 8) {
-        alert('El número de nómina debe tener 8 caracteres. Se completará automáticamente con ceros.');
-        document.getElementById('nomina').value = nomina.padStart(8, '0'); // Completar con ceros
-    } else if (nomina.length > 8) {
-        alert('La nómina debe tener exactamente 8 caracteres.');
-        return false;
+    // Validar que la nómina tenga exactamente 8 caracteres
+    if (nomina.length !== 8) {
+        statusMessage.textContent = 'La nómina debe tener exactamente 8 caracteres.';
+        return;
     }
 
-    // Validar el password (ejemplo simple: longitud mínima)
-    if (password.length < 6) {
-        alert('El password debe tener al menos 6 caracteres.'); // Cambiado de "contraseña" a "password"
-        return false;
-    }
-
-    return true; // Todos los campos son válidos
-}
-
-// Función para validar el formato del correo
-function validarCorreo(correo) {
-    return correo.includes('@');
-}
-
-// Función para enviar el formulario
-function enviarFormulario(nomina, nombre, correo, password) {
-    const form = document.getElementById('loginForm');
-
-    // Agregar el password al FormData
-    const formData = new FormData(form);
-    formData.append('password', password); // Cambiado de "contrasena" a "password"
-
-    fetch(form.action, {
+    // Enviar los datos al PHP
+    fetch('registroUsuarios.php', {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            nomina: nomina,
+            nombre: nombre,
+            correo: correo,
+            password: password
+        })
     })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Abrir la página principal en una nueva ventana
-                window.open('index.php', '_blank');
+                window.location.href = 'login.php'; // Redirigir a la página de inicio de sesión
             } else {
-                alert(data.message); // Mostrar mensaje de error
+                statusMessage.textContent = data.message; // Mostrar el mensaje de error
             }
         })
         .catch(error => {
-            console.error('Error al enviar el formulario:', error);
-            alert('Hubo un error en el proceso de inicio de sesión.');
+            statusMessage.textContent = 'Error en la comunicación con el servidor.';
         });
+});
+
+// Función para validar el formato del correo
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+}
+
+// Función para registrar al usuario (ahora en JavaScript)
+function registrarUsuario(nomina, nombre, correo, password) {
+    // Conectar a la base de datos y registrar al usuario
+    return fetch('registroUsuarios.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            nomina: nomina,
+            nombre: nombre,
+            correo: correo,
+            password: password
+        })
+    }).then(response => response.json());
 }

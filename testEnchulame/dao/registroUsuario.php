@@ -10,38 +10,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validar que los campos no estén vacíos
     if (empty($nomina) || empty($nombre) || empty($correo) || empty($password)) {
-        echo "Por favor, complete todos los campos.";
+        echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
 
     // Validar formato del correo
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-        echo "Por favor, ingrese un correo electrónico válido.";
+        echo json_encode(array('status' => 'error', 'message' => 'Por favor, ingrese un correo electrónico válido.'));
         exit();
     }
 
     // Validar que la nómina tenga exactamente 8 caracteres
-    if (strlen($nomina) < 8) {
-        // Completar con ceros a la izquierda
-        $nomina = str_pad($nomina, 8, '0', STR_PAD_LEFT);
-    } elseif (strlen($nomina) > 8) {
-        echo "La nómina debe tener exactamente 8 caracteres.";
+    if (strlen($nomina) !== 8) {
+        echo json_encode(array('status' => 'error', 'message' => 'La nómina debe tener exactamente 8 caracteres.'));
         exit();
     }
 
     // Lógica para registrar al usuario en la base de datos
-    if (registrarUsuario($nomina, $nombre, $correo, $password)) {
-        // Redirigir al formulario de inicio de sesión
-        header("Location: login.php");
+    if (registrarUsuarioEnDB($nomina, $nombre, $correo, $password)) {
+        echo json_encode(array('status' => 'success'));
         exit();
     } else {
-        echo "Error al registrar al usuario. Puede que el número de nómina ya esté en uso.";
+        echo json_encode(array('status' => 'error', 'message' => 'Error al registrar al usuario. Puede que el número de nómina ya esté en uso.'));
         exit();
     }
 }
 
-// Función para registrar al usuario
-function registrarUsuario($nomina, $nombre, $correo, $password) {
+// Función para registrar al usuario en la base de datos
+function registrarUsuarioEnDB($nomina, $nombre, $correo, $password) {
     // Conectar a la base de datos (ajusta esto según tu implementación)
     $con = new LocalConector();
     $conex = $con->conectar();
