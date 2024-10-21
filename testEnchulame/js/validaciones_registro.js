@@ -1,8 +1,8 @@
 document.getElementById('registerBtn').addEventListener('click', function () {
-    const nomina = document.getElementById('nomina').value;
-    const nombre = document.getElementById('nombre').value;
-    const correo = document.getElementById('correo').value;
-    const password = document.getElementById('password').value;
+    const nomina = document.getElementById('nomina').value.trim();
+    const nombre = document.getElementById('nombre').value.trim();
+    const correo = document.getElementById('correo').value.trim();
+    const password = document.getElementById('password').value.trim();
     const statusMessage = document.getElementById('statusMessage');
 
     // Validar que los campos no estén vacíos
@@ -36,12 +36,7 @@ document.getElementById('registerBtn').addEventListener('click', function () {
             password: password
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la comunicación con el servidor.');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
                 window.location.href = 'login.php'; // Redirigir a la página de inicio de sesión
@@ -50,7 +45,7 @@ document.getElementById('registerBtn').addEventListener('click', function () {
             }
         })
         .catch(error => {
-            statusMessage.textContent = 'Error en la comunicación con el servidor: ' + error.message;
+            statusMessage.textContent = 'Error en la comunicación con el servidor.';
         });
 });
 
@@ -59,3 +54,4 @@ function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
 }
+

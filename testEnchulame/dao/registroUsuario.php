@@ -67,3 +67,4 @@ function registrarUsuarioEnDB($nomina, $nombre, $correo, $password) {
     return true; // Registro exitoso
 }
 ?>
+

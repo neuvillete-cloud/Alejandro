@@ -57,14 +57,12 @@
             <label for="password">Contraseña</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-custom btn-block">Registrarse</button>
+        <button type="button" class="btn btn-custom btn-block" id="registerBtn">Registrarse</button>
         <div class="status-message" id="statusMessage"></div>
     </form>
 </div>
 
-<script src="js/validaciones_login.js"></script>
+<script src="js/validaciones_registro.js"></script>
 
 </body>
 </html>
-
-

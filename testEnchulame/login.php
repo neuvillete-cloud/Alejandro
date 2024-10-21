@@ -64,7 +64,7 @@
     </div>
 </div>
 
-<script src="js/validaciones_login.js"></script>
+<script src="js/validaciones_registro.js"></script>
 
 </body>
 </html>
