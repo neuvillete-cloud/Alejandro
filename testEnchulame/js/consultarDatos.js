@@ -24,6 +24,7 @@ function consultarDatos() {
                     <td>${reporte.descripcion}</td>
                     <td>${reporte.area}</td>
                     <td><button onclick="cargarReporte(${reporte.id})">Actualizar</button></td>
+                    <button class="btn btn-danger" onclick="eliminarReporte(${reporte.id})">Eliminar</button>
                 </tr>`;
                 contenidoTabla.insertAdjacentHTML('beforeend', fila);
 
@@ -96,3 +97,27 @@ function actualizarReporte() {
             alert('Ocurrió un error al actualizar el reporte.');
         });
 }
+
+function eliminarReporte(idReporte) {
+    if (confirm('¿Estás seguro de que deseas eliminar este reporte?')) {
+        // Realizamos la solicitud para eliminar (cambiar el status a 0)
+        $.ajax({
+            url: 'https://grammermx.com/AleTest/testEnchulame/dao/eliminar_reporte.php',
+            type: 'POST',
+            data: { id: idReporte },
+            success: function(response) {
+                if (response.success) {
+                    alert('El reporte ha sido eliminado correctamente.');
+                    consultarDatos(); // Recargamos la tabla de reportes
+                } else {
+                    alert('Error al eliminar el reporte.');
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.error('Error en la solicitud: ', textStatus, errorThrown);
+                alert('Error al intentar eliminar el reporte.');
+            }
+        });
+    }
+}
+

@@ -7,35 +7,26 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    if ($conex->connect_error) {
-        throw new Exception('Error de conexión: ' . $conex->connect_error);
-    }
-
-    $query = "SELECT id, objeto, fecha, descripcion, area FROM Reporte";
+    // Solo seleccionar reportes con status = 1 (reportes activos)
+    $query = "SELECT id, objeto, fecha, descripcion, area FROM Reporte WHERE status = 1";
     $resultado = $conex->query($query);
-
-    if (!$resultado) {
-        throw new Exception('Error en la consulta: ' . $conex->error);
-    }
 
     $reportes = array();
     if ($resultado->num_rows > 0) {
+        // Recorremos los resultados y los guardamos en un array
         while ($fila = $resultado->fetch_assoc()) {
             $reportes[] = $fila;
         }
     }
 
     $conex->close();
-
-    $json = json_encode($reportes);
-    if ($json === false) {
-        throw new Exception('Error al codificar JSON: ' . json_last_error_msg());
-    }
-
-    echo $json;
+    // Devolvemos el array como JSON
+    echo json_encode($reportes);
 } catch (Exception $e) {
+    // Si ocurre algún error, lo devolvemos como JSON
     echo json_encode(array("error" => $e->getMessage()));
 }
 exit;
 ?>
+
 
