@@ -35,11 +35,17 @@ function consultarDatos() {
 }
 
 function cargarReporte(idReporte){
-    window.location.href= "https://grammermx.com/AleTest/testEnchulame/reportes.php";
-    cargarDatosReporte(idReporte);
+    window.location.href= "https://grammermx.com/AleTest/testEnchulame/reportes.php?id="+idReporte;
    }
 
-function cargarDatosReporte(id){
+function cargarDatosReporte(){
+    // Obtener los parámetros de la URL
+    const params = new URLSearchParams(window.location.search);
+
+// Obtener el valor del parámetro "id"
+    const idReporte = params.get('id');
+
+    console.log(id); // Imprime: 123
     $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
         $('#id').val(response.data[0].id);
     });
