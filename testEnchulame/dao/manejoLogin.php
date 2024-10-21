@@ -29,48 +29,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    // Aquí deberías agregar la lógica de autenticación para validar el usuario.
-    // Por ejemplo, puedes verificar en la base de datos si el número de nómina y el correo son válidos.
-    if (validarUsuario($nomina, $nombre, $correo, $password)) {
-        // Guardar el número de nómina en la sesión
-        $_SESSION['nomina'] = $nomina;
+    // Validar la contraseña
+    if (!validarContrasena($password)) {
+        echo json_encode(array('status' => 'error', 'message' => 'La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.'));
+        exit();
+    }
 
-        // Retornar éxito
-        echo json_encode(array('status' => 'success'));
+    // Lógica para registrar al usuario en la base de datos
+    if (registrarUsuario($nomina, $nombre, $correo, $password)) {
+        // Redirigir al formulario de inicio de sesión
+        header("Location: login.php");
         exit();
     } else {
-        // Retornar error de credenciales
-        echo json_encode(array('status' => 'error', 'message' => 'Credenciales incorrectas.'));
+        echo json_encode(array('status' => 'error', 'message' => 'Error al registrar al usuario. Puede que el número de nómina ya esté en uso.'));
         exit();
     }
 }
 
-// Función de validación
-function validarUsuario($nomina, $nombre, $correo, $password) {
+// Función para validar la contraseña
+function validarContrasena($password) {
+    // Requiere al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+    return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password);
+}
+
+// Función para registrar al usuario
+function registrarUsuario($nomina, $nombre, $correo, $password) {
     // Conectar a la base de datos (ajusta esto según tu implementación)
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Aquí deberías realizar una consulta a la base de datos para verificar si el usuario existe.
-    $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ? AND nombre = ? AND correo = ?");
-    $stmt->bind_param("sss", $nomina, $nombre, $correo);
+    // Comprobar si el usuario ya existe
+    $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ?");
+    $stmt->bind_param("s", $nomina);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
-    // Verificar si se encontró al usuario
     if ($resultado->num_rows > 0) {
-        $usuario = $resultado->fetch_assoc();
-
-        // Comparar el password (ajusta según tu método de almacenamiento de contraseñas, aquí se usa `password_verify`)
-        if (password_verify($password, $usuario['password'])) { // Cambiado de "contrasena" a "password"
-            return true; // Password correcto
-        }
+        return false; // Usuario ya existe
     }
 
+    // Encriptar la contraseña
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insertar nuevo usuario
+    $stmt = $conex->prepare("INSERT INTO usuario (nomina, nombre, correo, password) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $nomina, $nombre, $correo, $hashedPassword);
+    $stmt->execute();
+
     // Cerrar conexión
+    $stmt->close();
     $conex->close();
 
-    return false; // Usuario no encontrado o password incorrecto
+    return true; // Registro exitoso
 }
+?>
 
-// Si no se está accediendo al script mediante POST, no se hace nada (será manejado por el front-end)
