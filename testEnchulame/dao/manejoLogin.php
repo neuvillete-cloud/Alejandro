@@ -9,13 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validar que los campos no estén vacíos
     if (empty($nomina) || empty($nombre) || empty($email)) {
-        header("Location: login.html?error=Por favor, complete todos los campos.");
+        echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
 
     // Validar formato del correo
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        header("Location: login.html?error=Por favor, ingrese un correo electrónico válido.");
+        echo json_encode(array('status' => 'error', 'message' => 'Por favor, ingrese un correo electrónico válido.'));
         exit();
     }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Completar con ceros a la izquierda
         $nomina = str_pad($nomina, 8, '0', STR_PAD_LEFT);
     } elseif (strlen($nomina) > 8) {
-        header("Location: login.html?error=La nómina debe tener exactamente 8 caracteres.");
+        echo json_encode(array('status' => 'error', 'message' => 'La nómina debe tener exactamente 8 caracteres.'));
         exit();
     }
 
@@ -34,12 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Guardar el número de nómina en la sesión
         $_SESSION['nomina'] = $nomina;
 
-        // Redirigir a la página principal
-        header("Location: index.php");
+        // Retornar éxito
+        echo json_encode(array('status' => 'success'));
         exit();
     } else {
-        // Redirigir de vuelta al formulario con un mensaje de error
-        header("Location: login.html?error=Credenciales incorrectas.");
+        // Retornar error de credenciales
+        echo json_encode(array('status' => 'error', 'message' => 'Credenciales incorrectas.'));
         exit();
     }
 }
@@ -63,9 +63,4 @@ function validarUsuario($nomina, $nombre, $email) {
     return $resultado->num_rows > 0;
 }
 
-// Si no se está accediendo al script mediante POST, redirigir al login.
-header("Location: login.html");
-exit();
-?>
-
-
+// Si no se está accediendo al script mediante POST, no se hace nada (será manejado por el front-end)

@@ -52,27 +52,9 @@
     </form>
 </div>
 
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        const nomina = document.getElementById('nomina').value;
-        const nombre = document.getElementById('nombre').value;
-        const email = document.getElementById('email').value;
-
-        // Validar campos vacíos
-        if (!nomina || !nombre || !email) {
-            event.preventDefault(); // Evitar el envío del formulario
-            alert('Por favor, complete todos los campos.');
-            return;
-        }
-
-        // Validar longitud de nómina
-        if (nomina.length < 8) {
-            alert('El número de nómina debe tener 8 caracteres. Se completará con ceros.');
-            nomina = nomina.padStart(8, '0'); // Completar con ceros
-            document.getElementById('nomina').value = nomina; // Actualizar el campo
-        }
-    });
-</script>
+<!-- Llamar al archivo JavaScript externo -->
+<script src="js/validaciones_login.js"></script>
 
 </body>
 </html>
+
