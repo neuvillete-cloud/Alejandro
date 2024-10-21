@@ -2,21 +2,21 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     event.preventDefault(); // Evitar el envío del formulario tradicional
     const nomina = document.getElementById('nomina').value;
     const nombre = document.getElementById('nombre').value;
-    const email = document.getElementById('email').value;
+    const correo = document.getElementById('correo').value;
 
-    if (validarCampos(nomina, nombre, email)) {
-        enviarFormulario(nomina, nombre, email);
+    if (validarCampos(nomina, nombre, correo)) {
+        enviarFormulario(nomina, nombre, correo);
     }
 });
 
 // Función para validar los campos
-function validarCampos(nomina, nombre, email) {
-    if (!nomina || !nombre || !email) {
+function validarCampos(nomina, nombre, correo) {
+    if (!nomina || !nombre || !correo) {
         alert('Por favor, complete todos los campos.');
         return false;
     }
 
-    if (!validarCorreo(email)) {
+    if (!validarCorreo(correo)) {
         alert('Por favor, ingrese un correo electrónico válido.');
         return false;
     }
@@ -33,12 +33,12 @@ function validarCampos(nomina, nombre, email) {
 }
 
 // Función para validar el formato del correo
-function validarCorreo(email) {
-    return email.includes('@');
+function validarCorreo(correo) {
+    return correo.includes('@');
 }
 
 // Función para enviar el formulario
-function enviarFormulario(nomina, nombre, email) {
+function enviarFormulario(nomina, nombre, correo) {
     const form = document.getElementById('loginForm');
 
     fetch(form.action, {

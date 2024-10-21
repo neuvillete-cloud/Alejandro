@@ -45,8 +45,8 @@
             <input type="text" class="form-control" id="nombre" name="nombre" required>
         </div>
         <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+            <label for="correo">Correo Electrónico</label>
+            <input type="email" class="form-control" id="correo" name="correo" required>
         </div>
         <button type="submit" class="btn btn-custom btn-block">Iniciar Sesión</button>
     </form>

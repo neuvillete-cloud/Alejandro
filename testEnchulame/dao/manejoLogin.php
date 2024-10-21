@@ -5,16 +5,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtener los datos del formulario
     $nomina = $_POST['nomina'];
     $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
+    $correo = $_POST['correo'];
 
     // Validar que los campos no estén vacíos
-    if (empty($nomina) || empty($nombre) || empty($email)) {
+    if (empty($nomina) || empty($nombre) || empty($correo)) {
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
 
     // Validar formato del correo
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, ingrese un correo electrónico válido.'));
         exit();
     }
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Aquí deberías agregar la lógica de autenticación para validar el usuario.
     // Por ejemplo, puedes verificar en la base de datos si el número de nómina y el correo son válidos.
-    if (validarUsuario($nomina, $nombre, $email)) {
+    if (validarUsuario($nomina, $nombre, $correo)) {
         // Guardar el número de nómina en la sesión
         $_SESSION['nomina'] = $nomina;
 
@@ -45,14 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Función de validación
-function validarUsuario($nomina, $nombre, $email) {
+function validarUsuario($nomina, $nombre, $correo) {
     // Conectar a la base de datos (ajusta esto según tu implementación)
     $con = new LocalConector();
     $conex = $con->conectar();
 
     // Aquí deberías realizar una consulta a la base de datos para verificar si el usuario existe.
-    $stmt = $conex->prepare("SELECT * FROM usuarios WHERE nomina = ? AND nombre = ? AND email = ?");
-    $stmt->bind_param("sss", $nomina, $nombre, $email);
+    $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ? AND nombre = ? AND correo = ?");
+    $stmt->bind_param("sss", $nomina, $nombre, $correo);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
