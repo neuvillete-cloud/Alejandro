@@ -35,6 +35,7 @@ function consultarDatos() {
 }
 
 function cargarReporte(idReporte){
+    window.location.href= "https://grammermx.com/AleTest/testEnchulame/reportes.php";
     $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
-        $('#nombreSol').val(response.data[0].NomUser);
+        $('#id').val(response.data[0].id);
     });}
