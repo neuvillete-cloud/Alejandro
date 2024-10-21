@@ -42,16 +42,31 @@ function cargarDatosReporte(){
     // Obtener los parámetros de la URL
     const params = new URLSearchParams(window.location.search);
 
-// Obtener el valor del parámetro "id"
+    // Obtener el valor del parámetro "id"
     const idReporte = params.get('id');
+    console.log(idReporte); // Verificar el ID recibido desde la URL
 
-    console.log(idReporte); // Imprime: 123
-    $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
-        let data = response.data[0];
-        alert(response.data[0]);
-        alert(response.data[0].id);
-        $('#id').val(data.id);
+    // Realizar la solicitud GET para obtener el reporte
+    $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id=' + idReporte, function (response) {
+        console.log(response); // Verificar toda la respuesta JSON
 
+        // Asegúrate de que la respuesta tenga una estructura válida
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+            let data = response.data[0];
+
+            // Imprimir datos para depurar
+            console.log("Datos recibidos:", data);
+
+            // Asignar los valores a los inputs
+            $('#id').val(data.id);
+            $('#objeto').val(data.objeto);
+            $('#fecha').val(data.fecha);
+            $('#descripcion').val(data.descripcion);
+            $('#area').val(data.area);
+        } else {
+            alert('No se encontraron datos para este ID.');
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error en la solicitud: ", textStatus, errorThrown);
     });
-
 }
