@@ -53,7 +53,7 @@
             <input type="email" class="form-control" id="correo" name="correo" required>
         </div>
         <div class="form-group">
-            <label for="password">Password</label> <!-- Cambiado de "Contraseña" a "Password" -->
+            <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
         <button type="submit" class="btn btn-custom btn-block">Iniciar Sesión</button>
@@ -64,7 +64,6 @@
     </div>
 </div>
 
-<!-- Llamar al archivo JavaScript externo -->
 <script src="js/validaciones_login.js"></script>
 
 </body>

@@ -4,11 +4,12 @@ session_start(); // Iniciar sesión
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtener los datos del formulario
     $nomina = $_POST['nomina'];
+    $nombre = $_POST['nombre']; // Mantener el campo nombre
     $correo = $_POST['correo'];
-    $password = $_POST['password']; // Suponiendo que el formulario incluye este campo
+    $password = $_POST['password'];
 
     // Validar que los campos no estén vacíos
-    if (empty($nomina) || empty($correo) || empty($password)) {
+    if (empty($nomina) || empty($nombre) || empty($correo) || empty($password)) {
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
@@ -29,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Lógica para verificar las credenciales del usuario
-    if (validarCredenciales($nomina, $correo, $password)) {
+    if (validarCredenciales($nomina, $nombre, $correo, $password)) {
         // Guardar el número de nómina en la sesión
         $_SESSION['nomina'] = $nomina;
 
@@ -43,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Función para validar las credenciales
-function validarCredenciales($nomina, $correo, $password) {
-    // Conectar a la base de datos (ajusta esto según tu implementación)
+function validarCredenciales($nomina, $nombre, $correo, $password) {
+    // Conectar a la base de datos
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Aquí deberías realizar una consulta a la base de datos para verificar si el usuario existe.
+    // Consulta a la base de datos para verificar si el usuario existe
     $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ? AND correo = ?");
     $stmt->bind_param("ss", $nomina, $correo);
     $stmt->execute();
@@ -58,8 +59,8 @@ function validarCredenciales($nomina, $correo, $password) {
     if ($resultado->num_rows > 0) {
         $usuario = $resultado->fetch_assoc();
 
-        // Comparar el password (ajusta según tu método de almacenamiento de contraseñas, aquí se usa `password_verify`)
-        if (password_verify($password, $usuario['password'])) {
+        // Comparar el nombre y el password
+        if ($usuario['nombre'] === $nombre && password_verify($password, $usuario['password'])) {
             return true; // Credenciales correctas
         }
     }
@@ -70,3 +71,4 @@ function validarCredenciales($nomina, $correo, $password) {
     return false; // Usuario no encontrado o credenciales incorrectas
 }
 ?>
+
