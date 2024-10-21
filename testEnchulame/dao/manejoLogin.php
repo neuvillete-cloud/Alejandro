@@ -4,12 +4,11 @@ session_start(); // Iniciar sesión
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtener los datos del formulario
     $nomina = $_POST['nomina'];
-    $nombre = $_POST['nombre'];
     $correo = $_POST['correo'];
-    $password = $_POST['password']; // Cambiado de "contrasena" a "password"
+    $password = $_POST['password']; // Suponiendo que el formulario incluye este campo
 
     // Validar que los campos no estén vacíos
-    if (empty($nomina) || empty($nombre) || empty($correo) || empty($password)) {
+    if (empty($nomina) || empty($correo) || empty($password)) {
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
@@ -29,58 +28,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    // Validar la contraseña
-    if (!validarContrasena($password)) {
-        echo json_encode(array('status' => 'error', 'message' => 'La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.'));
-        exit();
-    }
+    // Lógica para verificar las credenciales del usuario
+    if (validarCredenciales($nomina, $correo, $password)) {
+        // Guardar el número de nómina en la sesión
+        $_SESSION['nomina'] = $nomina;
 
-    // Lógica para registrar al usuario en la base de datos
-    if (registrarUsuario($nomina, $nombre, $correo, $password)) {
-        // Redirigir al formulario de inicio de sesión
-        header("Location: login.php");
+        // Redirigir al index
+        header("Location: index.php");
         exit();
     } else {
-        echo json_encode(array('status' => 'error', 'message' => 'Error al registrar al usuario. Puede que el número de nómina ya esté en uso.'));
+        echo json_encode(array('status' => 'error', 'message' => 'Credenciales incorrectas.'));
         exit();
     }
 }
 
-// Función para validar la contraseña
-function validarContrasena($password) {
-    // Requiere al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
-    return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password);
-}
-
-// Función para registrar al usuario
-function registrarUsuario($nomina, $nombre, $correo, $password) {
+// Función para validar las credenciales
+function validarCredenciales($nomina, $correo, $password) {
     // Conectar a la base de datos (ajusta esto según tu implementación)
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Comprobar si el usuario ya existe
-    $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ?");
-    $stmt->bind_param("s", $nomina);
+    // Aquí deberías realizar una consulta a la base de datos para verificar si el usuario existe.
+    $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ? AND correo = ?");
+    $stmt->bind_param("ss", $nomina, $correo);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
+    // Verificar si se encontró al usuario
     if ($resultado->num_rows > 0) {
-        return false; // Usuario ya existe
+        $usuario = $resultado->fetch_assoc();
+
+        // Comparar el password (ajusta según tu método de almacenamiento de contraseñas, aquí se usa `password_verify`)
+        if (password_verify($password, $usuario['password'])) {
+            return true; // Credenciales correctas
+        }
     }
 
-    // Encriptar la contraseña
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    // Insertar nuevo usuario
-    $stmt = $conex->prepare("INSERT INTO usuario (nomina, nombre, correo, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $nomina, $nombre, $correo, $hashedPassword);
-    $stmt->execute();
-
     // Cerrar conexión
-    $stmt->close();
     $conex->close();
 
-    return true; // Registro exitoso
+    return false; // Usuario no encontrado o credenciales incorrectas
 }
 ?>
-
