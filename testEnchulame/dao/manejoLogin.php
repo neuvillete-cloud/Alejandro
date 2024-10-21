@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['nomina'] = $nomina;
 
         // Redirecciona a la página principal después del login
-        header("Location: reportes.php");
+        header("Location: index.php");
         exit();
     } else {
         $error = "Datos inválidos. Asegúrate de que todos los campos sean correctos.";
