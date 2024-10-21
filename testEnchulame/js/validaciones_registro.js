@@ -1,3 +1,4 @@
+// Escuchar el evento de envío del formulario
 document.getElementById('registerForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Evitar el envío del formulario por defecto
 
@@ -25,7 +26,7 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
         return;
     }
 
-    // Enviar los datos al PHP
+    // Enviar los datos al PHP usando FormData
     const formData = new FormData();
     formData.append('nomina', nomina);
     formData.append('nombre', nombre);
@@ -54,4 +55,5 @@ function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
 }
+
 
