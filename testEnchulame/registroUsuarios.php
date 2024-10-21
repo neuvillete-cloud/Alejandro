@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistema de Reportes</title>
+    <title>Registro - Sistema de Reportes</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             background-color: #f8f9fa;
         }
-        .login-container {
+        .register-container {
             max-width: 400px;
             margin: 100px auto;
             padding: 20px;
@@ -17,7 +17,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .login-title {
+        .register-title {
             text-align: center;
             margin-bottom: 20px;
             color: #6A1B9A; /* Color personalizado */
@@ -29,17 +29,13 @@
         .btn-custom:hover {
             background-color: #5c0e87; /* Color más oscuro para el hover */
         }
-        .btn-register {
-            margin-top: 10px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2 class="login-title">Iniciar Sesión</h2>
-    <form action="login.php" method="POST" id="loginForm">
+<div class="register-container">
+    <h2 class="register-title">Registrarse</h2>
+    <form action="register.php" method="POST" id="registerForm">
         <div class="form-group">
             <label for="nomina">Número de Nómina</label>
             <input type="text" class="form-control" id="nomina" name="nomina" required>
@@ -53,19 +49,16 @@
             <input type="email" class="form-control" id="correo" name="correo" required>
         </div>
         <div class="form-group">
-            <label for="password">Password</label> <!-- Cambiado de "Contraseña" a "Password" -->
+            <label for="password">Contraseña</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-custom btn-block">Iniciar Sesión</button>
+        <button type="submit" class="btn btn-custom btn-block">Registrar</button>
     </form>
-
-    <div class="btn-register">
-        <a href="registroUsuarios.php" class="btn btn-secondary btn-block">Registrarse</a>
-    </div>
+    <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="login.html">Iniciar Sesión</a></p>
 </div>
-
-<!-- Llamar al archivo JavaScript externo -->
-<script src="js/validaciones_login.js"></script>
 
 </body>
 </html>
+
+
+

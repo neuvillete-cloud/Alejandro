@@ -6,9 +6,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nomina = $_POST['nomina'];
     $nombre = $_POST['nombre'];
     $correo = $_POST['correo'];
+    $password = $_POST['password']; // Cambiado de "contrasena" a "password"
 
     // Validar que los campos no estén vacíos
-    if (empty($nomina) || empty($nombre) || empty($correo)) {
+    if (empty($nomina) || empty($nombre) || empty($correo) || empty($password)) {
         echo json_encode(array('status' => 'error', 'message' => 'Por favor, complete todos los campos.'));
         exit();
     }
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Aquí deberías agregar la lógica de autenticación para validar el usuario.
     // Por ejemplo, puedes verificar en la base de datos si el número de nómina y el correo son válidos.
-    if (validarUsuario($nomina, $nombre, $correo)) {
+    if (validarUsuario($nomina, $nombre, $correo, $password)) {
         // Guardar el número de nómina en la sesión
         $_SESSION['nomina'] = $nomina;
 
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Función de validación
-function validarUsuario($nomina, $nombre, $correo) {
+function validarUsuario($nomina, $nombre, $correo, $password) {
     // Conectar a la base de datos (ajusta esto según tu implementación)
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -56,11 +57,20 @@ function validarUsuario($nomina, $nombre, $correo) {
     $stmt->execute();
     $resultado = $stmt->get_result();
 
+    // Verificar si se encontró al usuario
+    if ($resultado->num_rows > 0) {
+        $usuario = $resultado->fetch_assoc();
+
+        // Comparar el password (ajusta según tu método de almacenamiento de contraseñas, aquí se usa `password_verify`)
+        if (password_verify($password, $usuario['password'])) { // Cambiado de "contrasena" a "password"
+            return true; // Password correcto
+        }
+    }
+
     // Cerrar conexión
     $conex->close();
 
-    // Retornar verdadero si se encontró un usuario, falso de lo contrario
-    return $resultado->num_rows > 0;
+    return false; // Usuario no encontrado o password incorrecto
 }
 
 // Si no se está accediendo al script mediante POST, no se hace nada (será manejado por el front-end)

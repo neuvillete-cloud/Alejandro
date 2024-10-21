@@ -3,15 +3,16 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const nomina = document.getElementById('nomina').value;
     const nombre = document.getElementById('nombre').value;
     const correo = document.getElementById('correo').value;
+    const password = document.getElementById('password').value; // Cambiado de "contrasena" a "password"
 
-    if (validarCampos(nomina, nombre, correo)) {
-        enviarFormulario(nomina, nombre, correo);
+    if (validarCampos(nomina, nombre, correo, password)) {
+        enviarFormulario(nomina, nombre, correo, password); // Pasar el password al enviar el formulario
     }
 });
 
 // Función para validar los campos
-function validarCampos(nomina, nombre, correo) {
-    if (!nomina || !nombre || !correo) {
+function validarCampos(nomina, nombre, correo, password) {
+    if (!nomina || !nombre || !correo || !password) {
         alert('Por favor, complete todos los campos.');
         return false;
     }
@@ -29,6 +30,12 @@ function validarCampos(nomina, nombre, correo) {
         return false;
     }
 
+    // Validar el password (ejemplo simple: longitud mínima)
+    if (password.length < 6) {
+        alert('El password debe tener al menos 6 caracteres.'); // Cambiado de "contraseña" a "password"
+        return false;
+    }
+
     return true; // Todos los campos son válidos
 }
 
@@ -38,12 +45,16 @@ function validarCorreo(correo) {
 }
 
 // Función para enviar el formulario
-function enviarFormulario(nomina, nombre, correo) {
+function enviarFormulario(nomina, nombre, correo, password) {
     const form = document.getElementById('loginForm');
+
+    // Agregar el password al FormData
+    const formData = new FormData(form);
+    formData.append('password', password); // Cambiado de "contrasena" a "password"
 
     fetch(form.action, {
         method: 'POST',
-        body: new FormData(form)
+        body: formData
     })
         .then(response => response.json())
         .then(data => {
