@@ -54,11 +54,36 @@
         </div>
         <button type="submit" class="btn btn-custom btn-block">Registrar</button>
     </form>
-    <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="login.html">Iniciar Sesión</a></p>
+    <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="login.php">Iniciar Sesión</a></p>
 </div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar el envío del formulario tradicional
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text()) // Cambia a text() para manejar redirección
+            .then(data => {
+                // Comprobar si el registro fue exitoso
+                if (data.includes("Error")) {
+                    alert(data); // Mostrar mensaje de error
+                } else {
+                    alert("Registro exitoso. Redirigiendo a inicio de sesión...");
+                    setTimeout(() => {
+                        window.location.href = 'login.php'; // Redirigir a inicio de sesión
+                    }, 2000); // Redirigir después de 2 segundos
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar el formulario:', error);
+                alert('Hubo un error en el proceso de registro.');
+            });
+    });
+</script>
 
 </body>
 </html>
-
-
-

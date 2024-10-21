@@ -20,10 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 
-    // Aquí deberías agregar la lógica para registrar al usuario en la base de datos.
+    // Validar que la nómina tenga exactamente 8 caracteres
+    if (strlen($nomina) < 8) {
+        // Completar con ceros a la izquierda
+        $nomina = str_pad($nomina, 8, '0', STR_PAD_LEFT);
+    } elseif (strlen($nomina) > 8) {
+        echo "La nómina debe tener exactamente 8 caracteres.";
+        exit();
+    }
+
+    // Lógica para registrar al usuario en la base de datos
     if (registrarUsuario($nomina, $nombre, $correo, $password)) {
         // Redirigir al formulario de inicio de sesión
-        header("Location: login.html");
+        header("Location: login.php");
         exit();
     } else {
         echo "Error al registrar al usuario. Puede que el número de nómina ya esté en uso.";
@@ -42,18 +51,23 @@ function registrarUsuario($nomina, $nombre, $correo, $password) {
     $stmt->bind_param("s", $nomina);
     $stmt->execute();
     $resultado = $stmt->get_result();
+
     if ($resultado->num_rows > 0) {
         return false; // Usuario ya existe
     }
 
+    // Encriptar la contraseña
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
     // Insertar nuevo usuario
     $stmt = $conex->prepare("INSERT INTO usuario (nomina, nombre, correo, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $nomina, $nombre, $correo, $password);
+    $stmt->bind_param("ssss", $nomina, $nombre, $correo, $hashedPassword);
     $stmt->execute();
 
     // Cerrar conexión
+    $stmt->close();
     $conex->close();
 
     return true; // Registro exitoso
 }
-
+?>
