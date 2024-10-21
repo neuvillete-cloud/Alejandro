@@ -24,7 +24,7 @@ document.getElementById('registerBtn').addEventListener('click', function () {
     }
 
     // Enviar los datos al PHP
-    fetch('dao/registroUsuarios.php', {
+    fetch('dao/registroUsuario.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
