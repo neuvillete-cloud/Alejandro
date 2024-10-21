@@ -45,7 +45,7 @@ function cargarDatosReporte(){
 // Obtener el valor del parámetro "id"
     const idReporte = params.get('id');
 
-    console.log(id); // Imprime: 123
+    console.log(idReporte); // Imprime: 123
     $.getJSON('https://grammermx.com/AleTest/testEnchulame/dao/consultar_reporte_por_id.php?id='+idReporte, function (response) {
         $('#id').val(response.data[0].id);
     });
