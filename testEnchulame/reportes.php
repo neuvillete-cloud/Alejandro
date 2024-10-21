@@ -14,7 +14,8 @@
     </fieldset>
 
     <form method="post" action="guardar_actualizacion.php">
-        <input type="hidden" name="id" id="id">
+        <label for="id">Id:</label>
+        <input type="text" name="id" id="id">
 
         <label for="objeto">Objeto:</label>
         <input name="objeto" id="objeto" type="text"  required>
