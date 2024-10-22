@@ -33,13 +33,18 @@
             margin-top: 10px;
             text-align: center;
         }
+        #statusMessage {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
 <div class="login-container">
     <h2 class="login-title">Iniciar Sesión</h2>
-    <form action="login.php" method="POST" id="loginForm">
+    <form id="loginForm">
         <div class="form-group">
             <label for="nomina">Número de Nómina</label>
             <input type="text" class="form-control" id="nomina" name="nomina" required>
@@ -57,6 +62,7 @@
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
         <button type="submit" class="btn btn-custom btn-block">Iniciar Sesión</button>
+        <div id="statusMessage"></div> <!-- Para mostrar mensajes de error -->
     </form>
 
     <div class="btn-register">
@@ -64,7 +70,7 @@
     </div>
 </div>
 
-<script src="js/validaciones_registro.js"></script>
+<script src="js/validacionLogin.js"></script>
 
 </body>
 </html>

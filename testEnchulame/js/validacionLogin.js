@@ -1,6 +1,7 @@
-document.getElementById('loginForm').addEventListener('submit', function (event) {
-    event.preventDefault(); // Evitar el envío del formulario por defecto
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evitar que el formulario se envíe de manera tradicional
 
+    // Obtener los valores de los campos
     const nomina = document.getElementById('nomina').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
     const correo = document.getElementById('correo').value.trim();
@@ -19,12 +20,6 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
         return;
     }
 
-    // Validar que la nómina tenga exactamente 8 caracteres
-    if (nomina.length !== 8) {
-        statusMessage.textContent = 'La nómina debe tener exactamente 8 caracteres.';
-        return;
-    }
-
     // Enviar los datos al PHP usando FormData
     const formData = new FormData();
     formData.append('nomina', nomina);
@@ -39,9 +34,11 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                window.location.href = 'index.php'; // Redirigir a la página principal
+                // Redirigir al index si el inicio de sesión es exitoso
+                window.location.href = 'index.php';
             } else {
-                statusMessage.textContent = data.message; // Mostrar el mensaje de error
+                // Mostrar mensaje de error
+                statusMessage.textContent = data.message;
             }
         })
         .catch(error => {

@@ -1,7 +1,8 @@
 <?php
 session_start(); // Iniciar sesión
-include_once("conexion.php");
+include_once("conexion.php"); // Asegúrate de tener tu conexión a la base de datos
 
+// Verificar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar que los datos requeridos están presentes
     if (isset($_POST['nomina'], $_POST['nombre'], $_POST['correo'], $_POST['password'])) {
@@ -13,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Lógica para validar las credenciales del usuario
         $response = validarCredenciales($nomina, $nombre, $correo, $password);
-
     } else {
         // Si faltan datos
         $response = array('status' => 'error', 'message' => 'Datos incompletos.');
@@ -62,4 +62,3 @@ function validarCredenciales($nomina, $nombre, $correo, $password) {
     return $response;
 }
 ?>
-
