@@ -32,7 +32,7 @@ function validarCredenciales($nomina, $nombre, $correo, $password) {
     $conex = $con->conectar();
 
     // Consulta para verificar si el usuario existe
-    $stmt = $conex->prepare("SELECT * FROM usuario WHERE nomina = ? AND correo = ?");
+    $stmt = $conex->prepare("SELECT * FROM Usuario WHERE nomina = ? AND correo = ?");
     $stmt->bind_param("ss", $nomina, $correo);
     $stmt->execute();
     $resultado = $stmt->get_result();
