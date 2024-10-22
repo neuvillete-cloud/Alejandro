@@ -2,13 +2,12 @@
 session_start(); // Iniciar sesión
 include_once("conexion.php");
 
-// Verificar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar que los datos requeridos están presentes
     if (isset($_POST['nomina'], $_POST['nombre'], $_POST['correo'], $_POST['password'])) {
         // Obtener los datos del formulario
         $nomina = $_POST['nomina'];
-        $nombre = $_POST['nombre']; // Mantener el campo nombre
+        $nombre = $_POST['nombre'];
         $correo = $_POST['correo'];
         $password = $_POST['password'];
 
@@ -63,3 +62,4 @@ function validarCredenciales($nomina, $nombre, $correo, $password) {
     return $response;
 }
 ?>
+
