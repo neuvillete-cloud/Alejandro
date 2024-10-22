@@ -1,31 +1,32 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Evitar que el formulario se envíe de manera tradicional
+document.getElementById('loginForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Evita el envío del formulario por defecto
 
-    // Obtener los valores de los campos
     const nomina = document.getElementById('nomina').value.trim();
-    const nombre = document.getElementById('nombre').value.trim();
     const correo = document.getElementById('correo').value.trim();
-    const password = document.getElementById('password').value.trim();
     const statusMessage = document.getElementById('statusMessage');
 
     // Validar que los campos no estén vacíos
-    if (!nomina || !nombre || !correo || !password) {
-        statusMessage.textContent = 'Por favor, complete todos los campos.';
+    if (!nomina || !correo) {
+        alert('Por favor, complete todos los campos.');
+        return;
+    }
+
+    // Validar que la nómina tenga exactamente 8 caracteres
+    if (nomina.length !== 8) {
+        alert('La nómina debe tener exactamente 8 caracteres.');
         return;
     }
 
     // Validar formato del correo
     if (!validateEmail(correo)) {
-        statusMessage.textContent = 'Por favor, ingrese un correo electrónico válido.';
+        alert('Por favor, ingrese un correo electrónico válido.');
         return;
     }
 
-    // Enviar los datos al PHP usando FormData
+    // Enviar los datos al PHP usando Fetch API
     const formData = new FormData();
     formData.append('nomina', nomina);
-    formData.append('nombre', nombre);
     formData.append('correo', correo);
-    formData.append('password', password);
 
     fetch('dao/manejoLogin.php', {
         method: 'POST',
@@ -34,15 +35,14 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Redirigir al index si el inicio de sesión es exitoso
-                window.location.href = 'index.php';
+                window.location.href = 'index.php'; // Redirigir al index si el login es exitoso
             } else {
-                // Mostrar mensaje de error
-                statusMessage.textContent = data.message;
+                alert(data.message); // Mostrar mensaje de error
             }
         })
         .catch(error => {
-            statusMessage.textContent = 'Error en la comunicación con el servidor.';
+            console.error('Error:', error);
+            alert('Error en la comunicación con el servidor.');
         });
 });
 

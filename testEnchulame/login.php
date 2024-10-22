@@ -20,21 +20,16 @@
         .login-title {
             text-align: center;
             margin-bottom: 20px;
-            color: #6A1B9A; /* Color personalizado */
+            color: #6A1B9A;
         }
         .btn-custom {
-            background-color: #6A1B9A; /* Color personalizado */
+            background-color: #6A1B9A;
             color: white;
         }
         .btn-custom:hover {
-            background-color: #5c0e87; /* Color más oscuro para el hover */
+            background-color: #5c0e87;
         }
         .btn-register {
-            margin-top: 10px;
-            text-align: center;
-        }
-        #statusMessage {
-            color: red;
             margin-top: 10px;
             text-align: center;
         }
@@ -44,25 +39,16 @@
 
 <div class="login-container">
     <h2 class="login-title">Iniciar Sesión</h2>
-    <form id="loginForm">
+    <form action="login.php" method="POST" id="loginForm">
         <div class="form-group">
             <label for="nomina">Número de Nómina</label>
             <input type="text" class="form-control" id="nomina" name="nomina" required>
         </div>
         <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
-        </div>
-        <div class="form-group">
             <label for="correo">Correo Electrónico</label>
             <input type="email" class="form-control" id="correo" name="correo" required>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
         <button type="submit" class="btn btn-custom btn-block">Iniciar Sesión</button>
-        <div id="statusMessage"></div> <!-- Para mostrar mensajes de error -->
     </form>
 
     <div class="btn-register">
