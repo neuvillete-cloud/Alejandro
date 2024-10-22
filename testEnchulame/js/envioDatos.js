@@ -1,13 +1,13 @@
 function enviarDatos() {
-    if (validarinput("objeto") && validarinput("Fecha") && validarinput("Descripcion") && validarinput("Area")) {
+    if (validarinput("objeto") && validarinput("Descripcion") && validarinput("Area")) {
         let objeto = document.getElementById("objeto").value.trim();
-        let fecha = document.getElementById("Fecha").value.trim();
+
         let descripcion = document.getElementById("Descripcion").value.trim();
         let area = document.getElementById("Area").value.trim();
 
         const data = new FormData();
         data.append('objeto', objeto);
-        data.append('Fecha', fecha);
+
         data.append('Descripcion', descripcion);
         data.append('Area', area);
 
