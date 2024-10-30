@@ -36,5 +36,6 @@
         <p class="login-prompt">¿Ya tienes una cuenta? <a href="login.php">Iniciar Sesión</a></p>
     </div>
 </div>
+<script SRC="js/validacionesRegistrate.js"></script>
 </body>
 </html>
