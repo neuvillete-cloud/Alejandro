@@ -45,7 +45,15 @@ document.getElementById('registrationForm').addEventListener('submit', function 
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                window.location.href = 'login.php'; // Redirigir a la página de inicio de sesión
+                // Mostrar mensaje de registro exitoso
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Registro exitoso!',
+                    text: 'Tu cuenta ha sido creada correctamente.',
+                    confirmButtonText: 'Iniciar sesión'
+                }).then(() => {
+                    window.location.href = 'login.php'; // Redirigir a la página de inicio de sesión
+                });
             } else {
                 statusMessage.textContent = data.message; // Mostrar el mensaje de error
             }
@@ -53,6 +61,7 @@ document.getElementById('registrationForm').addEventListener('submit', function 
         .catch(error => {
             statusMessage.textContent = 'Error en la comunicación con el servidor.';
         });
+
 });
 
 // Función para validar el formato del correo
