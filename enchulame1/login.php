@@ -30,5 +30,6 @@
         <p class="forgot-password">¿Olvidaste tu contraseña? <a href="recuperaContraseña.php">Recupérala aquí</a></p>
     </div>
 </div>
+<script src="js/validacionesLogin.js"></script>
 </body>
 </html>
