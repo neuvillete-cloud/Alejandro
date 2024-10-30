@@ -1,0 +1,122 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* Mismo color de fondo */
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    top: -2rem;
+    left: -2rem;
+}
+
+.circle {
+    width: 120px; /* Tamaño del círculo */
+    height: 120px; /* Tamaño del círculo */
+    background-color: #005195; /* Color del círculo */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    padding: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+.circle span {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.form-container {
+    background-color: #005195; /* Color de fondo del cuadro */
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-top: 10rem; /* Ajuste para separar del círculo */
+    width: 100%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh; /* Abarcar la mayor parte de la altura */
+    padding-bottom: 3rem; /* Agregar espacio al final */
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+label {
+    align-self: flex-start;
+    margin-left: 10%;
+    font-size: 0.9rem;
+    color: #b0c4de;
+    margin-bottom: 0.3rem;
+}
+
+input {
+    width: 80%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #4d4d4d; /* Color de fondo del input */
+    color: white;
+}
+
+button {
+    width: 80%;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #0096FF; /* Color del botón */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #007acc; /* Color del botón al pasar el ratón */
+}
+
+.forgot-password {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #b0c4de;
+}
+
+.forgot-password a {
+    color: #0096FF; /* Color del enlace */
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}

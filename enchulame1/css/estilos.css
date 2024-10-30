@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Mantiene el contenido en la parte superior */
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    height: 100vh; /* Altura total de la ventana */
+}
+
+.logo {
+    margin-top: 9rem; /* Aumenta el margen para bajar más el contenido */
+}
+
+.logo img {
+    width: 150px;
+    margin-bottom: 1.5rem;
+}
+
+.logo h1 {
+    font-size: 2rem;
+    color: #0096FF;
+    margin-bottom: 0.5rem;
+}
+
+.logo p {
+    font-size: 1rem;
+    color: #4d4d4d;
+    margin-bottom: 2rem; /* Espacio adicional para separar el texto del cuadro */
+}
+
+/* Cuadro de botones */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #005195; /* Cambia al color HEX proporcionado */
+    padding: 2rem 0;
+    width: 100%;
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    position: absolute; /* Permite que el cuadro se posicione en la página */
+    bottom: 0; /* Lo fija en la parte inferior */
+    height: 50%; /* Altura del cuadro de botones para ocupar la mitad de la pantalla */
+}
+
+.buttons button {
+    width: 80%;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: white;
+    background-color: #007bff; /* Color de los botones */
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buttons button:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el mouse */
+}
+
+.buttons button:nth-child(2) {
+    background-color: transparent;
+    color: #007bff; /* Color del texto del segundo botón */
+    border: 2px solid #007bff; /* Borde del segundo botón */
+}
+
+.buttons button:nth-child(2):hover {
+    background-color: #007bff; /* Color de fondo al pasar el mouse */
+    color: white; /* Cambia el color del texto al blanco */
+}
