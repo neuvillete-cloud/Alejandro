@@ -1,4 +1,4 @@
-document.getElementById('registerForm').addEventListener('submit', function (event) {
+document.getElementById('registrationForm').addEventListener('submit', function (event) {
     event.preventDefault(); // Evitar el envío del formulario por defecto
 
     let NumNomina = document.getElementById('NumNomina').value.trim();
