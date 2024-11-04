@@ -13,7 +13,7 @@ function recuperarPassword() {
     const data = new FormData();
     data.append('correoRecuperacion', correoRecuperacion.value.trim());
 
-    fetch('dao/daoRecuperarContrasena.php', {
+    fetch('https://grammermx.com/Mailer/mailerRecuperarContrasena.php', {
         method: 'POST',
         body: data
     })
