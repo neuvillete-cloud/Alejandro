@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include_once('conexion.php');
-require_once __DIR__ . '/../Mailer/mailerRecuperarContrasena.php';
+require_once __DIR__ . '/Mailer/mailerRecuperarContrasena.php';
 
 if (isset($_POST['correoRecuperacion'])) {
     $correo = $_POST['correoRecuperacion'];
