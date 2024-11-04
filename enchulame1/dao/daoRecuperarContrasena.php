@@ -4,7 +4,6 @@
 include_once('conexion.php');
 require_once  'https://grammermx.com/Mailer/mailerRecuperarContrasena.php';
 
-echo(__DIR__ . 'https://grammermx.com//Mailer/mailerRecuperarContrasena.php');
 if (isset($_POST['correoRecuperacion'])) {
     $correo = $_POST['correoRecuperacion'];
 
@@ -23,7 +22,6 @@ if (isset($_POST['correoRecuperacion'])) {
             $asunto = "Recuperar contraseña";
 
             $correoResponse = emailRecuperarPassword($correo, $asunto, $mensaje);
-            $correoResponse= array('status' => 'success', 'message' => 'Correo enviado exitosamente.');
 
             if ($correoResponse['status'] === 'success') {
                 $response = array('status' => 'success', 'message' => 'Se ha enviado un correo para recuperar tu contraseña.');
