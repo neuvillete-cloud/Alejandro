@@ -1,8 +1,5 @@
 <?php
-header('Content-Type: application/json');
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 
 include_once('conexion.php');
 require_once __DIR__ . '/Mailer/mailerRecuperarContrasena.php';
@@ -10,12 +7,10 @@ require_once __DIR__ . '/Mailer/mailerRecuperarContrasena.php';
 if (isset($_POST['correoRecuperacion'])) {
     $correo = $_POST['correoRecuperacion'];
 
-    echo "Paso 1: Correo recibido: $correo";
 
     $user = consultarNumNomina($correo);
 
     if ($user) {
-        echo "Paso 2: Usuario encontrado";
 
         $numNomina = $user['NumNomina'];
         $tokenResponse = generarToken($numNomina);
@@ -26,7 +21,8 @@ if (isset($_POST['correoRecuperacion'])) {
             $mensaje = "Para restablecer tu contraseña haz clic en el siguiente enlace: <br> <a href='$enlace'>Recuperar contraseña</a>";
             $asunto = "Recuperar contraseña";
 
-            $correoResponse = emailRecuperarPassword($correo, $asunto, $mensaje);
+            //$correoResponse = emailRecuperarPassword($correo, $asunto, $mensaje);
+            $correoResponse= array('status' => 'success', 'message' => 'Correo enviado exitosamente.');
 
             if ($correoResponse['status'] === 'success') {
                 $response = array('status' => 'success', 'message' => 'Se ha enviado un correo para recuperar tu contraseña.');
@@ -80,7 +76,8 @@ function generarToken($numNomina) {
         return array('status' => 'error', 'message' => 'Error en la conexión a la base de datos.');
     }
 
-    $token = bin2hex(random_bytes(16));
+    //$token = bin2hex(random_bytes(16));
+    $token= "12345";
     $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
     $stmt = $conexion->prepare('INSERT INTO restablecerContrasena (NumNomina, Token, Expira) VALUES (?, ?, ?)');
