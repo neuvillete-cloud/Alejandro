@@ -1,3 +1,4 @@
+// Función para validar si las contraseñas coinciden
 function validarPasswords(passwordId, confirmPasswordId, errorId) {
     var password = document.getElementById(passwordId).value.trim();
     var confirmPassword = document.getElementById(confirmPasswordId).value.trim();
@@ -9,8 +10,9 @@ function validarPasswords(passwordId, confirmPasswordId, errorId) {
         document.getElementById(errorId).style.display = 'block'; // Mostrar mensaje de error
         return false; // Las contraseñas no coinciden
     }
+}
 
-
+// Función para actualizar la contraseña
 function actualizarPassword() {
     // Validar que las contraseñas sean iguales
     var ContrasenaValida = validarPasswords('nuevaContrasena', 'confirmaContrasena', 'errorMessage');
@@ -21,7 +23,7 @@ function actualizarPassword() {
         var NumNomina = searchParams.get('NumNomina');
         var Token = searchParams.get('Token');
 
-        // Verificar que se hayan obtenido el token y el id_usuario
+        // Verificar que se hayan obtenido el token y el NumNomina
         if (Token && NumNomina) {
             var nuevaContrasena = document.getElementById("nuevaContrasena");
             const data = new FormData();
@@ -89,6 +91,3 @@ document.getElementById('resetPasswordForm').addEventListener('submit', function
     event.preventDefault(); // Prevenir el envío del formulario
     actualizarPassword(); // Llamar a la función para actualizar la contraseña
 });
-
-
-}
