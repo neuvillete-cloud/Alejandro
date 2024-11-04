@@ -24,11 +24,11 @@ if (isset($_POST['correoRecuperacion'])) {
             //$correoResponse = emailRecuperarPassword($correo, $asunto, $mensaje);
             $correoResponse= array('status' => 'success', 'message' => 'Correo enviado exitosamente.');
 
-            if ($correoResponse['status'] === 'success') {
+            /*if ($correoResponse['status'] === 'success') {
                 $response = array('status' => 'success', 'message' => 'Se ha enviado un correo para recuperar tu contraseña.');
             } else {
                 $response = $correoResponse; // Error en envío de correo
-            }
+            }*/
         } else {
             $response = $tokenResponse; // Error en generación de token
         }
