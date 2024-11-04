@@ -6,7 +6,7 @@
     <title>Recuperar Contraseña</title>
     <link rel="stylesheet" href="css/estilosrecuperarContraseña.css"> <!-- Asegúrate de que el CSS esté vinculado correctamente -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 para mensajes -->
-    <script src="js/recuperarPassword.js" defer></script> <!-- JavaScript para manejar el formulario -->
+    <script src="js/RecuperaContraseña.js" defer></script> <!-- JavaScript para manejar el formulario -->
 </head>
 <body>
 <div class="container">
