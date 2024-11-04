@@ -2,9 +2,9 @@
 
 
 include_once('conexion.php');
-require_once __DIR__ . '/Mailer/mailerRecuperarContrasena.php';
+require_once  'https://grammermx.com/Mailer/mailerRecuperarContrasena.php';
 
-echo(__DIR__ . '/Mailer/mailerRecuperarContrasena.php');
+echo(__DIR__ . 'https://grammermx.com//Mailer/mailerRecuperarContrasena.php');
 if (isset($_POST['correoRecuperacion'])) {
     $correo = $_POST['correoRecuperacion'];
 
