@@ -66,10 +66,9 @@ function generarToken($numNomina) {
 
     $token = bin2hex(random_bytes(16));
     $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
-    $tokenValido = 1; // Indicador de que el token es válido
 
-    $stmt = $conexion->prepare('INSERT INTO restablecerContrasena (NumNomina, Token, Expira, TokenValido) VALUES (?, ?, ?, ?)');
-    $stmt->bind_param('sssi', $numNomina, $token, $expira, $tokenValido);
+    $stmt = $conexion->prepare('INSERT INTO restablecerContrasena (NumNomina, Token, Expira) VALUES (?, ?, ?)');
+    $stmt->bind_param('sssi', $numNomina, $token, $expira);
 
     if ($stmt->execute()) {
         $stmt->close();
