@@ -1,6 +1,6 @@
 <?php
 // Incluimos los archivos necesarios
-include_once('enchulame1/dao/conexion.php');
+include_once('conexion.php');
 require 'Phpmailer/Exception.php';
 require 'Phpmailer/PHPMailer.php';
 require 'Phpmailer/SMTP.php';
