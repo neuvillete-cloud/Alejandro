@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 include_once('conexion.php'); // Asegúrate de que este archivo configure la conexión a tu base de datos
-require_once __DIR__ . '/../Mailer/MailerRecuperarPassword.php'; // Ajusta la ruta si es necesario
+require_once __DIR__ . '/../Mailer/mailerRecuperarContrasena.php'; // Ajusta la ruta si es necesario
 
 if (isset($_POST['correoRecuperacion'])) {
     $correo = $_POST['correoRecuperacion'];
