@@ -19,7 +19,7 @@ if (isset($_POST['correoRecuperacion'])) {
 
         if ($tokenResponse['status'] === 'success') {
             $token = $tokenResponse['token'];
-            $enlace = "https://grammermx.com/AleTest/enchulame1/recuperaContrasena.php?numNomina=$numNomina&token=$token";
+            $enlace = "https://grammermx.com/AleTest/enchulame1/restablecerContrasena.php?numNomina=$numNomina&token=$token";
             $mensaje = "Para restablecer tu contraseña, haz clic en el siguiente enlace: <a href='$enlace'>Recuperar contraseña</a>";
             $asunto = "Recuperar contrasena";
 

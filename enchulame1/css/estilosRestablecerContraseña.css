@@ -1,0 +1,66 @@
+/* Estilos generales del contenedor de recuperación */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f8ff; /* Fondo azul claro */
+}
+
+.container-reset-password {
+    background-color: #ffffff;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.header-reset h2 {
+    color: #005195; /* Azul oscuro */
+    margin-bottom: 1rem;
+}
+
+/* Estilos de campos y botón */
+form label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+    margin-top: 1rem;
+}
+
+form input[type="password"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+form button {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #005195; /* Azul oscuro */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #004080; /* Azul más oscuro */
+}
+
+#errorMessage {
+    margin-top: 1rem;
+    color: red;
+    display: none;
+}
