@@ -21,7 +21,7 @@ if (isset($_POST['correoRecuperacion'])) {
             $token = $tokenResponse['token'];
             $enlace = "https://grammermx.com/AleTest/enchulame1/recuperaContrasena.php?numNomina=$numNomina&token=$token";
             $mensaje = "Para restablecer tu contraseña, haz clic en el siguiente enlace: <a href='$enlace'>Recuperar contraseña</a>";
-            $asunto = "Recuperar contraseña";
+            $asunto = "Recuperar contrasena";
 
             $correoResponse = emailRecuperarPassword($correo, $asunto, $mensaje);
 
@@ -127,7 +127,7 @@ function emailRecuperarPassword($destinatario, $asunto, $mensaje) {
         $mail->Password = 'ECHGrammer2024.';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
-        $mail->setFrom('tickets_enchulamelanave@grammermx.com', 'Administración Enchulame la nave');
+        $mail->setFrom('tickets_enchulamelanave@grammermx.com', 'Administracion Enchulame la nave');
         $mail->addAddress($destinatario);
         $mail->addBCC('tickets_enchulamelanave@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
