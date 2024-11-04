@@ -27,7 +27,7 @@
 
             <button type="submit">Iniciar Sesión</button>
         </form>
-        <p class="forgot-password">¿Olvidaste tu contraseña? <a href="recuperaContraseña.php">Recupérala aquí</a></p>
+        <p class="forgot-password">¿Olvidaste tu contraseña? <a href="recuperaContrasena.php">Recupérala aquí</a></p>
     </div>
 </div>
 <script src="js/validacionesLogin.js"></script>
