@@ -1,13 +1,22 @@
 <?php
 header('Content-Type: application/json');
-include_once('conexion.php'); // Asegúrate de que este archivo configure la conexión a tu base de datos
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include_once('conexion.php');
 require_once __DIR__ . '/../Mailer/mailerRecuperarContrasena.php';
 
 if (isset($_POST['correoRecuperacion'])) {
     $correo = $_POST['correoRecuperacion'];
+
+    echo "Paso 1: Correo recibido: $correo";
+
     $user = consultarNumNomina($correo);
 
     if ($user) {
+        echo "Paso 2: Usuario encontrado";
+
         $numNomina = $user['NumNomina'];
         $tokenResponse = generarToken($numNomina);
 
@@ -22,10 +31,10 @@ if (isset($_POST['correoRecuperacion'])) {
             if ($correoResponse['status'] === 'success') {
                 $response = array('status' => 'success', 'message' => 'Se ha enviado un correo para recuperar tu contraseña.');
             } else {
-                $response = $correoResponse;
+                $response = $correoResponse; // Error en envío de correo
             }
         } else {
-            $response = $tokenResponse;
+            $response = $tokenResponse; // Error en generación de token
         }
     } else {
         $response = array('status' => 'error', 'message' => 'Correo electrónico no registrado');
@@ -36,9 +45,14 @@ if (isset($_POST['correoRecuperacion'])) {
 
 echo json_encode($response);
 
+// Función para consultar el NumNomina del usuario basado en el correo
 function consultarNumNomina($correo) {
     $con = new LocalConector();
     $conexion = $con->conectar();
+
+    if (!$conexion) {
+        return array('status' => 'error', 'message' => 'No se pudo conectar a la base de datos.');
+    }
 
     $stmt = $conexion->prepare("SELECT NumNomina FROM Usuario WHERE Correo = ?");
     $stmt->bind_param('s', $correo);
@@ -57,9 +71,14 @@ function consultarNumNomina($correo) {
     }
 }
 
+// Función para generar y almacenar un token de recuperación de contraseña
 function generarToken($numNomina) {
     $con = new LocalConector();
     $conexion = $con->conectar();
+
+    if (!$conexion) {
+        return array('status' => 'error', 'message' => 'Error en la conexión a la base de datos.');
+    }
 
     $token = bin2hex(random_bytes(16));
     $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
