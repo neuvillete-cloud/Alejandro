@@ -1,6 +1,15 @@
 function recuperarPassword() {
     var correoRecuperacion = document.getElementById("correoRecuperacion");
 
+    if (!correoRecuperacion || !correoRecuperacion.value.trim()) {
+        Swal.fire({
+            title: "Error",
+            text: "Por favor, ingrese un correo electrónico válido.",
+            icon: "error"
+        });
+        return;
+    }
+
     const data = new FormData();
     data.append('correoRecuperacion', correoRecuperacion.value.trim());
 
@@ -16,7 +25,6 @@ function recuperarPassword() {
         })
         .then(data => {
             if (data.status === 'success') {
-                console.log(data.message);
                 Swal.fire({
                     title: "Solicitud exitosa",
                     text: "Hemos enviado un correo electrónico a " + correoRecuperacion.value + " para restablecer tu contraseña.",
@@ -27,8 +35,7 @@ function recuperarPassword() {
                         window.location.href = "../sesion/login.php"; // Redirigir a la página de inicio de sesión
                     }
                 });
-            } else if (data.status === 'error') {
-                console.log(data.message);
+            } else {
                 Swal.fire({
                     title: "Error",
                     text: data.message,
