@@ -1,4 +1,16 @@
-// Función para validar las contraseñas y actualizar la contraseña del usuario
+function validarPasswords(passwordId, confirmPasswordId, errorId) {
+    var password = document.getElementById(passwordId).value.trim();
+    var confirmPassword = document.getElementById(confirmPasswordId).value.trim();
+
+    if (password === confirmPassword && password.length > 0) {
+        document.getElementById(errorId).style.display = 'none'; // Ocultar mensaje de error
+        return true; // Las contraseñas son válidas
+    } else {
+        document.getElementById(errorId).style.display = 'block'; // Mostrar mensaje de error
+        return false; // Las contraseñas no coinciden
+    }
+
+
 function actualizarPassword() {
     // Validar que las contraseñas sean iguales
     var ContrasenaValida = validarPasswords('nuevaContrasena', 'confirmaContrasena', 'errorMessage');
@@ -78,16 +90,5 @@ document.getElementById('resetPasswordForm').addEventListener('submit', function
     actualizarPassword(); // Llamar a la función para actualizar la contraseña
 });
 
-// Función para validar si las contraseñas coinciden
-function validarPasswords(passwordId, confirmPasswordId, errorId) {
-    var password = document.getElementById(passwordId).value.trim();
-    var confirmPassword = document.getElementById(confirmPasswordId).value.trim();
 
-    if (password === confirmPassword && password.length > 0) {
-        document.getElementById(errorId).style.display = 'none'; // Ocultar mensaje de error
-        return true; // Las contraseñas son válidas
-    } else {
-        document.getElementById(errorId).style.display = 'block'; // Mostrar mensaje de error
-        return false; // Las contraseñas no coinciden
-    }
 }
