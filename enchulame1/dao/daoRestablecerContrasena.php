@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($resultado->num_rows > 0) {
         // Actualiza la contraseña en la tabla Usuario
         $stmt = $conexion->prepare("UPDATE Usuario SET Contrasena = ? WHERE NumNomina = ?");
-
+        $stmt->bind_param('ss', $nuevaContrasena, $numNomina);
 
         if ($stmt->execute()) {
             // Elimina el token de la tabla restablecerContrasena
