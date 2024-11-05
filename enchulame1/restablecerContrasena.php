@@ -23,12 +23,12 @@
         <label for="confirmaContrasena">Confirmar Contraseña</label>
         <input type="password" id="confirmaContrasena" name="confirmaContrasena" required placeholder="Confirma tu nueva contraseña">
 
-        <button type="button" id="restablecerContrasenaBtn" name="restablecerContrasenaBtn" class="btn login" onclick="actualizarPassword()">Actualizar contraseña</button>
+        <button type="button" id="restablecerContrasenaBtn" class="btn-primary" onclick="actualizarPassword()">Actualizar contraseña</button>
     </form>
 
     <p id="errorMessage" style="display: none;">Las contraseñas no coinciden.</p>
 
-    <button id="loginRedirectBtn" style="display: none; margin-top: 1rem;" class="btn login" onclick="redireccionarLogin()">Ir a Iniciar Sesión</button>
+    <button id="loginRedirectBtn" style="display: none;" class="btn-primary" onclick="redireccionarLogin()">Ir a Iniciar Sesión</button>
 </div>
 
 <script src="js/RestableceContrasena.js"></script>

@@ -43,7 +43,8 @@ form input[type="hidden"] {
     box-sizing: border-box;
 }
 
-form button {
+/* Estilos para los botones principales */
+.btn-primary {
     margin-top: 1.5rem;
     width: 100%;
     padding: 0.8rem;
@@ -54,9 +55,10 @@ form button {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 1rem;
 }
 
-form button:hover {
+.btn-primary:hover {
     background-color: #004080; /* Azul más oscuro */
 }
 
