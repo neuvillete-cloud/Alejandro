@@ -14,6 +14,9 @@
     </div>
 
     <form id="restablecerContrasena" method="POST">
+        <input type="hidden" id="numNomina" name="numNomina">
+        <input type="hidden" id="token" name="token">
+
         <label for="nuevaContrasena">Nueva Contraseña</label>
         <input type="password" id="nuevaContrasena" name="nuevaContrasena" required placeholder="Ingresa tu nueva contraseña">
 
@@ -24,11 +27,13 @@
     </form>
 
     <p id="errorMessage" style="display: none; color: red;">Las contraseñas no coinciden.</p>
-    <button id="iniciarSesionBtn" style="display: none;" onclick="irAIniciarSesion()">Ir a Iniciar Sesión</button>
+
+    <button id="loginRedirectBtn" style="display: none;" class="btn login" onclick="redireccionarLogin()">Ir a Iniciar Sesión</button>
 </div>
 
 <script src="js/RestableceContrasena.js"></script>
 </body>
 </html>
+
 
 
