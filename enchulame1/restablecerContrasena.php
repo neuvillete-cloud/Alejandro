@@ -28,7 +28,7 @@
 
     <p id="errorMessage" style="display: none;">Las contraseñas no coinciden.</p>
 
-    <button id="loginRedirectBtn" style="display: none;" class="btn login" onclick="redireccionarLogin()">Ir a Iniciar Sesión</button>
+    <button id="loginRedirectBtn" style="display: none; margin-top: 1rem;" class="btn login" onclick="redireccionarLogin()">Ir a Iniciar Sesión</button>
 </div>
 
 <script src="js/RestableceContrasena.js"></script>
