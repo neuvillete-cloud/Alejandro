@@ -65,3 +65,15 @@ form button:hover {
     color: red;
     display: none;
 }
+
+/* Estilos del enlace */
+.login-link {
+    color: #005195; /* Azul oscuro */
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.login-link:hover {
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+}
