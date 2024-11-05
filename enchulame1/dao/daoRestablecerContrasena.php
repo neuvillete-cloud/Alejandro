@@ -9,26 +9,22 @@ if(isset($_POST['nuevaContrasena'], $_POST['Token'], $_POST['NumNomina']) ){
 
     if($TokenValido === true){
         $nuevaContrasena = $_POST['nuevaContrasena'];
-        $Contrasena = sha1($nuevaContrasena);
+        $Contrasena = sha1($nuevaContrasena);  // Encriptar la nueva contraseña
         $response = actualizarPassword($NumNomina, $Contrasena);
-    }else{
+    } else {
         $response = $TokenValido;
     }
-}else {
-    $response = array('status' => 'error', 'message' => 'Error:Enlace no válido');
+} else {
+    $response = array('status' => 'error', 'message' => 'Error: Enlace no válido');
 }
 
 echo json_encode($response);
 
-function validarToken($Token, $NumNomina){
+function validarToken($Token, $NumNomina) {
     $con = new LocalConector();
-    $conexion=$con->conectar();
+    $conexion = $con->conectar();
 
-    $datos = mysqli_query($conexion, "SELECT TokenValido
-                                            FROM restablecerContrasena
-                                            WHERE NumNomina = '$NumNomina'
-                                            AND Token = '$Token'
-                                            AND Expira > NOW()");
+    $datos = mysqli_query($conexion, "SELECT TokenValido FROM restablecerContrasena WHERE NumNomina = '$NumNomina' AND Token = '$Token' AND Expira > NOW()");
     if ($datos) {
         $resultado = mysqli_fetch_assoc($datos);
         if ($resultado && $resultado['TokenValido'] == 1) {
@@ -37,7 +33,7 @@ function validarToken($Token, $NumNomina){
         } else if ($resultado && $resultado['TokenValido'] == 0) {
             $conexion->close();
             return array('status' => 'error', 'message' => 'Error: Token no válido.');
-        }else{
+        } else {
             return array('status' => 'error', 'message' => 'Error: No existe solicitud.');
         }
     } else {
@@ -46,8 +42,7 @@ function validarToken($Token, $NumNomina){
     }
 }
 
-function actualizarPassword($NumNomina, $nuevaContrasena)
-{
+function actualizarPassword($NumNomina, $nuevaContrasena) {
     $con = new LocalConector();
     $conex = $con->conectar();
 
@@ -63,7 +58,7 @@ function actualizarPassword($NumNomina, $nuevaContrasena)
 
     // Invalidar el token
     $actToken = $conex->prepare("UPDATE restablecerContrasena SET TokenValido = 0 WHERE NumNomina = ?");
-    $actToken->bind_param("s", $nomina);
+    $actToken->bind_param("s", $NumNomina);  // Cambiado a $NumNomina
     $resActToken = $actToken->execute();
 
     // Cerrar la sentencia preparada
