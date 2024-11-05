@@ -6,7 +6,7 @@
     <title>Restablecer Contraseña</title>
     <link rel="stylesheet" href="css/estilosRestablecerContraseña.css"> <!-- Archivo CSS general -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="js/RestableceContrasena.js" ></script>
+
 </head>
 <body>
 <div class="container-reset-password">
@@ -14,7 +14,7 @@
         <h2>Restablecer Contraseña</h2>
     </div>
 
-    <form id="resetPasswordForm" method="POST">
+    <form id="restablecerContrasena" method="POST">
         <label for="nuevaContrasena">Nueva Contraseña</label>
         <input type="password" id="nuevaContrasena" name="nuevaContrasena" required placeholder="Ingresa tu nueva contraseña">
 
@@ -27,7 +27,7 @@
     <p id="errorMessage" style="display: none; color: red;">Las contraseñas no coinciden.</p>
 </div>
 
-
+<script src="js/RestableceContrasena.js" ></script>
 </body>
 </html>
 
