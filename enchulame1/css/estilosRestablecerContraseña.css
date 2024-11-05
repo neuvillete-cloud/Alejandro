@@ -66,14 +66,20 @@ form button:hover {
     display: none;
 }
 
-/* Estilos del enlace */
-.login-link {
-    color: #005195; /* Azul oscuro */
-    text-decoration: none;
+/* Estilos del botón de "Ir a Iniciar Sesión" */
+#irInicioSesion {
+    margin-top: 1rem; /* Separar del botón de actualizar */
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #005195; /* Azul oscuro */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
     font-weight: bold;
-    margin-top: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.login-link:hover {
-    text-decoration: underline; /* Subrayar al pasar el ratón */
+#irInicioSesion:hover {
+    background-color: #004080; /* Azul más oscuro */
 }
