@@ -1,50 +1,53 @@
-// RestableceContrasena.js
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Obtén el token y el número de nómina de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const numNomina = urlParams.get('numNomina');
-    const token = urlParams.get('token');
-
-    // Establece los valores en los campos ocultos
-    document.getElementById('numNomina').value = numNomina;
-    document.getElementById('token').value = token;
-});
-
-// Función para actualizar la contraseña
 function actualizarPassword() {
     const nuevaContrasena = document.getElementById('nuevaContrasena').value;
     const confirmaContrasena = document.getElementById('confirmaContrasena').value;
+    const errorMessage = document.getElementById('errorMessage');
+    const iniciarSesionBtn = document.getElementById('iniciarSesionBtn');
 
     if (nuevaContrasena !== confirmaContrasena) {
-        document.getElementById('errorMessage').style.display = 'block';
+        errorMessage.style.display = 'block';
         return;
+    } else {
+        errorMessage.style.display = 'none';
     }
 
-    const numNomina = document.getElementById('numNomina').value;
-    const token = document.getElementById('token').value;
+    // Aquí enviarías la solicitud para actualizar la contraseña
+    const numNomina = obtenerNumNominaDesdeURL(); // Implementa esta función para obtener el número de nómina desde la URL
+    const token = obtenerTokenDesdeURL(); // Implementa esta función para obtener el token desde la URL
 
-    // Envío de datos al servidor
-    fetch('dao/daoRestablecerContrasena.php', {
+    fetch('actualizarContrasena.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({
+        body: JSON.stringify({
             numNomina: numNomina,
             token: token,
-            nuevaContrasena: nuevaContrasena
-        })
+            nuevaContrasena: nuevaContrasena,
+        }),
     })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                Swal.fire('Éxito', data.message, 'success');
+                Swal.fire({
+                    title: 'Éxito',
+                    text: data.message,
+                    icon: 'success'
+                });
+                iniciarSesionBtn.style.display = 'block'; // Muestra el botón de iniciar sesión
             } else {
-                Swal.fire('Error', data.message, 'error');
+                Swal.fire({
+                    title: 'Error',
+                    text: data.message,
+                    icon: 'error'
+                });
             }
         })
-        .catch(error => {
-            Swal.fire('Error', 'Error al actualizar la contraseña.', 'error');
+        .catch((error) => {
+            console.error('Error:', error);
         });
+}
+
+function irAIniciarSesion() {
+    window.location.href = 'paginaDeLogin.html'; // Cambia esto por la URL de tu página de inicio de sesión
 }
