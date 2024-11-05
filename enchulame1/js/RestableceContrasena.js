@@ -25,7 +25,7 @@ function actualizarPassword() {
     const token = document.getElementById('token').value;
 
     // Envío de datos al servidor
-    fetch('dao/daoRestablecerContrasena', {
+    fetch('dao/daoRestablecerContrasena.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
