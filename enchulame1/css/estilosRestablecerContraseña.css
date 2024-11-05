@@ -65,21 +65,3 @@ form button:hover {
     color: red;
     display: none;
 }
-
-/* Estilos del botón de "Ir a Iniciar Sesión" */
-#irInicioSesion {
-    margin-top: 1rem; /* Separar del botón de actualizar */
-    width: 100%;
-    padding: 0.8rem;
-    background-color: #005195; /* Azul oscuro */
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#irInicioSesion:hover {
-    background-color: #004080; /* Azul más oscuro */
-}
