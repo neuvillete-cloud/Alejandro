@@ -33,7 +33,8 @@ form label {
     margin-top: 1rem;
 }
 
-form input[type="password"] {
+form input[type="password"],
+form input[type="hidden"] {
     width: 100%;
     padding: 0.8rem;
     margin-top: 0.5rem;
@@ -64,3 +65,4 @@ form button:hover {
     color: red;
     display: none;
 }
+
