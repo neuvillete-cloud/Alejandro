@@ -31,7 +31,7 @@ function actualizarPassword() {
             data.append('Token', Token);
             data.append('NumNomina', NumNomina);
 
-            console.log('Token:', Token, ' Usuario:', NumNomina);
+            console.log('Token:', Token, ' NumNomina:', NumNomina);
 
             // Hacer la petición al servidor para actualizar la contraseña
             fetch(rutaBase + 'dao/daoRestablecerContrasena.php', {

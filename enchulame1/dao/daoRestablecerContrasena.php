@@ -3,16 +3,16 @@ header('Content-Type: application/json');
 include_once('conexion.php');
 
 if(isset($_POST['nuevaContrasena'], $_POST['Token'], $_POST['NumNomina']) ){
-    $token = $_POST['Token'];
-    $nomina = $_POST['NumNomina'];
-    $estokenValido = validarToken($token, $nomina);
+    $Token = $_POST['Token'];
+    $NumNomina = $_POST['NumNomina'];
+    $TokenValido = validarToken($Token, $NumNomina);
 
-    if($estokenValido === true){
-        $newPassword = $_POST['nuevaContrasena'];
-        $passwordH = sha1($newPassword);
-        $response = actualizarPassword($nomina, $passwordH);
+    if($TokenValido === true){
+        $nuevaContrasena = $_POST['nuevaContrasena'];
+        $Contrasena = sha1($nuevaContrasena);
+        $response = actualizarPassword($NumNomina, $Contrasena);
     }else{
-        $response = $estokenValido;
+        $response = $TokenValido;
     }
 }else {
     $response = array('status' => 'error', 'message' => 'Error:Enlace no válido');
@@ -20,14 +20,14 @@ if(isset($_POST['nuevaContrasena'], $_POST['Token'], $_POST['NumNomina']) ){
 
 echo json_encode($response);
 
-function validarToken($token, $nomina){
+function validarToken($Token, $NumNomina){
     $con = new LocalConector();
     $conexion=$con->conectar();
 
     $datos = mysqli_query($conexion, "SELECT TokenValido
                                             FROM restablecerContrasena
-                                            WHERE NumNomina = '$nomina'
-                                            AND Token = '$token'
+                                            WHERE NumNomina = '$NumNomina'
+                                            AND Token = '$Token'
                                             AND Expira > NOW()");
     if ($datos) {
         $resultado = mysqli_fetch_assoc($datos);
@@ -46,7 +46,7 @@ function validarToken($token, $nomina){
     }
 }
 
-function actualizarPassword($nomina, $newPassword)
+function actualizarPassword($NumNomina, $nuevaContrasena)
 {
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -55,7 +55,7 @@ function actualizarPassword($nomina, $newPassword)
 
     // Actualizar la contraseña
     $actPassword = $conex->prepare("UPDATE Usuario SET Contrasena = ? WHERE NumNomina = ?");
-    $actPassword->bind_param("ss", $newPassword, $nomina);
+    $actPassword->bind_param("ss", $nuevaContrasena, $NumNomina);
     $resActPassword = $actPassword->execute();
 
     // Cerrar la sentencia preparada
