@@ -1,36 +1,3 @@
-<?php
-session_start();
-include_once("dao/conexion.php");
-
-// Revisar si la sesión está iniciada
-if (!isset($_SESSION['numNomina']) || empty($_SESSION['numNomina'])) {
-    // Si no está iniciada, redirigir o mostrar mensaje de error
-    echo "Error: sesión no iniciada";
-    exit;
-}
-
-$numNomina = $_SESSION['numNomina'];
-
-// Conectar a la base de datos
-$con = new LocalConector();
-$conn = $con->conectar();
-
-// Obtener el nombre del usuario
-$stmt = $conn->prepare("SELECT Nombre FROM Usuario WHERE NumNomina = ?");
-$stmt->bind_param("s", $numNomina);
-$stmt->execute();
-$resultado = $stmt->get_result();
-
-if ($resultado->num_rows > 0) {
-    $usuario = $resultado->fetch_assoc();
-    $nombreUsuario = $usuario['Nombre'];
-} else {
-    $nombreUsuario = "Usuario no encontrado"; // Valor por defecto si no se encuentra el usuario
-}
-
-$stmt->close();
-$conn->close();
-?>
 
 <!DOCTYPE html>
 <html lang="es">
