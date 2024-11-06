@@ -22,7 +22,8 @@
         <!-- Nombre de usuario (solo visual) -->
         <div class="form-section">
             <label class="field-label">Nombre:</label>
-            <p id="nombreUsuario">[Nombre del Usuario]</p>
+            <!-- Aquí se muestra el nombre del usuario obtenido desde PHP -->
+            <p id="nombreUsuario"><?php echo isset($nombreUsuario) ? $nombreUsuario : '[Nombre del Usuario]'; ?></p>
         </div>
 
         <!-- Campo de descripción -->
@@ -48,7 +49,6 @@
                 <option value="nave 10">nave 10</option>
                 <option value="nave 11">nave 11</option>
                 <option value="nave 12">nave 12</option>
-                <!-- Agrega más opciones según sea necesario -->
             </select>
         </div>
 
@@ -79,6 +79,7 @@
     </form>
 </div>
 
-
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

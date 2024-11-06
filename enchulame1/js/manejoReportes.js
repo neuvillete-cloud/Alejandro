@@ -15,7 +15,11 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
     } else if (planta === 'baja') {
         idArea = 2;
     } else {
-        alert("Por favor, selecciona una planta válida.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Por favor, selecciona una planta válida.'
+        });
         return;
     }
 
@@ -30,22 +34,34 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
     formData.append('idArea', idArea);
 
     // Enviar la solicitud con fetch
-    fetch('registrarReporte.php', {
+    fetch('dao/daoManejoReporte.php', {
         method: 'POST',
         body: formData
     })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert("Reporte enviado exitosamente");
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: 'Reporte enviado exitosamente.'
+                });
                 // Puedes redirigir o limpiar el formulario si es necesario
                 document.getElementById('reporteForm').reset();
             } else {
-                alert("Error al enviar el reporte: " + data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al enviar el reporte: ' + data.message
+                });
             }
         })
         .catch(error => {
             console.error("Error:", error);
-            alert("Hubo un error al enviar el reporte.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un error al enviar el reporte.'
+            });
         });
 });
