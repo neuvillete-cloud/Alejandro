@@ -34,7 +34,7 @@ function validarCredenciales($NumNomina, $Contrasena) {
         // Guardar la nómina y rol en la sesión
         $_SESSION['NumNomina'] = $NumNomina;
         $_SESSION['Rol'] = $usuario['IdRol']; // Suponiendo que el campo del rol en la tabla se llama 'rol'
-        $_SESSION['nombreUsuario'] = $usuario['Nombre'];
+
 
         // Retornar éxito y redireccionar dependiendo del rol
         if ($usuario['IdRol'] == 1) {
