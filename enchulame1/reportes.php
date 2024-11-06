@@ -35,7 +35,7 @@
         <div class="form-section">
             <label for="lugar">Lugar</label>
             <select id="lugar" name="lugar" required>
-                <option value="" disabled selected>Selecciona una nave</option>
+                <option value="" disabled selected>Selecciona un lugar</option>
                 <option value="nave 1">nave 1</option>
                 <option value="nave 2">nave 2</option>
                 <option value="nave 3">nave 3</option>
@@ -49,6 +49,16 @@
                 <option value="nave 11">nave 11</option>
                 <option value="nave 12">nave 12</option>
                 <!-- Agrega más opciones según sea necesario -->
+            </select>
+        </div>
+
+        <!-- Nueva lista desplegable para la planta -->
+        <div class="form-section">
+            <label for="planta">Planta</label>
+            <select id="planta" name="planta" required>
+                <option value="" disabled selected>Selecciona una planta</option>
+                <option value="alta">Planta Alta</option>
+                <option value="baja">Planta Baja</option>
             </select>
         </div>
 
@@ -72,4 +82,3 @@
 
 </body>
 </html>
-
