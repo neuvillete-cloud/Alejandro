@@ -23,7 +23,7 @@
         <div class="form-section">
             <label class="field-label">Nombre:</label>
             <!-- Aquí se muestra el nombre del usuario obtenido desde PHP -->
-            <p id="nombreUsuario"><?php echo isset($nombreUsuario) ? $nombreUsuario : '[Nombre del Usuario]'; ?></p>
+            <p id="nombreUsuario"><?php echo isset($nombreUsuario) ? $nombreUsuario : '[Nombre]'; ?></p>
         </div>
 
         <!-- Campo de descripción -->
