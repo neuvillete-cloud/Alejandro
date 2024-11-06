@@ -1,3 +1,37 @@
+<?php
+session_start();
+include_once("dao/conexion.php");
+
+// Revisar si la sesión está iniciada
+if (!isset($_SESSION['numNomina']) || empty($_SESSION['numNomina'])) {
+    // Si no está iniciada, redirigir o mostrar mensaje de error
+    echo "Error: sesión no iniciada";
+    exit;
+}
+
+$numNomina = $_SESSION['numNomina'];
+
+// Conectar a la base de datos
+$con = new LocalConector();
+$conn = $con->conectar();
+
+// Obtener el nombre del usuario
+$stmt = $conn->prepare("SELECT Nombre FROM Usuario WHERE NumNomina = ?");
+$stmt->bind_param("s", $numNomina);
+$stmt->execute();
+$resultado = $stmt->get_result();
+
+if ($resultado->num_rows > 0) {
+    $usuario = $resultado->fetch_assoc();
+    $nombreUsuario = $usuario['Nombre'];
+} else {
+    $nombreUsuario = "Usuario no encontrado"; // Valor por defecto si no se encuentra el usuario
+}
+
+$stmt->close();
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,7 +57,7 @@
         <div class="form-section">
             <label class="field-label">Nombre:</label>
             <!-- Aquí se muestra el nombre del usuario obtenido desde PHP -->
-            <p id="nombreUsuario"><?php echo isset($nombreUsuario) ? $nombreUsuario : '[Nombre]'; ?></p>
+            <p id="nombreUsuario"><?php echo htmlspecialchars($nombreUsuario); ?></p>
         </div>
 
         <!-- Campo de descripción -->
@@ -81,5 +115,6 @@
 
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>
