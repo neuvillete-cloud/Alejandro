@@ -28,22 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $con = new LocalConector();
         $conn = $con->conectar();
 
-        // Obtener el nombre del usuario utilizando el número de nómina
-        $stmt = $conn->prepare("SELECT Nombre FROM Usuario WHERE NumNomina = ?");
-        $stmt->bind_param("s", $numNomina);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-
-        if ($resultado->num_rows > 0) {
-            $usuario = $resultado->fetch_assoc();
-            $nombreUsuario = $usuario['Nombre'];
-        } else {
-            echo json_encode(["status" => "error", "message" => "Usuario no encontrado"]);
-            exit;
-        }
-
-        $stmt->close();
-
         // Manejo de la imagen con un nombre único
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
             $foto = $_FILES['foto'];
@@ -84,8 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             echo json_encode([
                 "status" => "success",
-                "message" => "Reporte registrado exitosamente",
-                "nombreUsuario" => $nombreUsuario // Incluimos el nombre del usuario en la respuesta
+                "message" => "Reporte registrado exitosamente"
             ]);
         } else {
             echo json_encode(["status" => "error", "message" => "Error al registrar el reporte"]);

@@ -20,13 +20,6 @@
 
     <!-- Formulario de reporte -->
     <form id="reporteForm">
-        <!-- Nombre de usuario (solo visual) -->
-        <div class="form-section">
-            <label class="field-label">Nombre:</label>
-            <!-- Aquí se muestra el nombre del usuario obtenido desde PHP -->
-            <p id="nombreUsuario"><?php echo htmlspecialchars($nombreUsuario); ?></p>
-        </div>
-
         <!-- Campo de descripción -->
         <div class="form-section">
             <label for="descripcion">Descripción</label>
