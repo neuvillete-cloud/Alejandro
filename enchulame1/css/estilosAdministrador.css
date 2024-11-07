@@ -29,13 +29,13 @@ body {
 .logo {
     font-size: 1.5em;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px; /* Aumenta el espacio debajo del logo */
 }
 
 .menu {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px; /* Añade espacio entre los elementos del menú */
 }
 
 .menu-item {
@@ -122,13 +122,6 @@ tbody tr {
 
 .status.completed {
     background-color: #28a745;
-}
-
-.report-photo {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 5px;
 }
 
 .action-btn {

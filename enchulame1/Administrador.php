@@ -39,12 +39,11 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
-                    <th>Correo</th>
                     <th>Área</th>
                     <th>Ubicación</th>
                     <th>Fecha</th>
+                    <th>Descripción del Problema</th>
                     <th>Estado</th>
-                    <th>Foto</th>
                     <th>Acción</th>
                 </tr>
                 </thead>
@@ -53,12 +52,11 @@
                 <tr>
                     <td>#001</td>
                     <td>Ana Pérez</td>
-                    <td>ana.perez@example.com</td>
                     <td>Producción</td>
                     <td>Edificio A, Piso 3</td>
                     <td>2024-10-01</td>
+                    <td>Fuga en el sistema de agua</td>
                     <td><span class="status pending">Pendiente</span></td>
-                    <td><img src="foto-ejemplo.jpg" alt="Foto problema" class="report-photo"></td>
                     <td><button class="action-btn">Ver detalles</button></td>
                 </tr>
                 </tbody>
@@ -68,3 +66,4 @@
 </div>
 </body>
 </html>
+
