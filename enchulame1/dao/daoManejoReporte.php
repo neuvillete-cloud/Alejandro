@@ -5,12 +5,12 @@ include_once("conexion.php");
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar que la sesión esté iniciada
-    if (!isset($_SESSION['numNomina']) || empty($_SESSION['numNomina'])) {
+    if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
         echo json_encode(["status" => "error", "message" => "Sesión no iniciada o número de nómina inválido"]);
         exit;
     }
 
-    $numNomina = $_SESSION['numNomina'];
+    $NumNomina = $_SESSION['NumNomina'];
 
     // Obtener los datos del formulario
     if (isset($_POST['descripcion'], $_POST['lugar'], $_POST['planta'], $_POST['descripcionLugar'], $_POST['idArea'])) {
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Generar un nombre único para la imagen usando número de nómina y fecha y hora de registro
             $extension = pathinfo($foto['name'], PATHINFO_EXTENSION);
-            $nombreUnico = "reporte_" . $numNomina . "_" . date("Ymd_His") . "." . $extension;
+            $nombreUnico = "reporte_" . $NumNomina . "_" . date("Ymd_His") . "." . $extension;
 
             // Definir la ruta de guardado (ahora la carpeta 'imagenes/fotosSolicitantes')
             $fotoPath = "imagenes/fotosSolicitantes/" . $nombreUnico;
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insertar el reporte en la base de datos
         $stmt = $conn->prepare("INSERT INTO Reportes (NumNomina, IdEstatus, IdArea, FotoProblema, Ubicacion, DescripcionProblema, DescripcionLugar, FechaRegistro) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("siisssss", $numNomina, $idEstatus, $idArea, $fotoPath, $lugar, $descripcion, $descripcionLugar, $fechaRegistro);
+        $stmt->bind_param("siisssss", $NumNomina, $idEstatus, $idArea, $fotoPath, $lugar, $descripcion, $descripcionLugar, $fechaRegistro);
 
         if ($stmt->execute()) {
             echo json_encode([
