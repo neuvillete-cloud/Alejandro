@@ -3,63 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador - Dashboard</title>
-    <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
+    <title>Administrador - Reportes</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Vincula tu archivo CSS -->
 </head>
 <body>
 <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo">
-            <h2>eProduct</h2>
+            <h2>eReport</h2>
         </div>
         <nav class="menu">
             <a href="#" class="menu-item active">Dashboard</a>
-            <a href="#" class="menu-item">Order</a>
-            <a href="#" class="menu-item">Statistic</a>
-            <a href="#" class="menu-item">Product</a>
-            <a href="#" class="menu-item">Stock</a>
-            <a href="#" class="menu-item">Offer</a>
+            <a href="#" class="menu-item">Reportes</a>
+            <a href="#" class="menu-item">Estadísticas</a>
+            <a href="#" class="menu-item">Usuarios</a>
+            <a href="#" class="menu-item">Configuración</a>
         </nav>
-        <div class="social-links">
-            <a href="#">Facebook</a>
-            <a href="#">Twitter</a>
-            <a href="#">Google</a>
-        </div>
     </aside>
 
     <!-- Main content -->
     <main class="main-content">
         <header class="header">
-            <h1>Order</h1>
+            <h1>Reportes</h1>
             <div class="date-filter">
-                <input type="date">
-                <input type="date">
+                <label for="start-date">Desde:</label>
+                <input type="date" id="start-date">
+                <label for="end-date">Hasta:</label>
+                <input type="date" id="end-date">
             </div>
         </header>
-        <section class="order-list">
+        <section class="report-list">
             <table>
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Date</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Área</th>
+                    <th>Ubicación</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Foto</th>
+                    <th>Acción</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Aquí puedes añadir filas de ejemplo -->
+                <!-- Ejemplo de filas con datos ficticios -->
                 <tr>
-                    <td>#2853</td>
-                    <td>John McCormick</td>
-                    <td>1098 Weissman Street, CALAMA, AK</td>
-                    <td>01 Aug 2020</td>
-                    <td>$35.00</td>
-                    <td><span class="status dispatch">Dispatch</span></td>
-                    <td><button class="action-btn">...</button></td>
+                    <td>#001</td>
+                    <td>Ana Pérez</td>
+                    <td>ana.perez@example.com</td>
+                    <td>Producción</td>
+                    <td>Edificio A, Piso 3</td>
+                    <td>2024-10-01</td>
+                    <td><span class="status pending">Pendiente</span></td>
+                    <td><img src="foto-ejemplo.jpg" alt="Foto problema" class="report-photo"></td>
+                    <td><button class="action-btn">Ver detalles</button></td>
                 </tr>
                 </tbody>
             </table>
