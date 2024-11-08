@@ -33,11 +33,11 @@ function obtenerReportes($NumNomina) {
         SELECT 
             r.IdReporte, 
             u.Nombre, 
-            a.Nombre AS Area, 
+            a.NombreArea AS Area, 
             r.Ubicacion, 
             r.FechaRegistro, 
             r.DescripcionProblema, 
-            e.Descripcion AS Estado
+            e.NombreEstatus AS Estatus
         FROM 
             Reportes r
         JOIN 
