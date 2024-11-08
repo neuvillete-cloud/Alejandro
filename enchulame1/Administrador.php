@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador - Reportes</title>
     <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
+    <script src="js/tablaAdmin.js" defer></script> <!-- Enlaza el archivo JavaScript -->
 </head>
 <body>
 <div class="container">
@@ -47,18 +48,8 @@
                     <th>Acción</th>
                 </tr>
                 </thead>
-                <tbody>
-                <!-- Ejemplo de filas con datos ficticios -->
-                <tr>
-                    <td>#001</td>
-                    <td>Ana Pérez</td>
-                    <td>Producción</td>
-                    <td>Edificio A, Piso 3</td>
-                    <td>2024-10-01</td>
-                    <td>Fuga en el sistema de agua</td>
-                    <td><span class="status pending">Pendiente</span></td>
-                    <td><button class="action-btn">Ver detalles</button></td>
-                </tr>
+                <tbody id="tablaReportes">
+                <!-- Las filas se generarán dinámicamente desde scripts.js -->
                 </tbody>
             </table>
         </section>
@@ -66,4 +57,5 @@
 </div>
 </body>
 </html>
+
 
