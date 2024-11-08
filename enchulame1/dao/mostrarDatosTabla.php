@@ -22,7 +22,7 @@ function obtenerReportes() {
     $stmt = $conex->prepare("
         SELECT 
             r.IdReporte, 
-            u.Nombre AS Usuario, 
+            u.Nombre AS NombreUsuario, 
             a.NombreArea AS Area, 
             r.Ubicacion, 
             r.FechaRegistro, 
