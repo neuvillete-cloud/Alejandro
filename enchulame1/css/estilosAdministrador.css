@@ -116,6 +116,7 @@ tbody tr {
     border-radius: 5px;
     color: white;
     font-weight: bold;
+    text-align: center;
 }
 
 .status.recibido {
@@ -130,6 +131,9 @@ tbody tr {
     background-color: #28a745; /* Fondo verde para "Completado" */
 }
 
+.status.desconocido {
+    background-color: #6c757d; /* Fondo gris para estatus desconocido */
+}
 
 .action-btn {
     background-color: #007bff;
