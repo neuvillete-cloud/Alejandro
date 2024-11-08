@@ -29,13 +29,13 @@ body {
 .logo {
     font-size: 1.5em;
     text-align: center;
-    margin-bottom: 30px; /* Aumenta el espacio debajo del logo */
+    margin-bottom: 30px;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Añade espacio entre los elementos del menú */
+    gap: 15px;
 }
 
 .menu-item {
@@ -67,7 +67,7 @@ body {
 .header h1 {
     font-size: 1.5em;
     color: #333;
-    margin-bottom: 20px; /* Añade espacio debajo del título */
+    margin-bottom: 20px;
 }
 
 .date-filter {
@@ -90,7 +90,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 40px; /* Baja la tabla para alinearla con el menú */
+    margin-top: 40px;
 }
 
 table {
@@ -113,17 +113,26 @@ tbody tr {
 
 .status {
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 50%; /* Mantiene el estilo de círculo */
     color: white;
     font-weight: bold;
+    display: inline-block;
+    text-align: center;
+    width: 25px; /* Ajusta el tamaño del círculo */
+    height: 25px;
+    line-height: 25px;
 }
 
-.status.pending {
-    background-color: #ffc107;
+.status.recibido {
+    background-color: #ffc107; /* Amarillo para Recibido */
 }
 
-.status.completed {
-    background-color: #28a745;
+.status.en-proceso {
+    background-color: #007bff; /* Azul para En Proceso */
+}
+
+.status.completado {
+    background-color: #28a745; /* Verde para Completado */
 }
 
 .action-btn {

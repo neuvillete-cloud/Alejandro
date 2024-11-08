@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            // Aquí puedes enviar datos adicionales si los necesitas
-        })
+        body: JSON.stringify({})
     })
         .then(response => response.json())
         .then(data => {
@@ -21,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error al hacer la solicitud:', error);
         });
 });
-
 // Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
     const tablaReportes = document.getElementById('tablaReportes');
@@ -54,6 +51,16 @@ function llenarTablaReportes(reportes) {
 
         const celdaEstatus = document.createElement('td');
         celdaEstatus.textContent = reporte.Estatus;
+
+        // Asignar clase para cambiar color según el estatus
+        celdaEstatus.classList.add('status');
+        if (reporte.Estatus === 'Recibido') {
+            celdaEstatus.classList.add('recibido');
+        } else if (reporte.Estatus === 'En Proceso') {
+            celdaEstatus.classList.add('en-proceso');
+        } else if (reporte.Estatus === 'Completado') {
+            celdaEstatus.classList.add('completado');
+        }
 
         // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
