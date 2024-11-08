@@ -29,7 +29,7 @@ body {
 .logo {
     font-size: 1.5em;
     text-align: center;
-    margin-bottom: 70px; /* Aumenta el espacio debajo del logo */
+    margin-bottom: 30px; /* Aumenta el espacio debajo del logo */
 }
 
 .menu {
@@ -90,7 +90,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 60px; /* Baja la tabla para alinearla con el menú */
+    margin-top: 40px; /* Baja la tabla para alinearla con el menú */
 }
 
 table {
@@ -111,13 +111,11 @@ tbody tr {
     border-top: 1px solid #e9ecef;
 }
 
-/* Estilos para los estados */
 .status {
-    padding: 10px;
-    border-radius: 5px; /* Hace que sea un círculo */
+    padding: 5px 10px;
+    border-radius: 5px;
     color: white;
     font-weight: bold;
-
 }
 
 .status.recibido {
@@ -131,6 +129,7 @@ tbody tr {
 .status.completado {
     background-color: #28a745; /* Fondo verde para "Completado" */
 }
+
 
 .action-btn {
     background-color: #007bff;
