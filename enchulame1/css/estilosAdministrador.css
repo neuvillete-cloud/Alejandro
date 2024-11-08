@@ -29,13 +29,13 @@ body {
 .logo {
     font-size: 1.5em;
     text-align: center;
-    margin-bottom: 70px; /* Aumenta el espacio debajo del logo */
+    margin-bottom: 30px;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Añade espacio entre los elementos del menú */
+    gap: 15px;
 }
 
 .menu-item {
@@ -62,6 +62,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    padding-top: 40px; /* Ajuste para bajar el contenido de la tabla */
 }
 
 .header h1 {
@@ -89,6 +90,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Añadido para alinear la tabla con el menú lateral */
 }
 
 table {
