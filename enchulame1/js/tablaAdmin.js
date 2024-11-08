@@ -51,7 +51,7 @@ function llenarTablaReportes(reportes) {
         const spanEstatus = document.createElement('span');  // Usamos un span para el estatus
 
         // Verificamos si el estatus tiene el valor esperado
-        if (reporte.Estatus === 'Recibido') {
+        if (reporte.Estatus === 'recibido') {
             spanEstatus.textContent = reporte.Estatus;
             spanEstatus.classList.add('status', 'recibido');
         } else if (reporte.Estatus === 'En Proceso') {
