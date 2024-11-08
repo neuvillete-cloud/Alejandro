@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            // Aquí puedes enviar datos adicionales si los necesitas
-        })
+        body: JSON.stringify({})
     })
         .then(response => response.json())
         .then(data => {
@@ -21,12 +19,15 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error al hacer la solicitud:', error);
         });
 });
+
+// Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
     const tablaReportes = document.getElementById('tablaReportes');
 
     // Limpiar la tabla antes de llenarla
     tablaReportes.innerHTML = '';
 
+    // Iterar sobre los reportes y crear filas
     reportes.forEach(reporte => {
         const fila = document.createElement('tr');
 
@@ -49,33 +50,24 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
-        // Celda de estado
+        // Crear la celda de estatus y añadir colores según el estatus
         const celdaEstatus = document.createElement('td');
-        const estatusElemento = document.createElement('span');
-        estatusElemento.classList.add('status');
+        celdaEstatus.textContent = reporte.Estatus;
 
-        // Verifica el valor de reporte.Estatus
-        console.log("Estado del reporte:", reporte.Estatus);
-
+        // Asignar clase de color según el estatus
         switch (reporte.Estatus) {
             case 'Recibido':
-                estatusElemento.classList.add('recibido');
-                estatusElemento.textContent = 'Recibido';
+                celdaEstatus.classList.add('recibido');
                 break;
             case 'En Proceso':
-                estatusElemento.classList.add('en-proceso');
-                estatusElemento.textContent = 'En Proceso';
+                celdaEstatus.classList.add('en-proceso');
                 break;
             case 'Completado':
-                estatusElemento.classList.add('completado');
-                estatusElemento.textContent = 'Completado';
+                celdaEstatus.classList.add('completado');
                 break;
             default:
-                estatusElemento.textContent = 'Desconocido';
-                estatusElemento.classList.add('desconocido');
+                celdaEstatus.classList.add('desconocido');
         }
-
-        celdaEstatus.appendChild(estatusElemento);
 
         // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
