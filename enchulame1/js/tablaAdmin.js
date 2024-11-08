@@ -1,29 +1,77 @@
-// Función para obtener y mostrar los reportes
-async function obtenerReportes() {
-    try {
-        const response = await fetch('dao/mostrarDatosTabla.php');
-        const reportes = await response.json();
-
-        const tablaReportes = document.getElementById('tablaReportes');
-        tablaReportes.innerHTML = ''; // Limpiar la tabla
-
-        reportes.forEach(reporte => {
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td>${reporte.IdReporte}</td>
-                <td>${reporte.nombre}</td>
-                <td>${reporte.IdArea}</td>
-                <td>${reporte.Ubicacion}</td>
-                <td>${reporte.FechaRegistro}</td>
-                <td>${reporte.DescripcionProblema}</td>
-                <td>${reporte.IdEstatus}</td>
-            `;
-            tablaReportes.appendChild(fila);
+document.addEventListener("DOMContentLoaded", function() {
+    // Llamada a la API para obtener los reportes
+    fetch('dao/mostrarDatosTabla.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            // Aquí puedes enviar datos adicionales si los necesitas
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                llenarTablaReportes(data.data);
+            } else {
+                console.error('Error al obtener los reportes:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error al hacer la solicitud:', error);
         });
-    } catch (error) {
-        console.error('Error al obtener reportes:', error);
-    }
-}
+});
 
-// Llamar a la función para cargar los reportes al cargar la página
-document.addEventListener('DOMContentLoaded', obtenerReportes);
+// Función para llenar la tabla con los reportes
+function llenarTablaReportes(reportes) {
+    const tablaReportes = document.getElementById('tablaReportes');
+
+    // Limpiar la tabla antes de llenarla
+    tablaReportes.innerHTML = '';
+
+    // Iterar sobre los reportes y crear filas
+    reportes.forEach(reporte => {
+        const fila = document.createElement('tr');
+
+        // Crear las celdas
+        const celdaIdReporte = document.createElement('td');
+        celdaIdReporte.textContent = reporte.IdReporte;
+
+        const celdaNombre = document.createElement('td');
+        celdaNombre.textContent = reporte.NombreUsuario;
+
+        const celdaArea = document.createElement('td');
+        celdaArea.textContent = reporte.Area;
+
+        const celdaUbicacion = document.createElement('td');
+        celdaUbicacion.textContent = reporte.Ubicacion;
+
+        const celdaFecha = document.createElement('td');
+        celdaFecha.textContent = reporte.FechaRegistro;
+
+        const celdaDescripcion = document.createElement('td');
+        celdaDescripcion.textContent = reporte.DescripcionProblema;
+
+        const celdaEstatus = document.createElement('td');
+        celdaEstatus.textContent = reporte.Estatus;
+
+        const celdaAccion = document.createElement('td');
+        const botonDetalles = document.createElement('button');
+        botonDetalles.textContent = 'Ver detalles';
+        botonDetalles.classList.add('action-btn');
+        celdaAccion.appendChild(botonDetalles);
+
+        // Agregar las celdas a la fila
+        fila.appendChild(celdaIdReporte);
+        fila.appendChild(celdaNombre);
+        fila.appendChild(celdaArea);
+        fila.appendChild(celdaUbicacion);
+        fila.appendChild(celdaFecha);
+        fila.appendChild(celdaDescripcion);
+        fila.appendChild(celdaEstatus);
+        fila.appendChild(celdaAccion);
+
+        // Agregar la fila a la tabla
+        tablaReportes.appendChild(fila);
+    });
+}

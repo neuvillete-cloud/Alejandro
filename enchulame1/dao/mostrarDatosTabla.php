@@ -32,11 +32,14 @@ function obtenerReportes($NumNomina) {
     $stmt = $conex->prepare("
         SELECT 
             r.IdReporte, 
-            u.Nombre, 
+            u.Nombre AS Usuario, 
             a.NombreArea AS Area, 
             r.Ubicacion, 
             r.FechaRegistro, 
             r.DescripcionProblema, 
+            r.DescripcionLugar, 
+            r.FotoProblema, 
+            r.FotoEvidencia, 
             e.NombreEstatus AS Estatus
         FROM 
             Reportes r

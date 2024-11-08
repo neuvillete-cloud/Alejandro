@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador - Reportes</title>
     <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
-    <script src="js/tablaAdmin.js" defer></script> <!-- Enlaza el archivo JavaScript -->
 </head>
 <body>
 <div class="container">
@@ -55,7 +54,7 @@
         </section>
     </main>
 </div>
+
+<script src="js/tablaAdmin.js" defer></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
-
-
