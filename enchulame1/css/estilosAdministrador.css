@@ -113,27 +113,29 @@ tbody tr {
 
 .status {
     padding: 5px 10px;
-    border-radius: 50%; /* Mantiene el estilo de círculo */
-    color:#ffc107 ;
+    border-radius: 5px;
+    color: white;
     font-weight: bold;
-    display: inline-block;
-    text-align: center;
-    width: 25px; /* Ajusta el tamaño del círculo */
-    height: 25px;
-    line-height: 25px;
+    display: inline-block;  /* Esto asegura que el span ocupe solo el espacio necesario */
 }
 
 .status.recibido {
-    background-color: #ffc107; /* Amarillo para Recibido */
+    background-color: #ffc107; /* Amarillo para 'Recibido' */
 }
 
 .status.en-proceso {
-    background-color: #007bff; /* Azul para En Proceso */
+    background-color: #007bff; /* Azul para 'En Proceso' */
 }
 
 .status.completado {
-    background-color: #28a745; /* Verde para Completado */
+    background-color: #28a745; /* Verde para 'Completado' */
 }
+
+.status.desconocido {
+    background-color: #6c757d; /* Gris para estatus desconocidos */
+    color: black;
+}
+
 
 .action-btn {
     background-color: #007bff;

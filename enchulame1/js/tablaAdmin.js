@@ -21,18 +21,13 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Función para llenar la tabla con los reportes
-// Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
     const tablaReportes = document.getElementById('tablaReportes');
+    tablaReportes.innerHTML = '';  // Limpiar tabla antes de llenarla
 
-    // Limpiar la tabla antes de llenarla
-    tablaReportes.innerHTML = '';
-
-    // Iterar sobre los reportes y crear filas
     reportes.forEach(reporte => {
         const fila = document.createElement('tr');
 
-        // Crear las celdas con la información de los reportes
         const celdaIdReporte = document.createElement('td');
         celdaIdReporte.textContent = reporte.IdReporte;
 
@@ -51,28 +46,29 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
+        // Celda para el estatus con clases CSS correspondientes
         const celdaEstatus = document.createElement('td');
-        celdaEstatus.textContent = reporte.Estatus;
+        const spanEstatus = document.createElement('span');  // Usamos un span para el estatus
 
-        // Depuración: Verifica que el valor de reporte.Estatus sea el esperado
-        console.log("Estatus del reporte:", reporte.Estatus);
-
-        // Asignar clase para cambiar color según el estatus
-        celdaEstatus.classList.add('status');
-
-        // Comprobamos si los valores de reporte.Estatus son los correctos y agregamos las clases correspondientes
+        // Verificamos si el estatus tiene el valor esperado
         if (reporte.Estatus === 'Recibido') {
-            celdaEstatus.classList.add('recibido');
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'recibido');
         } else if (reporte.Estatus === 'En Proceso') {
-            celdaEstatus.classList.add('en-proceso');
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'en-proceso');
         } else if (reporte.Estatus === 'Completado') {
-            celdaEstatus.classList.add('completado');
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'completado');
         } else {
-            // Si el valor no es ninguno de los esperados, mostramos un error en la consola
-            console.error("Estatus desconocido:", reporte.Estatus);
+            spanEstatus.textContent = 'Estatus Desconocido';
+            spanEstatus.classList.add('status', 'desconocido');
         }
 
-        // Celda de acción con el botón "Ver detalles"
+        // Agregar el span con el estatus a la celda
+        celdaEstatus.appendChild(spanEstatus);
+
+        // Celda de acción con botón "Ver detalles"
         const celdaAccion = document.createElement('td');
         const botonDetalles = document.createElement('button');
         botonDetalles.textContent = 'Ver detalles';
