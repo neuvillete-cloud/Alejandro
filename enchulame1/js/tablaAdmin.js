@@ -53,30 +53,24 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
-        // Crear la celda de estado con el círculo
+        // Celda de estado
         const celdaEstatus = document.createElement('td');
-        const statusElement = document.createElement('div');
-        statusElement.classList.add('status');
+        const estatusElemento = document.createElement('span');
+        estatusElemento.classList.add('status');
 
-        // Asignar clase y texto según el estado
-        switch (reporte.Estatus) {
-            case 'Recibido':
-                statusElement.classList.add('recibido');
-                statusElement.textContent = 'R';  // Puedes poner "R" o el texto que desees
-                break;
-            case 'En Proceso':
-                statusElement.classList.add('en-proceso');
-                statusElement.textContent = 'P';  // Puedes poner "P" o el texto que desees
-                break;
-            case 'Completado':
-                statusElement.classList.add('completado');
-                statusElement.textContent = 'C';  // Puedes poner "C" o el texto que desees
-                break;
-            default:
-                statusElement.textContent = 'N/A';  // Si no tiene estado
+        // Asigna una clase adicional según el estatus
+        if (reporte.Estatus === 'Recibido') {
+            estatusElemento.classList.add('recibido');
+            estatusElemento.textContent = 'Recibido';
+        } else if (reporte.Estatus === 'En Proceso') {
+            estatusElemento.classList.add('en-proceso');
+            estatusElemento.textContent = 'En Proceso';
+        } else if (reporte.Estatus === 'Completado') {
+            estatusElemento.classList.add('completado');
+            estatusElemento.textContent = 'Completado';
         }
 
-        celdaEstatus.appendChild(statusElement);
+        celdaEstatus.appendChild(estatusElemento);
 
         // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
@@ -99,4 +93,3 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
-
