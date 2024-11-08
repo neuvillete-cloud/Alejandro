@@ -116,23 +116,14 @@ tbody tr {
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    text-align: center;
 }
 
-.status.recibido {
-    background-color: #ffc107; /* Fondo amarillo para "Recibido" */
+.status.pending {
+    background-color: #ffc107;
 }
 
-.status.en-proceso {
-    background-color: #007bff; /* Fondo azul para "En Proceso" */
-}
-
-.status.completado {
-    background-color: #28a745; /* Fondo verde para "Completado" */
-}
-
-.status.desconocido {
-    background-color: #6c757d; /* Fondo gris para estatus desconocido */
+.status.completed {
+    background-color: #28a745;
 }
 
 .action-btn {

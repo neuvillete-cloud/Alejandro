@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({
+            // Aquí puedes enviar datos adicionales si los necesitas
+        })
     })
         .then(response => response.json())
         .then(data => {
@@ -50,24 +52,8 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
-        // Crear la celda de estatus y añadir colores según el estatus
         const celdaEstatus = document.createElement('td');
         celdaEstatus.textContent = reporte.Estatus;
-
-        // Asignar clase de color según el estatus
-        switch (reporte.Estatus) {
-            case 'Recibido':
-                celdaEstatus.classList.add('recibido');
-                break;
-            case 'En Proceso':
-                celdaEstatus.classList.add('en-proceso');
-                break;
-            case 'Completado':
-                celdaEstatus.classList.add('completado');
-                break;
-            default:
-                celdaEstatus.classList.add('desconocido');
-        }
 
         // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
