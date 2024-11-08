@@ -52,8 +52,24 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
+        // Celda de estado con el círculo de color
         const celdaEstatus = document.createElement('td');
-        celdaEstatus.textContent = reporte.Estatus;
+        const estado = document.createElement('span');
+        estado.classList.add('status'); // Clase general para el estado
+
+        // Asignar clases de estado según el valor de reporte.Estatus
+        if (reporte.Estatus === 'Pendiente') {
+            estado.classList.add('pending');
+            estado.textContent = 'Pendiente';
+        } else if (reporte.Estatus === 'Completado') {
+            estado.classList.add('completed');
+            estado.textContent = 'Completado';
+        } else if (reporte.Estatus === 'En Proceso') {
+            estado.classList.add('in_progress');
+            estado.textContent = 'En Proceso';
+        }
+
+        celdaEstatus.appendChild(estado);
 
         // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
@@ -76,3 +92,4 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
+
