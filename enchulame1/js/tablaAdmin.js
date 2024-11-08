@@ -21,16 +21,12 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error al hacer la solicitud:', error);
         });
 });
-
-// Función para llenar la tabla con los reportes
-// Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
     const tablaReportes = document.getElementById('tablaReportes');
 
     // Limpiar la tabla antes de llenarla
     tablaReportes.innerHTML = '';
 
-    // Iterar sobre los reportes y crear filas
     reportes.forEach(reporte => {
         const fila = document.createElement('tr');
 
@@ -58,16 +54,25 @@ function llenarTablaReportes(reportes) {
         const estatusElemento = document.createElement('span');
         estatusElemento.classList.add('status');
 
-        // Asigna una clase adicional según el estatus
-        if (reporte.Estatus === 'Recibido') {
-            estatusElemento.classList.add('recibido');
-            estatusElemento.textContent = 'Recibido';
-        } else if (reporte.Estatus === 'En Proceso') {
-            estatusElemento.classList.add('en-proceso');
-            estatusElemento.textContent = 'En Proceso';
-        } else if (reporte.Estatus === 'Completado') {
-            estatusElemento.classList.add('completado');
-            estatusElemento.textContent = 'Completado';
+        // Verifica el valor de reporte.Estatus
+        console.log("Estado del reporte:", reporte.Estatus);
+
+        switch (reporte.Estatus) {
+            case 'Recibido':
+                estatusElemento.classList.add('recibido');
+                estatusElemento.textContent = 'Recibido';
+                break;
+            case 'En Proceso':
+                estatusElemento.classList.add('en-proceso');
+                estatusElemento.textContent = 'En Proceso';
+                break;
+            case 'Completado':
+                estatusElemento.classList.add('completado');
+                estatusElemento.textContent = 'Completado';
+                break;
+            default:
+                estatusElemento.textContent = 'Desconocido';
+                estatusElemento.classList.add('desconocido');
         }
 
         celdaEstatus.appendChild(estatusElemento);
