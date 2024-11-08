@@ -113,27 +113,28 @@ tbody tr {
 
 /* Estilos para el círculo de estado */
 .status {
-    padding: 8px 12px;
-    border-radius: 50%;  /* Hace el fondo un círculo */
+    padding: 5px 10px;
+    border-radius: 50%;
     color: white;
     font-weight: bold;
     display: inline-block;
     text-align: center;
-    min-width: 50px;
-    text-transform: capitalize;  /* Asegura que el texto se vea bien */
+    width: 100px; /* Ajusta el tamaño del círculo */
+    height: 100px; /* Ajusta el tamaño del círculo */
 }
 
-.status.pending {
-    background-color: #ffc107;  /* Amarillo para el estado 'Pendiente' */
-}
-
-.status.completed {
-    background-color: #28a745;  /* Verde para el estado 'Completado' */
+.status.received {
+    background-color: #ffc107; /* Color amarillo para Recibido */
 }
 
 .status.in_progress {
-    background-color: #007bff;  /* Azul para el estado 'En Proceso' */
+    background-color: #007bff; /* Color azul para En Proceso */
 }
+
+.status.completed {
+    background-color: #28a745; /* Color verde para Completado */
+}
+
 
 .action-btn {
     background-color: #007bff;

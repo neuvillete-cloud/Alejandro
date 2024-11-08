@@ -58,15 +58,15 @@ function llenarTablaReportes(reportes) {
         estado.classList.add('status'); // Clase general para el estado
 
         // Asignar clases de estado según el valor de reporte.Estatus
-        if (reporte.Estatus === 'Pendiente') {
-            estado.classList.add('pending');
-            estado.textContent = 'Pendiente';
-        } else if (reporte.Estatus === 'Completado') {
-            estado.classList.add('completed');
-            estado.textContent = 'Completado';
+        if (reporte.Estatus === 'Recibido') {
+            estado.classList.add('received');
+            estado.textContent = 'Recibido';
         } else if (reporte.Estatus === 'En Proceso') {
             estado.classList.add('in_progress');
             estado.textContent = 'En Proceso';
+        } else if (reporte.Estatus === 'Completado') {
+            estado.classList.add('completed');
+            estado.textContent = 'Completado';
         }
 
         celdaEstatus.appendChild(estado);
@@ -92,4 +92,3 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
-
