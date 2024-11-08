@@ -55,6 +55,6 @@
     </main>
 </div>
 
-<script src="js/tablaAdmin.js" defer></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
+<script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
