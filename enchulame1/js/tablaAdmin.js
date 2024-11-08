@@ -1,3 +1,26 @@
+document.addEventListener("DOMContentLoaded", function() {
+    // Llamada a la API para obtener los reportes
+    fetch('dao/mostrarDatosTabla.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                llenarTablaReportes(data.data);
+            } else {
+                console.error('Error al obtener los reportes:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error al hacer la solicitud:', error);
+        });
+});
+
+// Función para llenar la tabla con los reportes
 // Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
     const tablaReportes = document.getElementById('tablaReportes');
