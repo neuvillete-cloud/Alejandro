@@ -111,19 +111,25 @@ tbody tr {
     border-top: 1px solid #e9ecef;
 }
 
+/* Estilos para los estados */
 .status {
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 5px; /* Hace que sea un círculo */
     color: white;
     font-weight: bold;
+
 }
 
-.status.pending {
-    background-color: #ffc107;
+.status.recibido {
+    background-color: #ffc107; /* Fondo amarillo para "Recibido" */
 }
 
-.status.completed {
-    background-color: #28a745;
+.status.en-proceso {
+    background-color: #007bff; /* Fondo azul para "En Proceso" */
+}
+
+.status.completado {
+    background-color: #28a745; /* Fondo verde para "Completado" */
 }
 
 .action-btn {

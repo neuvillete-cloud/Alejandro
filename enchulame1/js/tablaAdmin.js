@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Función para llenar la tabla con los reportes
+// Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
     const tablaReportes = document.getElementById('tablaReportes');
 
@@ -52,8 +53,30 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
+        // Crear la celda de estado con el círculo
         const celdaEstatus = document.createElement('td');
-        celdaEstatus.textContent = reporte.Estatus;
+        const statusElement = document.createElement('div');
+        statusElement.classList.add('status');
+
+        // Asignar clase y texto según el estado
+        switch (reporte.Estatus) {
+            case 'Recibido':
+                statusElement.classList.add('recibido');
+                statusElement.textContent = 'R';  // Puedes poner "R" o el texto que desees
+                break;
+            case 'En Proceso':
+                statusElement.classList.add('en-proceso');
+                statusElement.textContent = 'P';  // Puedes poner "P" o el texto que desees
+                break;
+            case 'Completado':
+                statusElement.classList.add('completado');
+                statusElement.textContent = 'C';  // Puedes poner "C" o el texto que desees
+                break;
+            default:
+                statusElement.textContent = 'N/A';  // Si no tiene estado
+        }
+
+        celdaEstatus.appendChild(statusElement);
 
         // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
@@ -76,3 +99,4 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
+
