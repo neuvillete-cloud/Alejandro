@@ -33,7 +33,7 @@ function llenarTablaReportes(reportes) {
     reportes.forEach(reporte => {
         const fila = document.createElement('tr');
 
-        // Crear las celdas
+        // Crear las celdas con la información de los reportes
         const celdaIdReporte = document.createElement('td');
         celdaIdReporte.textContent = reporte.IdReporte;
 
@@ -55,6 +55,7 @@ function llenarTablaReportes(reportes) {
         const celdaEstatus = document.createElement('td');
         celdaEstatus.textContent = reporte.Estatus;
 
+        // Celda de acción con el botón "Ver detalles"
         const celdaAccion = document.createElement('td');
         const botonDetalles = document.createElement('button');
         botonDetalles.textContent = 'Ver detalles';

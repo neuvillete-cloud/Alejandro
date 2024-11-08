@@ -3,18 +3,8 @@ session_start(); // Iniciar sesión
 include_once("conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificar si el usuario está autenticado
-    if (!isset($_SESSION['NumNomina'])) {
-        $response = array('status' => 'error', 'message' => 'Usuario no autenticado.');
-        echo json_encode($response);
-        exit();
-    }
-
-    // Obtener la nómina del usuario autenticado
-    $NumNomina = $_SESSION['NumNomina'];
-
-    // Obtener los reportes desde la base de datos
-    $response = obtenerReportes($NumNomina);
+    // Obtener los reportes desde la base de datos (todos los reportes, no solo los del usuario)
+    $response = obtenerReportes();
     echo json_encode($response);
     exit();
 } else {
@@ -23,12 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit();
 }
 
-// Función para obtener los reportes del usuario
-function obtenerReportes($NumNomina) {
+// Función para obtener los reportes (todos, no solo los de un usuario específico)
+function obtenerReportes() {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta para obtener los reportes y la información del usuario
+    // Consulta SQL para obtener todos los reportes, sin filtrar por NumNomina
     $stmt = $conex->prepare("
         SELECT 
             r.IdReporte, 
@@ -38,8 +28,6 @@ function obtenerReportes($NumNomina) {
             r.FechaRegistro, 
             r.DescripcionProblema, 
             r.DescripcionLugar, 
-            r.FotoProblema, 
-            r.FotoEvidencia, 
             e.NombreEstatus AS Estatus
         FROM 
             Reportes r
@@ -49,13 +37,9 @@ function obtenerReportes($NumNomina) {
             Area a ON r.IdArea = a.IdArea
         JOIN 
             Estatus e ON r.IdEstatus = e.IdEstatus
-        WHERE 
-            r.NumNomina = ?
         ORDER BY 
             r.FechaRegistro DESC
     ");
-
-    $stmt->bind_param("s", $NumNomina);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -79,3 +63,4 @@ function obtenerReportes($NumNomina) {
     return $response;
 }
 ?>
+
