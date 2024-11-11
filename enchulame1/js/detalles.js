@@ -27,7 +27,10 @@ function mostrarDetallesReporte(id) {
                     <div class="image-container">
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
-                    <button id="statusButton">Cambiar Estatus</button>
+                    <!-- Contenedor separado para el botón -->
+                    <div class="status-button-container">
+                        <button id="statusButton">Cambiar Estatus</button>
+                    </div>
                 `;
 
                 // Evento para cambiar el estatus del reporte

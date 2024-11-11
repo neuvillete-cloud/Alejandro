@@ -94,8 +94,16 @@ h1 {
     bottom: 15px;
     left: 20px;
     transition: background-color 0.3s ease;
+    margin-top: 30px; /* Separar el botón de la imagen */
 }
 
-#statusButton:hover {
-    background-color: #3a6788;
+/* Ajustar el contenedor para el botón */
+.status-button-container {
+    text-align: left;
+    width: 100%;
+    margin-top: 20px; /* Ajustar la separación del botón */
+    position: relative;
+    padding-left: 20px;
 }
+
+
