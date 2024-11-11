@@ -11,7 +11,7 @@
     <h1>Detalles del Reporte</h1>
 </header>
 <section id="detalleReporte">
-    <!-- El contenido se llenará dinámicamente desde tu script -->
+    <!-- Aquí se mostrarán los detalles del reporte -->
 </section>
 
 <script src="js/detalles.js"></script>
