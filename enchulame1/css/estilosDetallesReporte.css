@@ -44,9 +44,6 @@ h1 {
     overflow: hidden;
 }
 
-
-
-
 /* Estilos para secciones de datos */
 .report-section {
     background-color: #f0f7fd;
@@ -95,7 +92,7 @@ h1 {
     font-size: 14px;
     position: absolute;
     bottom: 15px;
-    left: 15px;
+    left: 20px;
     transition: background-color 0.3s ease;
 }
 
