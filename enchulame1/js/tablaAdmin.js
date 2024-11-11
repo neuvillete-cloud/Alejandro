@@ -74,7 +74,7 @@ function llenarTablaReportes(reportes) {
         botonDetalles.textContent = 'Ver detalles';
         botonDetalles.classList.add('action-btn')
         botonDetalles.addEventListener('click', function() {
-            window.location.href = `detallesReporte.php ?id=${reporte.IdReporte}`;
+            window.location.href = `detallesReporte.php?id=${reporte.IdReporte}`;
         });
 
         celdaAccion.appendChild(botonDetalles);
