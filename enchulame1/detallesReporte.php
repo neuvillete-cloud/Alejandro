@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles del Reporte</title>
-    <link rel="stylesheet" href="css/estilosDetallesReporte.css"> <!-- Vincula el CSS de esta página -->
+    <link rel="stylesheet" href="css/estilosDetallesReporte.css">
 </head>
 <body>
 <header>
     <h1>Detalles del Reporte</h1>
 </header>
 <section id="detalleReporte">
-    <!-- Aquí se mostrarán los detalles específicos del reporte -->
+    <!-- El contenido se llenará dinámicamente desde tu script -->
 </section>
 
 <script src="js/detalles.js"></script>
