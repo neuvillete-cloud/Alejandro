@@ -8,12 +8,11 @@
 /* Estilos generales */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f7f5f0; /* Fondo similar al mostrado */
+    background-color: #e6f0fa; /* Fondo azul claro */
     color: #333;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 100vh;
     padding: 20px;
 }
 
@@ -21,32 +20,43 @@ body {
 header {
     text-align: center;
     margin-bottom: 20px;
+    background-color: #97c7e8; /* Azul cielo */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
     font-size: 28px;
-    color: #8b1d4d; /* Color similar al rojo del título */
 }
 
 /* Contenedor de los detalles del reporte */
 #detalleReporte {
     background-color: #ffffff;
-    border: 2px solid #d0c5b0;
+    border: 2px solid #b0cde0;
     border-radius: 15px;
     padding: 20px;
-    width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
     font-size: 16px;
 }
 
-/* Título del reporte */
-#detalleReporte h2 {
-    text-align: center;
-    color: #b44157;
-    font-size: 22px;
-    margin-bottom: 20px;
+/* Banner de título interno */
+#detalleReporte::before {
+    content: '¿Quieres un Rolinho da Sorte hoy?';
     font-weight: bold;
+    font-size: 18px;
+    color: #5b8db8; /* Azul oscuro */
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #e6f0fa;
+    padding: 5px 15px;
+    border-radius: 10px;
+    border: 1px solid #b0cde0;
 }
 
 /* Estilos de los detalles */
@@ -56,33 +66,54 @@ h1 {
 }
 
 #detalleReporte p strong {
-    color: #8b1d4d;
+    color: #5b8db8;
+}
+
+/* Caja de estadísticas */
+.stats {
+    background-color: #f0f7fd;
+    border: 1px solid #b0cde0;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 15px;
 }
 
 /* Estilos para la imagen */
-#detalleReporte img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    margin: 20px auto;
+.image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.image-container img {
+    width: 150px;
+    border-radius: 15px;
+    border: 3px solid #b0cde0;
+}
+
+/* Botón de cambio de estatus */
+#statusButton {
+    background-color: #5b8db8;
+    color: #fff;
+    border: none;
     border-radius: 10px;
-    border: 2px solid #d0c5b0;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    transition: background-color 0.3s ease;
+}
+
+#statusButton:hover {
+    background-color: #3a6788;
 }
 
 /* Mensaje de error */
-#detalleReporte .error {
+.error {
     text-align: center;
-    color: #b44157;
+    color: #d9534f;
     font-weight: bold;
     margin-top: 20px;
-}
-
-/* Footer pequeño para detalles adicionales */
-.footer-note {
-    text-align: center;
-    font-size: 14px;
-    color: #666;
-    margin-top: 20px;
-    border-top: 1px solid #d0c5b0;
-    padding-top: 10px;
 }
