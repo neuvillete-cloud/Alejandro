@@ -44,21 +44,8 @@ h1 {
     overflow: hidden;
 }
 
-/* Banner de título interno */
-#detalleReporte::before {
-    content: 'Detalles del Reporte';
-    font-weight: bold;
-    font-size: 20px;
-    color: #3a6788;
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #e6f0fa;
-    padding: 5px 15px;
-    border-radius: 10px;
-    border: 2px solid #b0cde0;
-}
+
+
 
 /* Estilos para secciones de datos */
 .report-section {
