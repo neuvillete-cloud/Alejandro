@@ -118,16 +118,16 @@ h1 {
     display: flex;
     align-items: center;
     gap: 8px; /* Espacio entre la flecha y el texto */
-    position: absolute;
-    top: -15px; /* Ubicación en la parte superior */
-    left: 20px;
+    position: fixed; /* Fijado en la esquina superior izquierda */
+    top: 20px; /* Ajusta la distancia desde la parte superior */
+    left: 20px; /* Ajusta la distancia desde la izquierda */
     transition: background-color 0.3s ease;
     text-decoration: none;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
 }
 
 #backButton:hover {
     background-color: #3a6788;
 }
-
 
 

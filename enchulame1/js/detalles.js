@@ -11,14 +11,17 @@ function mostrarDetallesReporte(id) {
             if (data.status === 'success') {
                 const reporte = data.reporte;
 
-                // Muestra los datos del reporte en la página
-                const detalleDiv = document.getElementById('detalleReporte');
-                detalleDiv.innerHTML = `
+                // Añadir el botón de regresar al cuerpo del documento
+                document.body.insertAdjacentHTML('afterbegin', `
                     <!-- Botón de regresar -->
                     <a href="javascript:history.back()" id="backButton">
                         &#8592; Regresar
                     </a>
-                    
+                `);
+
+                // Muestra los datos del reporte en la página
+                const detalleDiv = document.getElementById('detalleReporte');
+                detalleDiv.innerHTML = `
                     <div class="report-section">
                         <h2>Reporte #${reporte.IdReporte}</h2>
                         <p><strong>Nombre:</strong> ${reporte.NombreUsuario}</p>
@@ -55,4 +58,3 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
-
