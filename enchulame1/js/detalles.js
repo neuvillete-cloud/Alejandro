@@ -14,6 +14,11 @@ function mostrarDetallesReporte(id) {
                 // Muestra los datos del reporte en la página
                 const detalleDiv = document.getElementById('detalleReporte');
                 detalleDiv.innerHTML = `
+                    <!-- Botón de regresar -->
+                    <a href="javascript:history.back()" id="backButton">
+                        &#8592; Regresar
+                    </a>
+                    
                     <div class="report-section">
                         <h2>Reporte #${reporte.IdReporte}</h2>
                         <p><strong>Nombre:</strong> ${reporte.NombreUsuario}</p>
@@ -27,7 +32,7 @@ function mostrarDetallesReporte(id) {
                     <div class="image-container">
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
-                    <!-- Contenedor separado para el botón -->
+                    <!-- Contenedor separado para el botón de cambiar estatus -->
                     <div class="status-button-container">
                         <button id="statusButton">Cambiar Estatus</button>
                     </div>
@@ -50,3 +55,4 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
+
