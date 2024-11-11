@@ -14,6 +14,6 @@
     <!-- Aquí se mostrarán los detalles específicos del reporte -->
 </section>
 
-
+<script src="js/detalles.js"></script>
 </body>
 </html>
