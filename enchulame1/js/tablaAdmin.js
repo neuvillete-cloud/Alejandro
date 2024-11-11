@@ -72,7 +72,11 @@ function llenarTablaReportes(reportes) {
         const celdaAccion = document.createElement('td');
         const botonDetalles = document.createElement('button');
         botonDetalles.textContent = 'Ver detalles';
-        botonDetalles.classList.add('action-btn');
+        botonDetalles.classList.add('action-btn')
+        botonDetalles.addEventListener('click', function() {
+            window.location.href = `detallesReporte.html?id=${reporte.IdReporte}`;
+        });
+
         celdaAccion.appendChild(botonDetalles);
 
         // Agregar las celdas a la fila
