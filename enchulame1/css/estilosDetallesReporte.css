@@ -106,16 +106,16 @@ h1 {
     padding-left: 20px;
 }
 
-/* Botón de regresar en forma de luna */
+/* Botón de regresar en forma de círculo */
 #backButton {
     background-color: #5b8db8;
     color: #fff;
     border: none;
-    border-radius: 50%;
+    border-radius: 50%; /* Forma circular */
     width: 60px; /* Ancho del botón circular */
     height: 60px; /* Alto del botón circular */
     cursor: pointer;
-    font-size: 24px;
+    font-size: 24px; /* Tamaño de la letra */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -128,22 +128,8 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilo para simular la fase de luna */
-#backButton::before {
-    content: '';
-    position: absolute;
-    width: 40px;
-    height: 60px;
-    background-color: #e6f0fa;
-    border-radius: 50%;
-    transform: translateX(15px);
-}
-
 /* Efecto hover */
 #backButton:hover {
     background-color: #3a6788;
     transform: scale(1.1);
 }
-
-
-
