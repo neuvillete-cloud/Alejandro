@@ -14,16 +14,27 @@ function mostrarDetallesReporte(id) {
                 // Muestra los datos del reporte en la página
                 const detalleDiv = document.getElementById('detalleReporte');
                 detalleDiv.innerHTML = `
-                    <h2>Reporte #${reporte.IdReporte}</h2>
-                    <p><strong>Nombre:</strong> ${reporte.NombreUsuario}</p>
-                    <p><strong>Área:</strong> ${reporte.Area}</p>
-                    <p><strong>Ubicación:</strong> ${reporte.Ubicacion}</p>
-                    <p><strong>Fecha:</strong> ${reporte.FechaRegistro}</p>
-                    <p><strong>Descripción del Problema:</strong> ${reporte.DescripcionProblema}</p>
-                    <p><strong>Estado:</strong> ${reporte.Estatus}</p>
-                    <p><strong>Detalles Adicionales:</strong> ${reporte.DescripcionLugar || 'N/A'}</p>
-                    <div><strong>Foto del Problema:</strong><br><img src="${reporte.FotoProblemaURL}" alt="Foto del Problema" style="max-width: 100%; height: auto;"/></div>
+                    <div class="report-section">
+                        <h2>Reporte #${reporte.IdReporte}</h2>
+                        <p><strong>Nombre:</strong> ${reporte.NombreUsuario}</p>
+                        <p><strong>Área:</strong> ${reporte.Area}</p>
+                        <p><strong>Ubicación:</strong> ${reporte.Ubicacion}</p>
+                        <p><strong>Fecha:</strong> ${reporte.FechaRegistro}</p>
+                        <p><strong>Descripción del Problema:</strong> ${reporte.DescripcionProblema}</p>
+                        <p><strong>Estado:</strong> ${reporte.Estatus}</p>
+                        <p><strong>Detalles Adicionales:</strong> ${reporte.DescripcionLugar || 'N/A'}</p>
+                    </div>
+                    <div class="image-container">
+                        <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
+                    </div>
+                    <button id="statusButton">Cambiar Estatus</button>
                 `;
+
+                // Evento para cambiar el estatus del reporte
+                document.getElementById('statusButton').addEventListener('click', function() {
+                    alert('Funcionalidad para cambiar estatus en desarrollo');
+                });
+
             } else {
                 document.getElementById('detalleReporte').innerHTML = '<p>Reporte no encontrado.</p>';
             }
