@@ -106,28 +106,44 @@ h1 {
     padding-left: 20px;
 }
 
-/* Botón de regresar */
+/* Botón de regresar en forma de luna */
 #backButton {
     background-color: #5b8db8;
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
+    border-radius: 50%;
+    width: 60px; /* Ancho del botón circular */
+    height: 60px; /* Alto del botón circular */
     cursor: pointer;
-    font-size: 14px;
+    font-size: 24px;
     display: flex;
     align-items: center;
-    gap: 8px; /* Espacio entre la flecha y el texto */
+    justify-content: center;
     position: fixed; /* Fijado en la esquina superior izquierda */
     top: 20px; /* Ajusta la distancia desde la parte superior */
     left: 20px; /* Ajusta la distancia desde la izquierda */
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     text-decoration: none;
     z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Estilo para simular la fase de luna */
+#backButton::before {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 60px;
+    background-color: #e6f0fa;
+    border-radius: 50%;
+    transform: translateX(15px);
+}
+
+/* Efecto hover */
 #backButton:hover {
     background-color: #3a6788;
+    transform: scale(1.1);
 }
+
 
 

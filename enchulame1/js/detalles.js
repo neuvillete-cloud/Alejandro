@@ -11,11 +11,11 @@ function mostrarDetallesReporte(id) {
             if (data.status === 'success') {
                 const reporte = data.reporte;
 
-                // Añadir el botón de regresar al cuerpo del documento
+                // Añadir el botón de regresar en forma de luna al cuerpo del documento
                 document.body.insertAdjacentHTML('afterbegin', `
                     <!-- Botón de regresar -->
                     <a href="javascript:history.back()" id="backButton">
-                        &#8592; Regresar
+                        &#8592;
                     </a>
                 `);
 
@@ -58,3 +58,4 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
+
