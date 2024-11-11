@@ -14,8 +14,8 @@
             <h2>eReport</h2>
         </div>
         <nav class="menu">
-            <a href="#" class="menu-item active">Dashboard</a>
-            <a href="#" class="menu-item">Reportes</a>
+            <a href="#" class="menu-item active">Reportes</a>
+            <a href="#" class="menu-item">Dashboard</a>
             <a href="#" class="menu-item">Estadísticas</a>
             <a href="#" class="menu-item">Usuarios</a>
             <a href="#" class="menu-item">Configuración</a>
