@@ -29,7 +29,7 @@ function mostrarDetallesReporte(id) {
                         <p><strong>Ubicación:</strong> ${reporte.Ubicacion}</p>
                         <p><strong>Fecha:</strong> ${reporte.FechaRegistro}</p>
                         <p><strong>Descripción del Problema:</strong> ${reporte.DescripcionProblema}</p>
-                        <p><strong>Estado:</strong> ${reporte.Estatus}</p>
+                        <p><strong>Estado:</strong> <span id="estatus">${reporte.Estatus}</span></p>
                         <p><strong>Detalles Adicionales:</strong> ${reporte.DescripcionLugar || 'N/A'}</p>
                     </div>
                     <div class="image-container">
@@ -43,7 +43,26 @@ function mostrarDetallesReporte(id) {
 
                 // Evento para cambiar el estatus del reporte
                 document.getElementById('statusButton').addEventListener('click', function() {
-                    alert('Funcionalidad para cambiar estatus en desarrollo');
+                    if (confirm('¿Está seguro de que desea cambiar el estatus a "En Proceso"?')) {
+                        fetch('dao/actualizarEstatusReporte.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `id=${reporteId}`
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    alert(data.message);
+                                    // Actualizar el estatus en la página sin recargarla
+                                    document.getElementById('estatus').textContent = 'En Proceso';
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error al actualizar el estatus:', error));
+                    }
                 });
 
             } else {
@@ -58,4 +77,3 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
-
