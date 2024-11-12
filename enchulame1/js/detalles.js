@@ -44,7 +44,7 @@ function mostrarDetallesReporte(id) {
                 // Evento para cambiar el estatus del reporte
                 document.getElementById('statusButton').addEventListener('click', function() {
                     if (confirm('¿Está seguro de que desea cambiar el estatus a "En Proceso"?')) {
-                        fetch('Mailer/actualizarEstatusReporte.php', {
+                        fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded'
