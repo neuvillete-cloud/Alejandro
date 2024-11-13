@@ -94,7 +94,7 @@ function mostrarDetallesReporte(id) {
 
                 // Evento para abrir el modal al hacer clic en "Finalizar"
                 document.getElementById('finalizarButton').addEventListener('click', function() {
-                    document.getElementById('finalizarModal').style.display = 'block';
+                    document.getElementById('finalizarModal').style.display = 'flex'; // Asegúrate de que se muestre con flex
                 });
 
                 // Cerrar el modal al hacer clic en la "x" o fuera del modal
@@ -146,6 +146,7 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
+
 
 
 
