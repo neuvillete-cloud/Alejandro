@@ -38,9 +38,15 @@ function mostrarDetallesReporte(id) {
                     <!-- Contenedor separado para los botones de cambiar estatus y finalizar -->
                     <div class="status-button-container">
                         <button id="statusButton">Cambiar Estatus</button>
-                        <button id="finalizarButton">Finalizar</button>
+                        <!-- El botón de Finalizar se insertará aquí mediante JS -->
                     </div>
                 `;
+
+                // Añadir el botón de "Finalizar" dinámicamente al contenedor
+                const finalizarButtonContainer = document.querySelector('.status-button-container');
+                finalizarButtonContainer.insertAdjacentHTML('beforeend', `
+                    <button id="finalizarButton">Finalizar</button>
+                `);
 
                 // Evento para cambiar el estatus del reporte
                 document.getElementById('statusButton').addEventListener('click', function() {
@@ -66,6 +72,26 @@ function mostrarDetallesReporte(id) {
                     }
                 });
 
+                // Crear el modal de finalización
+                const modalHTML = `
+                    <div id="finalizarModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>Finalizar Reporte</h2>
+                            <form id="finalizarForm" enctype="multipart/form-data">
+                                <label for="comentarioFinal">Comentario Final:</label>
+                                <textarea id="comentarioFinal" name="comentarioFinal" required></textarea>
+
+                                <label for="fotoEvidencia">Subir Foto de Evidencia:</label>
+                                <input type="file" id="fotoEvidencia" name="fotoEvidencia" required>
+
+                                <button type="submit">Finalizar Reporte</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
                 // Evento para abrir el modal al hacer clic en "Finalizar"
                 document.getElementById('finalizarButton').addEventListener('click', function() {
                     document.getElementById('finalizarModal').style.display = 'block';
@@ -75,6 +101,7 @@ function mostrarDetallesReporte(id) {
                 document.querySelector('.close').addEventListener('click', function() {
                     document.getElementById('finalizarModal').style.display = 'none';
                 });
+
                 window.onclick = function(event) {
                     if (event.target === document.getElementById('finalizarModal')) {
                         document.getElementById('finalizarModal').style.display = 'none';
@@ -119,5 +146,6 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
+
 
 
