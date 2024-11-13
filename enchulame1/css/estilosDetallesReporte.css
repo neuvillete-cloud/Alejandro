@@ -115,7 +115,9 @@ h1 {
     padding: 10px 20px;
     cursor: pointer;
     font-size: 14px;
-    margin-top: 30px;
+    position: absolute;
+    bottom: 15px;
+    right: 20px; /* Posiciona el botón en la esquina inferior derecha */
     transition: background-color 0.3s ease;
 }
 
