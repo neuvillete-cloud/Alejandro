@@ -15,7 +15,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal']) && isset($_FILES['fo
     $fechaFinalizado = date("Y-m-d H:i:s");
 
     // Manejo de la imagen de evidencia
-    $directorio = "../imagenes/fotosAdministrador"; // Carpeta donde se guardarán las fotos
+    $directorio = "../imagenes/fotosAdministrador/"; // Carpeta donde se guardarán las fotos
     $nombreArchivo = basename($_FILES["fotoEvidencia"]["name"]);
     $rutaArchivo = $directorio . uniqid() . "_" . $nombreArchivo; // Ruta única para evitar conflictos de nombres
 
