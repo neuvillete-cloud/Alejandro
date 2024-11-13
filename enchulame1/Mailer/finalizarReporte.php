@@ -14,59 +14,86 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal']) && isset($_FILES['fo
     $nuevoEstatus = 3; // Suponiendo que el ID 3 es "Finalizado" en la tabla de estatus
     $fechaFinalizado = date("Y-m-d H:i:s");
 
-    // Manejo de la imagen de evidencia
-    $directorio = "../imagenes/fotosAdministrador/"; // Carpeta donde se guardarán las fotos
-    $nombreArchivo = basename($_FILES["fotoEvidencia"]["name"]);
-    $rutaArchivo = $directorio . uniqid() . "_" . $nombreArchivo; // Ruta única para evitar conflictos de nombres
+    // Verificar que la imagen se haya subido correctamente
+    if (isset($_FILES['fotoEvidencia']) && $_FILES['fotoEvidencia']['error'] === UPLOAD_ERR_OK) {
+        $fotoEvidencia = $_FILES['fotoEvidencia'];
 
-    if (move_uploaded_file($_FILES["fotoEvidencia"]["tmp_name"], $rutaArchivo)) {
-        // Conexión usando la clase `LocalConector`
-        $con = new LocalConector();
-        $conex = $con->conectar();
-
-        // Actualizar el estatus, comentario final, foto de evidencia y fecha de finalización del reporte
-        $stmt = $conex->prepare("UPDATE Reportes SET IdEstatus = ?, ComentarioFinales = ?, FotoEvidencia = ?, FechaFinalizado = ? WHERE IdReporte = ?");
-        $stmt->bind_param('isssi', $nuevoEstatus, $comentarioFinal, $rutaArchivo, $fechaFinalizado, $reporteId);
-
-        if ($stmt->execute()) {
-            // Obtener el correo del usuario que reportó el problema
-            $stmt_user = $conex->prepare("
-                SELECT Correo 
-                FROM Usuario 
-                INNER JOIN Reportes ON Usuario.NumNomina = Reportes.NumNomina 
-                WHERE Reportes.IdReporte = ?
-            ");
-            $stmt_user->bind_param('i', $reporteId);
-            $stmt_user->execute();
-            $result = $stmt_user->get_result();
-
-            if ($result->num_rows > 0) {
-                $user = $result->fetch_assoc();
-                $emailUsuario = $user['Correo'];
-
-                // Enviar correo de notificación al usuario con la imagen de evidencia adjunta
-                $asunto = "Reporte Finalizado";
-                $mensaje = "Hola,<br><br>Te informamos que el estatus de tu reporte #$reporteId ha cambiado a 'Finalizado'.<br><br><strong>Comentario final:</strong> $comentarioFinal<br><br>Adjunto encontrarás una imagen de evidencia.<br><br>Gracias por tu paciencia y por confiar en nuestro equipo.<br><br>Saludos,<br>Equipo de Soporte";
-                $correoResponse = enviarCorreoNotificacionEstatus($emailUsuario, $asunto, $mensaje, $rutaArchivo);
-
-                if ($correoResponse['status'] === 'success') {
-                    $response = array('status' => 'success', 'message' => 'Estatus actualizado, correo enviado y detalles finales registrados.');
-                } else {
-                    $response = array('status' => 'error', 'message' => 'Estatus actualizado y detalles registrados, pero no se pudo enviar el correo. Error: ' . $correoResponse['message']);
-                }
-            } else {
-                $response = array('status' => 'error', 'message' => 'No se encontró el correo del usuario.');
-            }
-        } else {
-            $response = array('status' => 'error', 'message' => 'No se pudo actualizar el estatus ni los detalles del reporte.');
+        // Verificar el tipo y tamaño del archivo
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($fotoEvidencia['type'], $allowedTypes)) {
+            $response = array('status' => 'error', 'message' => 'El archivo debe ser una imagen JPEG, PNG o GIF');
+            echo json_encode($response);
+            exit;
         }
 
-        $stmt->close();
-        $stmt_user->close();
-        $conex->close();
+        if ($fotoEvidencia['size'] > 5000000) { // Limitar el tamaño a 5MB
+            $response = array('status' => 'error', 'message' => 'El archivo excede el tamaño máximo permitido (5MB)');
+            echo json_encode($response);
+            exit;
+        }
+
+        // Generar un nombre único para la imagen usando el ID del reporte y fecha y hora de registro
+        $extension = pathinfo($fotoEvidencia['name'], PATHINFO_EXTENSION);
+        $nombreUnico = "reporte_" . $reporteId . "_" . date("Ymd_His") . "." . $extension;
+
+        // Definir la ruta de guardado
+        $directorio = "../imagenes/fotosAdministrador/";
+        $rutaArchivo = $directorio . $nombreUnico;
+
+        // Mover el archivo a la carpeta de destino
+        if (!move_uploaded_file($fotoEvidencia['tmp_name'], $rutaArchivo)) {
+            $response = array('status' => 'error', 'message' => 'Error al subir la foto de evidencia.');
+            echo json_encode($response);
+            exit;
+        }
     } else {
-        $response = array('status' => 'error', 'message' => 'Error al subir la foto de evidencia.');
+        $rutaArchivo = null; // Si no hay foto, no la añadimos
     }
+
+    // Conexión usando la clase `LocalConector`
+    $con = new LocalConector();
+    $conex = $con->conectar();
+
+    // Actualizar el estatus, comentario final, foto de evidencia y fecha de finalización del reporte
+    $stmt = $conex->prepare("UPDATE Reportes SET IdEstatus = ?, ComentariosFinales = ?, FotoEvidencia = ?, FechaFinalizado = ? WHERE IdReporte = ?");
+    $stmt->bind_param('isssi', $nuevoEstatus, $comentarioFinal, $rutaArchivo, $fechaFinalizado, $reporteId);
+
+    if ($stmt->execute()) {
+        // Obtener el correo del usuario que reportó el problema
+        $stmt_user = $conex->prepare("
+            SELECT Correo 
+            FROM Usuario 
+            INNER JOIN Reportes ON Usuario.NumNomina = Reportes.NumNomina 
+            WHERE Reportes.IdReporte = ?
+        ");
+        $stmt_user->bind_param('i', $reporteId);
+        $stmt_user->execute();
+        $result = $stmt_user->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            $emailUsuario = $user['Correo'];
+
+            // Enviar correo de notificación al usuario con la imagen de evidencia adjunta
+            $asunto = "Reporte Finalizado";
+            $mensaje = "Hola,<br><br>Te informamos que el estatus de tu reporte #$reporteId ha cambiado a 'Finalizado'.<br><br><strong>Comentario final:</strong> $comentarioFinal<br><br>Adjunto encontrarás una imagen de evidencia.<br><br>Gracias por tu paciencia y por confiar en nuestro equipo.<br><br>Saludos,<br>Equipo de Soporte";
+            $correoResponse = enviarCorreoNotificacionEstatus($emailUsuario, $asunto, $mensaje, $rutaArchivo);
+
+            if ($correoResponse['status'] === 'success') {
+                $response = array('status' => 'success', 'message' => 'Estatus actualizado, correo enviado y detalles finales registrados.');
+            } else {
+                $response = array('status' => 'error', 'message' => 'Estatus actualizado y detalles registrados, pero no se pudo enviar el correo. Error: ' . $correoResponse['message']);
+            }
+        } else {
+            $response = array('status' => 'error', 'message' => 'No se encontró el correo del usuario.');
+        }
+    } else {
+        $response = array('status' => 'error', 'message' => 'No se pudo actualizar el estatus ni los detalles del reporte.');
+    }
+
+    $stmt->close();
+    $stmt_user->close();
+    $conex->close();
 } else {
     $response = array('status' => 'error', 'message' => 'Datos incompletos para finalizar el reporte.');
 }
@@ -128,4 +155,5 @@ function enviarCorreoNotificacionEstatus($destinatario, $asunto, $mensaje, $ruta
     }
 }
 ?>
+
 
