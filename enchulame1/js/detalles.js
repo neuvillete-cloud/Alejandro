@@ -35,9 +35,10 @@ function mostrarDetallesReporte(id) {
                     <div class="image-container">
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
-                    <!-- Contenedor separado para el botón de cambiar estatus -->
+                    <!-- Contenedor separado para los botones de cambiar estatus y finalizar -->
                     <div class="status-button-container">
                         <button id="statusButton">Cambiar Estatus</button>
+                        <button id="finalizarButton">Finalizar</button>
                     </div>
                 `;
 
@@ -65,6 +66,47 @@ function mostrarDetallesReporte(id) {
                     }
                 });
 
+                // Evento para abrir el modal al hacer clic en "Finalizar"
+                document.getElementById('finalizarButton').addEventListener('click', function() {
+                    document.getElementById('finalizarModal').style.display = 'block';
+                });
+
+                // Cerrar el modal al hacer clic en la "x" o fuera del modal
+                document.querySelector('.close').addEventListener('click', function() {
+                    document.getElementById('finalizarModal').style.display = 'none';
+                });
+                window.onclick = function(event) {
+                    if (event.target === document.getElementById('finalizarModal')) {
+                        document.getElementById('finalizarModal').style.display = 'none';
+                    }
+                };
+
+                // Enviar los datos del formulario de finalización
+                document.getElementById('finalizarForm').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Evita la recarga de la página
+
+                    const formData = new FormData(finalizarForm);
+                    formData.append('id', reporteId); // Agregar el ID del reporte
+
+                    // Enviar la solicitud al servidor
+                    fetch('https://grammermx.com/Mailer/finalizarReporte.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                alert(data.message);
+                                // Cerrar el modal y actualizar el estatus en la página
+                                document.getElementById('finalizarModal').style.display = 'none';
+                                document.getElementById('estatus').textContent = 'Finalizado';
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => console.error('Error al finalizar el reporte:', error));
+                });
+
             } else {
                 document.getElementById('detalleReporte').innerHTML = '<p>Reporte no encontrado.</p>';
             }
@@ -77,3 +119,5 @@ function mostrarDetallesReporte(id) {
 
 // Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);
+
+
