@@ -4,20 +4,18 @@ const reporteId = params.get('id');
 
 // Muestra los detalles del reporte según el ID
 function mostrarDetallesReporte(id) {
-    // Llama al servidor para obtener los detalles del reporte según el ID
     fetch(`dao/obtenerDetalleReporte.php?id=${id}`)
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
                 const reporte = data.reporte;
 
-                // Añadir el botón de regresar al cuerpo del documento
+                // Añadir el botón de regresar en forma de luna al cuerpo del documento
                 document.body.insertAdjacentHTML('afterbegin', `
-                    <!-- Botón de regresar -->
                     <a href="javascript:history.back()" id="backButton">&#8592;</a>
                 `);
 
-                // Muestra los datos del reporte en la página
+                // Muestra los datos del reporte
                 const detalleDiv = document.getElementById('detalleReporte');
                 detalleDiv.innerHTML = `
                     <div class="report-section">
@@ -34,14 +32,19 @@ function mostrarDetallesReporte(id) {
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
                     <div class="status-button-container">
-                        <button id="statusButton">Cambiar a En Proceso</button>
-                        <button id="finalizarButton">Finalizar Reporte</button>
+                        <button id="statusButton">Cambiar Estatus</button>
                     </div>
                 `;
 
+                // Añadir el botón de "Finalizar" dinámicamente al contenedor
+                const finalizarButtonContainer = document.querySelector('.status-button-container');
+                finalizarButtonContainer.insertAdjacentHTML('beforeend', `
+                    <button id="finalizarButton">Finalizar</button>
+                `);
+
                 // Evento para cambiar el estatus del reporte
                 document.getElementById('statusButton').addEventListener('click', function() {
-                    if (confirm('¿Está seguro de cambiar el estatus a "En Proceso"?')) {
+                    if (confirm('¿Está seguro de que desea cambiar el estatus a "En Proceso"?')) {
                         fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
                             method: 'POST',
                             headers: {
@@ -52,13 +55,13 @@ function mostrarDetallesReporte(id) {
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'success') {
-                                    Swal.fire('Éxito', data.message, 'success');
+                                    alert(data.message);
                                     document.getElementById('estatus').textContent = 'En Proceso';
                                 } else {
-                                    Swal.fire('Error', data.message, 'error');
+                                    alert('Error: ' + data.message);
                                 }
                             })
-                            .catch(error => console.error('Error:', error));
+                            .catch(error => console.error('Error al actualizar el estatus:', error));
                     }
                 });
 
@@ -71,31 +74,46 @@ function mostrarDetallesReporte(id) {
                             <form id="finalizarForm" enctype="multipart/form-data">
                                 <label for="comentarioFinal">Comentario Final:</label>
                                 <textarea id="comentarioFinal" name="comentarioFinal" required></textarea>
+
                                 <label for="fotoEvidencia">Subir Foto de Evidencia:</label>
                                 <input type="file" id="fotoEvidencia" name="fotoEvidencia" required>
-                                <button type="submit">Finalizar</button>
+
+                                <button type="submit">Finalizar Reporte</button>
                             </form>
                         </div>
                     </div>
                 `;
                 document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-                // Abrir el modal
+                // Evento para abrir el modal al hacer clic en "Finalizar"
                 document.getElementById('finalizarButton').addEventListener('click', function() {
-                    document.getElementById('finalizarModal').style.display = 'flex';
+                    document.getElementById('finalizarModal').style.display = 'flex'; // Asegúrate de que se muestre con flex
                 });
 
-                // Cerrar el modal
+                // Cerrar el modal al hacer clic en la "x" o fuera del modal
                 document.querySelector('.close').addEventListener('click', function() {
                     document.getElementById('finalizarModal').style.display = 'none';
                 });
 
+                window.onclick = function(event) {
+                    if (event.target === document.getElementById('finalizarModal')) {
+                        document.getElementById('finalizarModal').style.display = 'none';
+                    }
+                };
+
                 // Enviar los datos del formulario de finalización
                 document.getElementById('finalizarForm').addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    const formData = new FormData(finalizarForm);
-                    formData.append('id', reporteId);
+                    event.preventDefault(); // Evita la recarga de la página
 
+                    const comentario = document.getElementById('comentarioFinal').value;
+                    const foto = document.getElementById('fotoEvidencia').files[0];
+
+                    const formData = new FormData();
+                    formData.append('id', reporteId); // Agregar el ID del reporte
+                    formData.append('comentarioFinal', comentario);
+                    formData.append('fotoEvidencia', foto);
+
+                    // Enviar la solicitud al servidor
                     fetch('https://grammermx.com/Mailer/finalizarReporte.php', {
                         method: 'POST',
                         body: formData
@@ -103,21 +121,26 @@ function mostrarDetallesReporte(id) {
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
-                                Swal.fire('Éxito', data.message, 'success');
-                                document.getElementById('estatus').textContent = 'Finalizado';
+                                alert(data.message);
+                                // Cerrar el modal y actualizar el estatus en la página
                                 document.getElementById('finalizarModal').style.display = 'none';
+                                document.getElementById('estatus').textContent = 'Finalizado';
                             } else {
-                                Swal.fire('Error', data.message, 'error');
+                                alert('Error: ' + data.message);
                             }
                         })
-                        .catch(error => console.error('Error:', error));
+                        .catch(error => console.error('Error al finalizar el reporte:', error));
                 });
 
             } else {
                 document.getElementById('detalleReporte').innerHTML = '<p>Reporte no encontrado.</p>';
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error al obtener el reporte:', error);
+            document.getElementById('detalleReporte').innerHTML = '<p>Error al cargar el reporte.</p>';
+        });
 }
 
+// Llama a la función con el ID obtenido
 mostrarDetallesReporte(reporteId);

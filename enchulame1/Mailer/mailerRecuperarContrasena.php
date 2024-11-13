@@ -8,94 +8,86 @@ require 'Phpmailer/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-if (isset($_POST['correoRecuperacion'])) {
-    $correo = $_POST['correoRecuperacion'];
+if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
+    $reporteId = $_POST['id'];
+    $comentarioFinal = $_POST['comentarioFinal'];
+    $nuevoEstatus = 3; // ID para "Finalizado"
+    $fechaFinalizado = date("Y-m-d H:i:s");
 
-    $user = consultarNumNomina($correo);
+    // Manejo de la imagen subida
+    $rutaArchivo = null;
+    if (isset($_FILES['fotoEvidencia']) && $_FILES['fotoEvidencia']['error'] === UPLOAD_ERR_OK) {
+        $fotoEvidencia = $_FILES['fotoEvidencia'];
 
-    if ($user) {
-        $numNomina = $user['NumNomina'];
-        $tokenResponse = generarToken($numNomina);
-
-        if ($tokenResponse['status'] === 'success') {
-            $token = $tokenResponse['token'];
-            $enlace = "https://grammermx.com/AleTest/enchulame1/restablecerContrasena.php?numNomina=$numNomina&token=$token";
-            $mensaje = "Para restablecer tu contraseña, haz clic en el siguiente enlace: <a href='$enlace'>Recuperar contraseña</a>";
-            $asunto = "Recuperar contrasena";
-
-            $correoResponse = emailRecuperarPassword($correo, $asunto, $mensaje);
-
-            if ($correoResponse['status'] === 'success') {
-                $response = array('status' => 'success', 'message' => 'Se ha enviado un correo para recuperar tu contraseña.');
-            } else {
-                $response = $correoResponse; // Error en envío de correo
-            }
-        } else {
-            $response = $tokenResponse; // Error en generación de token
+        // Validar tipo y tamaño del archivo
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($fotoEvidencia['type'], $allowedTypes)) {
+            echo json_encode(['status' => 'error', 'message' => 'Archivo no válido. Debe ser JPEG, PNG o GIF.']);
+            exit;
         }
-    } else {
-        $response = array('status' => 'error', 'message' => 'Correo electrónico no registrado');
+
+        if ($fotoEvidencia['size'] > 5000000) {
+            echo json_encode(['status' => 'error', 'message' => 'El archivo excede el tamaño máximo de 5MB.']);
+            exit;
+        }
+
+        // Generar nombre único para la imagen
+        $extension = pathinfo($fotoEvidencia['name'], PATHINFO_EXTENSION);
+        $nombreUnico = "reporte_" . $reporteId . "_" . date("Ymd_His") . "." . $extension;
+        $directorio = "../imagenes/fotosAdministrador/";
+        $rutaArchivo = $directorio . $nombreUnico;
+
+        // Mover archivo a la carpeta destino
+        if (!move_uploaded_file($fotoEvidencia['tmp_name'], $rutaArchivo)) {
+            echo json_encode(['status' => 'error', 'message' => 'Error al guardar la imagen.']);
+            exit;
+        }
     }
-} else {
-    $response = array('status' => 'error', 'message' => 'Error: Faltan datos en el formulario');
-}
 
-echo json_encode($response);
-
-// Función para consultar el NumNomina del usuario basado en el correo
-function consultarNumNomina($correo) {
+    // Conectar a la base de datos y actualizar el reporte
     $con = new LocalConector();
-    $conexion = $con->conectar();
-
-    if (!$conexion) {
-        return array('status' => 'error', 'message' => 'No se pudo conectar a la base de datos.');
-    }
-
-    $stmt = $conexion->prepare("SELECT NumNomina FROM Usuario WHERE Correo = ?");
-    $stmt->bind_param('s', $correo);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    if ($resultado->num_rows > 0) {
-        $usuario = $resultado->fetch_assoc();
-        $stmt->close();
-        $conexion->close();
-        return $usuario;
-    } else {
-        $stmt->close();
-        $conexion->close();
-        return null;
-    }
-}
-
-// Función para generar y almacenar un token de recuperación de contraseña
-function generarToken($numNomina) {
-    $con = new LocalConector();
-    $conexion = $con->conectar();
-
-    if (!$conexion) {
-        return array('status' => 'error', 'message' => 'Error en la conexión a la base de datos.');
-    }
-
-    $token = "12345"; // Cambia este token a uno generado dinámicamente en producción
-    $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
-
-    $stmt = $conexion->prepare('INSERT INTO restablecerContrasena (NumNomina, Token, Expira) VALUES (?, ?, ?)');
-    $stmt->bind_param('sss', $numNomina, $token, $expira);
+    $conex = $con->conectar();
+    $stmt = $conex->prepare("UPDATE Reportes SET IdEstatus = ?, ComentariosFinales = ?, FotoEvidencia = ?, FechaFinalizado = ? WHERE IdReporte = ?");
+    $stmt->bind_param('isssi', $nuevoEstatus, $comentarioFinal, $rutaArchivo, $fechaFinalizado, $reporteId);
 
     if ($stmt->execute()) {
-        $stmt->close();
-        $conexion->close();
-        return array('status' => 'success', 'token' => $token);
+        // Obtener el correo del usuario
+        $stmt_user = $conex->prepare("SELECT Correo FROM Usuario INNER JOIN Reportes ON Usuario.NumNomina = Reportes.NumNomina WHERE Reportes.IdReporte = ?");
+        $stmt_user->bind_param('i', $reporteId);
+        $stmt_user->execute();
+        $result = $stmt_user->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            $emailUsuario = $user['Correo'];
+
+            // Enviar correo con PHPMailer
+            $asunto = "Reporte Finalizado";
+            $mensaje = "Hola,<br><br>Tu reporte #$reporteId ha sido marcado como 'Finalizado'.<br><br><strong>Comentario final:</strong> $comentarioFinal.<br><br>Adjunto encontrarás la evidencia.<br><br>Saludos,<br>Equipo de Soporte";
+
+            $correoResponse = emailFinalizarReporte($emailUsuario, $asunto, $mensaje, $rutaArchivo);
+
+            if ($correoResponse['status'] === 'success') {
+                echo json_encode(['status' => 'success', 'message' => 'Reporte finalizado y correo enviado.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Reporte finalizado, pero error al enviar correo: ' . $correoResponse['message']]);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'No se encontró el correo del usuario.']);
+        }
     } else {
-        $stmt->close();
-        $conexion->close();
-        return array('status' => 'error', 'message' => 'Error: No se ha podido generar el token.');
+        echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el reporte.']);
     }
+
+    $stmt->close();
+    $stmt_user->close();
+    $conex->close();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Datos incompletos.']);
 }
 
-// Función para enviar el correo de recuperación de contraseña
-function emailRecuperarPassword($destinatario, $asunto, $mensaje) {
+// Función para enviar el correo de reporte finalizado
+function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaArchivo) {
     $contenido = "
     <html>
     <head>
@@ -103,13 +95,13 @@ function emailRecuperarPassword($destinatario, $asunto, $mensaje) {
     </head>
     <body style='font-family: Arial, sans-serif; text-align: center; background-color: #f6f6f6;'>
         <div style='background-color: #005195; padding: 20px; color: #ffffff;'>
-            <h2>Recuperación de contraseña</h2>
+            <h2>Reporte Finalizado</h2>
         </div>
         <div style='padding: 20px;'>
             <p>Hola,</p>
             <p>$mensaje</p>
             <br>
-            <p>Si no solicitaste un cambio de contraseña, ignora este mensaje.</p>
+            <p>Si tienes alguna duda, por favor contáctanos.</p>
         </div>
         <footer style='background-color: #f6f6f6; padding: 10px;'>
             <p>© Grammer Querétaro.</p>
@@ -127,13 +119,18 @@ function emailRecuperarPassword($destinatario, $asunto, $mensaje) {
         $mail->Password = 'ECHGrammer2024.';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
-        $mail->setFrom('tickets_enchulamelanave@grammermx.com', 'Administracion Enchulame la nave');
+        $mail->setFrom('tickets_enchulamelanave@grammermx.com', 'Administración Grammer');
         $mail->addAddress($destinatario);
         $mail->addBCC('tickets_enchulamelanave@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
         $mail->isHTML(true);
         $mail->Subject = $asunto;
         $mail->Body = $contenido;
+
+        // Adjuntar la imagen si existe
+        if ($rutaArchivo && file_exists($rutaArchivo)) {
+            $mail->addAttachment($rutaArchivo);
+        }
 
         if (!$mail->send()) {
             return array('status' => 'error', 'message' => 'Error al enviar el correo electrónico: ' . $mail->ErrorInfo);
