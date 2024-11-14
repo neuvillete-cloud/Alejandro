@@ -1,11 +1,34 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Llamada a la API para obtener los reportes
+    // Cargar los reportes al inicio
+    loadReportes();
+
+    // Evento para el botón de "Buscar"
+    document.getElementById('search-btn').addEventListener('click', function() {
+        const searchId = document.getElementById('search-id').value;
+        loadReportes(searchId);
+    });
+
+    // Evento para el filtro por Nave
+    document.getElementById('nave-select').addEventListener('change', function() {
+        const nave = this.value;
+        loadReportes(undefined, nave);
+    });
+
+    // Evento para cambiar la cantidad de reportes por página
+    document.getElementById('report-count').addEventListener('change', function() {
+        const count = this.value;
+        loadReportes(undefined, undefined, count);
+    });
+});
+
+// Función para cargar los reportes con los filtros aplicados
+function loadReportes(searchId = '', nave = '', reportCount = 5) {
     fetch('dao/mostrarDatosTabla.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({ searchId, nave, reportCount })
     })
         .then(response => response.json())
         .then(data => {
@@ -18,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => {
             console.error('Error al hacer la solicitud:', error);
         });
-});
+}
 
 // Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
@@ -53,7 +76,6 @@ function llenarTablaReportes(reportes) {
         const celdaEstatus = document.createElement('td');
         const spanEstatus = document.createElement('span');  // Usamos un span para el estatus
 
-        // Verificamos si el estatus tiene el valor esperado
         if (reporte.Estatus === 'recibido') {
             spanEstatus.textContent = reporte.Estatus;
             spanEstatus.classList.add('status', 'recibido');
@@ -97,3 +119,4 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
+

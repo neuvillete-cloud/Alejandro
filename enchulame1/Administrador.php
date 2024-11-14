@@ -26,13 +26,34 @@
     <main class="main-content">
         <header class="header">
             <h1>Reportes</h1>
-            <div class="date-filter">
-                <label for="start-date">Desde:</label>
-                <input type="date" id="start-date">
-                <label for="end-date">Hasta:</label>
-                <input type="date" id="end-date">
+            <div class="filters">
+                <!-- Buscador por ID -->
+                <label for="search-id">Buscar por ID:</label>
+                <input type="text" id="search-id" placeholder="ID del reporte">
+
+                <!-- Filtro por Nave -->
+                <label for="nave">Filtrar por Nave:</label>
+                <select id="nave">
+                    <option value="">Seleccionar Nave</option>
+                    <option value="Nave 1">Nave 1</option>
+                    <option value="Nave 2">Nave 2</option>
+                    <option value="Nave 3">Nave 3</option>
+                </select>
+
+                <!-- Paginación -->
+                <label for="report-count">Reportes por página:</label>
+                <select id="report-count">
+                    <option value="5">5</option>
+                    <option value="25">25</option>
+                    <option value="100">100</option>
+                    <option value="0">Todos</option>
+                </select>
+
+                <button id="apply-filters">Aplicar filtros</button>
             </div>
         </header>
+
+        <!-- Tabla de reportes -->
         <section class="report-list">
             <table>
                 <thead>
@@ -43,13 +64,13 @@
                     <th>Ubicación</th>
                     <th>Fecha</th>
                     <th>Descripción del Problema</th>
-                    <th>Fecha Finalizado</th> <!-- Nueva columna -->
+                    <th>Fecha Finalizado</th>
                     <th>Estado</th>
                     <th>Acción</th>
                 </tr>
                 </thead>
                 <tbody id="tablaReportes">
-                <!-- Las filas se generarán dinámicamente desde scripts.js -->
+                <!-- Las filas se generarán dinámicamente desde el script -->
                 </tbody>
             </table>
         </section>
