@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const searchId = document.getElementById('search-id').value;
         loadReportes(searchId, undefined);
     });
-
     // Evento para el filtro por Nave
     document.getElementById('nave').addEventListener('change', function() {
         const nave = this.value;
-        loadReportes(undefined, nave);
+        loadReportes(undefined, nave, undefined);  // Pasamos 'nave' como filtro
     });
+
 
     // Evento para cambiar la cantidad de reportes por página
     document.getElementById('report-count').addEventListener('change', function() {

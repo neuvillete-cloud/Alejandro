@@ -61,13 +61,19 @@ function obtenerReportes($searchId, $nave, $reportCount) {
 
     // Preparar y ejecutar la consulta
     $stmt = $conex->prepare($sql);
+
+    // Determinar los parámetros para bind_param
     if ($searchId != '' && $nave != '') {
-        $stmt->bind_param("isss", $searchId, $nave, $reportCount);
+        // Si ambos parámetros están presentes, el orden debe ser: searchId, nave, reportCount
+        $stmt->bind_param("iss", $searchId, $nave, $reportCount);
     } elseif ($searchId != '') {
+        // Si solo se filtra por searchId
         $stmt->bind_param("si", $searchId, $reportCount);
     } elseif ($nave != '') {
-        $stmt->bind_param("ssi", $nave, $reportCount);
+        // Si solo se filtra por nave
+        $stmt->bind_param("ss", $nave, $reportCount);
     } else {
+        // Si no se filtra por nada, solo limitamos la cantidad de reportes
         $stmt->bind_param("i", $reportCount);
     }
 
@@ -94,3 +100,4 @@ function obtenerReportes($searchId, $nave, $reportCount) {
     return $response;
 }
 ?>
+
