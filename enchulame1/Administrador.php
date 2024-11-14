@@ -27,8 +27,8 @@
         <header class="header">
             <h1>Reportes</h1>
             <div class="filters">
-                <!-- Buscador por ID -->
-                <div id="search-id-container">
+                <!-- Filtro de Buscar por ID -->
+                <div class="filter-item">
                     <label for="search-id">Buscar por ID:</label>
                     <div class="search-container">
                         <input type="text" id="search-id" placeholder="ID del reporte">
@@ -36,8 +36,8 @@
                     </div>
                 </div>
 
-                <!-- Filtro por Nave -->
-                <div id="nave-container">
+                <!-- Filtro de Filtrar por Nave -->
+                <div class="filter-item">
                     <label for="nave">Filtrar por Nave:</label>
                     <select id="nave">
                         <option value="">Seleccionar Nave</option>
@@ -47,8 +47,8 @@
                     </select>
                 </div>
 
-                <!-- Paginación -->
-                <div id="report-count-container">
+                <!-- Filtro de Paginación -->
+                <div class="filter-item">
                     <label for="report-count">Reportes por página:</label>
                     <select id="report-count">
                         <option value="5">5</option>
@@ -87,6 +87,7 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
+
 
 
 
