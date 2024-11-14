@@ -30,6 +30,7 @@
                 <!-- Buscador por ID -->
                 <label for="search-id">Buscar por ID:</label>
                 <input type="text" id="search-id" placeholder="ID del reporte">
+                <button id="search-btn">Buscar</button> <!-- Botón de búsqueda añadido -->
 
                 <!-- Filtro por Nave -->
                 <label for="nave">Filtrar por Nave:</label>
@@ -80,3 +81,4 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
+
