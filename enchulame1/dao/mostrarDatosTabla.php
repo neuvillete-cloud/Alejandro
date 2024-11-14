@@ -51,9 +51,9 @@ function obtenerReportes($searchId, $nave, $reportCount) {
         $sql .= " AND r.IdReporte = ?";
     }
 
-    // Filtrar por Nave
+    // Filtrar por Nave (utilizando 'Ubicacion' en lugar de 'NombreArea')
     if ($nave != '') {
-        $sql .= " AND a.NombreArea = ?";
+        $sql .= " AND r.Ubicacion = ?";  // Aquí cambiamos 'a.NombreArea' por 'r.Ubicacion'
     }
 
     // Paginación
@@ -99,5 +99,3 @@ function obtenerReportes($searchId, $nave, $reportCount) {
 
     return $response;
 }
-?>
-
