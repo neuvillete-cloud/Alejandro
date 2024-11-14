@@ -43,6 +43,7 @@
                     <th>Ubicación</th>
                     <th>Fecha</th>
                     <th>Descripción del Problema</th>
+                    <th>Fecha Finalizado</th> <!-- Nueva columna -->
                     <th>Estado</th>
                     <th>Acción</th>
                 </tr>

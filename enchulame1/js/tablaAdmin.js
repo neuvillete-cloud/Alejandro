@@ -46,6 +46,9 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
+        const celdaFechaFinalizada = document.createElement('td')
+        celdaFechaFinalizada.textContent = reporte.FechaFinalizado;
+
         // Celda para el estatus con clases CSS correspondientes
         const celdaEstatus = document.createElement('td');
         const spanEstatus = document.createElement('span');  // Usamos un span para el estatus
@@ -86,6 +89,7 @@ function llenarTablaReportes(reportes) {
         fila.appendChild(celdaUbicacion);
         fila.appendChild(celdaFecha);
         fila.appendChild(celdaDescripcion);
+        fila.appendChild(celdaFechaFinalizada);
         fila.appendChild(celdaEstatus);
         fila.appendChild(celdaAccion);
 

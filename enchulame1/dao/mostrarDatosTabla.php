@@ -27,6 +27,7 @@ function obtenerReportes() {
             r.Ubicacion, 
             r.FechaRegistro, 
             r.DescripcionProblema, 
+            r.FechaFinalizado,
             r.DescripcionLugar, 
             e.NombreEstatus AS Estatus
         FROM 
