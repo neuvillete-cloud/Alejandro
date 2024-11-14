@@ -35,9 +35,9 @@
                 <label for="nave">Filtrar por Nave:</label>
                 <select id="nave">
                     <option value="">Seleccionar Nave</option>
-                    <option value="Nave 1">Nave 1</option>
-                    <option value="Nave 2">Nave 2</option>
-                    <option value="Nave 3">Nave 3</option>
+                    <option value="Nave 1">nave 1</option>
+                    <option value="Nave 2">nave 2</option>
+                    <option value="Nave 3">nave 3</option>
                 </select>
 
                 <!-- Paginación -->
