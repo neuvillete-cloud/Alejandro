@@ -34,7 +34,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
         // Generar nombre único para la imagen
         $extension = pathinfo($fotoEvidencia['name'], PATHINFO_EXTENSION);
         $nombreUnico = "reporte_" . $reporteId . "_" . date("Ymd_His") . "." . $extension;
-        $directorio = "../imagenes/fotosAdministrador/";
+        $directorio = "../AleTest/enchulame1/imagenes/fotosAdministrador/";
         $rutaArchivo = $directorio . $nombreUnico;
 
         // Mover archivo a la carpeta destino
