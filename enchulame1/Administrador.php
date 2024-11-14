@@ -26,16 +26,17 @@
     <main class="main-content">
         <header class="header">
             <h1>Reportes</h1>
-            <div class="filters">
-                <!-- Filtro de Buscar por ID -->
-                <div class="filter-item">
-                    <label for="search-id">Buscar por ID:</label>
-                    <div class="search-container">
-                        <input type="text" id="search-id" placeholder="ID del reporte">
-                        <span id="search-icon" class="search-icon">&#128269;</span> <!-- Lupa dentro del input -->
-                    </div>
-                </div>
 
+            <!-- Filtro de Buscar por ID -->
+            <div class="filter-item">
+                <label for="search-id">Buscar por ID:</label>
+                <div class="search-container">
+                    <input type="text" id="search-id" placeholder="ID del reporte">
+                    <span id="search-icon" class="search-icon">&#128269;</span> <!-- Lupa dentro del input -->
+                </div>
+            </div>
+
+            <div class="filters">
                 <!-- Filtro de Filtrar por Nave -->
                 <div class="filter-item">
                     <label for="nave">Filtrar por Nave:</label>
@@ -87,6 +88,7 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
+
 
 
 

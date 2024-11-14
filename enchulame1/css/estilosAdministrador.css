@@ -176,7 +176,7 @@ tbody tr {
     display: flex;
     justify-content: space-between;
     gap: 20px;
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .filter-item {
@@ -192,11 +192,14 @@ tbody tr {
     color: #555;
 }
 
+/* Estilos para el contenedor del input con la lupa */
 .search-container {
     position: relative;
     display: inline-block;
+    margin-bottom: 20px; /* Espacio adicional debajo del campo de búsqueda */
 }
 
+/* Estilo para el input */
 #search-id {
     padding-left: 30px; /* Espacio para la lupa */
 }
@@ -210,6 +213,7 @@ tbody tr {
     cursor: pointer;
 }
 
+/* Estilos de los selects */
 select {
     padding: 5px;
     font-size: 1em;
