@@ -52,7 +52,7 @@
                     <option value="0">Todos</option>
                 </select>
 
-                <button id="apply-filters">Aplicar filtros</button>
+
             </div>
         </header>
 
