@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", function() {
     // Cargar los reportes al inicio
     loadReportes();
 
-    // Evento para el botón de "Buscar"
+    // Evento para el botón de "Buscar" (por ID)
     document.getElementById('search-btn').addEventListener('click', function() {
         const searchId = document.getElementById('search-id').value;
-        loadReportes(searchId);
+        loadReportes(searchId, undefined);
     });
 
     // Evento para el filtro por Nave
@@ -119,4 +119,3 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
-
