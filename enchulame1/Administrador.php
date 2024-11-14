@@ -28,31 +28,35 @@
             <h1>Reportes</h1>
             <div class="filters">
                 <!-- Buscador por ID -->
-                <label for="search-id">Buscar por ID:</label>
-                <div class="search-container">
-                    <input type="text" id="search-id" placeholder="ID del reporte">
-                    <span id="search-icon" class="search-icon">&#128269;</span> <!-- Lupa dentro del input -->
+                <div id="search-id-container">
+                    <label for="search-id">Buscar por ID:</label>
+                    <div class="search-container">
+                        <input type="text" id="search-id" placeholder="ID del reporte">
+                        <span id="search-icon" class="search-icon">&#128269;</span> <!-- Lupa dentro del input -->
+                    </div>
                 </div>
 
                 <!-- Filtro por Nave -->
-                <label for="nave">Filtrar por Nave:</label>
-                <select id="nave">
-                    <option value="">Seleccionar Nave</option>
-                    <option value="Nave 1">nave 1</option>
-                    <option value="Nave 2">nave 2</option>
-                    <option value="Nave 3">nave 3</option>
-                </select>
+                <div id="nave-container">
+                    <label for="nave">Filtrar por Nave:</label>
+                    <select id="nave">
+                        <option value="">Seleccionar Nave</option>
+                        <option value="Nave 1">nave 1</option>
+                        <option value="Nave 2">nave 2</option>
+                        <option value="Nave 3">nave 3</option>
+                    </select>
+                </div>
 
                 <!-- Paginación -->
-                <label for="report-count">Reportes por página:</label>
-                <select id="report-count">
-                    <option value="5">5</option>
-                    <option value="25">25</option>
-                    <option value="100">100</option>
-                    <option value="0">Todos</option>
-                </select>
-
-
+                <div id="report-count-container">
+                    <label for="report-count">Reportes por página:</label>
+                    <select id="report-count">
+                        <option value="5">5</option>
+                        <option value="25">25</option>
+                        <option value="100">100</option>
+                        <option value="0">Todos</option>
+                    </select>
+                </div>
             </div>
         </header>
 
@@ -83,5 +87,6 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
+
 
 

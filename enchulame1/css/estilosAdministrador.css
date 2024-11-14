@@ -172,3 +172,65 @@ tbody tr {
     cursor: pointer;
 }
 
+/* Estilos generales para los filtros */
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filters label {
+    font-size: 1em;
+    color: #333;
+    font-weight: bold;
+}
+
+#search-id,
+#nave,
+#report-count {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    color: #333;
+    width: 100%;
+}
+
+/* Posiciona el filtro de Buscar por ID debajo del título Reportes */
+#search-id-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+/* Posiciona el filtro de Filtrar por Nave hacia la ubicación deseada */
+#nave-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: -10px; /* Ajusta el espacio para que quede cerca de la columna de ubicación */
+    margin-bottom: 20px;
+}
+
+/* Estilos para el selector de reportes por página */
+#report-count-container {
+    align-self: flex-end;
+    margin-top: 10px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Ajusta la tabla y el contenedor de reportes para hacer espacio */
+.report-list {
+    margin-top: 20px;
+}
+
+
