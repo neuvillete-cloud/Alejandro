@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Evento para el filtro por Nave
-    document.getElementById('nave-select').addEventListener('change', function() {
+    document.getElementById('nave').addEventListener('change', function() {
         const nave = this.value;
         loadReportes(undefined, nave);
     });
