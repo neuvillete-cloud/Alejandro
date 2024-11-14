@@ -10,7 +10,7 @@ function mostrarDetallesReporte(id) {
             if (data.status === 'success') {
                 const reporte = data.reporte;
 
-                // Añadir el botón de regresar en forma de luna al cuerpo del documento
+                // Añadir el botón de regresar en forma de flecha
                 document.body.insertAdjacentHTML('afterbegin', `
                     <a href="javascript:history.back()" id="backButton">&#8592;</a>
                 `);
@@ -42,7 +42,7 @@ function mostrarDetallesReporte(id) {
                     <button id="finalizarButton">Finalizar</button>
                 `);
 
-                // Evento para cambiar el estatus del reporte
+                // Evento para cambiar el estatus del reporte a "En Proceso"
                 document.getElementById('statusButton').addEventListener('click', function() {
                     if (confirm('¿Está seguro de que desea cambiar el estatus a "En Proceso"?')) {
                         fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
@@ -87,14 +87,13 @@ function mostrarDetallesReporte(id) {
 
                 // Evento para abrir el modal al hacer clic en "Finalizar"
                 document.getElementById('finalizarButton').addEventListener('click', function() {
-                    document.getElementById('finalizarModal').style.display = 'flex'; // Asegúrate de que se muestre con flex
+                    document.getElementById('finalizarModal').style.display = 'flex';
                 });
 
                 // Cerrar el modal al hacer clic en la "x" o fuera del modal
                 document.querySelector('.close').addEventListener('click', function() {
                     document.getElementById('finalizarModal').style.display = 'none';
                 });
-
                 window.onclick = function(event) {
                     if (event.target === document.getElementById('finalizarModal')) {
                         document.getElementById('finalizarModal').style.display = 'none';
@@ -103,7 +102,7 @@ function mostrarDetallesReporte(id) {
 
                 // Enviar los datos del formulario de finalización
                 document.getElementById('finalizarForm').addEventListener('submit', function(event) {
-                    event.preventDefault(); // Evita la recarga de la página
+                    event.preventDefault();
 
                     const comentario = document.getElementById('comentarioFinal').value;
                     const foto = document.getElementById('fotoEvidencia').files[0];
@@ -129,7 +128,10 @@ function mostrarDetallesReporte(id) {
                                 alert('Error: ' + data.message);
                             }
                         })
-                        .catch(error => console.error('Error al finalizar el reporte:', error));
+                        .catch(error => {
+                            console.error('Error al finalizar el reporte:', error);
+                            alert('Hubo un error al finalizar el reporte.');
+                        });
                 });
 
             } else {
