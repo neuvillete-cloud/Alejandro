@@ -29,8 +29,10 @@
             <div class="filters">
                 <!-- Buscador por ID -->
                 <label for="search-id">Buscar por ID:</label>
-                <input type="text" id="search-id" placeholder="ID del reporte">
-                <button id="search-btn">Buscar</button> <!-- Botón de búsqueda añadido -->
+                <div class="search-container">
+                    <input type="text" id="search-id" placeholder="ID del reporte">
+                    <span id="search-icon" class="search-icon">&#128269;</span> <!-- Lupa dentro del input -->
+                </div>
 
                 <!-- Filtro por Nave -->
                 <label for="nave">Filtrar por Nave:</label>
@@ -81,4 +83,5 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
+
 

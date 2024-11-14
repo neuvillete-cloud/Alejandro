@@ -2,17 +2,17 @@ document.addEventListener("DOMContentLoaded", function() {
     // Cargar los reportes al inicio
     loadReportes();
 
-    // Evento para el botón de "Buscar" (por ID)
-    document.getElementById('search-btn').addEventListener('click', function() {
-        const searchId = document.getElementById('search-id').value;
+    // Evento para la lupa dentro del input (buscar por ID)
+    document.getElementById('search-id').addEventListener('input', function(event) {
+        const searchId = event.target.value;
         loadReportes(searchId, undefined);
     });
+
     // Evento para el filtro por Nave
     document.getElementById('nave').addEventListener('change', function() {
         const nave = this.value;
         loadReportes(undefined, nave, undefined);  // Pasamos 'nave' como filtro
     });
-
 
     // Evento para cambiar la cantidad de reportes por página
     document.getElementById('report-count').addEventListener('change', function() {
@@ -69,7 +69,7 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
-        const celdaFechaFinalizada = document.createElement('td')
+        const celdaFechaFinalizada = document.createElement('td');
         celdaFechaFinalizada.textContent = reporte.FechaFinalizado;
 
         // Celda para el estatus con clases CSS correspondientes
@@ -119,3 +119,4 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
+
