@@ -60,7 +60,7 @@ body {
 
 .header {
     display: flex;
-    flex-direction: column; /* Coloca los elementos en columna */
+    flex-direction: column;
     align-items: flex-start;
     margin-bottom: 20px;
 }
@@ -76,15 +76,14 @@ body {
     display: flex;
     gap: 20px;
     margin-top: 10px;
-    margin-bottom: 15px; /* Reducir el espacio entre filtros y tabla */
+    margin-bottom: 10px; /* Reduce el espacio entre los filtros y la tabla */
 }
 
 .filter-item {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    max-width: 200px;
-    width: 100%;
+    width: 200px; /* Define ancho fijo para filtros */
 }
 
 .filter-item label {
@@ -95,13 +94,12 @@ body {
 /* Estilos para el contenedor del input con la lupa */
 .search-container {
     position: relative;
-    display: inline-block;
-    width: 200px; /* Igualar el ancho al de los otros filtros */
+    width: 200px; /* Define el mismo ancho que otros filtros */
 }
 
 #search-id {
-    width: 100%; /* Asegura que ocupe todo el ancho de la búsqueda */
-    padding-left: 30px;
+    width: 100%;
+    padding-left: 30px; /* Espacio para ícono de lupa */
 }
 
 /* Estilo para la lupa */
@@ -119,7 +117,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 20px; /* Reducir la separación entre los filtros y la tabla */
+    margin-top: 20px; /* Reduce espacio entre los filtros y la tabla */
 }
 
 table {
