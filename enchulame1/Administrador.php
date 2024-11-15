@@ -26,29 +26,28 @@
     <main class="main-content">
         <header class="header">
             <h1>Reportes</h1>
-
-            <!-- Filtro de Buscar por ID -->
-            <div class="filter-item">
-                <label for="search-id">Buscar por ID:</label>
-                <div class="search-container">
-                    <input type="text" id="search-id" placeholder="ID del reporte">
-                    <span id="search-icon" class="search-icon">&#128269;</span> <!-- Lupa dentro del input -->
-                </div>
-            </div>
-
             <div class="filters">
+                <!-- Filtro de Buscar por ID -->
+                <div class="filter-item">
+                    <label for="search-id">Buscar por ID:</label>
+                    <div class="search-container">
+                        <input type="text" id="search-id" placeholder="ID del reporte">
+                        <span id="search-icon" class="search-icon">&#128269;</span> <!-- Icono de lupa -->
+                    </div>
+                </div>
+
                 <!-- Filtro de Filtrar por Nave -->
                 <div class="filter-item">
                     <label for="nave">Filtrar por Nave:</label>
                     <select id="nave">
                         <option value="">Seleccionar Nave</option>
-                        <option value="Nave 1">nave 1</option>
-                        <option value="Nave 2">nave 2</option>
-                        <option value="Nave 3">nave 3</option>
+                        <option value="Nave 1">Nave 1</option>
+                        <option value="Nave 2">Nave 2</option>
+                        <option value="Nave 3">Nave 3</option>
                     </select>
                 </div>
 
-                <!-- Filtro de Paginación -->
+                <!-- Paginación -->
                 <div class="filter-item">
                     <label for="report-count">Reportes por página:</label>
                     <select id="report-count">
@@ -88,8 +87,3 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 </body>
 </html>
-
-
-
-
-
