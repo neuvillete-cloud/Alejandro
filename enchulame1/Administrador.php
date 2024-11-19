@@ -95,9 +95,7 @@
             <div class="chart-container">
                 <canvas id="reporteChart"></canvas>
             </div>
-            <div class="chart-container">
-                <canvas id="finalizadosChart"></canvas>  <!-- Gráfico de Reportes Finalizados -->
-            </div>
+
         </section>
     </main>
 </div>
