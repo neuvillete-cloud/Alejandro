@@ -109,7 +109,7 @@
     // JavaScript para cambiar entre las secciones sin recargar la página
     document.getElementById("reportes-tab").addEventListener("click", function() {
         document.getElementById("reportes-section").style.display = "block";
-        document.getElementById("filters-section").style.display = "block";
+        document.getElementById("filters-section").style.display = "flex"; // Usar flex aquí
         document.getElementById("dashboard-section").style.display = "none";
         document.getElementById("main-header").innerText = "Reportes";
         document.getElementById("reportes-tab").classList.add("active");
@@ -118,12 +118,13 @@
 
     document.getElementById("dashboard-tab").addEventListener("click", function() {
         document.getElementById("reportes-section").style.display = "none";
-        document.getElementById("filters-section").style.display = "none";
+        document.getElementById("filters-section").style.display = "none"; // Ocultar los filtros
         document.getElementById("dashboard-section").style.display = "block";
         document.getElementById("main-header").innerText = "Dashboard";
         document.getElementById("dashboard-tab").classList.add("active");
         document.getElementById("reportes-tab").classList.remove("active");
     });
+
 </script>
 </body>
 </html>
