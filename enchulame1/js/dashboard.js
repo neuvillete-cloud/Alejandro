@@ -1,7 +1,7 @@
 fetch('dao/manejoDashboard.php') // Asegúrate de que esta ruta sea correcta
     .then(response => response.json())
     .then(data => {
-        const meses = data.meses;  // Los meses
+        const meses = data.meses;  // Los meses (por ejemplo: "Enero", "Febrero", etc.)
         const reportesTotales = data.totales;  // Reportes registrados
         const reportesFinalizados = data.finalizados;  // Reportes finalizados
 
