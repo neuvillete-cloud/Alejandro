@@ -77,15 +77,13 @@ body {
     gap: 20px;
     margin-top: 10px;
     margin-bottom: 5px; /* Reduce el espacio entre los filtros y la tabla */
-    flex-wrap: wrap;  /* Permite que los filtros se ajusten en una nueva línea si no caben */
 }
 
 .filter-item {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    width: 250px; /* Ancho fijo para cada filtro */
-    min-width: 150px;  /* Asegura que los filtros no se vuelvan demasiado pequeños */
+    width: 250px; /* Ancho y largo uniforme para todos los filtros */
 }
 
 .filter-item label {
@@ -115,7 +113,6 @@ body {
     cursor: pointer;
 }
 
-/* Ajustar la tabla para que no se desborde */
 .report-list {
     background-color: white;
     border-radius: 8px;
@@ -127,7 +124,6 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* Asegura que la tabla se ajuste al tamaño de su contenedor */
 }
 
 th, td {
@@ -207,20 +203,4 @@ select {
     border-radius: 0; /* Sin bordes redondeados */
     box-shadow: none; /* Sin sombra */
     background-color: transparent; /* Fondo transparente */
-}
-
-/* Añadir media query para dispositivos móviles */
-@media (max-width: 768px) {
-    .filters {
-        flex-direction: column;  /* Apilar los filtros en pantallas más pequeñas */
-        align-items: flex-start;  /* Alinea los filtros a la izquierda */
-    }
-
-    .filter-item {
-        width: 100%;  /* Los filtros ocupan el 100% del ancho disponible en pantallas pequeñas */
-    }
-
-    .search-container {
-        width: 100%;  /* Asegura que la caja de búsqueda ocupe el 100% en pantallas pequeñas */
-    }
 }
