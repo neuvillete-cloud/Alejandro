@@ -7,13 +7,14 @@ $conex = $con->conectar();
 // Consulta para obtener los reportes por mes y su estado
 $query = "
     SELECT 
-        MONTH(FechaRegistro) AS mes,
+        MONTH(FechaRegistro) AS mesRegistro,
+        YEAR(FechaRegistro) AS anioRegistro,
         COUNT(*) AS totalReportes,
-        SUM(CASE WHEN IdEstatus = 3 THEN 1 ELSE 0 END) AS reportesFinalizados
+        COUNT(CASE WHEN IdEstatus = 3 AND FechaFinalizado IS NOT NULL THEN 1 END) AS reportesFinalizados
     FROM Reportes
     WHERE YEAR(FechaRegistro) = YEAR(CURDATE())  -- Solo este año
-    GROUP BY MONTH(FechaRegistro)
-    ORDER BY mes;
+    GROUP BY MONTH(FechaRegistro), YEAR(FechaRegistro)
+    ORDER BY mesRegistro;
 ";
 
 $result = $conex->query($query);
@@ -24,7 +25,7 @@ $totales = [];
 $finalizados = [];
 
 while ($row = $result->fetch_assoc()) {
-    $meses[] = $row['mes'];
+    $meses[] = $row['mesRegistro']; // Mes de registro
     $totales[] = $row['totalReportes'];
     $finalizados[] = $row['reportesFinalizados'];
 }
