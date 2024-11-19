@@ -32,3 +32,4 @@ while ($row = $result->fetch_assoc()) {
 // Convertir los datos a formato JSON para usarlos en JavaScript
 echo json_encode(['meses' => $meses, 'totales' => $totales, 'finalizados' => $finalizados]);
 ?>
+
