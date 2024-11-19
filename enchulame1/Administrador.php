@@ -90,7 +90,7 @@
 
         <!-- Contenido Dashboard (Oculto por defecto) -->
         <section class="dashboard-section" id="dashboard-section" style="display: none;">
-            <h2>Dashboard</h2>
+            <h2>Graficas de estadisticas de reportes por meses</h2>
             <!-- Gráficas del Dashboard -->
             <div class="chart-container">
                 <canvas id="reporteChart"></canvas>
