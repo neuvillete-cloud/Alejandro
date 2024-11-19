@@ -101,38 +101,11 @@
         </section>
     </main>
 </div>
-
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
+
+
 <script src="js/dashboard.js"></script> <!-- Enlazamos el archivo JavaScript para cargar los datos y las gráficas -->
-
 <script>
-    // Variables para almacenar los valores actuales de los filtros
-    let currentSearchId = "";
-    let currentNave = "";
-    let currentReportCount = "5"; // Valor por defecto
-
-    // Cuando se cambia el filtro de Buscar por ID
-    document.getElementById("search-id").addEventListener("input", function() {
-        currentSearchId = this.value;
-    });
-
-    // Cuando se cambia el filtro de Filtrar por Nave
-    document.getElementById("nave").addEventListener("change", function() {
-        currentNave = this.value;
-    });
-
-    // Cuando se cambia el filtro de Reportes por página
-    document.getElementById("report-count").addEventListener("change", function() {
-        currentReportCount = this.value;
-    });
-
-    // Función para restaurar los filtros
-    function restoreFilters() {
-        document.getElementById("search-id").value = currentSearchId;
-        document.getElementById("nave").value = currentNave;
-        document.getElementById("report-count").value = currentReportCount;
-    }
-
     // JavaScript para cambiar entre las secciones sin recargar la página
     document.getElementById("reportes-tab").addEventListener("click", function() {
         document.getElementById("reportes-section").style.display = "block";
@@ -141,8 +114,6 @@
         document.getElementById("main-header").innerText = "Reportes";
         document.getElementById("reportes-tab").classList.add("active");
         document.getElementById("dashboard-tab").classList.remove("active");
-
-        restoreFilters(); // Restaurar los filtros
     });
 
     document.getElementById("dashboard-tab").addEventListener("click", function() {
@@ -154,6 +125,6 @@
         document.getElementById("reportes-tab").classList.remove("active");
     });
 </script>
-
 </body>
 </html>
+
