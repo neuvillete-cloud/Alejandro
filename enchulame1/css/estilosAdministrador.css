@@ -187,3 +187,19 @@ select {
     width: 100%;
     height: 35px; /* Altura uniforme para los selects */
 }
+
+.image-container {
+    position: absolute; /* Coloca el contenedor de la imagen en posición absoluta */
+    top: 10px; /* Ajusta la posición superior */
+    right: 20px; /* Ajusta la posición desde la derecha */
+    max-width: 150px; /* Tamaño máximo de ancho */
+    max-height: 100px; /* Tamaño máximo de alto */
+}
+
+.image-container img {
+    width: 100%; /* La imagen ocupará todo el contenedor */
+    height: auto; /* Ajuste proporcional de la altura */
+    border-radius: 8px; /* Bordes redondeados opcionales */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+}
+

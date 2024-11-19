@@ -58,6 +58,11 @@
                     </select>
                 </div>
             </div>
+
+            <!-- Contenedor de la imagen -->
+            <div class="image-container">
+                <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Imagen decorativa">
+            </div>
         </header>
 
         <!-- Tabla de reportes -->
