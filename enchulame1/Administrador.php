@@ -26,7 +26,7 @@
     <main class="main-content">
         <header class="header">
             <h1 id="main-header">Reportes</h1>
-            <div class="filters">
+            <div class="filters" id="filters-section">
                 <!-- Filtro de Buscar por ID -->
                 <div class="filter-item">
                     <label for="search-id">Buscar por ID:</label>
@@ -101,7 +101,9 @@
 <script>
     // JavaScript para cambiar entre las secciones sin recargar la página
     document.getElementById("reportes-tab").addEventListener("click", function() {
+        // Mostrar la sección de reportes y los filtros
         document.getElementById("reportes-section").style.display = "block";
+        document.getElementById("filters-section").style.display = "block";
         document.getElementById("dashboard-section").style.display = "none";
         document.getElementById("main-header").innerText = "Reportes"; // Cambiar el título
         // Cambiar el estilo activo
@@ -110,7 +112,9 @@
     });
 
     document.getElementById("dashboard-tab").addEventListener("click", function() {
+        // Ocultar la sección de reportes y los filtros
         document.getElementById("reportes-section").style.display = "none";
+        document.getElementById("filters-section").style.display = "none";
         document.getElementById("dashboard-section").style.display = "block";
         document.getElementById("main-header").innerText = "Dashboard"; // Cambiar el título
         // Cambiar el estilo activo
@@ -120,4 +124,5 @@
 </script>
 </body>
 </html>
+
 
