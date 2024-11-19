@@ -189,21 +189,18 @@ select {
 }
 
 .image-container {
-    background-color: transparent; /* Fondo transparente */
-    padding: 0; /* Sin espacio extra */
-    margin: 0; /* Sin margen */
-    display: flex;
-    justify-content: center; /* Centra la imagen horizontalmente */
-    align-items: center; /* Centra la imagen verticalmente */
+    position: absolute; /* Coloca el contenedor de la imagen en posición absoluta */
+    top: 10px; /* Ajusta la posición superior */
+    right: 20px; /* Ajusta la posición desde la derecha */
+    max-width: 150px; /* Tamaño máximo de ancho */
+    max-height: 100px; /* Tamaño máximo de alto */
+    background-color: transparent; /* Sin fondo visible */
 }
 
 .image-container img {
-    width: auto; /* Ajuste proporcional */
-    height: auto; /* Ajuste proporcional */
-    max-width: 100%; /* Imagen responsiva */
-    max-height: 100%; /* Imagen no se sale del contenedor */
-    border: none; /* Sin bordes */
-    box-shadow: none; /* Sin sombras */
-    background-color: transparent; /* Fondo completamente transparente */
+    width: 100%; /* La imagen ocupará todo el contenedor */
+    height: auto; /* Ajuste proporcional de la altura */
+    border-radius: 0; /* Sin bordes redondeados */
+    box-shadow: none; /* Sin sombra */
+    background-color: transparent; /* Fondo transparente */
 }
-
