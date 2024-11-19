@@ -1,9 +1,9 @@
-fetch('dao/manejoDashboard.php') // Asegúrate de que esta ruta sea correcta
+fetch('ruta_a_tu_backend.php') // Asegúrate de que esta ruta sea correcta
     .then(response => response.json())
     .then(data => {
-        const meses = data.meses;  // Ahora 'meses' tendrá los nombres de los meses
-        const reportesTotales = data.totales;  // Array de reportes totales por mes
-        const reportesResueltos = data.resueltos;  // Array de reportes resueltos por mes
+        const meses = data.meses;  // Los meses
+        const reportesTotales = data.totales;  // Reportes registrados
+        const reportesFinalizados = data.finalizados;  // Reportes finalizados
 
         // Gráfico de reportes registrados
         const ctxReporte = document.getElementById('reporteChart').getContext('2d');
@@ -34,15 +34,15 @@ fetch('dao/manejoDashboard.php') // Asegúrate de que esta ruta sea correcta
             }
         });
 
-        // Gráfico de reportes resueltos
-        const ctxResueltos = document.getElementById('resueltosChart').getContext('2d');
-        const resueltosChart = new Chart(ctxResueltos, {
+        // Gráfico de reportes finalizados
+        const ctxFinalizados = document.getElementById('finalizadosChart').getContext('2d');
+        const finalizadosChart = new Chart(ctxFinalizados, {
             type: 'line',
             data: {
                 labels: meses,  // Los meses ahora son nombres como "Enero", "Febrero", etc.
                 datasets: [{
-                    label: 'Reportes Resueltos',
-                    data: reportesResueltos,
+                    label: 'Reportes Finalizados',
+                    data: reportesFinalizados,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderWidth: 2,
