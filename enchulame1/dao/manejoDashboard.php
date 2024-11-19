@@ -4,16 +4,16 @@ include_once('conexion.php');
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// Consulta para obtener los reportes por mes y su estado (registrados y finalizados)
+// Consulta para obtener los reportes por mes y su estado
 $query = "
     SELECT 
-        MONTHNAME(FechaRegistro) AS mes,  -- Devuelve el nombre del mes
-        COUNT(CASE WHEN FechaRegistro IS NOT NULL THEN 1 END) AS totalReportes,  -- Reportes con FechaRegistro (registrados)
-        COUNT(CASE WHEN IdEstatus = 3 AND FechaFinalizado IS NOT NULL THEN 1 END) AS reportesFinalizados  -- Reportes con IdEstatus = 3 y FechaFinalizado
+        MONTH(FechaRegistro) AS mes,
+        COUNT(*) AS totalReportes,
+        SUM(CASE WHEN IdEstatus = 3 THEN 1 ELSE 0 END) AS reportesFinalizados
     FROM Reportes
     WHERE YEAR(FechaRegistro) = YEAR(CURDATE())  -- Solo este año
-    GROUP BY MONTH(FechaRegistro)  -- Agrupamos por mes
-    ORDER BY MONTH(FechaRegistro);  -- Ordenamos por mes
+    GROUP BY MONTH(FechaRegistro)
+    ORDER BY mes;
 ";
 
 $result = $conex->query($query);
@@ -24,9 +24,9 @@ $totales = [];
 $finalizados = [];
 
 while ($row = $result->fetch_assoc()) {
-    $meses[] = $row['mes'];  // Nombre del mes
-    $totales[] = $row['totalReportes'];  // Total de reportes registrados
-    $finalizados[] = $row['reportesFinalizados'];  // Total de reportes finalizados
+    $meses[] = $row['mes'];
+    $totales[] = $row['totalReportes'];
+    $finalizados[] = $row['reportesFinalizados'];
 }
 
 // Convertir los datos a formato JSON para usarlos en JavaScript

@@ -1,16 +1,18 @@
-fetch('dao/manejoDashboard.php') // Asegúrate de que esta ruta sea correcta
+// Función para obtener los datos del servidor
+fetch('dao/manejoDashboard.php') // Cambia esta ruta por la correcta
     .then(response => response.json())
     .then(data => {
-        const meses = data.meses;  // Los meses (por ejemplo: "Enero", "Febrero", etc.)
-        const reportesTotales = data.totales;  // Reportes registrados
-        const reportesFinalizados = data.finalizados;  // Reportes finalizados
+        // Extraemos los datos para las gráficas
+        const meses = data.meses;  // Asumiendo que el backend devuelve un array con los meses
+        const reportesTotales = data.totales;  // Array de reportes totales por mes
+        const reportesFinalizados = data.finalizados;  // Array de reportes finalizados por mes
 
         // Gráfico de reportes registrados
         const ctxReporte = document.getElementById('reporteChart').getContext('2d');
         const reporteChart = new Chart(ctxReporte, {
             type: 'bar',
             data: {
-                labels: meses,  // Los meses ahora son nombres como "Enero", "Febrero", etc.
+                labels: meses.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })), // Convertir el número del mes en nombre
                 datasets: [{
                     label: 'Reportes Registrados',
                     data: reportesTotales,
@@ -39,7 +41,7 @@ fetch('dao/manejoDashboard.php') // Asegúrate de que esta ruta sea correcta
         const finalizadosChart = new Chart(ctxFinalizados, {
             type: 'line',
             data: {
-                labels: meses,  // Los meses ahora son nombres como "Enero", "Febrero", etc.
+                labels: meses.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })),  // Convertir mes a nombre
                 datasets: [{
                     label: 'Reportes Finalizados',
                     data: reportesFinalizados,
