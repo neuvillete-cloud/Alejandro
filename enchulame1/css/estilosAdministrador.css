@@ -77,6 +77,9 @@ body {
     gap: 20px;
     margin-top: 10px;
     margin-bottom: 5px; /* Reduce el espacio entre los filtros y la tabla */
+    flex-wrap: wrap; /* Permite que los filtros se ajusten, pero en un solo renglón si hay espacio */
+    justify-content: flex-start; /* Alineación desde el inicio */
+    flex-grow: 1; /* Hace que ocupe el espacio restante */
 }
 
 .filter-item {
