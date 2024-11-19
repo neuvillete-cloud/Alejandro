@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador - Reportes</title>
     <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Cargamos la librería Chart.js -->
+
 </head>
 <body>
 <div class="container">
@@ -103,6 +103,7 @@
 
 
 <script src="js/dashboard.js"></script> <!-- Enlazamos el archivo JavaScript para cargar los datos y las gráficas -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Cargamos la librería Chart.js -->
 <script>
     // JavaScript para cambiar entre las secciones sin recargar la página
     document.getElementById("reportes-tab").addEventListener("click", function() {
