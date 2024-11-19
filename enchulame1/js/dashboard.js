@@ -1,4 +1,4 @@
-fetch('ruta_a_tu_backend.php') // Asegúrate de que esta ruta sea correcta
+fetch('dao/manejoDashboard.php') // Asegúrate de que esta ruta sea correcta
     .then(response => response.json())
     .then(data => {
         const meses = data.meses;  // Los meses
