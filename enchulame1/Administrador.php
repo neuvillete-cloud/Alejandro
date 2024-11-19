@@ -14,8 +14,8 @@
             <h2>eReport</h2>
         </div>
         <nav class="menu">
-            <a href="#" class="menu-item active">Reportes</a>
-            <a href="#" class="menu-item">Dashboard</a>
+            <a href="#reportes" class="menu-item active">Reportes</a>
+            <a href="#dashboard" class="menu-item">Dashboard</a>
             <a href="#" class="menu-item">Estadísticas</a>
             <a href="#" class="menu-item">Usuarios</a>
             <a href="#" class="menu-item">Configuración</a>
@@ -25,7 +25,7 @@
     <!-- Main content -->
     <main class="main-content">
         <header class="header">
-            <h1>Reportes</h1>
+            <h1 id="reportes">Reportes</h1>
             <div class="filters">
                 <!-- Filtro de Buscar por ID -->
                 <div class="filter-item">
@@ -85,6 +85,12 @@
                 <!-- Las filas se generarán dinámicamente desde el script -->
                 </tbody>
             </table>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+            <!-- Aquí puedes agregar los contenidos del Dashboard -->
         </section>
     </main>
 </div>
