@@ -10,27 +10,34 @@ $query = "
         MONTH(FechaRegistro) AS mesRegistro,
         YEAR(FechaRegistro) AS anioRegistro,
         COUNT(*) AS totalReportes,
+        
+        -- Contamos los reportes finalizados por mes y año de FechaFinalizado
+        MONTH(FechaFinalizado) AS mesFinalizado,
+        YEAR(FechaFinalizado) AS anioFinalizado,
         COUNT(CASE WHEN IdEstatus = 3 AND FechaFinalizado IS NOT NULL THEN 1 END) AS reportesFinalizados
+
     FROM Reportes
     WHERE YEAR(FechaRegistro) = YEAR(CURDATE())  -- Solo este año
-    GROUP BY MONTH(FechaRegistro), YEAR(FechaRegistro)
+    GROUP BY MONTH(FechaRegistro), YEAR(FechaRegistro), MONTH(FechaFinalizado), YEAR(FechaFinalizado)
     ORDER BY mesRegistro;
 ";
 
 $result = $conex->query($query);
 
 // Arreglos para los datos
-$meses = [];
+$mesesRegistro = [];
 $totales = [];
+$mesesFinalizados = [];
 $finalizados = [];
 
 while ($row = $result->fetch_assoc()) {
-    $meses[] = $row['mesRegistro']; // Mes de registro
+    $mesesRegistro[] = $row['mesRegistro']; // Mes de registro
     $totales[] = $row['totalReportes'];
+    $mesesFinalizados[] = $row['mesFinalizado']; // Mes de finalización
     $finalizados[] = $row['reportesFinalizados'];
 }
 
 // Convertir los datos a formato JSON para usarlos en JavaScript
-echo json_encode(['meses' => $meses, 'totales' => $totales, 'finalizados' => $finalizados]);
+echo json_encode(['mesesRegistro' => $mesesRegistro, 'totales' => $totales, 'mesesFinalizados' => $mesesFinalizados, 'finalizados' => $finalizados]);
 ?>
 
