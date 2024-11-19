@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador - Reportes</title>
     <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Cargamos la librería Chart.js -->
 </head>
 <body>
 <div class="container">
@@ -91,38 +90,39 @@
         <!-- Contenido Dashboard (Oculto por defecto) -->
         <section class="dashboard-section" id="dashboard-section" style="display: none;">
             <h2>Dashboard</h2>
-            <!-- Gráficas del Dashboard -->
-            <div class="chart-container">
-                <canvas id="reporteChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="resueltosChart"></canvas>
-            </div>
+            <!-- Aquí puedes agregar los elementos de tu Dashboard -->
+            <p>Bienvenido al Dashboard. Aquí van las métricas y estadísticas.</p>
         </section>
     </main>
 </div>
 
-<script src="js/dashboard.js"></script> <!-- Enlazamos el archivo JavaScript para cargar los datos y las gráficas -->
+<script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
+
 <script>
     // JavaScript para cambiar entre las secciones sin recargar la página
     document.getElementById("reportes-tab").addEventListener("click", function() {
+        // Mostrar la sección de reportes y los filtros
         document.getElementById("reportes-section").style.display = "block";
         document.getElementById("filters-section").style.display = "block";
         document.getElementById("dashboard-section").style.display = "none";
-        document.getElementById("main-header").innerText = "Reportes";
+        document.getElementById("main-header").innerText = "Reportes"; // Cambiar el título
+        // Cambiar el estilo activo
         document.getElementById("reportes-tab").classList.add("active");
         document.getElementById("dashboard-tab").classList.remove("active");
     });
 
     document.getElementById("dashboard-tab").addEventListener("click", function() {
+        // Ocultar la sección de reportes y los filtros
         document.getElementById("reportes-section").style.display = "none";
         document.getElementById("filters-section").style.display = "none";
         document.getElementById("dashboard-section").style.display = "block";
-        document.getElementById("main-header").innerText = "Dashboard";
+        document.getElementById("main-header").innerText = "Dashboard"; // Cambiar el título
+        // Cambiar el estilo activo
         document.getElementById("dashboard-tab").classList.add("active");
         document.getElementById("reportes-tab").classList.remove("active");
     });
 </script>
 </body>
 </html>
+
 
