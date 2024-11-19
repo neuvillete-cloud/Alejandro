@@ -14,8 +14,8 @@
             <h2>eReport</h2>
         </div>
         <nav class="menu">
-            <a href="#reportes" class="menu-item active">Reportes</a>
-            <a href="#dashboard" class="menu-item">Dashboard</a>
+            <a href="#" class="menu-item active" id="reportes-tab">Reportes</a>
+            <a href="#" class="menu-item" id="dashboard-tab">Dashboard</a> <!-- Enlace al Dashboard -->
             <a href="#" class="menu-item">Estadísticas</a>
             <a href="#" class="menu-item">Usuarios</a>
             <a href="#" class="menu-item">Configuración</a>
@@ -25,7 +25,7 @@
     <!-- Main content -->
     <main class="main-content">
         <header class="header">
-            <h1 id="reportes">Reportes</h1>
+            <h1 id="main-header">Reportes</h1>
             <div class="filters">
                 <!-- Filtro de Buscar por ID -->
                 <div class="filter-item">
@@ -65,8 +65,8 @@
             </div>
         </header>
 
-        <!-- Tabla de reportes -->
-        <section class="report-list">
+        <!-- Contenido Reportes (Visible por defecto) -->
+        <section class="report-list" id="reportes-section">
             <table>
                 <thead>
                 <tr>
@@ -87,14 +87,37 @@
             </table>
         </section>
 
-        <!-- Dashboard -->
-        <section id="dashboard">
+        <!-- Contenido Dashboard (Oculto por defecto) -->
+        <section class="dashboard-section" id="dashboard-section" style="display: none;">
             <h2>Dashboard</h2>
-            <!-- Aquí puedes agregar los contenidos del Dashboard -->
+            <!-- Aquí puedes agregar los elementos de tu Dashboard -->
+            <p>Bienvenido al Dashboard. Aquí van las métricas y estadísticas.</p>
         </section>
     </main>
 </div>
 
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
+
+<script>
+    // JavaScript para cambiar entre las secciones sin recargar la página
+    document.getElementById("reportes-tab").addEventListener("click", function() {
+        document.getElementById("reportes-section").style.display = "block";
+        document.getElementById("dashboard-section").style.display = "none";
+        document.getElementById("main-header").innerText = "Reportes"; // Cambiar el título
+        // Cambiar el estilo activo
+        document.getElementById("reportes-tab").classList.add("active");
+        document.getElementById("dashboard-tab").classList.remove("active");
+    });
+
+    document.getElementById("dashboard-tab").addEventListener("click", function() {
+        document.getElementById("reportes-section").style.display = "none";
+        document.getElementById("dashboard-section").style.display = "block";
+        document.getElementById("main-header").innerText = "Dashboard"; // Cambiar el título
+        // Cambiar el estilo activo
+        document.getElementById("dashboard-tab").classList.add("active");
+        document.getElementById("reportes-tab").classList.remove("active");
+    });
+</script>
 </body>
 </html>
+
