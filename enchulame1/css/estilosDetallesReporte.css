@@ -89,7 +89,7 @@ h1 {
     border-radius: 8px; /* Bordes redondeados */
     padding: 10px 20px; /* Espaciado interno */
     text-align: left; /* Alinear contenido a la izquierda */
-    width: 100%; /* Tomar todo el ancho disponible */
+    width: 50%; /* Tomar todo el ancho disponible */
     margin-top: 70px; /* Separación superior */
     position: relative; /* Mantener el comportamiento relativo */
     padding-left: 20px; /* Espaciado a la izquierda */
