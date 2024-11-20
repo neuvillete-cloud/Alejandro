@@ -96,7 +96,7 @@ h1 {
     border: none; /* Quitar bordes adicionales */
     border-radius: 8px; /* Bordes redondeados */
     padding: 10px 20px; /* Espaciado interno */
-    width: 160px; /* Establece un ancho fijo para que sea el mismo que el botón de finalizar */
+    width: 180px; /* Establece un ancho fijo para que sea el mismo que el botón de finalizar */
     text-align: center; /* Centrar texto y contenido */
     position: relative; /* Para mantener el comportamiento actual */
     font-size: 14px; /* Ajustar el tamaño de fuente */
