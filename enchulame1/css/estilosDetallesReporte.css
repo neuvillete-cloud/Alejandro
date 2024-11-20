@@ -107,7 +107,7 @@ h1 {
 /* Estilo para el menú desplegable */
 .status-button-container select {
     background-color: transparent; /* Fondo transparente para adaptarse al contenedor */
-    color: #b0cde0; /* Texto en blanco */
+    color: #fff; /* Texto en blanco */
     border: none; /* Sin bordes */
     outline: none; /* Sin resaltado */
     font-size: inherit; /* Heredar el tamaño de fuente */
