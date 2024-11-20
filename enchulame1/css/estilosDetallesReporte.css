@@ -82,7 +82,7 @@ h1 {
 }
 
 /* Contenedor del botón de cambio de estatus con menú desplegable */
-#statusButton {
+.status-button-container{
     background-color: #5b8db8;
     color: #fff;
     border: none;
