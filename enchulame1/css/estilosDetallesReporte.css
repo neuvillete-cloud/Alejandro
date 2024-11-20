@@ -81,38 +81,30 @@ h1 {
     border: 2px solid #b0cde0;
 }
 
-/* Contenedor del menú desplegable para cambiar estatus */
-.status-button-container {
-    background-color: #5b8db8; /* Mismo color que los botones */
+/* Botón de cambio de estatus */
+#statusButton {
+    background-color: #5b8db8;
     color: #fff;
-    border: none; /* Quitar bordes adicionales */
-    border-radius: 8px; /* Bordes redondeados */
-    padding: 10px 20px; /* Espaciado interno */
-    width: fit-content; /* Ajustar el ancho al contenido */
-    margin: 20px auto; /* Centrar y margen superior */
-    text-align: center; /* Centrar texto y contenido */
-    position: relative; /* Para mantener el comportamiento actual */
-    font-size: 14px; /* Ajustar el tamaño de fuente */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
     transition: background-color 0.3s ease;
+    margin-top: 30px; /* Separar el botón de la imagen */
 }
 
-/* Estilo para el menú desplegable */
-.status-button-container select {
-    background-color: transparent; /* Fondo transparente para adaptarse al contenedor */
-    color: #fff; /* Texto en blanco */
-    border: none; /* Sin bordes */
-    outline: none; /* Sin resaltado */
-    font-size: inherit; /* Heredar el tamaño de fuente */
-    cursor: pointer; /* Cambiar el cursor a pointer */
-    padding: 5px 10px; /* Espaciado interno */
+/* Ajustar el contenedor para el botón */
+.status-button-container {
+    text-align: left;
+    width: 100%;
+    margin-top: 70px; /* Ajustar la separación del botón */
+    position: relative;
+    padding-left: 20px;
 }
-
-/* Efecto hover en el contenedor */
-.status-button-container:hover {
-    background-color: #3a6788; /* Oscurecer el color al pasar el mouse */
-}
-
 
 /* Botón de "Finalizar" similar al de "Cambiar Estatus" */
 #finalizarButton {
