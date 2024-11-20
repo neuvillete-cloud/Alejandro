@@ -115,10 +115,17 @@ h1 {
     padding: 5px 10px; /* Espaciado interno */
 }
 
-/* Efecto hover en el contenedor */
-.status-button-container:hover {
-    background-color: #3a6788; /* Oscurecer el color al pasar el mouse */
+/* Estilo para las opciones dentro del select */
+.status-button-container select option {
+    background-color: #2f5178; /* Fondo oscuro para las opciones */
+    color: #fff; /* Texto blanco para las opciones */
 }
+
+/* Efecto hover en las opciones del select */
+.status-button-container select option:hover {
+    background-color: #1c3d5b; /* Oscurecer fondo de las opciones al pasar el mouse */
+}
+
 
 /* Botón de "Finalizar" en la esquina inferior derecha */
 #finalizarButton {
