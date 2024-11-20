@@ -82,7 +82,7 @@ h1 {
 }
 
 /* Botón de cambio de estatus */
-.status-button-container {
+#statusButton {
     background-color: #5b8db8;
     color: #fff;
     border: none;
@@ -100,7 +100,7 @@ h1 {
 /* Ajustar el contenedor para el botón */
 .status-button-container {
     text-align: left;
-    width: 55%;
+    width: 100%;
     margin-top: 70px; /* Ajustar la separación del botón */
     position: relative;
     padding-left: 20px;
