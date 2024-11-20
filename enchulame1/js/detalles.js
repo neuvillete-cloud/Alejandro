@@ -32,7 +32,12 @@ function mostrarDetallesReporte(id) {
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
                     <div class="status-button-container">
-                        <button id="statusButton">Cambiar Estatus</button>
+                        <select id="statusSelect">
+                            <option value="" disabled selected>Cambiar Estatus</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Cancelado">Cancelar</option>
+                            <option value="No Aplica">No Aplica</option>
+                        </select>
                     </div>
                 `;
 
@@ -42,26 +47,49 @@ function mostrarDetallesReporte(id) {
                     <button id="finalizarButton">Finalizar</button>
                 `);
 
-                // Evento para cambiar el estatus del reporte a "En Proceso"
-                document.getElementById('statusButton').addEventListener('click', function() {
-                    if (confirm('¿Está seguro de que desea cambiar el estatus a "En Proceso"?')) {
+                // Evento para manejar el cambio de estatus desde el menú desplegable
+                document.getElementById('statusSelect').addEventListener('change', function() {
+                    const nuevoEstatus = this.value;
+
+                    if (confirm(`¿Está seguro de que desea cambiar el estatus a "${nuevoEstatus}"?`)) {
                         fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded'
                             },
-                            body: `id=${reporteId}`
+                            body: `id=${reporteId}&nuevoEstatus=${encodeURIComponent(nuevoEstatus)}`
                         })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'success') {
-                                    alert(data.message);
-                                    document.getElementById('estatus').textContent = 'En Proceso';
+                                    Swal.fire({
+                                        title: 'Estatus Actualizado',
+                                        text: data.message,
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
+                                    document.getElementById('estatus').textContent = nuevoEstatus;
                                 } else {
-                                    alert('Error: ' + data.message);
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: data.message,
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
                                 }
                             })
-                            .catch(error => console.error('Error al actualizar el estatus:', error));
+                            .catch(error => {
+                                console.error('Error al actualizar el estatus:', error);
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Hubo un error al actualizar el estatus.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            });
+                    } else {
+                        // Restablecer el menú al estado inicial si se cancela la acción
+                        this.value = "";
                     }
                 });
 
