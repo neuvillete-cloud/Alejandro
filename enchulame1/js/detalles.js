@@ -51,7 +51,67 @@ function mostrarDetallesReporte(id) {
                 document.getElementById('statusSelect').addEventListener('change', function() {
                     const nuevoEstatus = this.value;
 
-                    if (confirm(`¿Está seguro de que desea cambiar el estatus a "${nuevoEstatus}"?`)) {
+                    if (nuevoEstatus === "Cancelado") {
+                        // Si se selecciona la opción "Cancelar", mostrar el modal
+                        const modalHTML = `
+                            <div id="cancelarModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2>Comentario para Cancelación</h2>
+                                    <form id="cancelarForm">
+                                        <label for="comentarioCancelacion">Comentario:</label>
+                                        <textarea id="comentarioCancelacion" name="comentarioCancelacion" required></textarea>
+                                        <button type="submit">Cancelar Reporte</button>
+                                    </form>
+                                </div>
+                            </div>
+                        `;
+                        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                        // Abrir el modal
+                        document.getElementById('cancelarModal').style.display = 'flex';
+
+                        // Cerrar el modal al hacer clic en la "x" o fuera del modal
+                        document.querySelector('.close').addEventListener('click', function() {
+                            document.getElementById('cancelarModal').style.display = 'none';
+                        });
+                        window.onclick = function(event) {
+                            if (event.target === document.getElementById('cancelarModal')) {
+                                document.getElementById('cancelarModal').style.display = 'none';
+                            }
+                        };
+
+                        // Manejar el envío del formulario de cancelación
+                        document.getElementById('cancelarForm').addEventListener('submit', function(event) {
+                            event.preventDefault();
+
+                            const comentarioCancelacion = document.getElementById('comentarioCancelacion').value;
+
+                            // Enviar la solicitud al servidor con el comentario
+                            fetch('https://grammermx.com/Mailer/cancelarReporte.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `id=${reporteId}&comentarioCancelacion=${encodeURIComponent(comentarioCancelacion)}`
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        alert(data.message);
+                                        // Cerrar el modal
+                                        document.getElementById('cancelarModal').style.display = 'none';
+                                        document.getElementById('estatus').textContent = 'Cancelado';
+                                    } else {
+                                        alert('Error: ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error al cancelar el reporte:', error);
+                                    alert('Hubo un error al cancelar el reporte.');
+                                });
+                        });
+                    } else if (confirm(`¿Está seguro de que desea cambiar el estatus a "${nuevoEstatus}"?`)) {
                         fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
                             method: 'POST',
                             headers: {
@@ -161,16 +221,12 @@ function mostrarDetallesReporte(id) {
                             alert('Hubo un error al finalizar el reporte.');
                         });
                 });
-
-            } else {
-                document.getElementById('detalleReporte').innerHTML = '<p>Reporte no encontrado.</p>';
             }
         })
         .catch(error => {
-            console.error('Error al obtener el reporte:', error);
-            document.getElementById('detalleReporte').innerHTML = '<p>Error al cargar el reporte.</p>';
+            console.error('Error al obtener los detalles del reporte:', error);
         });
 }
 
-// Llama a la función con el ID obtenido
+// Llamada a la función para mostrar los detalles del reporte
 mostrarDetallesReporte(reporteId);
