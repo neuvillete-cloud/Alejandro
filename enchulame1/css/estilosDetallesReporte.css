@@ -81,8 +81,17 @@ h1 {
     border: 2px solid #b0cde0;
 }
 
-/* Botón de cambio de estatus */
-#statusButton {
+/* Contenedor para el nuevo menú de estatus */
+.status-button-container {
+    text-align: left;
+    width: 100%;
+    margin-top: 30px; /* Ajuste de la separación */
+    position: relative;
+    padding-left: 20px;
+}
+
+/* Estilo para el nuevo menú (reemplaza el botón de cambio de estatus) */
+#statusMenu {
     background-color: #5b8db8;
     color: #fff;
     border: none;
@@ -90,20 +99,13 @@ h1 {
     padding: 10px 20px;
     cursor: pointer;
     font-size: 14px;
-    position: absolute;
-    bottom: 15px;
-    left: 20px;
+    width: 150px;
+    text-align: center;
     transition: background-color 0.3s ease;
-    margin-top: 30px; /* Separar el botón de la imagen */
 }
 
-/* Ajustar el contenedor para el botón */
-.status-button-container {
-    text-align: left;
-    width: 100%;
-    margin-top: 70px; /* Ajustar la separación del botón */
-    position: relative;
-    padding-left: 20px;
+#statusMenu:hover {
+    background-color: #3a6788;
 }
 
 /* Botón de "Finalizar" similar al de "Cambiar Estatus" */
@@ -193,7 +195,6 @@ h1 {
     background-color: #3a6788;
 }
 
-
 /* Botón de regresar en forma de círculo */
 #backButton {
     background-color: #5b8db8;
@@ -221,4 +222,5 @@ h1 {
     background-color: #3a6788;
     transform: scale(1.1);
 }
+
 
