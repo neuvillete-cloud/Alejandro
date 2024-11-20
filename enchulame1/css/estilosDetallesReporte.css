@@ -82,7 +82,7 @@ h1 {
 }
 
 /* Botón de cambio de estatus */
-#statusButton {
+.status-button-container {
     background-color: #5b8db8;
     color: #fff;
     border: none;
