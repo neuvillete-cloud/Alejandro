@@ -100,7 +100,7 @@ h1 {
 /* Ajustar el contenedor para el botón */
 .status-button-container {
     text-align: left;
-    width: 100%;
+    width: 50%;
     margin-top: 70px; /* Ajustar la separación del botón */
     position: relative;
     padding-left: 20px;
