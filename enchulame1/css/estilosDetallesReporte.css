@@ -81,30 +81,65 @@ h1 {
     border: 2px solid #b0cde0;
 }
 
-/* Botón de cambio de estatus */
-#statusButton {
-    background-color: #5b8db8;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
+/* Botón de cambio de estatus con menú desplegable */
+.status-button-container {
+    position: absolute; /* Mantener posición relativa al contenedor */
+    bottom: 15px; /* Igual que el botón original */
+    left: 20px; /* Mantener alineación a la izquierda */
+    margin-top: 30px; /* Espaciado adicional */
+    background-color: #5b8db8; /* Color del botón original */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 10px 20px; /* Espaciado interno */
+    font-size: 14px; /* Tamaño del texto consistente */
+    transition: background-color 0.3s ease; /* Transición suave */
+    color: #fff; /* Texto en blanco */
     cursor: pointer;
-    font-size: 14px;
-    position: absolute;
-    bottom: 15px;
-    left: 20px;
-    transition: background-color 0.3s ease;
-    margin-top: 30px; /* Separar el botón de la imagen */
+    display: inline-block;
+    width: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
-/* Ajustar el contenedor para el botón */
-.status-button-container {
-    text-align: left;
-    width: 100%;
-    margin-top: 70px; /* Ajustar la separación del botón */
-    position: relative;
-    padding-left: 20px;
+/* Efecto hover para el contenedor */
+.status-button-container:hover {
+    background-color: #3a6788; /* Oscurecer color en hover */
 }
+
+/* Menú desplegable */
+.status-dropdown {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    bottom: -105px; /* Ajustado para que aparezca debajo del botón */
+    left: 0;
+    background-color: #ffffff; /* Fondo blanco para contraste */
+    border: 1px solid #b0cde0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para separar visualmente */
+    z-index: 1000; /* Asegurar que esté encima de otros elementos */
+    width: 200px; /* Ancho del menú */
+    padding: 10px 0;
+}
+
+/* Opciones del menú */
+.status-dropdown a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto hover para las opciones */
+.status-dropdown a:hover {
+    background-color: #f0f7fd;
+    color: #3a6788;
+}
+
+/* Mostrar el menú al pasar el mouse */
+.status-button-container:hover .status-dropdown {
+    display: block;
+}
+
 
 /* Botón de "Finalizar" similar al de "Cambiar Estatus" */
 #finalizarButton {
