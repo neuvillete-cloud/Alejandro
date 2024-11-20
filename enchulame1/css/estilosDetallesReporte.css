@@ -81,6 +81,14 @@ h1 {
     border: 2px solid #b0cde0;
 }
 
+/* Contenedor flex para los elementos a la izquierda y derecha */
+.action-buttons-container {
+    display: flex;
+    justify-content: space-between; /* Distribuye los elementos entre izquierda y derecha */
+    width: 100%;
+    padding: 20px;
+}
+
 /* Estilos generales para el contenedor del menú desplegable */
 .status-button-container {
     background-color: #5b8db8; /* Mismo color que los botones */
@@ -89,13 +97,11 @@ h1 {
     border-radius: 8px; /* Bordes redondeados */
     padding: 10px 20px; /* Espaciado interno */
     width: fit-content; /* Ajustar el ancho al contenido */
-    margin: 20px auto; /* Centrar y margen superior */
     text-align: center; /* Centrar texto y contenido */
     position: relative; /* Para mantener el comportamiento actual */
     font-size: 14px; /* Ajustar el tamaño de fuente */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
     transition: background-color 0.3s ease;
-    margin-top: 30px; /* Para separar un poco más el nuevo menú del contenido */
 }
 
 /* Estilo para el menú desplegable */
@@ -114,7 +120,7 @@ h1 {
     background-color: #3a6788; /* Oscurecer el color al pasar el mouse */
 }
 
-/* Botón de "Finalizar" similar al de "Cambiar Estatus" */
+/* Botón de "Finalizar" */
 #finalizarButton {
     background-color: #5b8db8;
     color: #fff;
@@ -123,16 +129,13 @@ h1 {
     padding: 10px 20px;
     cursor: pointer;
     font-size: 14px;
-    position: absolute;
-    bottom: 15px;
-    right: 20px; /* Posiciona el botón en la esquina inferior derecha */
     transition: background-color 0.3s ease;
 }
 
+/* Efecto hover en el botón de finalizar */
 #finalizarButton:hover {
     background-color: #3a6788;
 }
-
 
 /* Modal para finalizar reporte */
 .modal {
