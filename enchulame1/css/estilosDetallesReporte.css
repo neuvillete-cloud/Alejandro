@@ -130,12 +130,14 @@ h1 {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
+    margin-left: auto; /* Esto mueve el botón a la derecha */
 }
 
 /* Efecto hover en el botón de finalizar */
 #finalizarButton:hover {
     background-color: #3a6788;
 }
+
 
 /* Modal para finalizar reporte */
 .modal {
