@@ -81,7 +81,7 @@ h1 {
     border: 2px solid #b0cde0;
 }
 
-/* Contenedor flex para los elementos a la izquierda y derecha */
+/* Contenedor de acción con menú desplegable */
 .action-buttons-container {
     display: flex;
     justify-content: space-between; /* Distribuye los elementos entre izquierda y derecha */
@@ -120,7 +120,7 @@ h1 {
     background-color: #3a6788; /* Oscurecer el color al pasar el mouse */
 }
 
-/* Botón de "Finalizar" */
+/* Botón de "Finalizar" en la esquina inferior derecha */
 #finalizarButton {
     background-color: #5b8db8;
     color: #fff;
@@ -130,13 +130,16 @@ h1 {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
-    margin-left: auto; /* Esto mueve el botón a la derecha */
+    position: absolute; /* Posiciona el botón de manera absoluta */
+    bottom: 30px; /* Ajusta la distancia desde la parte inferior */
+    right: 30px; /* Ajusta la distancia desde la derecha */
 }
 
 /* Efecto hover en el botón de finalizar */
 #finalizarButton:hover {
     background-color: #3a6788;
 }
+
 
 
 /* Modal para finalizar reporte */
