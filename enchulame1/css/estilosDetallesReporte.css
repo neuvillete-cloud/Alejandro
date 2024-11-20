@@ -102,6 +102,7 @@ h1 {
     font-size: 14px; /* Ajustar el tamaño de fuente */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
     transition: background-color 0.3s ease;
+    display: inline-block; /* Asegura que no se estire el contenedor */
 }
 
 /* Estilo para el menú desplegable */
@@ -133,12 +134,14 @@ h1 {
     position: absolute; /* Posiciona el botón de manera absoluta */
     bottom: 15px; /* Ajusta la distancia desde la parte inferior */
     right: -445px; /* Ajusta la distancia desde la derecha */
+    width: 160px; /* Ajusta el ancho para que sea consistente con el contenedor */
 }
 
 /* Efecto hover en el botón de finalizar */
 #finalizarButton:hover {
     background-color: #3a6788;
 }
+
 
 
 /* Modal para finalizar reporte */
