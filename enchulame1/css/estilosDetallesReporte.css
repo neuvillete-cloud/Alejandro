@@ -132,15 +132,13 @@ h1 {
     transition: background-color 0.3s ease;
     position: absolute; /* Posiciona el botón de manera absoluta */
     bottom: 15px; /* Ajusta la distancia desde la parte inferior */
-    right: -450px; /* Ajusta la distancia desde la derecha */
+    right: -440px; /* Ajusta la distancia desde la derecha */
 }
 
 /* Efecto hover en el botón de finalizar */
 #finalizarButton:hover {
     background-color: #3a6788;
 }
-
-
 
 
 /* Modal para finalizar reporte */
