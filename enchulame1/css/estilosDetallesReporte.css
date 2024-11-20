@@ -83,20 +83,29 @@ h1 {
 
 /* Contenedor del menú desplegable para cambiar estatus */
 .status-button-container {
-    background-color: #5b8db8; /* Mismo color que el botón de estatus */
+    background-color: #5b8db8; /* Mismo color que los botones */
     color: #fff;
-    border: none;
+    border: none; /* Quitar bordes adicionales */
     border-radius: 8px; /* Bordes redondeados */
     padding: 10px 20px; /* Espaciado interno */
-    font-size: 14px; /* Tamaño de fuente consistente */
-    position: absolute; /* Posicionamiento absoluto */
-    bottom: 15px; /* Espaciado desde la parte inferior */
-    left: 20px; /* Espaciado desde la izquierda */
     width: fit-content; /* Ajustar el ancho al contenido */
-    transition: background-color 0.3s ease; /* Suavizar cambios en el color */
-    margin-top: 30px; /* Separación adicional si se necesita */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin: 20px auto; /* Centrar y margen superior */
     text-align: center; /* Centrar texto y contenido */
+    position: relative; /* Para mantener el comportamiento actual */
+    font-size: 14px; /* Ajustar el tamaño de fuente */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: background-color 0.3s ease;
+}
+
+/* Estilo para el menú desplegable */
+.status-button-container select {
+    background-color: transparent; /* Fondo transparente para adaptarse al contenedor */
+    color: #fff; /* Texto en blanco */
+    border: none; /* Sin bordes */
+    outline: none; /* Sin resaltado */
+    font-size: inherit; /* Heredar el tamaño de fuente */
+    cursor: pointer; /* Cambiar el cursor a pointer */
+    padding: 5px 10px; /* Espaciado interno */
 }
 
 /* Efecto hover en el contenedor */
