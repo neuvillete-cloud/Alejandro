@@ -96,13 +96,12 @@ h1 {
     border: none; /* Quitar bordes adicionales */
     border-radius: 8px; /* Bordes redondeados */
     padding: 10px 20px; /* Espaciado interno */
-    width: fit-content; /* Ajustar el ancho al contenido */
+    width: 160px; /* Establece un ancho fijo para que sea el mismo que el botón de finalizar */
     text-align: center; /* Centrar texto y contenido */
     position: relative; /* Para mantener el comportamiento actual */
     font-size: 14px; /* Ajustar el tamaño de fuente */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
     transition: background-color 0.3s ease;
-    display: inline-block; /* Asegura que no se estire el contenedor */
 }
 
 /* Estilo para el menú desplegable */
@@ -134,7 +133,6 @@ h1 {
     position: absolute; /* Posiciona el botón de manera absoluta */
     bottom: 15px; /* Ajusta la distancia desde la parte inferior */
     right: -445px; /* Ajusta la distancia desde la derecha */
-    width: 160px; /* Ajusta el ancho para que sea consistente con el contenedor */
 }
 
 /* Efecto hover en el botón de finalizar */
