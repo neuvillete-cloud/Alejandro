@@ -72,8 +72,8 @@ function llenarTablaReportes(reportes) {
         const celdaDescripcion = document.createElement('td');
         celdaDescripcion.textContent = reporte.DescripcionProblema;
 
-        const celdaFechaFinalizada = document.createElement('td');
-        celdaFechaFinalizada.textContent = reporte.FechaFinalizado;
+        const celdaFechaCompromiso = document.createElement('td');
+        celdaFechaCompromiso.textContent = reporte.FechaCompromiso;
 
         // Celda para el estatus con clases CSS correspondientes
         const celdaEstatus = document.createElement('td');

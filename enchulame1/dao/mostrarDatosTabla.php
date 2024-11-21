@@ -33,7 +33,7 @@ function obtenerReportes($searchId, $nave, $reportCount) {
             r.Ubicacion, 
             r.FechaRegistro, 
             r.DescripcionProblema, 
-            r.FechaFinalizado,
+            r.FechaCompromiso,
             r.DescripcionLugar, 
             e.NombreEstatus AS Estatus
         FROM 
