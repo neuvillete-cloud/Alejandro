@@ -45,6 +45,16 @@
                         <option value="Nave 1">Nave 1</option>
                         <option value="Nave 2">Nave 2</option>
                         <option value="Nave 3">Nave 3</option>
+                        <option value="Nave 4">Nave 4</option>
+                        <option value="Nave 5">Nave 5</option>
+                        <option value="Nave 6">Nave 6</option>
+                        <option value="Nave 7">Nave 7</option>
+                        <option value="Nave 8">Nave 8</option>
+                        <option value="Nave 9">Nave 9</option>
+                        <option value="Nave 10">Nave 10</option>
+                        <option value="Nave 11">Nave 11</option>
+                        <option value="Nave 12">Nave 12</option>
+
                     </select>
                 </div>
 
