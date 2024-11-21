@@ -2,6 +2,9 @@
 session_start(); // Iniciar sesión
 include_once("conexion.php");
 
+// Establecer la zona horaria
+date_default_timezone_set('America/Mexico_City'); // Cambia según tu ubicación
+
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar que la sesión esté iniciada
