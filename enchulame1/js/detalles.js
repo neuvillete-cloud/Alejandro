@@ -24,6 +24,7 @@ function mostrarDetallesReporte(id) {
                         <p><strong>Área:</strong> ${reporte.Area}</p>
                         <p><strong>Ubicación:</strong> ${reporte.Ubicacion}</p>
                         <p><strong>Fecha:</strong> ${reporte.FechaRegistro}</p>
+                        <p><strong>Fecha Finalizado</strong> ${reporte.FechaFinalizado}</p>
                         <p><strong>Descripción del Problema:</strong> ${reporte.DescripcionProblema}</p>
                         <p><strong>Estado:</strong> <span id="estatus">${reporte.Estatus}</span></p>
                         <p><strong>Detalles Adicionales:</strong> ${reporte.DescripcionLugar || 'N/A'}</p>

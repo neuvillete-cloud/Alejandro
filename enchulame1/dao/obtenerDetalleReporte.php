@@ -17,6 +17,7 @@ if (isset($_GET['id'])) {
             a.NombreArea AS Area, 
             r.Ubicacion, 
             r.FechaRegistro, 
+            r.FechaFinalizado,
             r.DescripcionProblema, 
             r.DescripcionLugar, 
             e.NombreEstatus AS Estatus,
