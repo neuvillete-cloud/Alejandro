@@ -33,7 +33,7 @@ function mostrarDetallesReporte(id) {
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
                     <div class="status-button-container">
-                        <select id="statusSelect" ${reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>
+                        <select id="statusSelect" ${reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>
                             <option value="" disabled selected>Cambiar Estatus</option>
                             <option value="En Proceso">En Proceso</option>
                             <option value="Cancelado">Cancelar</option>
@@ -45,11 +45,11 @@ function mostrarDetallesReporte(id) {
                 // Añadir el botón de "Finalizar" dinámicamente al contenedor
                 const finalizarButtonContainer = document.querySelector('.status-button-container');
                 finalizarButtonContainer.insertAdjacentHTML('beforeend', `
-                    <button id="finalizarButton" ${reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>Finalizar</button>
+                    <button id="finalizarButton" ${reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>Finalizar</button>
                 `);
 
                 // Deshabilitar botones y mostrar alertas si el reporte ya está finalizado o cancelado
-                if (reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado') {
+                if (reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado') {
                     document.getElementById('finalizarButton').disabled = true;
                     document.getElementById('statusSelect').disabled = true;
 
@@ -65,7 +65,7 @@ function mostrarDetallesReporte(id) {
                 document.getElementById('statusSelect').addEventListener('change', function() {
                     const nuevoEstatus = this.value;
 
-                    if (reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado') {
+                    if (reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado') {
                         Swal.fire({
                             title: 'Acción no permitida',
                             text: `No se puede cambiar el estado porque el reporte ya está ${reporte.Estatus.toLowerCase()}.`,
