@@ -24,6 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Generar la fecha y hora exacta
         $fechaRegistro = date('Y-m-d H:i:s');
 
+        // Calcular FechaCompromiso sumando 7 días a la fecha actual
+        $fechaCompromiso = date('Y-m-d H:i:s', strtotime($fechaRegistro . ' +7 days'));
+
         // Conectar a la base de datos
         $con = new LocalConector();
         $conn = $con->conectar();
@@ -61,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Insertar el reporte en la base de datos
-        $stmt = $conn->prepare("INSERT INTO Reportes (NumNomina, IdEstatus, IdArea, FotoProblema, Ubicacion, DescripcionProblema, DescripcionLugar, FechaRegistro) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("siisssss", $NumNomina, $idEstatus, $idArea, $fotoPath, $lugar, $descripcion, $descripcionLugar, $fechaRegistro);
+        $stmt = $conn->prepare("INSERT INTO Reportes (NumNomina, IdEstatus, IdArea, FotoProblema, Ubicacion, DescripcionProblema, DescripcionLugar, FechaRegistro, FechaCompromiso) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("siissssss", $NumNomina, $idEstatus, $idArea, $fotoPath, $lugar, $descripcion, $descripcionLugar, $fechaRegistro, $fechaCompromiso);
 
         if ($stmt->execute()) {
             echo json_encode([

@@ -20,6 +20,7 @@
 
     <!-- Formulario de reporte -->
     <form id="reporteForm">
+
         <!-- Campo de descripción -->
         <div class="form-section">
             <label for="descripcion">Descripción</label>
