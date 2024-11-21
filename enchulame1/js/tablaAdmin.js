@@ -85,9 +85,9 @@ function llenarTablaReportes(reportes) {
         } else if (reporte.Estatus === 'Completado') {
             spanEstatus.textContent = reporte.Estatus;
             spanEstatus.classList.add('status', 'completado');
-        } else {
-            spanEstatus.textContent = 'Estatus Desconocido';
-            spanEstatus.classList.add('status', 'desconocido');
+        } else if (reporte.Estatus === 'Cancelado') {
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'Cancelado');
         }
 
         // Agregar el span con el estatus a la celda
