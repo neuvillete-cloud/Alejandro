@@ -45,6 +45,9 @@ function loadReportes(searchId = '', nave = '', reportCount = 5) {
 
 // Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
+    // Ordenar los reportes por IdReporte en orden ascendente
+    reportes.sort((a, b) => a.IdReporte - b.IdReporte);
+
     const tablaReportes = document.getElementById('tablaReportes');
     tablaReportes.innerHTML = '';  // Limpiar tabla antes de llenarla
 
@@ -119,4 +122,3 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
-
