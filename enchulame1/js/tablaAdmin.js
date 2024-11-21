@@ -114,7 +114,7 @@ function llenarTablaReportes(reportes) {
         fila.appendChild(celdaUbicacion);
         fila.appendChild(celdaFecha);
         fila.appendChild(celdaDescripcion);
-        fila.appendChild(celdaFechaFinalizada);
+        fila.appendChild(celdaFechaCompromiso);
         fila.appendChild(celdaEstatus);
         fila.appendChild(celdaAccion);
 
