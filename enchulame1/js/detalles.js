@@ -33,7 +33,7 @@ function mostrarDetallesReporte(id) {
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
                     <div class="status-button-container">
-                        <select id="statusSelect">
+                        <select id="statusSelect" ${reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>
                             <option value="" disabled selected>Cambiar Estatus</option>
                             <option value="En Proceso">En Proceso</option>
                             <option value="Cancelado">Cancelar</option>
@@ -45,15 +45,40 @@ function mostrarDetallesReporte(id) {
                 // Añadir el botón de "Finalizar" dinámicamente al contenedor
                 const finalizarButtonContainer = document.querySelector('.status-button-container');
                 finalizarButtonContainer.insertAdjacentHTML('beforeend', `
-                    <button id="finalizarButton">Finalizar</button>
+                    <button id="finalizarButton" ${reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>Finalizar</button>
                 `);
+
+                // Deshabilitar botones y mostrar alertas si el reporte ya está finalizado o cancelado
+                if (reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado') {
+                    document.getElementById('finalizarButton').disabled = true;
+                    document.getElementById('statusSelect').disabled = true;
+
+                    Swal.fire({
+                        title: 'Acción no permitida',
+                        text: `Este reporte ya ha sido ${reporte.Estatus.toLowerCase()} y no se puede modificar.`,
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
+                }
 
                 // Evento para manejar el cambio de estatus desde el menú desplegable
                 document.getElementById('statusSelect').addEventListener('change', function() {
                     const nuevoEstatus = this.value;
 
+                    if (reporte.Estatus === 'Finalizado' || reporte.Estatus === 'Cancelado') {
+                        Swal.fire({
+                            title: 'Acción no permitida',
+                            text: `No se puede cambiar el estado porque el reporte ya está ${reporte.Estatus.toLowerCase()}.`,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                        this.value = "";
+                        return;
+                    }
+
+                    // Lógica existente para manejar cambios de estatus
                     if (nuevoEstatus === "Cancelado") {
-                        // Si se selecciona la opción "Cancelar", mostrar el modal
+                        // Mostrar modal de cancelación
                         const modalHTML = `
                             <div id="cancelarModal" class="modal">
                                 <div class="modal-content">
@@ -99,17 +124,31 @@ function mostrarDetallesReporte(id) {
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.status === 'success') {
-                                        alert(data.message);
-                                        // Cerrar el modal
+                                        Swal.fire({
+                                            title: 'Reporte Cancelado',
+                                            text: data.message,
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        });
                                         document.getElementById('cancelarModal').style.display = 'none';
                                         document.getElementById('estatus').textContent = 'Cancelado';
                                     } else {
-                                        alert('Error: ' + data.message);
+                                        Swal.fire({
+                                            title: 'Error',
+                                            text: data.message,
+                                            icon: 'error',
+                                            confirmButtonText: 'OK'
+                                        });
                                     }
                                 })
                                 .catch(error => {
                                     console.error('Error al cancelar el reporte:', error);
-                                    alert('Hubo un error al cancelar el reporte.');
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: 'Hubo un error al cancelar el reporte.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
                                 });
                         });
                     } else if (confirm(`¿Está seguro de que desea cambiar el estatus a "${nuevoEstatus}"?`)) {
@@ -149,7 +188,6 @@ function mostrarDetallesReporte(id) {
                                 });
                             });
                     } else {
-                        // Restablecer el menú al estado inicial si se cancela la acción
                         this.value = "";
                     }
                 });
@@ -189,19 +227,15 @@ function mostrarDetallesReporte(id) {
                     }
                 };
 
-                // Enviar los datos del formulario de finalización
+                // Manejar el envío del formulario de finalización
                 document.getElementById('finalizarForm').addEventListener('submit', function(event) {
                     event.preventDefault();
 
-                    const comentario = document.getElementById('comentarioFinal').value;
-                    const foto = document.getElementById('fotoEvidencia').files[0];
-
                     const formData = new FormData();
-                    formData.append('id', reporteId); // Agregar el ID del reporte
-                    formData.append('comentarioFinal', comentario);
-                    formData.append('fotoEvidencia', foto);
+                    formData.append('id', reporteId);
+                    formData.append('comentarioFinal', document.getElementById('comentarioFinal').value);
+                    formData.append('fotoEvidencia', document.getElementById('fotoEvidencia').files[0]);
 
-                    // Enviar la solicitud al servidor
                     fetch('https://grammermx.com/Mailer/finalizarReporte.php', {
                         method: 'POST',
                         body: formData
@@ -209,19 +243,34 @@ function mostrarDetallesReporte(id) {
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
-                                alert(data.message);
-                                // Cerrar el modal y actualizar el estatus en la página
+                                Swal.fire({
+                                    title: 'Reporte Finalizado',
+                                    text: data.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                });
                                 document.getElementById('finalizarModal').style.display = 'none';
                                 document.getElementById('estatus').textContent = 'Finalizado';
                             } else {
-                                alert('Error: ' + data.message);
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
                             }
                         })
                         .catch(error => {
                             console.error('Error al finalizar el reporte:', error);
-                            alert('Hubo un error al finalizar el reporte.');
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un error al finalizar el reporte.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
                         });
                 });
+
             }
         })
         .catch(error => {
@@ -231,3 +280,4 @@ function mostrarDetallesReporte(id) {
 
 // Llamada a la función para mostrar los detalles del reporte
 mostrarDetallesReporte(reporteId);
+
