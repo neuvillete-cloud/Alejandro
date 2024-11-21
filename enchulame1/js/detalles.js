@@ -250,7 +250,7 @@ function mostrarDetallesReporte(id) {
                                     confirmButtonText: 'OK'
                                 });
                                 document.getElementById('finalizarModal').style.display = 'none';
-                                document.getElementById('estatus').textContent = 'Finalizado';
+                                document.getElementById('estatus').textContent = 'Completado';
                             } else {
                                 Swal.fire({
                                     title: 'Error',
