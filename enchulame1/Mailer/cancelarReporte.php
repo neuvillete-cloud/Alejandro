@@ -8,9 +8,9 @@ require 'Phpmailer/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
+if (isset($_POST['id']) && isset($_POST['comentarioCancelacion'])) {
     $reporteId = $_POST['id'];
-    $comentarioFinal = $_POST['comentarioFinal'];
+    $comentarioFinal = $_POST['comentarioCancelacion'];
     $nuevoEstatus = 4; // ID para "Cancelado"
     $fechaCancelado = date("Y-m-d H:i:s");
 
