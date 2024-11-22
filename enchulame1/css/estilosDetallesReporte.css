@@ -247,32 +247,32 @@ h1 {
     transform: scale(1.1);
 }
 
-/* Estilos generales para el contenedor del carrusel */
-#carruselContainer {
-    position: relative; /* Necesario para posicionar los controles si los hubiera */
-    width: 100%; /* Hace que el contenedor ocupe el 100% del ancho disponible */
-    max-width: 700px; /* Limita el ancho máximo del carrusel */
-    margin: 20px auto; /* Centra el carrusel en la página */
-    overflow: hidden; /* Oculta las imágenes que se salen del contenedor */
-    border-radius: 12px; /* Bordes redondeados para un estilo más suave */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del carrusel */
+#carrusel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-/* Estilos para los elementos individuales dentro del carrusel */
 .carrusel-item {
-    display: none; /* Las fotos inicialmente no son visibles */
-    width: 100%; /* Cada foto ocupa todo el ancho del contenedor */
-    text-align: center; /* Centra las imágenes dentro del div */
+    display: none;
+    text-align: center;
 }
 
 .carrusel-item img {
-    width: 100%; /* Las imágenes ocuparán todo el ancho del contenedor */
-    height: auto; /* Mantiene la proporción de la imagen */
-    border-radius: 12px; /* Bordes redondeados para las imágenes */
-    transition: opacity 1s ease-in-out; /* Agrega una transición suave a la opacidad */
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
 }
 
-/* Estilo para las imágenes al hacer el cambio de una a otra */
-.carrusel-item.active {
-    display: block; /* Muestra la imagen activa */
+#prevButton, #nextButton {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#prevButton:hover, #nextButton:hover {
+    background-color: #0056b3;
 }

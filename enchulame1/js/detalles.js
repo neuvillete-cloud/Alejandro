@@ -29,7 +29,7 @@ function mostrarDetallesReporte(id) {
                         <p><strong>Estado:</strong> <span id="estatus">${reporte.Estatus}</span></p>
                         <p><strong>Detalles Adicionales:</strong> ${reporte.DescripcionLugar || 'N/A'}</p>
                     </div>
-                    <div class="image-container">
+                    <div class="image-container" id="carruselContainer">
                         <img src="${reporte.FotoProblemaURL}" alt="Foto del Problema">
                     </div>
                     <div class="status-button-container">
@@ -251,8 +251,7 @@ function mostrarDetallesReporte(id) {
                                 });
                                 document.getElementById('finalizarModal').style.display = 'none';
                                 document.getElementById('estatus').textContent = 'Completado';
-                                // Mostrar el carrusel de fotos solo si el reporte está completado
-                                mostrarCarruselFotos(reporte.IdReporte);
+
                             } else {
                                 Swal.fire({
                                     title: 'Error',
@@ -273,6 +272,12 @@ function mostrarDetallesReporte(id) {
                         });
                 });
 
+
+                // Mostrar el carrusel de fotos si el reporte está completado
+                if (reporte.Estatus === 'Completado') {
+                    mostrarCarruselFotos(reporte.IdReporte);
+                }
+
                 // Función para mostrar el carrusel de fotos
                 function mostrarCarruselFotos(idReporte) {
                     fetch(`dao/obtenerFotosReporte.php?idReporte=${idReporte}`)
@@ -281,19 +286,23 @@ function mostrarDetallesReporte(id) {
                             if (data.status === 'success') {
                                 const fotos = data.fotos;
                                 const carruselContainer = document.getElementById('carruselContainer');
-                                carruselContainer.innerHTML = '';
+                                carruselContainer.innerHTML = `
+                                    <div id="carrusel">
+                                        <button id="prevButton">&#8592; Anterior</button>
+                                        <div id="carruselItems"></div>
+                                        <button id="nextButton">Siguiente &#8594;</button>
+                                    </div>
+                                `;
+
+                                const carruselItems = document.getElementById('carruselItems');
                                 fotos.forEach(foto => {
-                                    carruselContainer.innerHTML += `
-                                        <div class="carrusel-item">
-                                            <img src="${foto.url}" alt="Foto del Reporte">
-                                        </div>
-                                    `;
+                                    const item = document.createElement('div');
+                                    item.classList.add('carrusel-item');
+                                    item.innerHTML = `<img src="${foto.url}" alt="Foto del Reporte">`;
+                                    carruselItems.appendChild(item);
                                 });
 
-                                // Inicia el carrusel si hay fotos
-                                if (fotos.length > 0) {
-                                    iniciarCarrusel();
-                                }
+                                iniciarCarrusel();
                             } else {
                                 console.log('No se encontraron fotos para el reporte');
                             }
@@ -303,15 +312,31 @@ function mostrarDetallesReporte(id) {
                         });
                 }
 
-                // Función para iniciar el carrusel de fotos
+                // Función para manejar el carrusel de fotos con botones
                 function iniciarCarrusel() {
                     const items = document.querySelectorAll('.carrusel-item');
+                    const prevButton = document.getElementById('prevButton');
+                    const nextButton = document.getElementById('nextButton');
                     let currentIndex = 0;
-                    setInterval(() => {
+
+                    // Mostrar solo la primera imagen inicialmente
+                    items.forEach((item, index) => {
+                        item.style.display = index === currentIndex ? 'block' : 'none';
+                    });
+
+                    // Evento para botón "Anterior"
+                    prevButton.addEventListener('click', () => {
                         items[currentIndex].style.display = 'none';
-                        currentIndex = (currentIndex + 1) % items.length;
+                        currentIndex = (currentIndex === 0) ? items.length - 1 : currentIndex - 1;
                         items[currentIndex].style.display = 'block';
-                    }, 3000); // Cambia cada 3 segundos
+                    });
+
+                    // Evento para botón "Siguiente"
+                    nextButton.addEventListener('click', () => {
+                        items[currentIndex].style.display = 'none';
+                        currentIndex = (currentIndex === items.length - 1) ? 0 : currentIndex + 1;
+                        items[currentIndex].style.display = 'block';
+                    });
                 }
 
             }
