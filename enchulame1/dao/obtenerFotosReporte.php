@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
         }
         if (!empty($reporte['FotoEvidencia'])) {
             $fotos[] = [
-                'url' => '../imagenes/fotosAdministrador.php' . $reporte['FotoEvidencia']
+                'url' => '../imagenes/fotosAdministrador.php/' . $reporte['FotoEvidencia']
             ];
         }
 
