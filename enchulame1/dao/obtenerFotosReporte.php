@@ -33,13 +33,13 @@ if (isset($_GET['id'])) {
 
         if ($reporte['FotoProblema']) {
             $fotos[] = [
-                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoProblema'] // Ajusta la ruta según tu estructura de archivos
+                'url' => '../imagenes/fotosSolicitantes.php' . $reporte['FotoProblema'] // Ajusta la ruta según tu estructura de archivos
             ];
         }
 
         if ($reporte['FotoEvidencia']) {
             $fotos[] = [
-                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoEvidencia'] // Ajusta la ruta según tu estructura de archivos
+                'url' => '../imagenes/fotosAdministrador.php' . $reporte['FotoEvidencia'] // Ajusta la ruta según tu estructura de archivos
             ];
         }
 
