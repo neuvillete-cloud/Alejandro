@@ -1,63 +1,51 @@
 <?php
-session_start(); // Iniciar sesión
+session_start();
 include_once("conexion.php");
 
-if (isset($_GET['id'])) {
-    $reporteId = $_GET['id'];
+header('Content-Type: application/json'); // Asegura que la salida sea JSON
 
-    // Crear una conexión usando la clase `LocalConector`
+if (isset($_GET['id'])) {
+    $reporteId = intval($_GET['id']); // Sanitizar el parámetro
+
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta SQL para obtener las fotos asociadas al reporte
     $stmt = $conex->prepare("
-        SELECT 
-            r.IdReporte, 
-            r.FotoProblema, 
-            r.FotoEvidencia
-        FROM 
-            Reportes r
-        WHERE 
-            r.IdReporte = ?
+        SELECT IdReporte, FotoProblema, FotoEvidencia
+        FROM Reportes
+        WHERE IdReporte = ?
     ");
-
     $stmt->bind_param('i', $reporteId);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $reporte = $result->fetch_assoc();
-
-        // Construir la respuesta con las URLs de las fotos
         $fotos = [];
 
-        if ($reporte['FotoProblema']) {
+        if (!empty($reporte['FotoProblema'])) {
             $fotos[] = [
-                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoProblema'] // Ajusta la ruta según tu estructura de archivos
+                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoProblema']
             ];
         }
-
-        if ($reporte['FotoEvidencia']) {
+        if (!empty($reporte['FotoEvidencia'])) {
             $fotos[] = [
-                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoEvidencia'] // Ajusta la ruta según tu estructura de archivos
+                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoEvidencia']
             ];
         }
 
         if (!empty($fotos)) {
-            $response = array('status' => 'success', 'fotos' => $fotos);
+            echo json_encode(['status' => 'success', 'fotos' => $fotos]);
         } else {
-            $response = array('status' => 'error', 'message' => 'No se encontraron fotos para el reporte');
+            echo json_encode(['status' => 'error', 'message' => 'No se encontraron fotos asociadas al reporte.']);
         }
     } else {
-        $response = array('status' => 'error', 'message' => 'Reporte no encontrado');
+        echo json_encode(['status' => 'error', 'message' => 'Reporte no encontrado.']);
     }
 
     $stmt->close();
     $conex->close();
 } else {
-    $response = array('status' => 'error', 'message' => 'ID de reporte no especificado');
+    echo json_encode(['status' => 'error', 'message' => 'ID de reporte no proporcionado.']);
 }
-
-echo json_encode($response);
 ?>
-
