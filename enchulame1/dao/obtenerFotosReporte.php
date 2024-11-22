@@ -25,12 +25,12 @@ if (isset($_GET['id'])) {
 
         if (!empty($reporte['FotoProblema'])) {
             $fotos[] = [
-                'url' => '../imagenes/fotosSolicitantes.php/' . $reporte['FotoProblema']
+                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoProblema']
             ];
         }
         if (!empty($reporte['FotoEvidencia'])) {
             $fotos[] = [
-                'url' => '../imagenes/fotosAdministrador.php/' . $reporte['FotoEvidencia']
+                'url' => 'ruta_a_tus_imagenes/' . $reporte['FotoEvidencia']
             ];
         }
 
