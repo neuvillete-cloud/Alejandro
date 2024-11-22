@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nombreUnico = "reporte_" . $NumNomina . "_" . date("Ymd_His") . "." . $extension;
 
             // Definir la ruta de guardado (ahora la carpeta 'imagenes/fotosSolicitantes')
-            $fotoPath = "../imagenes/fotosSolicitantes/" . $nombreUnico;
+            $fotoPath = "https://grammermx.com/AleTest/enchulame1/imagenes/fotosSolicitantes/" . $nombreUnico;
 
             // Mover el archivo a la carpeta de destino
             if (!move_uploaded_file($foto['tmp_name'], $fotoPath)) {
