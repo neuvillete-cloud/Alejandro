@@ -280,7 +280,7 @@ function mostrarDetallesReporte(id) {
 
                 // Función para mostrar el carrusel de fotos
                 function mostrarCarruselFotos(idReporte) {
-                    fetch(`dao/obtenerFotosReporte.php?idReporte=${idReporte}`)
+                    fetch(`dao/obtenerFotosReporte.php?id=${idReporte}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
