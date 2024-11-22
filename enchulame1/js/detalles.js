@@ -299,7 +299,6 @@ function mostrarDetallesReporte(id) {
                                     const item = document.createElement('div');
                                     item.classList.add('carrusel-item');
                                     item.innerHTML = `<img src="${foto.url}" alt="Foto de Evidencia">`;
-                                    item.innerHTML = `<img src="${foto.url}" alt="Foto de Evidencia">`;
                                     carruselItems.appendChild(item);
                                 });
 
