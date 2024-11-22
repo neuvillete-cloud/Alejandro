@@ -295,10 +295,10 @@ function mostrarDetallesReporte(id) {
                                 `;
 
                                 const carruselItems = document.getElementById('carruselItems');
-                                fotos.forEach(foto => {
+                                fotos.forEach(fotos => {
                                     const item = document.createElement('div');
                                     item.classList.add('carrusel-item');
-                                    item.innerHTML = `<img src="${foto.url}" alt="Foto del Reporte">`;
+                                    item.innerHTML = `<img src="${fotos.url}" alt="Foto del Reporte">`;
                                     carruselItems.appendChild(item);
                                 });
 
