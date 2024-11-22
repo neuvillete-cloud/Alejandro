@@ -298,7 +298,7 @@ function mostrarDetallesReporte(id) {
                                 fotos.forEach(fotos => {
                                     const item = document.createElement('div');
                                     item.classList.add('carrusel-item');
-                                    item.innerHTML = `<img src="${fotos.url}" alt="Foto de Evidencia">`;
+                                    item.innerHTML = `<img src="${fotos.FotoEvidenciaURL}" alt="Foto de Evidencia">`;
                                     carruselItems.appendChild(item);
                                 });
 
