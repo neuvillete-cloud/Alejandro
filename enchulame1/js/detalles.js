@@ -251,6 +251,8 @@ function mostrarDetallesReporte(id) {
                                 });
                                 document.getElementById('finalizarModal').style.display = 'none';
                                 document.getElementById('estatus').textContent = 'Completado';
+                                // Mostrar el carrusel de fotos solo si el reporte está completado
+                                mostrarCarruselFotos(reporte.IdReporte);
                             } else {
                                 Swal.fire({
                                     title: 'Error',
@@ -271,6 +273,47 @@ function mostrarDetallesReporte(id) {
                         });
                 });
 
+                // Función para mostrar el carrusel de fotos
+                function mostrarCarruselFotos(idReporte) {
+                    fetch(`dao/obtenerFotosReporte.php?idReporte=${idReporte}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                const fotos = data.fotos;
+                                const carruselContainer = document.getElementById('carruselContainer');
+                                carruselContainer.innerHTML = '';
+                                fotos.forEach(foto => {
+                                    carruselContainer.innerHTML += `
+                                        <div class="carrusel-item">
+                                            <img src="${foto.url}" alt="Foto del Reporte">
+                                        </div>
+                                    `;
+                                });
+
+                                // Inicia el carrusel si hay fotos
+                                if (fotos.length > 0) {
+                                    iniciarCarrusel();
+                                }
+                            } else {
+                                console.log('No se encontraron fotos para el reporte');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al obtener las fotos:', error);
+                        });
+                }
+
+                // Función para iniciar el carrusel de fotos
+                function iniciarCarrusel() {
+                    const items = document.querySelectorAll('.carrusel-item');
+                    let currentIndex = 0;
+                    setInterval(() => {
+                        items[currentIndex].style.display = 'none';
+                        currentIndex = (currentIndex + 1) % items.length;
+                        items[currentIndex].style.display = 'block';
+                    }, 3000); // Cambia cada 3 segundos
+                }
+
             }
         })
         .catch(error => {
@@ -280,4 +323,3 @@ function mostrarDetallesReporte(id) {
 
 // Llamada a la función para mostrar los detalles del reporte
 mostrarDetallesReporte(reporteId);
-
