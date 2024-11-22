@@ -40,7 +40,7 @@ if (isset($_GET['id'])) {
 
     if ($result->num_rows > 0) {
         $reporte = $result->fetch_assoc();
-        $reporte['FotoProblemaURL'] = 'ruta_a_tus_imagenes/' . $reporte['FotoProblema'];  // Ajusta la ruta según tu estructura de archivos
+        $reporte['FotoProblemaURL'] = $reporte['FotoProblema'];  // Ajusta la ruta según tu estructura de archivos
 
         $response = array('status' => 'success', 'reporte' => $reporte);
     } else {
