@@ -65,7 +65,7 @@
                         <option value="5">5</option>
                         <option value="25">25</option>
                         <option value="100">100</option>
-                        <option value="0">Todos</option>
+                        <option value="*">Todos</option>
                     </select>
                 </div>
             </div>
