@@ -287,22 +287,23 @@ function mostrarDetallesReporte(id) {
                                 const fotos = data.fotos;
                                 const carruselContainer = document.getElementById('carruselContainer');
                                 carruselContainer.innerHTML = `
-                                    <div id="carrusel">
-                                        <button id="prevButton">&#8592; Anterior</button>
-                                        <div id="carruselItems"></div>
-                                        <button id="nextButton">Siguiente &#8594;</button>
-                                    </div>
-                                `;
+                    <div class="slideshow-container">
+                        ${fotos.map((foto, index) => `
+                            <div class="mySlides fade">
+                                <div class="numbertext">${index + 1} / ${fotos.length}</div>
+                                <img src="${foto.url}" style="width:100%">
+                                <div class="text">Foto ${index + 1}</div>
+                            </div>
+                        `).join('')}
+                        <a class="prev">&#10094;</a>
+                        <a class="next">&#10095;</a>
+                    </div>
+                    <div style="text-align:center">
+                        ${fotos.map((_, index) => `<span class="dot" data-index="${index}"></span>`).join('')}
+                    </div>
+                `;
 
-                                const carruselItems = document.getElementById('carruselItems');
-                                fotos.forEach(foto => {
-                                    const item = document.createElement('div');
-                                    item.classList.add('carrusel-item');
-                                    item.innerHTML = `<img src="${foto.url}" alt="Foto de Evidencia">`;
-                                    carruselItems.appendChild(item);
-                                });
-
-                                iniciarCarrusel();
+                                iniciarNuevoCarrusel();
                             } else {
                                 console.log('No se encontraron fotos para el reporte');
                             }
@@ -312,32 +313,45 @@ function mostrarDetallesReporte(id) {
                         });
                 }
 
+
                 // Función para manejar el carrusel de fotos con botones
-                function iniciarCarrusel() {
-                    const items = document.querySelectorAll('.carrusel-item');
-                    const prevButton = document.getElementById('prevButton');
-                    const nextButton = document.getElementById('nextButton');
-                    let currentIndex = 0;
+                function iniciarNuevoCarrusel() {
+                    let slideIndex = 0;
+                    const slides = document.querySelectorAll('.mySlides');
+                    const dots = document.querySelectorAll('.dot');
+                    const prevButton = document.querySelector('.prev');
+                    const nextButton = document.querySelector('.next');
 
-                    // Mostrar solo la primera imagen inicialmente
-                    items.forEach((item, index) => {
-                        item.style.display = index === currentIndex ? 'block' : 'none';
-                    });
+                    function showSlides(index) {
+                        if (index >= slides.length) slideIndex = 0;
+                        if (index < 0) slideIndex = slides.length - 1;
 
-                    // Evento para botón "Anterior"
-                    prevButton.addEventListener('click', () => {
-                        items[currentIndex].style.display = 'none';
-                        currentIndex = (currentIndex === 0) ? items.length - 1 : currentIndex - 1;
-                        items[currentIndex].style.display = 'block';
-                    });
+                        slides.forEach((slide, i) => {
+                            slide.style.display = i === slideIndex ? 'block' : 'none';
+                        });
 
-                    // Evento para botón "Siguiente"
-                    nextButton.addEventListener('click', () => {
-                        items[currentIndex].style.display = 'none';
-                        currentIndex = (currentIndex === items.length - 1) ? 0 : currentIndex + 1;
-                        items[currentIndex].style.display = 'block';
+                        dots.forEach((dot, i) => {
+                            dot.className = i === slideIndex ? 'dot active' : 'dot';
+                        });
+                    }
+
+                    function plusSlides(n) {
+                        showSlides(slideIndex += n);
+                    }
+
+                    function currentSlide(index) {
+                        showSlides(slideIndex = index);
+                    }
+
+                    showSlides(slideIndex);
+
+                    prevButton.addEventListener('click', () => plusSlides(-1));
+                    nextButton.addEventListener('click', () => plusSlides(1));
+                    dots.forEach((dot, index) => {
+                        dot.addEventListener('click', () => currentSlide(index));
                     });
                 }
+
 
             }
         })
