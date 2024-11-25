@@ -204,3 +204,74 @@ select {
     box-shadow: none; /* Sin sombra */
     background-color: transparent; /* Fondo transparente */
 }
+
+/* Media queries para pantallas menores a 768px (típico ancho de smartphones) */
+@media screen and (max-width: 768px) {
+    /* Ajustar la barra lateral */
+    .sidebar {
+        width: 60px; /* Reduce el ancho de la barra lateral */
+        padding: 10px; /* Ajusta el padding */
+    }
+
+    .logo {
+        font-size: 1em; /* Reduce el tamaño del logo */
+    }
+
+    .menu-item {
+        font-size: 0.9em; /* Reduce el tamaño de las opciones */
+        padding: 5px; /* Reduce el padding */
+        text-align: center; /* Centra el texto */
+    }
+
+    /* Contenido principal */
+    .main-content {
+        padding: 10px; /* Reduce el espacio interno */
+    }
+
+    .header h1 {
+        font-size: 1.2em; /* Reduce el tamaño del título */
+    }
+
+    /* Ajustar los filtros */
+    .filters {
+        flex-direction: column; /* Apila los filtros verticalmente */
+        gap: 10px; /* Ajusta el espacio entre los filtros */
+    }
+
+    .filter-item,
+    .search-container {
+        width: 100%; /* Los filtros ocupan el 100% del ancho */
+    }
+
+    #search-id {
+        font-size: 1em; /* Asegura que el texto sea legible */
+    }
+
+    /* Ajustar la tabla */
+    table {
+        display: block; /* Activa el scroll horizontal */
+        overflow-x: auto; /* Permite el scroll */
+        white-space: nowrap; /* Evita que el texto salte de línea */
+    }
+
+    th, td {
+        padding: 10px; /* Reduce el espacio interno */
+        font-size: 0.9em; /* Reduce el tamaño del texto */
+    }
+
+    .status {
+        font-size: 0.8em; /* Reduce el tamaño del texto */
+    }
+
+    .action-btn {
+        font-size: 0.8em; /* Reduce el tamaño del botón */
+        padding: 3px 8px; /* Ajusta el padding del botón */
+    }
+
+    /* Ajustar la imagen del logo */
+    .image-container {
+        top: 5px; /* Ajusta la posición superior */
+        right: 10px; /* Ajusta la posición derecha */
+        max-width: 100px; /* Reduce el tamaño del logo */
+    }
+}
