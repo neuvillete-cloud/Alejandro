@@ -271,6 +271,7 @@ select {
     /* Ajustar la imagen del logo */
     .image-container {
         top: 5px; /* Ajusta la posición superior */
+
         right: 10px; /* Ajusta la posición derecha */
         max-width: 100px; /* Reduce el tamaño del logo */
     }
