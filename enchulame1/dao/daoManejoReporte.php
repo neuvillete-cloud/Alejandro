@@ -55,7 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nombreUnico = "reporte_" . $NumNomina . "_" . date("Ymd_His") . "." . $extension;
 
             // Definir la ruta de guardado (ahora la carpeta 'imagenes/fotosSolicitantes')
-            $fotoPath = "https://srv1290-files.hstgr.io/af87c2ea52ad8887/files/public_html/AleTest/enchulame1/imagenes/fotosSolicitantes/" . $nombreUnico;
+            $fotoPath = "../imagenes/fotosSolicitantes/" . $nombreUnico;
+
 
             // Mover el archivo a la carpeta de destino
             if (!move_uploaded_file($foto['tmp_name'], $fotoPath)) {
