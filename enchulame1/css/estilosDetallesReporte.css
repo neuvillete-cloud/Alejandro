@@ -247,21 +247,24 @@ h1 {
     transform: scale(1.1);
 }
 
-* {box-sizing:border-box}
+/* Estilos generales */
+* {
+    box-sizing: border-box;
+}
 
-/* Slideshow container */
+/* Contenedor del slideshow */
 .slideshow-container {
     max-width: 1000px;
     position: relative;
     margin: auto;
 }
 
-/* Hide the images by default */
+/* Ocultar imágenes por defecto */
 .mySlides {
     display: none;
 }
 
-/* Next & previous buttons */
+/* Botones de navegación */
 .prev, .next {
     cursor: pointer;
     position: absolute;
@@ -273,22 +276,28 @@ h1 {
     font-weight: bold;
     font-size: 18px;
     transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
+    border-radius: 3px;
     user-select: none;
 }
 
-/* Position the "next button" to the right */
+/* Botón "prev" alineado al borde izquierdo */
+.prev {
+    left: 0;
+    border-radius: 0 3px 3px 0; /* Bordes redondeados solo en la derecha */
+}
+
+/* Botón "next" alineado al borde derecho */
 .next {
     right: 0;
-    border-radius: 3px 0 0 3px;
+    border-radius: 3px 0 0 3px; /* Bordes redondeados solo en la izquierda */
 }
 
-/* On hover, add a black background color with a little bit see-through */
+/* Efecto hover en los botones */
 .prev:hover, .next:hover {
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
-/* Caption text */
+/* Texto del caption */
 .text {
     color: #f2f2f2;
     font-size: 15px;
@@ -299,7 +308,7 @@ h1 {
     text-align: center;
 }
 
-/* Number text (1/3 etc) */
+/* Texto de número */
 .numbertext {
     color: #f2f2f2;
     font-size: 12px;
@@ -308,7 +317,7 @@ h1 {
     top: 0;
 }
 
-/* The dots/bullets/indicators */
+/* Indicadores (puntos) */
 .dot {
     cursor: pointer;
     height: 15px;
@@ -324,13 +333,17 @@ h1 {
     background-color: #717171;
 }
 
-/* Fading animation */
+/* Animación de fade */
 .fade {
     animation-name: fade;
     animation-duration: 1.5s;
 }
 
 @keyframes fade {
-    from {opacity: .4}
-    to {opacity: 1}
+    from {
+        opacity: 0.4;
+    }
+    to {
+        opacity: 1;
+    }
 }
