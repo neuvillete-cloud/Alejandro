@@ -209,27 +209,43 @@ select {
 @media screen and (max-width: 768px) {
     /* Ajustar la barra lateral */
     .sidebar {
-        width: 60px; /* Reduce el ancho de la barra lateral */
-        padding: 10px; /* Ajusta el padding */
+        width: 100%; /* La barra lateral ocupará todo el ancho */
+        height: auto; /* Deja que la altura se ajuste al contenido */
+        padding: 15px; /* Espacio interno para que no se vea comprimida */
+        display: flex; /* Muestra los elementos en línea */
+        flex-direction: column; /* Alinea los elementos en vertical */
+        align-items: center; /* Centra los elementos horizontalmente */
+        background-color: #6A1B9A; /* Mantén el color del diseño original */
     }
 
     .logo {
-        font-size: 1em; /* Reduce el tamaño del logo */
+        font-size: 1.5em; /* Mantén un tamaño visible para el logo */
+        margin-bottom: 15px; /* Espacio entre el logo y las opciones */
+        color: white; /* Asegura que sea legible */
     }
 
     .menu-item {
-        font-size: 0.9em; /* Reduce el tamaño de las opciones */
-        padding: 5px; /* Reduce el padding */
+        font-size: 1.2em; /* Tamaño más legible */
+        padding: 10px 15px; /* Espacio interno para que sea fácil de tocar */
+        width: 100%; /* Asegura que los botones ocupen todo el ancho */
         text-align: center; /* Centra el texto */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Línea divisoria entre opciones */
+        color: white; /* Asegura que el texto sea visible */
+    }
+
+    .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* Efecto hover claro */
+        cursor: pointer;
     }
 
     /* Contenido principal */
     .main-content {
         padding: 10px; /* Reduce el espacio interno */
+        margin-top: 20px; /* Separa el contenido de la barra lateral */
     }
 
     .header h1 {
-        font-size: 1.2em; /* Reduce el tamaño del título */
+        font-size: 1.5em; /* Reduce el tamaño del título */
     }
 
     /* Ajustar los filtros */
