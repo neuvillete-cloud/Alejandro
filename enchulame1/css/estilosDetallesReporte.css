@@ -389,6 +389,14 @@ h1 {
         width: 100%;
     }
 
+    #finalizarButton {
+        position: static; /* Cambia de posición absoluta a estática en móviles */
+        margin: 20px auto 0; /* Centra el botón horizontalmente y agrega espacio superior */
+        display: block; /* Asegura que sea un bloque independiente */
+        width: 100%; /* Ocupa todo el ancho disponible */
+        max-width: 300px; /* Limita el ancho máximo */
+    }
+
     #backButton {
         width: 50px;
         height: 50px;
