@@ -34,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $con = new LocalConector();
         $conn = $con->conectar();
 
+        $baseUrl = "https://grammermx.com/AleTest/enchulame1/imagenes/fotosSolicitantes/";
+
         // Manejo de la imagen con un nombre único
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
             $foto = $_FILES['foto'];
@@ -54,23 +56,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $extension = pathinfo($foto['name'], PATHINFO_EXTENSION);
             $nombreUnico = "reporte_" . $NumNomina . "_" . date("Ymd_His") . "." . $extension;
 
-            // Definir la ruta de guardado (ahora la carpeta 'imagenes/fotosSolicitantes')
-            $fotoPath = "../imagenes/fotosSolicitantes/" . $nombreUnico;
-
+            // Rutas: local y pública
+            $rutaLocal = "../imagenes/fotosSolicitantes/" . $nombreUnico; // Para guardar en el servidor
+            $rutaPublica = $baseUrl . $nombreUnico; // Para almacenar en la base de datos
 
             // Mover el archivo a la carpeta de destino
-            if (!move_uploaded_file($foto['tmp_name'], $fotoPath)) {
+            if (!move_uploaded_file($foto['tmp_name'], $rutaLocal)) {
                 echo json_encode(["status" => "error", "message" => "Error al subir la imagen"]);
                 exit;
             }
         } else {
-            $fotoPath = null;
+            $rutaPublica = null; // Si no hay imagen, la ruta será nula
         }
 
         // Insertar el reporte en la base de datos
         $stmt = $conn->prepare("INSERT INTO Reportes (NumNomina, IdEstatus, IdArea, FotoProblema, Ubicacion, DescripcionProblema, DescripcionLugar, FechaRegistro, FechaCompromiso) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("siissssss", $NumNomina, $idEstatus, $idArea, $fotoPath, $lugar, $descripcion, $descripcionLugar, $fechaRegistro, $fechaCompromiso);
+        $stmt->bind_param("siissssss", $NumNomina, $idEstatus, $idArea, $rutaPublica, $lugar, $descripcion, $descripcionLugar, $fechaRegistro, $fechaCompromiso);
 
         if ($stmt->execute()) {
             echo json_encode([
