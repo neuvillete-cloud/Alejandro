@@ -347,3 +347,51 @@ h1 {
         opacity: 1;
     }
 }
+/* Media Query para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header {
+        margin-bottom: 20px;
+        padding: 8px 15px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    #detalleReporte {
+        width: 100%;
+        padding: 20px;
+        font-size: 14px;
+    }
+
+    .report-section {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .image-container {
+        margin: 15px 0;
+        padding: 10px;
+    }
+
+    .action-buttons-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .status-button-container,
+    #finalizarButton {
+        width: 100%;
+    }
+
+    #backButton {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
