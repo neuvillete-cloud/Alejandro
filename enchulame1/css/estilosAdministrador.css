@@ -209,7 +209,7 @@ select {
 @media screen and (max-width: 768px) {
     /* Ajustar la barra lateral */
     .sidebar {
-        width: 100px; /* Reduce el ancho de la barra lateral */
+        width: 120px; /* Reduce el ancho de la barra lateral */
         padding: 10px; /* Ajusta el padding */
     }
 
