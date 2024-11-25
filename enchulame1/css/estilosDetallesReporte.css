@@ -378,22 +378,25 @@ h1 {
         padding: 10px;
     }
 
+    /* Contenedor de los botones */
     .action-buttons-container {
-        flex-direction: column;
-        gap: 15px;
+        display: flex;          /* Mantiene el diseño en flexbox */
+        flex-direction: column; /* Alinea los botones en columna para móviles */
+        gap: 20px;              /* Agrega espacio entre los botones */
         padding: 10px;
     }
 
-    .status-button-container,
-    #finalizarButton {
+    /* Botón de cambiar estatus */
+    .status-button-container {
         width: 100%;
     }
 
+    /* Botón de finalizar */
     #finalizarButton {
+        width: 100%;
         position: static; /* Cambia de posición absoluta a estática en móviles */
-        margin: 20px auto 0; /* Centra el botón horizontalmente y agrega espacio superior */
-        display: block; /* Asegura que sea un bloque independiente */
-        width: 100%; /* Ocupa todo el ancho disponible */
+        margin: 0 auto;   /* Centra el botón horizontalmente */
+        display: block;   /* Asegura que sea un bloque independiente */
         max-width: 300px; /* Limita el ancho máximo */
     }
 
