@@ -77,7 +77,6 @@ body {
     gap: 20px;
     margin-top: 10px;
     margin-bottom: 5px; /* Reduce el espacio entre los filtros y la tabla */
-    flex-wrap: wrap; /* Permite que los filtros se ajusten en filas */
 }
 
 .filter-item {
@@ -92,6 +91,7 @@ body {
     color: #555;
 }
 
+/* Estilos para el contenedor del input con la lupa */
 .search-container {
     position: relative;
     width: 250px; /* Mismo ancho que los otros filtros */
@@ -103,11 +103,20 @@ body {
     height: 35px; /* Define una altura uniforme para todos los filtros */
 }
 
-/* Tabla */
+/* Estilo para la lupa */
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    cursor: pointer;
+}
+
 .report-list {
     background-color: white;
     border-radius: 8px;
-    overflow-x: auto; /* Habilita desplazamiento horizontal en dispositivos pequeños */
+    overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 10px; /* Reduce espacio entre los filtros y la tabla */
 }
@@ -138,6 +147,23 @@ tbody tr {
     display: inline-block;
 }
 
+.status.recibido {
+    background-color: #ffc107;
+}
+
+.status.en-proceso {
+    background-color: #007bff;
+}
+
+.status.completado {
+    background-color: #28a745;
+}
+
+.status.Cancelado {
+    background-color: #6c757d;
+    color: black;
+}
+
 .action-btn {
     background-color: #007bff;
     color: white;
@@ -152,60 +178,29 @@ tbody tr {
     background-color: #0056b3;
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        text-align: center;
-        padding: 10px 0;
-    }
-
-    .main-content {
-        padding: 10px;
-    }
-
-    .filters {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .filter-item {
-        width: 100%;
-    }
-
-    .search-container {
-        width: 100%;
-    }
+/* Estilos de los selects */
+select {
+    padding: 5px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    height: 35px; /* Altura uniforme para los selects */
 }
 
-@media (max-width: 480px) {
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: auto;
-        z-index: 1000;
-    }
+.image-container {
+    position: absolute; /* Coloca el contenedor de la imagen en posición absoluta */
+    top: 10px; /* Ajusta la posición superior */
+    right: 20px; /* Ajusta la posición desde la derecha */
+    max-width: 150px; /* Tamaño máximo de ancho */
+    max-height: 100px; /* Tamaño máximo de alto */
+    background-color: transparent; /* Sin fondo visible */
+}
 
-    .main-content {
-        margin-top: 60px; /* Ajuste para que no se superponga la sidebar */
-    }
-
-    .report-list table {
-        font-size: 0.9em;
-    }
-
-    th, td {
-        padding: 8px;
-    }
-
-    .filters {
-        flex-direction: column;
-        gap: 10px;
-    }
+.image-container img {
+    width: 100%; /* La imagen ocupará todo el contenedor */
+    height: auto; /* Ajuste proporcional de la altura */
+    border-radius: 0; /* Sin bordes redondeados */
+    box-shadow: none; /* Sin sombra */
+    background-color: transparent; /* Fondo transparente */
 }
