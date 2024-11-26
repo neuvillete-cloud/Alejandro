@@ -52,8 +52,8 @@ body {
 }
 
 .circle span a {
-    text-decoration: none !important; /* Elimina el subrayado del enlace */
-    color: inherit; /* Asegura que el color sea el mismo que el texto del círculo */
+    text-decoration: none !important; /* Elimina el subrayado */
+    color: inherit !important; /* Asegura que herede el color del contenedor */
 }
 
 .form-container {
@@ -126,4 +126,3 @@ button:hover {
 .forgot-password a:hover {
     text-decoration: underline;
 }
-
