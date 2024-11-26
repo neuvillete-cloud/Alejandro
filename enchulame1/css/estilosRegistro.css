@@ -69,12 +69,16 @@ h1 {
 }
 
 label {
-    align-self: flex-start;
-    margin-left: 10%;
+    display: flex; /* Activa flexbox para el label */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */
+    width: 100%; /* Ocupa todo el ancho del contenedor */
     font-size: 0.9rem;
     color: #b0c4de;
     margin-bottom: 0.3rem;
+    text-align: center; /* Asegura que el texto también esté centrado */
 }
+
 
 input {
     width: 80%;
