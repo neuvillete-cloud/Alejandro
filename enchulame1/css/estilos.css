@@ -16,16 +16,17 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Mantiene el contenido en la parte superior */
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
     width: 100%;
     max-width: 400px;
-    height: 100vh; /* Altura total de la ventana */
+    height: 100vh;
+    overflow: hidden; /* Previene el scroll innecesario */
 }
 
 .logo {
-    margin-top: 9rem; /* Aumenta el margen para bajar más el contenido */
+    margin-top: 9rem; /* Aumenta el margen superior */
 }
 
 .logo img {
@@ -42,7 +43,7 @@ body {
 .logo p {
     font-size: 1rem;
     color: #4d4d4d;
-    margin-bottom: 2rem; /* Espacio adicional para separar el texto del cuadro */
+    margin-bottom: 2rem;
 }
 
 /* Cuadro de botones */
@@ -50,14 +51,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #005195; /* Cambia al color HEX proporcionado */
+    background-color: #005195;
     padding: 2rem 0;
     width: 100%;
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
-    position: absolute; /* Permite que el cuadro se posicione en la página */
-    bottom: 0; /* Lo fija en la parte inferior */
-    height: 50%; /* Altura del cuadro de botones para ocupar la mitad de la pantalla */
+    position: absolute;
+    bottom: 0;
+    height: 50%; /* Mantiene la proporción en cualquier pantalla */
 }
 
 .buttons button {
@@ -66,7 +67,7 @@ body {
     margin: 0.5rem 0;
     font-size: 1rem;
     color: white;
-    background-color: #007bff; /* Color de los botones */
+    background-color: #007bff;
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -74,52 +75,41 @@ body {
 }
 
 .buttons button:hover {
-    background-color: #0056b3; /* Color de fondo al pasar el mouse */
+    background-color: #0056b3;
 }
 
 .buttons button:nth-child(2) {
     background-color: transparent;
-    color: #007bff; /* Color del texto del segundo botón */
-    border: 2px solid #007bff; /* Borde del segundo botón */
+    color: #007bff;
+    border: 2px solid #007bff;
 }
 
 .buttons button:nth-child(2):hover {
-    background-color: #007bff; /* Color de fondo al pasar el mouse */
-    color: white; /* Cambia el color del texto al blanco */
+    background-color: #007bff;
+    color: white;
 }
 
-/* Responsividad */
+/* Responsividad: Forzar el diseño de escritorio en teléfonos */
 @media screen and (max-width: 768px) {
+    body {
+        justify-content: flex-start; /* Alinea el contenido correctamente */
+    }
+
     .container {
-        height: auto; /* Permite que la altura sea dinámica */
-        padding: 0 1rem; /* Espaciado interno para dispositivos más pequeños */
+        height: 100vh; /* Mantiene la altura de la vista completa */
+        max-width: 400px; /* Limita el ancho máximo */
     }
 
     .logo {
-        margin-top: 4rem; /* Reduce el margen superior para dispositivos móviles */
-    }
-
-    .logo img {
-        width: 120px; /* Reduce el tamaño de la imagen */
-    }
-
-    .logo h1 {
-        font-size: 1.5rem; /* Ajusta el tamaño de fuente */
-    }
-
-    .logo p {
-        font-size: 0.9rem; /* Ajusta el tamaño del texto */
+        margin-top: 6rem; /* Ajusta el margen superior para que se vea igual */
     }
 
     .buttons {
-        padding: 1.5rem 0; /* Reduce el padding */
-        height: auto; /* Ajusta la altura para que el cuadro no ocupe más espacio del necesario */
-        bottom: auto; /* Permite que se adapte al contenido */
-        margin-top: auto; /* Empuja el cuadro hacia la parte inferior */
+        height: 50%; /* Mantiene la altura fija del cuadro */
+        padding: 2rem 0; /* Conserva el padding para que no se desacomode */
     }
 
-    .buttons button {
-        font-size: 0.9rem; /* Ajusta el tamaño del texto en los botones */
-        padding: 0.8rem; /* Reduce el tamaño del padding */
+    .logo img {
+        width: 150px; /* Conserva el tamaño de la imagen */
     }
 }
