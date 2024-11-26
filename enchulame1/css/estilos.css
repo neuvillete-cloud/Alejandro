@@ -87,3 +87,35 @@ body {
     background-color: #007bff; /* Color de fondo al pasar el mouse */
     color: white; /* Cambia el color del texto al blanco */
 }
+
+/* Responsividad */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 0 1rem; /* Espaciado interno para dispositivos más pequeños */
+    }
+
+    .logo {
+        margin-top: 6rem; /* Reduce el margen superior para dispositivos móviles */
+    }
+
+    .logo h1 {
+        font-size: 1.5rem; /* Ajusta el tamaño de fuente para pantallas pequeñas */
+    }
+
+    .logo img {
+        width: 120px; /* Reduce el tamaño de la imagen */
+    }
+
+    .logo p {
+        font-size: 0.9rem; /* Ajusta el tamaño del texto */
+    }
+
+    .buttons {
+        padding: 1.5rem 0; /* Reduce el padding para dispositivos móviles */
+        height: 60%; /* Ajusta la altura para pantallas más pequeñas */
+    }
+
+    .buttons button {
+        font-size: 0.9rem; /* Reduce el tamaño del texto en los botones */
+    }
+}
