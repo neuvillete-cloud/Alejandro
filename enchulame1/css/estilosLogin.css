@@ -55,14 +55,15 @@ body {
     background-color: #005195;
     padding: 2rem;
     border-radius: 1rem;
-    margin-top: 10rem; /* Ajuste para separar del círculo, aumentado para bajar el cuadro */
+    margin-top: 10rem; /* Ajuste para separar del círculo */
     width: 100%;
+    max-width: 400px; /* Limita el tamaño máximo */
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 80vh; /* Abarcar la mayor parte de la altura */
-    padding-bottom: 3rem; /* Agregar espacio al final */
+    padding-bottom: 3rem; /* Espacio adicional al final */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Mejora visual */
 }
 
 h1 {
@@ -123,31 +124,34 @@ button:hover {
 /* Responsividad: Mantener diseño igual en PC y teléfono */
 @media screen and (max-width: 768px) {
     body {
-        justify-content: flex-start; /* Asegura que los elementos no se desacomoden */
+        overflow-y: auto; /* Permitir desplazamiento vertical */
     }
 
     .container {
-        max-width: 100%; /* Asegura que ocupe todo el ancho de pantalla */
-        height: 100%; /* Evita desplazamientos innecesarios */
-    }
-
-    .form-container {
-        margin-top: 8rem; /* Ajuste menor para pantallas pequeñas */
-        min-height: auto; /* Elimina restricciones de altura fija */
-        padding: 2rem; /* Mantiene espacio interno consistente */
+        max-width: 100%; /* Asegura que ocupe todo el ancho disponible */
+        padding: 0 1rem; /* Añade espacio en los bordes */
     }
 
     .circle {
-        width: 100px; /* Tamaño proporcional en móviles */
+        width: 100px; /* Ajusta tamaño para móviles */
         height: 100px;
-        font-size: 1rem; /* Texto más pequeño */
+        font-size: 1.1rem; /* Reduce ligeramente el texto */
     }
 
-    input, button {
-        width: 90%; /* Espacio más amplio en móviles */
+    .form-container {
+        margin-top: 8rem; /* Espacio más ajustado en móviles */
+        padding: 1.5rem; /* Espaciado interno reducido */
     }
 
     h1 {
-        font-size: 1.5rem; /* Tamaño adecuado para pantallas pequeñas */
+        font-size: 1.5rem; /* Tamaño del título más pequeño */
+    }
+
+    input, button {
+        width: 90%; /* Ocupa más espacio en pantalla */
+    }
+
+    button {
+        font-size: 0.9rem; /* Botones ligeramente más pequeños */
     }
 }
