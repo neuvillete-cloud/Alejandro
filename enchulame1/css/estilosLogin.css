@@ -51,10 +51,6 @@ body {
     font-size: 1rem;
 }
 
-.circle span a {
-    text-decoration: none !important; /* Elimina el subrayado */
-    color: inherit !important; /* Asegura que herede el color del contenedor */
-}
 
 .form-container {
     background-color: #005195;
