@@ -121,3 +121,7 @@ button:hover {
 .login-prompt a:hover {
     text-decoration: underline;
 }
+
+a {
+    text-decoration: none !important;
+}
