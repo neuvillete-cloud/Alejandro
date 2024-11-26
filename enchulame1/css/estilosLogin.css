@@ -49,9 +49,12 @@ body {
     display: flex;
     align-items: center;
     font-size: 1rem;
+
+}
+
+.circle span a {
     text-decoration: none; /* Eliminar el subrayado */
     color: inherit; /* Heredar el color del padre para uniformidad */
-
 }
 
 .form-container {
