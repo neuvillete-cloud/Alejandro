@@ -53,9 +53,10 @@ body {
 }
 
 .circle span a {
-    text-decoration: none; /* Eliminar el subrayado */
-    color: inherit; /* Heredar el color del padre para uniformidad */
+    text-decoration: none !important; /* Elimina el subrayado incluso si hay estilos heredados */
+    color: inherit; /* Hereda el color del texto padre */
 }
+
 
 .form-container {
     background-color: #005195;
