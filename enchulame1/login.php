@@ -22,7 +22,7 @@
             <label for="NumNomina">Número de Nómina</label>
             <input type="text" id="NumNomina" placeholder="12345678" required>
 
-            <label for="Contrasena">Contraseña</label>
+            <label for="Contrasena"> Contraseña </label>
             <input type="password" id="Contrasena" placeholder="******" required>
 
             <button type="submit">Iniciar Sesión</button>
