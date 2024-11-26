@@ -119,3 +119,35 @@ button:hover {
 .forgot-password a:hover {
     text-decoration: underline;
 }
+
+/* Responsividad: Mantener diseño igual en PC y teléfono */
+@media screen and (max-width: 768px) {
+    body {
+        justify-content: flex-start; /* Asegura que los elementos no se desacomoden */
+    }
+
+    .container {
+        max-width: 100%; /* Asegura que ocupe todo el ancho de pantalla */
+        height: 100%; /* Evita desplazamientos innecesarios */
+    }
+
+    .form-container {
+        margin-top: 8rem; /* Ajuste menor para pantallas pequeñas */
+        min-height: auto; /* Elimina restricciones de altura fija */
+        padding: 2rem; /* Mantiene espacio interno consistente */
+    }
+
+    .circle {
+        width: 100px; /* Tamaño proporcional en móviles */
+        height: 100px;
+        font-size: 1rem; /* Texto más pequeño */
+    }
+
+    input, button {
+        width: 90%; /* Espacio más amplio en móviles */
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Tamaño adecuado para pantallas pequeñas */
+    }
+}
