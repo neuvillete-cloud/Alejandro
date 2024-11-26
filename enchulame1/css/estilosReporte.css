@@ -1,133 +1,102 @@
-/* Estilos generales */
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: Arial, sans-serif;
     margin: 0;
-    background-color: #f0f8ff; /* Fondo azul claro */
+    padding: 0;
+    background-color: #f0f8ff; /* Azul claro */
 }
 
 .container-report {
-    background-color: #ffffff;
-    padding: 2rem;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    max-width: 500px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Logo centrado en la parte superior */
 .logo-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .logo {
-    width: 80px;
-    height: auto;
+    max-width: 150px;
 }
 
-/* Título */
 .header-report h2 {
-    color: #005195; /* Azul oscuro */
-    margin-bottom: 1.5rem;
-}
-
-/* Sección de formulario */
-.form-section {
-    margin-bottom: 1rem;
-    text-align: left;
-}
-
-.field-label {
-    font-weight: bold;
-    color: #333;
-}
-
-/* Estilos para el nombre de usuario */
-#nombreUsuario {
-    font-size: 1rem;
-    color: #333;
-    font-weight: bold;
-    padding: 0.5rem;
-    background-color: #f8f8f8;
-    border-radius: 5px;
-    text-align: left;
-}
-
-/* Estilos de campos de texto */
-form label {
-    display: block;
-    font-weight: bold;
-    color: #333;
-}
-
-form input[type="text"],
-form textarea,
-form select {
-    width: 100%;
-    padding: 0.8rem;
-    margin-top: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f8f9fa; /* Fondo claro */
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-form input[type="text"]:focus,
-form textarea:focus,
-form select:focus {
-    border-color: #005195; /* Azul oscuro */
-    box-shadow: 0 0 8px rgba(0, 81, 149, 0.3);
-    outline: none;
-}
-
-form textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* Contenedor para la foto */
-.photo-container {
-    margin-top: 1.5rem;
-    padding: 1.5rem;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    cursor: pointer;
     text-align: center;
-    transition: background-color 0.3s, border-color 0.3s;
+    color: #003366; /* Azul oscuro */
+}
+
+.form-section {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #003366;
+}
+
+textarea,
+select,
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+textarea:focus,
+select:focus,
+input[type="text"]:focus {
+    border-color: #003366;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 51, 102, 0.5);
+}
+
+.photo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.photo-container span {
+    font-size: 2rem;
+    color: #ccc;
+    margin-bottom: 10px;
 }
 
 .photo-container:hover {
-    background-color: #eef6fc; /* Fondo azul claro al pasar */
-    border-color: #005195; /* Borde azul oscuro */
+    border-color: #003366;
+    background-color: #e6f0ff;
 }
 
-.photo-container p {
-    font-size: 0.9rem;
-    color: #555;
-    margin-top: 0.5rem;
-}
-
-/* Estilos de botón */
 .submit-btn {
-    margin-top: 1.5rem;
     width: 100%;
-    padding: 0.8rem;
-    background-color: #005195; /* Azul oscuro */
-    color: #ffffff;
+    padding: 10px;
+    background-color: #003366;
+    color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
+    text-align: center;
 }
 
 .submit-btn:hover {
-    background-color: #004080; /* Azul más oscuro */
+    background-color: #002244;
 }
