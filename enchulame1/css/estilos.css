@@ -91,19 +91,20 @@ body {
 /* Responsividad */
 @media screen and (max-width: 768px) {
     .container {
+        height: auto; /* Permite que la altura sea dinámica */
         padding: 0 1rem; /* Espaciado interno para dispositivos más pequeños */
     }
 
     .logo {
-        margin-top: 6rem; /* Reduce el margen superior para dispositivos móviles */
-    }
-
-    .logo h1 {
-        font-size: 1.5rem; /* Ajusta el tamaño de fuente para pantallas pequeñas */
+        margin-top: 4rem; /* Reduce el margen superior para dispositivos móviles */
     }
 
     .logo img {
         width: 120px; /* Reduce el tamaño de la imagen */
+    }
+
+    .logo h1 {
+        font-size: 1.5rem; /* Ajusta el tamaño de fuente */
     }
 
     .logo p {
@@ -111,11 +112,14 @@ body {
     }
 
     .buttons {
-        padding: 1.5rem 0; /* Reduce el padding para dispositivos móviles */
-        height: 60%; /* Ajusta la altura para pantallas más pequeñas */
+        padding: 1.5rem 0; /* Reduce el padding */
+        height: auto; /* Ajusta la altura para que el cuadro no ocupe más espacio del necesario */
+        bottom: auto; /* Permite que se adapte al contenido */
+        margin-top: auto; /* Empuja el cuadro hacia la parte inferior */
     }
 
     .buttons button {
-        font-size: 0.9rem; /* Reduce el tamaño del texto en los botones */
+        font-size: 0.9rem; /* Ajusta el tamaño del texto en los botones */
+        padding: 0.8rem; /* Reduce el tamaño del padding */
     }
 }
