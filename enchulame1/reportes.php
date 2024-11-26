@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,13 +22,13 @@
 
         <!-- Campo de descripción -->
         <div class="form-section">
-            <label for="descripcion">Descripción</label>
+            <label for="descripcion" class="field-label">Descripción</label>
             <textarea id="descripcion" name="descripcion" placeholder="Describe el problema" required></textarea>
         </div>
 
         <!-- Campo de lugar (lista desplegable) -->
         <div class="form-section">
-            <label for="lugar">Lugar</label>
+            <label for="lugar" class="field-label">Lugar</label>
             <select id="lugar" name="lugar" required>
                 <option value="" disabled selected>Selecciona un lugar</option>
                 <option value="nave 1">nave 1</option>
@@ -49,7 +48,7 @@
 
         <!-- Nueva lista desplegable para la planta -->
         <div class="form-section">
-            <label for="planta">Planta</label>
+            <label for="planta" class="field-label">Planta</label>
             <select id="planta" name="planta" required>
                 <option value="" disabled selected>Selecciona una planta</option>
                 <option value="alta">Planta Alta</option>
@@ -59,14 +58,15 @@
 
         <!-- Descripción del lugar -->
         <div class="form-section">
-            <label for="descripcionLugar">Descripción del Lugar</label>
+            <label for="descripcionLugar" class="field-label">Descripción del Lugar</label>
             <textarea id="descripcionLugar" name="descripcionLugar" placeholder="Describe el lugar del problema" required></textarea>
         </div>
 
-        <!-- Subida de fotos -->
-        <div class="form-section">
-            <label for="foto">Foto</label>
-            <input type="file" id="foto" name="foto" accept="image/*">
+        <!-- Subida de fotos con nuevo diseño -->
+        <div class="photo-container" onclick="document.getElementById('foto').click()">
+            <span>📷</span>
+            <p>Haz clic o arrastra una imagen aquí para subirla</p>
+            <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
         </div>
 
         <!-- Botón de envío -->

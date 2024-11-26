@@ -73,13 +73,45 @@ form select {
     padding: 0.8rem;
     margin-top: 0.5rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: #f8f9fa; /* Fondo claro */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+form input[type="text"]:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #005195; /* Azul oscuro */
+    box-shadow: 0 0 8px rgba(0, 81, 149, 0.3);
+    outline: none;
 }
 
 form textarea {
     resize: vertical;
     min-height: 80px;
+}
+
+/* Contenedor para la foto */
+.photo-container {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.photo-container:hover {
+    background-color: #eef6fc; /* Fondo azul claro al pasar */
+    border-color: #005195; /* Borde azul oscuro */
+}
+
+.photo-container p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 0.5rem;
 }
 
 /* Estilos de botón */
@@ -90,7 +122,7 @@ form textarea {
     background-color: #005195; /* Azul oscuro */
     color: #ffffff;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
