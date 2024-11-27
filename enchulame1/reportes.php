@@ -91,7 +91,7 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                // Limpia cualquier imagen previa pero mantiene el input
+                // Limpia cualquier imagen previa, pero mantiene el texto y el icono
                 const existingImage = photoContainer.querySelector('img');
                 if (existingImage) {
                     existingImage.remove();
@@ -102,10 +102,16 @@
                 img.src = e.target.result;
                 img.alt = "Previsualización";
                 photoContainer.appendChild(img);
+
+                // Asegura que la imagen ocupe todo el contenedor
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "cover";
             };
             reader.readAsDataURL(file);
         }
     });
+
 
 </script>
 <script src="js/manejoReportes.js"></script>
