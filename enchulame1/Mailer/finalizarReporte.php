@@ -129,7 +129,7 @@ function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaPublica) {
         $mail->Body = $contenido;
 
         // Adjuntar la imagen si existe
-        if ($rutaArchivo && file_exists($rutaPublica)) {
+        if ($rutaPublica && file_exists($rutaPublica)) {
             $mail->addAttachment($rutaPublica);
         }
 
