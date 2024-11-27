@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('reporteForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Evita el envío por defecto del formulario
 
@@ -64,4 +65,6 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
                 text: 'Hubo un error al enviar el reporte.'
             });
         });
+});
+
 });
