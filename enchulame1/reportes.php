@@ -77,6 +77,28 @@
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/manejoReportes.js"></script>
+<script>
+    const photoContainer = document.getElementById('photoPreview');
+    const fileInput = document.getElementById('foto');
+
+    // Abre el selector de archivos cuando se hace clic en el cuadro
+    photoContainer.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // Maneja la carga de la imagen
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                photoContainer.innerHTML = `<img src="${e.target.result}" alt="Previsualización">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
 
 </body>
 </html>
