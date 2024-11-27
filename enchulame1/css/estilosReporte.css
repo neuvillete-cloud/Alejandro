@@ -173,3 +173,71 @@ select option {
 .input-group input {
     padding-left: 35px; /* Espacio para el icono */
 }
+
+/* Media Queries - Responsividad */
+@media screen and (max-width: 768px) {
+    .container-report {
+        max-width: 100%;
+        margin: 20px;
+        padding: 15px;
+    }
+
+    .logo-container {
+        margin-bottom: 15px;
+    }
+
+    .header-report h2 {
+        font-size: 18px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    textarea,
+    input[type="text"],
+    input[type="file"],
+    select {
+        font-size: 16px;
+    }
+
+    .photo-container {
+        padding: 15px;
+    }
+
+    .submit-btn {
+        font-size: 14px;
+    }
+
+    .input-group i {
+        font-size: 14px;
+    }
+}
+
+/* Media Queries para dispositivos pequeños */
+@media screen and (max-width: 480px) {
+    .container-report {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .header-report h2 {
+        font-size: 16px;
+    }
+
+    textarea,
+    input[type="text"],
+    input[type="file"],
+    select {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .photo-container {
+        padding: 10px;
+    }
+
+    .submit-btn {
+        font-size: 12px;
+    }
+}
