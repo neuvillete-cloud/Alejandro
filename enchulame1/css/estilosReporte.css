@@ -41,21 +41,25 @@ label {
 
 textarea,
 input[type="text"],
-input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    box-sizing: border-box;
+input[type="file"],
+select {
+    width: 100%; /* Mismo ancho */
+    padding: 10px; /* Mismo espaciado interno */
+    margin: 5px 0; /* Espaciado igual */
+    border: 1px solid #ccc; /* Mismo borde */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 14px; /* Mismo tamaño de fuente */
+    color: #003366; /* Azul oscuro */
+    background-color: #d1ecff; /* Fondo azul claro */
+    box-sizing: border-box; /* Para evitar problemas de tamaño */
 }
 
 textarea:focus,
-input[type="text"]:focus {
-    border-color: #003366;
-    outline: none;
+input[type="text"]:focus,
+select:focus {
+    border-color: #002244; /* Azul más oscuro en foco */
     box-shadow: 0 0 5px rgba(0, 51, 102, 0.5);
+    outline: none;
 }
 
 /* Estilo personalizado para select */
@@ -63,15 +67,6 @@ select {
     appearance: none; /* Eliminar estilo predeterminado */
     -webkit-appearance: none;
     -moz-appearance: none;
-    width: 100%; /* Mismo ancho que otros campos */
-    padding: 10px; /* Mismo espacio interno */
-    margin: 5px 0; /* Margen igual */
-    border: 1px solid #ccc; /* Mismo borde */
-    border-radius: 5px; /* Bordes redondeados */
-    font-size: 14px; /* Tamaño de fuente uniforme */
-    color: #003366; /* Azul oscuro */
-    background-color: #d1ecff; /* Azul claro */
-    box-sizing: border-box; /* Para evitar problemas de tamaño */
     background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="%23003366"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -79,17 +74,10 @@ select {
     cursor: pointer;
 }
 
-select:focus {
-    border-color: #002244; /* Azul más oscuro en foco */
-    box-shadow: 0 0 5px rgba(0, 51, 102, 0.5);
-    outline: none;
-}
-
 select option {
     background-color: #fff; /* Fondo blanco para las opciones */
     color: #003366; /* Texto azul oscuro */
 }
-
 
 /* Contenedor para la subida de fotos */
 .photo-container {
