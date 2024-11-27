@@ -91,11 +91,8 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                // Limpia cualquier imagen previa pero mantiene el input
-                const existingImage = photoContainer.querySelector('img');
-                if (existingImage) {
-                    existingImage.remove();
-                }
+                // Limpia cualquier contenido previo
+                photoContainer.innerHTML = '';
 
                 // Añade la nueva imagen
                 const img = document.createElement('img');
@@ -106,6 +103,7 @@
             reader.readAsDataURL(file);
         }
     });
+
 
 </script>
 <script src="js/manejoReportes.js"></script>
