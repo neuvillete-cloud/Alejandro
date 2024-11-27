@@ -66,7 +66,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
             $asunto = "Reporte Finalizado";
             $mensaje = "Hola,<br><br>Tu reporte #$reporteId ha sido marcado como 'Finalizado'.<br><br><strong>Comentario final:</strong> $comentarioFinal.<br><br>Adjunto encontrarás la evidencia.<br><br>Saludos,<br>Equipo de Soporte";
 
-            $correoResponse = emailFinalizarReporte($emailUsuario, $asunto, $mensaje, $rutaArchivo);
+            $correoResponse = emailFinalizarReporte($emailUsuario, $asunto, $mensaje, $rutaPublica);
 
             if ($correoResponse['status'] === 'success') {
                 echo json_encode(['status' => 'success', 'message' => 'Reporte finalizado y correo enviado.']);
@@ -88,7 +88,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
 }
 
 // Función para enviar el correo de reporte finalizado
-function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaArchivo) {
+function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaPublica) {
     $contenido = "
     <html>
     <head>
@@ -129,8 +129,8 @@ function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaArchivo) {
         $mail->Body = $contenido;
 
         // Adjuntar la imagen si existe
-        if ($rutaArchivo && file_exists($rutaArchivo)) {
-            $mail->addAttachment($rutaArchivo);
+        if ($rutaArchivo && file_exists($rutaPublica)) {
+            $mail->addAttachment($rutaPublica);
         }
 
         if (!$mail->send()) {
