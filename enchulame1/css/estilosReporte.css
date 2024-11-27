@@ -1,19 +1,27 @@
+/* Base del cuerpo */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif; /* Tipografía moderna */
     margin: 0;
     padding: 0;
-    background-color: #f0f8ff; /* Azul claro */
+    background: linear-gradient(to bottom, #f0f8ff, #cfe0ff); /* Fondo degradado */
 }
 
+/* Contenedor principal */
 .container-report {
     max-width: 500px;
     margin: 30px auto;
     background: #fff;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px; /* Bordes más redondeados */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: box-shadow 0.3s ease; /* Animación en hover */
 }
 
+.container-report:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor del logo */
 .logo-container {
     text-align: center;
     margin-bottom: 20px;
@@ -23,11 +31,13 @@ body {
     max-width: 150px;
 }
 
+/* Encabezado */
 .header-report h2 {
     text-align: center;
     color: #003366; /* Azul oscuro */
 }
 
+/* Sección del formulario */
 .form-section {
     margin-bottom: 15px;
 }
@@ -52,14 +62,23 @@ select {
     color: #003366; /* Azul oscuro */
     background-color: #d1ecff; /* Fondo azul claro */
     box-sizing: border-box; /* Para evitar problemas de tamaño */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Animación suave */
 }
 
 textarea:focus,
 input[type="text"]:focus,
 select:focus {
     border-color: #002244; /* Azul más oscuro en foco */
-    box-shadow: 0 0 5px rgba(0, 51, 102, 0.5);
+    box-shadow: 0 0 8px rgba(0, 51, 102, 0.5); /* Sombra en foco */
     outline: none;
+    background-color: #e6f7ff; /* Fondo más claro en foco */
+}
+
+/* Estilo del placeholder */
+textarea::placeholder,
+input[type="text"]::placeholder {
+    color: #789;
+    font-style: italic;
 }
 
 /* Estilo personalizado para select */
@@ -91,12 +110,18 @@ select option {
     border-radius: 5px;
     background-color: #f9f9f9;
     cursor: pointer;
+    position: relative;
 }
 
-.photo-container span {
-    font-size: 2rem;
-    color: #ccc;
-    margin-bottom: 10px;
+.photo-container::after {
+    content: 'Haz clic para subir una imagen';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: #003366;
+    opacity: 0.7;
 }
 
 .photo-container:hover {
@@ -104,11 +129,18 @@ select option {
     background-color: #e6f0ff;
 }
 
+.photo-container img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
 /* Botón de envío */
 .submit-btn {
     width: 100%;
     padding: 10px;
-    background-color: #003366;
+    background: linear-gradient(45deg, #003366, #0055aa); /* Gradiente en el botón */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -116,15 +148,28 @@ select option {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    transition: transform 0.2s ease, background 0.3s ease; /* Animación hover */
 }
 
 .submit-btn:hover {
-    background-color: #002244;
+    background: linear-gradient(45deg, #0055aa, #003366);
+    transform: scale(1.05); /* Efecto de ampliación */
 }
 
-.photo-container img {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 5px;
-    object-fit: cover;
+/* Grupo de entrada con iconos */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #003366;
+}
+
+.input-group input {
+    padding-left: 35px; /* Espacio para el icono */
 }
