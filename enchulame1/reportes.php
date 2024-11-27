@@ -66,7 +66,8 @@
         <div class="photo-container" id="photoPreview">
             <span>📷</span>
             <p>Haz clic o arrastra una imagen aquí para subirla</p>
-            <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
+            <input type="file" id="foto" name="foto" accept="image/*">
+
         </div>
 
         <!-- Botón de envío -->
