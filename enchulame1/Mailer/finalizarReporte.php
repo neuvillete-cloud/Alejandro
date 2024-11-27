@@ -16,6 +16,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
 
     // Manejo de la imagen subida
     $rutaArchivo = null;
+    $baseUrl = "https://grammermx.com/AleTest/enchulame1/imagenes/fotosAdministrador/";
     if (isset($_FILES['fotoEvidencia']) && $_FILES['fotoEvidencia']['error'] === UPLOAD_ERR_OK) {
         $fotoEvidencia = $_FILES['fotoEvidencia'];
 
@@ -34,11 +35,11 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
         // Generar nombre único para la imagen
         $extension = pathinfo($fotoEvidencia['name'], PATHINFO_EXTENSION);
         $nombreUnico = "reporte_" . $reporteId . "_" . date("Ymd_His") . "." . $extension;
-        $directorio = "https://grammermx.com/AleTest/enchulame1/imagenes/fotosAdministrador/";
-        $rutaArchivo = $directorio . $nombreUnico;
+        $rutaLocal = "../AleTest/enchulame1/imagenes/fotosAdministrador/" . $nombreUnico;
+        $rutaPublica = $baseUrl . $nombreUnico;
 
         // Mover archivo a la carpeta destino
-        if (!move_uploaded_file($fotoEvidencia['tmp_name'], $rutaArchivo)) {
+        if (!move_uploaded_file($fotoEvidencia['tmp_name'], $rutaLocal)) {
             echo json_encode(['status' => 'error', 'message' => 'Error al guardar la imagen.']);
             exit;
         }
@@ -48,7 +49,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
     $con = new LocalConector();
     $conex = $con->conectar();
     $stmt = $conex->prepare("UPDATE Reportes SET IdEstatus = ?, ComentariosFinales = ?, FotoEvidencia = ?, FechaFinalizado = ? WHERE IdReporte = ?");
-    $stmt->bind_param('isssi', $nuevoEstatus, $comentarioFinal, $rutaArchivo, $fechaFinalizado, $reporteId);
+    $stmt->bind_param('isssi', $nuevoEstatus, $comentarioFinal, $rutaPublica, $fechaFinalizado, $reporteId);
 
     if ($stmt->execute()) {
         // Obtener el correo del usuario
