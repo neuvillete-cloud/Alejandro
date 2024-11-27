@@ -102,10 +102,17 @@
                 img.src = e.target.result;
                 img.alt = "Previsualización";
                 photoContainer.appendChild(img);
+
+                // Añade la clase para ocultar el texto
+                photoContainer.classList.add('has-image');
             };
             reader.readAsDataURL(file);
+        } else {
+            // Elimina la clase si no se selecciona una imagen
+            photoContainer.classList.remove('has-image');
         }
     });
+
 
 </script>
 <script src="js/manejoReportes.js"></script>
