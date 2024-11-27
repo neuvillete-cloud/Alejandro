@@ -77,7 +77,6 @@
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // JavaScript para manejar la previsualización de la imagen
     const photoContainer = document.getElementById('photoPreview');
     const fileInput = document.getElementById('foto');
 
@@ -92,11 +91,22 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                photoContainer.innerHTML = `<img src="${e.target.result}" alt="Previsualización">`;
+                // Limpia cualquier imagen previa pero mantiene el input
+                const existingImage = photoContainer.querySelector('img');
+                if (existingImage) {
+                    existingImage.remove();
+                }
+
+                // Añade la nueva imagen
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = "Previsualización";
+                photoContainer.appendChild(img);
             };
             reader.readAsDataURL(file);
         }
     });
+
 </script>
 <script src="js/manejoReportes.js"></script>
 </body>
