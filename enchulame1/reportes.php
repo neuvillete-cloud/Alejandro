@@ -63,7 +63,7 @@
         </div>
 
         <!-- Subida de fotos con nuevo diseño -->
-        <div class="photo-container" onclick="document.getElementById('foto').click()">
+        <div class="photo-container" id="photoPreview">
             <span>📷</span>
             <p>Haz clic o arrastra una imagen aquí para subirla</p>
             <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
@@ -76,8 +76,8 @@
 
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/manejoReportes.js"></script>
 <script>
+    // JavaScript para manejar la previsualización de la imagen
     const photoContainer = document.getElementById('photoPreview');
     const fileInput = document.getElementById('foto');
 
@@ -98,6 +98,10 @@
         }
     });
 </script>
+<script src="js/manejoReportes.js"></script>
+</body>
+</html>
+
 
 
 </body>
