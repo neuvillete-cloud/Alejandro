@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
 
 </head>
-<body onload="llenarTablaReportes()">
+<body>
 <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
