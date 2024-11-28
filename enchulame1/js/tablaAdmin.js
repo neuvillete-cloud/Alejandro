@@ -11,12 +11,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // Evento para el filtro por Nave
     document.getElementById('nave').addEventListener('change', function() {
         const nave = this.value;
-        loadReportes(undefined, nave, undefined);  // Pasamos 'nave' como filtro
+        loadReportes(undefined, nave, undefined); // Pasamos 'nave' como filtro
     });
 
     // Evento para cambiar la cantidad de reportes por página
     document.getElementById('report-count').addEventListener('change', function() {
-        const count = this.value;
+        const count = this.value === '*' ? 0 : parseInt(this.value); // Enviar 0 si es "Todos"
         loadReportes(undefined, undefined, count);
     });
 });
@@ -49,7 +49,7 @@ function llenarTablaReportes(reportes) {
     reportes.sort((a, b) => a.IdReporte - b.IdReporte);
 
     const tablaReportes = document.getElementById('tablaReportes');
-    tablaReportes.innerHTML = '';  // Limpiar tabla antes de llenarla
+    tablaReportes.innerHTML = ''; // Limpiar tabla antes de llenarla
 
     reportes.forEach(reporte => {
         const fila = document.createElement('tr');
@@ -77,7 +77,7 @@ function llenarTablaReportes(reportes) {
 
         // Celda para el estatus con clases CSS correspondientes
         const celdaEstatus = document.createElement('td');
-        const spanEstatus = document.createElement('span');  // Usamos un span para el estatus
+        const spanEstatus = document.createElement('span'); // Usamos un span para el estatus
 
         if (reporte.Estatus === 'recibido') {
             spanEstatus.textContent = reporte.Estatus;
@@ -100,7 +100,7 @@ function llenarTablaReportes(reportes) {
         const celdaAccion = document.createElement('td');
         const botonDetalles = document.createElement('button');
         botonDetalles.textContent = 'Ver detalles';
-        botonDetalles.classList.add('action-btn')
+        botonDetalles.classList.add('action-btn');
         botonDetalles.addEventListener('click', function() {
             window.location.href = `detallesReporte.php?id=${reporte.IdReporte}`;
         });
@@ -122,3 +122,4 @@ function llenarTablaReportes(reportes) {
         tablaReportes.appendChild(fila);
     });
 }
+
