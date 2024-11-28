@@ -136,7 +136,6 @@ select option {
     object-fit: cover;
 }
 
-/* Botón de envío */
 .submit-btn {
     width: 100%;
     padding: 10px;
@@ -149,7 +148,9 @@ select option {
     cursor: pointer;
     text-align: center;
     transition: transform 0.2s ease, background 0.3s ease; /* Animación hover */
+    margin-top: 20px; /* Margen superior para separar del contenedor de fotos */
 }
+
 
 .submit-btn:hover {
     background: linear-gradient(45deg, #0055aa, #003366);
