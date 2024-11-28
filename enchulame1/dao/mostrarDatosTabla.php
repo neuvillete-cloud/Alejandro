@@ -53,29 +53,42 @@ function obtenerReportes($searchId, $nave, $reportCount) {
 
     // Filtrar por Nave (utilizando 'Ubicacion' en lugar de 'NombreArea')
     if ($nave != '') {
-        $sql .= " AND r.Ubicacion = ?";  // Aquí cambiamos 'a.NombreArea' por 'r.Ubicacion'
+        $sql .= " AND r.Ubicacion = ?";
     }
 
-    // Paginación
-    $sql .= " ORDER BY r.IdReporte ASC LIMIT ?";
-
+    // Agregar LIMIT si reportCount no es 0
+    if ($reportCount > 0) {
+        $sql .= " ORDER BY r.IdReporte ASC LIMIT ?";
+    } else {
+        $sql .= " ORDER BY r.IdReporte ASC"; // Sin LIMIT
+    }
 
     // Preparar y ejecutar la consulta
     $stmt = $conex->prepare($sql);
 
     // Determinar los parámetros para bind_param
     if ($searchId != '' && $nave != '') {
-        // Si ambos parámetros están presentes, el orden debe ser: searchId, nave, reportCount
-        $stmt->bind_param("iss", $searchId, $nave, $reportCount);
+        if ($reportCount > 0) {
+            $stmt->bind_param("isi", $searchId, $nave, $reportCount);
+        } else {
+            $stmt->bind_param("is", $searchId, $nave);
+        }
     } elseif ($searchId != '') {
-        // Si solo se filtra por searchId
-        $stmt->bind_param("si", $searchId, $reportCount);
+        if ($reportCount > 0) {
+            $stmt->bind_param("ii", $searchId, $reportCount);
+        } else {
+            $stmt->bind_param("i", $searchId);
+        }
     } elseif ($nave != '') {
-        // Si solo se filtra por nave
-        $stmt->bind_param("ss", $nave, $reportCount);
+        if ($reportCount > 0) {
+            $stmt->bind_param("si", $nave, $reportCount);
+        } else {
+            $stmt->bind_param("s", $nave);
+        }
     } else {
-        // Si no se filtra por nada, solo limitamos la cantidad de reportes
-        $stmt->bind_param("i", $reportCount);
+        if ($reportCount > 0) {
+            $stmt->bind_param("i", $reportCount);
+        }
     }
 
     $stmt->execute();
@@ -100,3 +113,4 @@ function obtenerReportes($searchId, $nave, $reportCount) {
 
     return $response;
 }
+
