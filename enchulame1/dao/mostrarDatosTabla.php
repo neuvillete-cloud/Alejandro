@@ -57,7 +57,8 @@ function obtenerReportes($searchId, $nave, $reportCount) {
     }
 
     // Paginación
-    $sql .= " ORDER BY r.FechaRegistro DESC LIMIT ?";
+    $sql .= " ORDER BY r.IdReporte ASC LIMIT ?";
+
 
     // Preparar y ejecutar la consulta
     $stmt = $conex->prepare($sql);
