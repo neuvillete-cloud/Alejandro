@@ -240,5 +240,6 @@ select option {
 
     .submit-btn {
         font-size: 12px;
+        margin-top: 15px;
     }
 }
