@@ -126,6 +126,21 @@ function mostrarModalCancelacion() {
     manejarCancelacion();
 }
 
+function abrirCerrarModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const isHidden = modal.classList.contains('hidden');
+        if (isHidden) {
+            modal.classList.remove('hidden');
+        } else {
+            modal.classList.add('hidden');
+        }
+    } else {
+        console.error(`No se encontró el modal con el ID: ${modalId}`);
+    }
+}
+
+
 // Maneja la cancelación del reporte
 function manejarCancelacion() {
     document.getElementById('cancelarForm').addEventListener('submit', function(event) {
