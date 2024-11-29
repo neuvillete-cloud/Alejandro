@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Cargar los reportes al inicio
-    loadReportes();
+    let reportes = loadReportes('', '',"*");
+    llenarTablaReportes(reportes);
+
 
     // Evento para la lupa dentro del input (buscar por ID)
     document.getElementById('search-id').addEventListener('input', function(event) {
