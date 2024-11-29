@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Cargar los reportes al inicio
-    let reportes = loadReportes('', '',"*");
-    llenarTablaReportes(reportes);
+    loadReportes('', '',0);
+
 
 
     // Evento para la lupa dentro del input (buscar por ID)
@@ -46,7 +46,7 @@ function loadReportes(searchId = '', nave = '', reportCount = 5) {
 }
 
 // Función para llenar la tabla con los reportes
-/*function llenarTablaReportes(reportes) {
+function llenarTablaReportes(reportes) {
     // Ordenar los reportes por IdReporte en orden ascendente
 
 
@@ -125,4 +125,3 @@ function loadReportes(searchId = '', nave = '', reportCount = 5) {
     });
 }
 
-*/
