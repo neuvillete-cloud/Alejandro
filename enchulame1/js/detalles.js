@@ -2,36 +2,40 @@
 const params = new URLSearchParams(window.location.search);
 const reporteId = params.get('id');
 
-// Función principal para cargar el reporte
-function cargarReporte() {
-    mostrarDetallesReporte(reporteId);
-}
+// Llamada inicial para mostrar los detalles del reporte
+mostrarDetallesReporte(reporteId);
 
-// Muestra los detalles del reporte según el ID
+/** Función principal para mostrar los detalles del reporte */
 function mostrarDetallesReporte(id) {
     fetch(`dao/obtenerDetalleReporte.php?id=${id}`)
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
                 const reporte = data.reporte;
+
                 agregarBotonRegresar();
                 mostrarDatosReporte(reporte);
-                mostrarBotonFinalizar(reporte);
-                manejarCambioDeEstatus(reporte);
-                crearModalFinalizar(reporte);
-                mostrarCarruselSiCompletado(reporte);
+                configurarCambioEstatus(reporte);
+                configurarFinalizacionReporte(reporte);
+
+                if (reporte.Estatus === 'Completado') {
+                    mostrarCarruselFotos(reporte.IdReporte);
+                }
             }
+        })
+        .catch(error => {
+            console.error('Error al obtener los detalles del reporte:', error);
         });
 }
 
-// Añadir el botón de regresar en forma de flecha
+/** Agrega el botón de regresar en la parte superior de la página */
 function agregarBotonRegresar() {
     document.body.insertAdjacentHTML('afterbegin', `
         <a href="javascript:history.back()" id="backButton">&#8592;</a>
     `);
 }
 
-// Muestra los datos del reporte en el HTML
+/** Muestra los datos del reporte en el DOM */
 function mostrarDatosReporte(reporte) {
     const detalleDiv = document.getElementById('detalleReporte');
     detalleDiv.innerHTML = `
@@ -58,46 +62,23 @@ function mostrarDatosReporte(reporte) {
             </select>
         </div>
     `;
+    agregarBotonFinalizar(reporte);
 }
 
-// Mostrar el botón de finalizar si es posible
-function mostrarBotonFinalizar(reporte) {
+/** Agrega el botón de finalizar al contenedor */
+function agregarBotonFinalizar(reporte) {
     const finalizarButtonContainer = document.querySelector('.status-button-container');
     finalizarButtonContainer.insertAdjacentHTML('beforeend', `
         <button id="finalizarButton" ${reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado' ? 'disabled' : ''}>Finalizar</button>
     `);
-}
 
-// Manejar el cambio de estatus
-function manejarCambioDeEstatus(reporte) {
     if (reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado') {
-        deshabilitarControles();
-        mostrarAlertaAccionNoPermitida(reporte);
+        mostrarAlertaReporteNoEditable(reporte);
     }
-
-    document.getElementById('statusSelect').addEventListener('change', function() {
-        const nuevoEstatus = this.value;
-        if (reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado') {
-            mostrarAlertaAccionNoPermitida(reporte);
-            this.value = "";
-            return;
-        }
-        if (nuevoEstatus === "Cancelado") {
-            mostrarModalCancelacion();
-        } else {
-            cambiarEstatusReporte(nuevoEstatus);
-        }
-    });
 }
 
-// Deshabilitar controles cuando el reporte ya está completado o cancelado
-function deshabilitarControles() {
-    document.getElementById('finalizarButton').disabled = true;
-    document.getElementById('statusSelect').disabled = true;
-}
-
-// Mostrar alerta cuando una acción no es permitida
-function mostrarAlertaAccionNoPermitida(reporte) {
+/** Muestra alerta si el reporte ya no es editable */
+function mostrarAlertaReporteNoEditable(reporte) {
     Swal.fire({
         title: 'Acción no permitida',
         text: `Este reporte ya ha sido ${reporte.Estatus.toLowerCase()} y no se puede modificar.`,
@@ -106,11 +87,43 @@ function mostrarAlertaAccionNoPermitida(reporte) {
     });
 }
 
-function mostrarModalCancelacion() {
+/** Configura la lógica de cambio de estatus */
+function configurarCambioEstatus(reporte) {
+    document.getElementById('statusSelect').addEventListener('change', function() {
+        manejarCambioEstatus(this, reporte);
+    });
+}
+
+/** Maneja el cambio de estatus del reporte */
+function manejarCambioEstatus(selectElement, reporte) {
+    const nuevoEstatus = selectElement.value;
+
+    if (reporte.Estatus === 'Completado' || reporte.Estatus === 'Cancelado') {
+        Swal.fire({
+            title: 'Acción no permitida',
+            text: `No se puede cambiar el estado porque el reporte ya está ${reporte.Estatus.toLowerCase()}.`,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        selectElement.value = "";
+        return;
+    }
+
+    if (nuevoEstatus === "Cancelado") {
+        mostrarModalCancelacion(reporte.IdReporte);
+    } else if (confirm(`¿Está seguro de que desea cambiar el estatus a "${nuevoEstatus}"?`)) {
+        actualizarEstatusReporte(reporte.IdReporte, nuevoEstatus);
+    } else {
+        selectElement.value = "";
+    }
+}
+
+/** Muestra el modal de cancelación */
+function mostrarModalCancelacion(reporteId) {
     const modalHTML = `
         <div id="cancelarModal" class="modal">
             <div class="modal-content">
-                <span class="close" id="cancelarModalClose">&times;</span>
+                <span class="close">&times;</span>
                 <h2>Comentario para Cancelación</h2>
                 <form id="cancelarForm">
                     <label for="comentarioCancelacion">Comentario:</label>
@@ -121,126 +134,86 @@ function mostrarModalCancelacion() {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    abrirCerrarModal('cancelarModal');
-    manejarCancelacion();
-
-    // Agregar el evento de cierre al botón de cerrar
-    const closeModalButton = document.getElementById('cancelarModalClose');
-    closeModalButton.addEventListener('click', function() {
-        document.getElementById('cancelarModal').style.display = 'none';
-    });
+    configurarModal('cancelarModal', cancelarReporte);
 }
 
-// Abrir o cerrar el modal
-function abrirCerrarModal(modalId) {
+/** Configura la lógica del modal */
+function configurarModal(modalId, submitCallback) {
     const modal = document.getElementById(modalId);
-    if (modal) {
-        const isHidden = modal.classList.contains('hidden');
-        if (isHidden) {
-            modal.classList.remove('hidden');
-            modal.style.display = 'block';  // Mostrar el modal
-        } else {
-            modal.classList.add('hidden');
-            modal.style.display = 'none';  // Ocultar el modal
+    modal.style.display = 'flex';
+
+    document.querySelector(`#${modalId} .close`).addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
         }
-    } else {
-        console.error(`No se encontró el modal con el ID: ${modalId}`);
-    }
-}
+    };
 
-
-
-// Maneja la cancelación del reporte
-function manejarCancelacion() {
-    document.getElementById('cancelarForm').addEventListener('submit', function(event) {
+    document.querySelector(`#${modalId} form`).addEventListener('submit', function(event) {
         event.preventDefault();
-        const comentarioCancelacion = document.getElementById('comentarioCancelacion').value;
-        fetch('https://grammermx.com/Mailer/cancelarReporte.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `id=${reporteId}&comentarioCancelacion=${encodeURIComponent(comentarioCancelacion)}`
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Reporte Cancelado',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                    document.getElementById('cancelarModal').style.display = 'none';
-                    document.getElementById('estatus').textContent = 'Cancelado';
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al cancelar el reporte:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Hubo un error al cancelar el reporte.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
+        submitCallback(modal);
     });
 }
 
-// Cambiar el estatus del reporte
-function cambiarEstatusReporte(nuevoEstatus) {
-    if (confirm(`¿Está seguro de que desea cambiar el estatus a "${nuevoEstatus}"?`)) {
-        fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `id=${reporteId}&nuevoEstatus=${encodeURIComponent(nuevoEstatus)}`
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Estatus Actualizado',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                    document.getElementById('estatus').textContent = nuevoEstatus;
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al actualizar el estatus:', error);
+/** Cancela el reporte en el servidor */
+function cancelarReporte(modal) {
+    const comentarioCancelacion = document.getElementById('comentarioCancelacion').value;
+    fetch('https://grammermx.com/Mailer/cancelarReporte.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${reporteId}&comentarioCancelacion=${encodeURIComponent(comentarioCancelacion)}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
                 Swal.fire({
-                    title: 'Error',
-                    text: 'Hubo un error al actualizar el estatus.',
-                    icon: 'error',
+                    title: 'Reporte Cancelado',
+                    text: data.message,
+                    icon: 'success',
                     confirmButtonText: 'OK'
                 });
-            });
-    } else {
-        document.getElementById('statusSelect').value = "";
-    }
+                modal.style.display = 'none';
+                document.getElementById('estatus').textContent = 'Cancelado';
+            } else {
+                mostrarError(data.message);
+            }
+        })
+        .catch(error => mostrarError('Hubo un error al cancelar el reporte.'));
 }
 
+/** Actualiza el estatus del reporte */
+function actualizarEstatusReporte(reporteId, nuevoEstatus) {
+    fetch('https://grammermx.com/Mailer/actualizarEstatusReporte.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${reporteId}&nuevoEstatus=${encodeURIComponent(nuevoEstatus)}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    title: 'Estatus Actualizado',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                document.getElementById('estatus').textContent = nuevoEstatus;
+            } else {
+                mostrarError(data.message);
+            }
+        })
+        .catch(error => mostrarError('Hubo un error al actualizar el estatus.'));
+}
 
-
-// Crear el modal de finalización del reporte
-function crearModalFinalizar(reporte) {
+/** Configura la lógica para finalizar el reporte */
+function configurarFinalizacionReporte(reporte) {
     const modalHTML = `
         <div id="finalizarModal" class="modal">
             <div class="modal-content">
@@ -259,102 +232,92 @@ function crearModalFinalizar(reporte) {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    abrirCerrarModal('finalizarModal');
-    manejarFinalizacion(reporte);
+    configurarModal('finalizarModal', finalizarReporte);
 }
 
-// Maneja la finalización del reporte
-function manejarFinalizacion(reporte) {
-    document.getElementById('finalizarForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const comentarioFinal = document.getElementById('comentarioFinal').value;
-        const fotoEvidencia = document.getElementById('fotoEvidencia').files[0];
+/** Lógica para finalizar el reporte */
+function finalizarReporte(modal) {
+    const comentarioFinal = document.getElementById('comentarioFinal').value;
+    const fotoEvidencia = document.getElementById('fotoEvidencia').files[0];
+    const formData = new FormData();
 
-        const formData = new FormData();
-        formData.append('id', reporteId);
-        formData.append('comentarioFinal', comentarioFinal);
-        formData.append('fotoEvidencia', fotoEvidencia);
+    formData.append('id', reporteId);
+    formData.append('comentarioFinal', comentarioFinal);
+    formData.append('fotoEvidencia', fotoEvidencia);
 
-        fetch('https://grammermx.com/Mailer/finalizarReporte.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Reporte Finalizado',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                    document.getElementById('finalizarModal').style.display = 'none';
-                    document.getElementById('estatus').textContent = 'Completado';
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al finalizar el reporte:', error);
+    fetch('https://grammermx.com/Mailer/finalizarReporte.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
                 Swal.fire({
-                    title: 'Error',
-                    text: 'Hubo un error al finalizar el reporte.',
-                    icon: 'error',
+                    title: 'Reporte Finalizado',
+                    text: data.message,
+                    icon: 'success',
                     confirmButtonText: 'OK'
                 });
-            });
+                modal.style.display = 'none';
+                document.getElementById('estatus').textContent = 'Completado';
+                mostrarCarruselFotos(reporteId);
+            } else {
+                mostrarError(data.message);
+            }
+        })
+        .catch(error => mostrarError('Hubo un error al finalizar el reporte.'));
+}
+
+/** Muestra un error genérico */
+function mostrarError(message) {
+    Swal.fire({
+        title: 'Error',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'OK'
     });
 }
 
-
-function mostrarCarruselSiCompletado(idReporte, reporte) {
-    // Verificar si el objeto 'reporte' está definido y tiene la propiedad 'Estatus'
-    if (reporte && reporte.Estatus === 'Completado') {
-        fetch(`dao/obtenerFotosReporte.php?id=${idReporte}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const fotos = data.fotos;
-                    const carruselContainer = document.getElementById('carruselContainer');
-                    carruselContainer.innerHTML = `
-                        <div class="slideshow-container">
-                            ${fotos.map((foto, index) => `
-                                <div class="mySlides fade">
-                                    <div class="numbertext">${index + 1} / ${fotos.length}</div>
-                                    <img src="${foto.url}" style="width:100%">
-                                    <div class="text">Foto ${index + 1}</div>
-                                </div>
-                            `).join('')}
-                            <a class="prev">&#10094;</a>
-                            <a class="next">&#10095;</a>
-                        </div>
-                        <div style="text-align:center">
-                            ${fotos.map((_, index) => `<span class="dot" data-index="${index}"></span>`).join('')}
-                        </div>
-                    `;
-
-                    // Iniciar el carrusel
-                    iniciarNuevoCarrusel();
-                } else {
-                    console.log('No se encontraron fotos para el reporte');
-                }
-            })
-            .catch(error => {
-                console.error('Error al obtener las fotos:', error);
-            });
-    } else {
-        console.log('El reporte no está completado o no tiene la propiedad "Estatus".');
-    }
+/** Muestra el carrusel de fotos */
+function mostrarCarruselFotos(reporteId) {
+    fetch(`dao/obtenerFotosReporte.php?id=${reporteId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                inicializarCarrusel(data.fotos);
+            } else {
+                console.log('No se encontraron fotos para el reporte');
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener las fotos:', error);
+        });
 }
 
+/** Inicializa el carrusel con las fotos obtenidas */
+function inicializarCarrusel(fotos) {
+    const carruselContainer = document.getElementById('carruselContainer');
+    carruselContainer.innerHTML = `
+        <div class="slideshow-container">
+            ${fotos.map((foto, index) => `
+                <div class="mySlides fade">
+                    <div class="numbertext">${index + 1} / ${fotos.length}</div>
+                    <img src="${foto.url}" style="width:100%">
+                    <div class="text">Foto ${index + 1}</div>
+                </div>
+            `).join('')}
+            <a class="prev">&#10094;</a>
+            <a class="next">&#10095;</a>
+        </div>
+        <div style="text-align:center">
+            ${fotos.map((_, index) => `<span class="dot" data-index="${index}"></span>`).join('')}
+        </div>
+    `;
+    configurarCarrusel();
+}
 
-// Función para manejar el carrusel de fotos con botones
-function iniciarNuevoCarrusel() {
+/** Configura la lógica del carrusel */
+function configurarCarrusel() {
     let slideIndex = 0;
     const slides = document.querySelectorAll('.mySlides');
     const dots = document.querySelectorAll('.dot');
@@ -390,7 +353,3 @@ function iniciarNuevoCarrusel() {
         dot.addEventListener('click', () => currentSlide(index));
     });
 }
-
-
-document.addEventListener('DOMContentLoaded', cargarReporte);
-
