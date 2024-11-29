@@ -303,10 +303,9 @@ function manejarFinalizacion(reporte) {
 }
 
 
-// Función para mostrar el carrusel de fotos
-function  mostrarCarruselSiCompletado(idReporte, reporte) {
-    // Verificar si el reporte tiene el estatus 'Completado'
-    if (reporte.Estatus === 'Completado') {
+function mostrarCarruselSiCompletado(idReporte, reporte) {
+    // Verificar si el objeto 'reporte' está definido y tiene la propiedad 'Estatus'
+    if (reporte && reporte.Estatus === 'Completado') {
         fetch(`dao/obtenerFotosReporte.php?id=${idReporte}`)
             .then(response => response.json())
             .then(data => {
@@ -340,9 +339,10 @@ function  mostrarCarruselSiCompletado(idReporte, reporte) {
                 console.error('Error al obtener las fotos:', error);
             });
     } else {
-        console.log('El reporte no está completado, no se muestran las fotos');
+        console.log('El reporte no está completado o no tiene la propiedad "Estatus".');
     }
 }
+
 
 // Función para manejar el carrusel de fotos con botones
 function iniciarNuevoCarrusel() {
