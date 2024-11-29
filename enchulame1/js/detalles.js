@@ -215,6 +215,21 @@ function cambiarEstatusReporte(nuevoEstatus) {
     }
 }
 
+function abrirCerrarModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const isHidden = modal.classList.contains('hidden');
+        if (isHidden) {
+            modal.classList.remove('hidden');
+        } else {
+            modal.classList.add('hidden');
+        }
+    } else {
+        console.error(`No se encontró el modal con el ID: ${modalId}`);
+    }
+}
+
+
 // Crear el modal de finalización del reporte
 function crearModalFinalizar(reporte) {
     const modalHTML = `
