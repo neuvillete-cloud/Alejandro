@@ -106,12 +106,11 @@ function mostrarAlertaAccionNoPermitida(reporte) {
     });
 }
 
-// Función para mostrar el modal de cancelación
 function mostrarModalCancelacion() {
     const modalHTML = `
         <div id="cancelarModal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close" id="cancelarModalClose">&times;</span>
                 <h2>Comentario para Cancelación</h2>
                 <form id="cancelarForm">
                     <label for="comentarioCancelacion">Comentario:</label>
@@ -124,6 +123,29 @@ function mostrarModalCancelacion() {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     abrirCerrarModal('cancelarModal');
     manejarCancelacion();
+
+    // Agregar el evento de cierre al botón de cerrar
+    const closeModalButton = document.getElementById('cancelarModalClose');
+    closeModalButton.addEventListener('click', function() {
+        document.getElementById('cancelarModal').style.display = 'none';
+    });
+}
+
+// Abrir o cerrar el modal
+function abrirCerrarModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const isHidden = modal.classList.contains('hidden');
+        if (isHidden) {
+            modal.classList.remove('hidden');
+            modal.style.display = 'block';  // Mostrar el modal
+        } else {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';  // Ocultar el modal
+        }
+    } else {
+        console.error(`No se encontró el modal con el ID: ${modalId}`);
+    }
 }
 
 
@@ -215,19 +237,6 @@ function cambiarEstatusReporte(nuevoEstatus) {
     }
 }
 
-function abrirCerrarModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        const isHidden = modal.classList.contains('hidden');
-        if (isHidden) {
-            modal.classList.remove('hidden');
-        } else {
-            modal.classList.add('hidden');
-        }
-    } else {
-        console.error(`No se encontró el modal con el ID: ${modalId}`);
-    }
-}
 
 
 // Crear el modal de finalización del reporte
