@@ -213,7 +213,17 @@ function actualizarEstatusReporte(reporteId, nuevoEstatus) {
 }
 
 /** Configura la lógica para finalizar el reporte */
+/** Configura la lógica para el botón de finalizar */
 function configurarFinalizacionReporte(reporte) {
+    // Escucha el evento de clic en el botón "Finalizar"
+    const finalizarButton = document.getElementById('finalizarButton');
+    finalizarButton.addEventListener('click', () => {
+        mostrarModalFinalizacion(reporte.IdReporte);
+    });
+}
+
+/** Muestra el modal de finalización al hacer clic en el botón "Finalizar" */
+function mostrarModalFinalizacion(reporteId) {
     const modalHTML = `
         <div id="finalizarModal" class="modal">
             <div class="modal-content">
@@ -234,6 +244,7 @@ function configurarFinalizacionReporte(reporte) {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     configurarModal('finalizarModal', finalizarReporte);
 }
+
 
 /** Lógica para finalizar el reporte */
 function finalizarReporte(modal) {
