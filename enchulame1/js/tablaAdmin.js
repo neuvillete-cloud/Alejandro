@@ -46,7 +46,7 @@ function loadReportes(searchId = '', nave = '', reportCount = 5) {
 }
 
 // Función para llenar la tabla con los reportes
-function llenarTablaReportes(reportes) {
+/*function llenarTablaReportes(reportes) {
     // Ordenar los reportes por IdReporte en orden ascendente
 
 
@@ -125,3 +125,4 @@ function llenarTablaReportes(reportes) {
     });
 }
 
+*/
