@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Cargar los reportes al inicio
-    loadReportes('', '',0);
-
-
+    loadReportes('', '', 0);
 
     // Evento para la lupa dentro del input (buscar por ID)
     document.getElementById('search-id').addEventListener('input', function(event) {
@@ -20,6 +18,14 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('report-count').addEventListener('change', function() {
         const count = this.value === '*' ? 0 : parseInt(this.value); // Enviar 0 si es "Todos"
         loadReportes(undefined, undefined, count);
+    });
+
+    // Evento para actualizar la tabla cuando el usuario regresa a la página
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            // Cargar los reportes nuevamente al volver a la página
+            loadReportes('', '', 0);
+        }
     });
 });
 
@@ -47,9 +53,6 @@ function loadReportes(searchId = '', nave = '', reportCount = 5) {
 
 // Función para llenar la tabla con los reportes
 function llenarTablaReportes(reportes) {
-    // Ordenar los reportes por IdReporte en orden ascendente
-
-
     const tablaReportes = document.getElementById('tablaReportes');
     tablaReportes.innerHTML = ''; // Limpiar tabla antes de llenarla
 
@@ -77,9 +80,8 @@ function llenarTablaReportes(reportes) {
         const celdaFechaCompromiso = document.createElement('td');
         celdaFechaCompromiso.textContent = reporte.FechaCompromiso;
 
-        // Celda para el estatus con clases CSS correspondientes
         const celdaEstatus = document.createElement('td');
-        const spanEstatus = document.createElement('span'); // Usamos un span para el estatus
+        const spanEstatus = document.createElement('span');
 
         if (reporte.Estatus === 'recibido') {
             spanEstatus.textContent = reporte.Estatus;
@@ -95,10 +97,8 @@ function llenarTablaReportes(reportes) {
             spanEstatus.classList.add('status', 'Cancelado');
         }
 
-        // Agregar el span con el estatus a la celda
         celdaEstatus.appendChild(spanEstatus);
 
-        // Celda de acción con botón "Ver detalles"
         const celdaAccion = document.createElement('td');
         const botonDetalles = document.createElement('button');
         botonDetalles.textContent = 'Ver detalles';
@@ -109,7 +109,6 @@ function llenarTablaReportes(reportes) {
 
         celdaAccion.appendChild(botonDetalles);
 
-        // Agregar las celdas a la fila
         fila.appendChild(celdaIdReporte);
         fila.appendChild(celdaNombre);
         fila.appendChild(celdaArea);
@@ -120,8 +119,8 @@ function llenarTablaReportes(reportes) {
         fila.appendChild(celdaEstatus);
         fila.appendChild(celdaAccion);
 
-        // Agregar la fila a la tabla
         tablaReportes.appendChild(fila);
     });
 }
+
 
