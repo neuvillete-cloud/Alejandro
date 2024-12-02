@@ -66,7 +66,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
             $asunto = "Reporte Finalizado";
             $mensaje = "Hola,<br><br>Tu reporte #$reporteId ha sido marcado como 'Finalizado'.<br><br><strong>Comentario final:</strong> $comentarioFinal.<br><br>Adjunto encontrarás la evidencia.<br><br>Saludos,<br>Equipo de Soporte";
 
-            $correoResponse = emailFinalizarReporte($emailUsuario, $asunto, $mensaje, $rutaPublica);
+            $correoResponse = emailFinalizarReporte($emailUsuario, $asunto, $mensaje, $rutaLocal);
 
             if ($correoResponse['status'] === 'success') {
                 echo json_encode(['status' => 'success', 'message' => 'Reporte finalizado y correo enviado.']);
