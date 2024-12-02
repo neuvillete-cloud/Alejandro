@@ -88,7 +88,7 @@ if (isset($_POST['id']) && isset($_POST['comentarioFinal'])) {
 }
 
 // Función para enviar el correo de reporte finalizado
-function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaPublica) {
+function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaLocal) {
     $contenido = "
     <html>
     <head>
@@ -129,8 +129,8 @@ function emailFinalizarReporte($destinatario, $asunto, $mensaje, $rutaPublica) {
         $mail->Body = $contenido;
 
         // Adjuntar la imagen si existe
-        if ($rutaPublica && file_exists($rutaPublica)) {
-            $mail->addAttachment($rutaPublica);
+        if ($rutaLocal && file_exists($rutaLocal)) {
+            $mail->addAttachment($rutaLocal);
         }
 
         if (!$mail->send()) {
