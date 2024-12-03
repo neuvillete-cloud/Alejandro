@@ -26,7 +26,10 @@ function enviarCorreoAdministrador($correo, $asunto, $mensaje) {
 
         $mail->setFrom('tickets_enchulamelanave@grammermx.com', 'Sistema de Reportes');
         $mail->addAddress($correo);
+        $mail->addAddress('hadbet.altamirano@grammer.com');
 
+        // Configuración de UTF-8 para evitar problemas con acentos
+        $mail->CharSet = 'UTF-8';
         $mail->isHTML(true);
         $mail->Subject = $asunto;
         $mail->Body = $mensaje;
@@ -71,6 +74,7 @@ if ($result->num_rows > 0) {
         <html>
         <head>
             <title>Reporte No Finalizado</title>
+            <meta charset='UTF-8'>
         </head>
         <body>
             <p>Hola $nombreAdministrador,</p>
@@ -103,4 +107,5 @@ if ($result->num_rows > 0) {
 
 $conex->close();
 ?>
+
 
