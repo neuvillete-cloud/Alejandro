@@ -62,10 +62,11 @@
                 <div class="filter-item">
                     <label for="report-count">Reportes por página:</label>
                     <select id="report-count">
+                        <option value="*">Todos</option>
                         <option value="5">5</option>
                         <option value="25">25</option>
                         <option value="100">100</option>
-                        <option value="*">Todos</option>
+
                     </select>
                 </div>
             </div>

@@ -9,6 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
     if (!NumNomina || !Contrasena) {
         alert('Por favor, complete todos los campos.');
         return;
+
     }
 
     // Validar que la nómina tenga exactamente 8 caracteres
