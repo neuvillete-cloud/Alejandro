@@ -46,9 +46,14 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
                     icon: 'success',
                     title: '¡Éxito!',
                     text: 'Reporte enviado exitosamente.'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirigir a la página deseada
+                        window.location.href = 'Administrador.php'; // Reemplaza con la URL a la que deseas redirigir
+                    }
                 });
-                // Puedes redirigir o limpiar el formulario si es necesario
-                document.getElementById('reporteForm').reset();
+                // Opcional: Puedes limpiar el formulario si lo deseas
+                // document.getElementById('reporteForm').reset();
             } else {
                 Swal.fire({
                     icon: 'error',
