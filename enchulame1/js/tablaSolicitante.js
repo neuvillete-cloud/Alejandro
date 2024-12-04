@@ -1,32 +1,29 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Cargar los reportes al inicio
     loadReportes();
 
     // Evento para el filtro por Nave
-    document.getElementById('nave').addEventListener('change', function() {
+    document.getElementById('nave').addEventListener('change', function () {
         const nave = this.value;
-        loadReportes(undefined, nave, undefined); // Pasamos 'nave' como filtro
+        loadReportes('', nave); // Pasamos 'nave' como filtro
     });
 
     // Evento para cambiar la cantidad de reportes por página
-    document.getElementById('report-count').addEventListener('change', function() {
+    document.getElementById('report-count').addEventListener('change', function () {
         const count = this.value === '*' ? 0 : parseInt(this.value); // Enviar 0 si es "Todos"
-        loadReportes(undefined, undefined, count);
+        loadReportes('', '', count);
     });
 
     // Evento para actualizar la tabla cuando el usuario regresa a la página
-    document.addEventListener('visibilitychange', function() {
+    document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'visible') {
-            // Cargar los reportes nuevamente al volver a la página
-            loadReportes();
+            loadReportes(); // Cargar reportes nuevamente al volver a la página
         }
     });
 });
 
 // Función para cargar los reportes con los filtros aplicados
-function loadReportes(searchId = '', nave = '', reportCount = 0) {
-    const numNomina = sessionStorage.getItem('NumNomina'); // Obtener el NumNomina de la sesión
-
+function loadReportes(searchId = '', nave = '', reportCount = 5) {
     fetch('dao/mostrarDatosTabla.php', {
         method: 'POST',
         headers: {
@@ -35,8 +32,7 @@ function loadReportes(searchId = '', nave = '', reportCount = 0) {
         body: JSON.stringify({
             searchId,
             nave,
-            reportCount,
-            numNomina // Enviar el NumNomina para filtrar los reportes por usuario
+            reportCount
         })
     })
         .then(response => response.json())
@@ -84,23 +80,28 @@ function llenarTablaReportes(reportes) {
         const celdaEstatus = document.createElement('td');
         const spanEstatus = document.createElement('span');
 
-        if (reporte.Estatus === 'recibido') {
-            spanEstatus.textContent = reporte.Estatus;
-            spanEstatus.classList.add('status', 'recibido');
-        } else if (reporte.Estatus === 'En Proceso') {
-            spanEstatus.textContent = reporte.Estatus;
-            spanEstatus.classList.add('status', 'en-proceso');
-        } else if (reporte.Estatus === 'Completado') {
-            spanEstatus.textContent = reporte.Estatus;
-            spanEstatus.classList.add('status', 'completado');
-        } else if (reporte.Estatus === 'Cancelado') {
-            spanEstatus.textContent = reporte.Estatus;
-            spanEstatus.classList.add('status', 'Cancelado');
+        switch (reporte.Estatus.toLowerCase()) {
+            case 'recibido':
+                spanEstatus.textContent = 'Recibido';
+                spanEstatus.classList.add('status', 'recibido');
+                break;
+            case 'en proceso':
+                spanEstatus.textContent = 'En Proceso';
+                spanEstatus.classList.add('status', 'en-proceso');
+                break;
+            case 'completado':
+                spanEstatus.textContent = 'Completado';
+                spanEstatus.classList.add('status', 'completado');
+                break;
+            case 'cancelado':
+                spanEstatus.textContent = 'Cancelado';
+                spanEstatus.classList.add('status', 'cancelado');
+                break;
         }
 
         celdaEstatus.appendChild(spanEstatus);
 
-        // Eliminar la columna de acción (botón de detalles)
+        // Añadir columnas a la fila
         fila.appendChild(celdaIdReporte);
         fila.appendChild(celdaNombre);
         fila.appendChild(celdaArea);
