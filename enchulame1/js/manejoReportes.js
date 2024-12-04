@@ -53,7 +53,7 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
                     }
                 });
                 // Opcional: Puedes limpiar el formulario si lo deseas
-                // document.getElementById('reporteForm').reset();
+                document.getElementById('reporteForm').reset();
             } else {
                 Swal.fire({
                     icon: 'error',
