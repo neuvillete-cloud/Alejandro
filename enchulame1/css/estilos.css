@@ -16,22 +16,24 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between; /* Asegura que los elementos se distribuyan correctamente */
     align-items: center;
     text-align: center;
     width: 100%;
     max-width: 400px;
     height: 100vh;
-    overflow: hidden;
+    overflow: hidden; /* Previene el scroll innecesario */
+    padding: 1rem 0;
 }
 
 .logo {
-    margin-top: 9rem; /* Aumenta el margen superior en pantallas grandes */
+    margin-top: 5rem; /* Margen inicial en pantallas grandes */
+    flex-shrink: 0; /* Evita que se reduzca demasiado */
 }
 
 .logo img {
     width: 150px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .logo h1 {
@@ -58,7 +60,8 @@ body {
     border-top-right-radius: 2rem;
     position: absolute;
     bottom: 0;
-    height: 50%;
+    height: 40%; /* Reduce la altura para dejar más espacio arriba */
+    flex-shrink: 0; /* Evita que el cuadro se ajuste dinámicamente */
 }
 
 .buttons button {
@@ -93,35 +96,55 @@ body {
 @media screen and (max-width: 768px) {
     .container {
         height: 100vh;
-        max-width: 90%; /* Permite que se ajuste un poco más el ancho */
+        padding: 1rem 0; /* Añade espacio interno */
     }
 
     .logo {
-        margin-top: 5rem; /* Reduce el margen superior */
+        margin-top: 3rem; /* Reduce el margen superior */
     }
 
     .logo img {
-        width: 130px; /* Reduce ligeramente el tamaño del logo */
+        width: 120px; /* Ajusta el tamaño del logo */
     }
 
     .logo h1 {
-        font-size: 1.8rem; /* Reduce el tamaño del título */
+        font-size: 1.8rem; /* Reduce ligeramente el tamaño del título */
     }
 
     .logo p {
-        font-size: 0.9rem; /* Ajusta el tamaño del eslogan */
-        margin-bottom: 1.5rem;
+        font-size: 0.9rem; /* Ajusta el tamaño del texto */
+        margin-bottom: 1rem; /* Reduce el espacio debajo del eslogan */
     }
 
     .buttons {
-        height: auto; /* Ajusta la altura según el contenido */
-        padding: 1.5rem 0; /* Reduce el padding */
+        height: 35%; /* Reduce la altura del cuadro en pantallas pequeñas */
+        padding: 1.5rem 0; /* Ajusta el espacio interno */
     }
 
     .buttons button {
-        width: 90%; /* Botones más anchos en dispositivos pequeños */
-        font-size: 0.9rem;
+        width: 90%; /* Aumenta el tamaño de los botones */
+        font-size: 0.9rem; /* Reduce ligeramente el texto */
     }
 }
 
+@media screen and (max-width: 480px) {
+    .logo {
+        margin-top: 2rem; /* Mueve el logo más arriba */
+    }
 
+    .logo img {
+        width: 100px; /* Reduce más el tamaño del logo */
+    }
+
+    .logo h1 {
+        font-size: 1.5rem; /* Ajusta el tamaño del título */
+    }
+
+    .logo p {
+        font-size: 0.8rem; /* Reduce el tamaño del eslogan */
+    }
+
+    .buttons {
+        height: 30%; /* Reduce aún más la altura del cuadro */
+    }
+}
