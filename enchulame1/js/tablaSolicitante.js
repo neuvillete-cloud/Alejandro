@@ -24,15 +24,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Función para cargar los reportes con los filtros aplicados
-function loadReportes(nave = '', reportCount = 0) {
+function loadReportes(searchId = '', nave = '', reportCount = 0) {
     const numNomina = sessionStorage.getItem('NumNomina'); // Obtener el NumNomina de la sesión
 
-    fetch('dao/mostrarDatosTablaSolicitante.php', {
+    fetch('dao/mostrarDatosTabla.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+            searchId,
             nave,
             reportCount,
             numNomina // Enviar el NumNomina para filtrar los reportes por usuario
