@@ -16,36 +16,36 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Asegura que los elementos se distribuyan correctamente */
+    justify-content: space-between;
     align-items: center;
     text-align: center;
     width: 100%;
     max-width: 400px;
     height: 100vh;
-    overflow: hidden; /* Previene el scroll innecesario */
+    overflow: hidden;
     padding: 1rem 0;
 }
 
 .logo {
-    margin-top: 5rem; /* Margen inicial en pantallas grandes */
-    flex-shrink: 0; /* Evita que se reduzca demasiado */
+    margin-top: 4rem; /* Reduce el margen inicial */
+    flex-shrink: 0;
 }
 
 .logo img {
-    width: 150px;
-    margin-bottom: 1rem;
+    width: 180px; /* Tamaño más grande del logo */
+    margin-bottom: 1.5rem;
 }
 
 .logo h1 {
-    font-size: 2rem;
+    font-size: 2.2rem; /* Aumenta el tamaño del título */
     color: #0096FF;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.7rem;
 }
 
 .logo p {
-    font-size: 1rem;
+    font-size: 1.1rem; /* Aumenta el tamaño del texto */
     color: #4d4d4d;
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem; /* Ajusta el espaciado inferior */
 }
 
 /* Cuadro de botones */
@@ -54,21 +54,21 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #005195;
-    padding: 2rem 0;
+    padding: 1.8rem 0; /* Reduce el padding */
     width: 100%;
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
     position: absolute;
-    bottom: 0;
-    height: 40%; /* Reduce la altura para dejar más espacio arriba */
-    flex-shrink: 0; /* Evita que el cuadro se ajuste dinámicamente */
+    bottom: 0.5rem; /* Sube el cuadro ligeramente */
+    height: 38%; /* Reduce ligeramente la altura */
+    flex-shrink: 0;
 }
 
 .buttons button {
     width: 80%;
     padding: 1rem;
     margin: 0.5rem 0;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Aumenta ligeramente el texto del botón */
     color: white;
     background-color: #007bff;
     border: none;
@@ -96,55 +96,55 @@ body {
 @media screen and (max-width: 768px) {
     .container {
         height: 100vh;
-        padding: 1rem 0; /* Añade espacio interno */
+        padding: 1rem 0;
     }
 
     .logo {
-        margin-top: 3rem; /* Reduce el margen superior */
+        margin-top: 3rem; /* Ajusta el margen superior */
     }
 
     .logo img {
-        width: 120px; /* Ajusta el tamaño del logo */
+        width: 160px; /* Ajusta el tamaño del logo */
     }
 
     .logo h1 {
-        font-size: 1.8rem; /* Reduce ligeramente el tamaño del título */
+        font-size: 2rem; /* Ajusta el tamaño del título */
     }
 
     .logo p {
-        font-size: 0.9rem; /* Ajusta el tamaño del texto */
-        margin-bottom: 1rem; /* Reduce el espacio debajo del eslogan */
+        font-size: 1rem; /* Ajusta el tamaño del texto */
     }
 
     .buttons {
-        height: 35%; /* Reduce la altura del cuadro en pantallas pequeñas */
-        padding: 1.5rem 0; /* Ajusta el espacio interno */
+        height: 35%; /* Reduce la altura del cuadro */
+        bottom: 1rem; /* Sube un poco más el cuadro */
     }
 
     .buttons button {
-        width: 90%; /* Aumenta el tamaño de los botones */
-        font-size: 0.9rem; /* Reduce ligeramente el texto */
+        width: 90%;
+        font-size: 1rem;
     }
 }
 
 @media screen and (max-width: 480px) {
     .logo {
-        margin-top: 2rem; /* Mueve el logo más arriba */
+        margin-top: 2.5rem; /* Mueve el logo más arriba */
     }
 
     .logo img {
-        width: 100px; /* Reduce más el tamaño del logo */
+        width: 140px; /* Ajusta el tamaño del logo */
     }
 
     .logo h1 {
-        font-size: 1.5rem; /* Ajusta el tamaño del título */
+        font-size: 1.8rem; /* Ajusta el tamaño del título */
     }
 
     .logo p {
-        font-size: 0.8rem; /* Reduce el tamaño del eslogan */
+        font-size: 0.9rem; /* Reduce el tamaño del eslogan */
     }
 
     .buttons {
-        height: 30%; /* Reduce aún más la altura del cuadro */
+        height: 32%; /* Reduce la altura del cuadro */
+        bottom: 1.5rem; /* Sube un poco más el cuadro */
     }
 }
