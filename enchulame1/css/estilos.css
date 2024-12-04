@@ -22,11 +22,11 @@ body {
     width: 100%;
     max-width: 400px;
     height: 100vh;
-    overflow: hidden; /* Previene el scroll innecesario */
+    overflow: hidden;
 }
 
 .logo {
-    margin-top: 9rem;
+    margin-top: 9rem; /* Aumenta el margen superior en pantallas grandes */
 }
 
 .logo img {
@@ -89,42 +89,39 @@ body {
     color: white;
 }
 
-/* Responsividad: Forzar el mismo diseño en todos los dispositivos */
-@media screen and (max-width: 1024px), screen and (max-width: 768px) {
-    body {
-        justify-content: center; /* Mantiene el contenido centrado */
-        align-items: center;
-    }
-
+/* Ajustes para pantallas pequeñas */
+@media screen and (max-width: 768px) {
     .container {
-        max-width: 400px; /* Mantiene el ancho de PC */
-        height: 100vh; /* Asegura que ocupe toda la pantalla */
+        height: 100vh;
+        max-width: 90%; /* Permite que se ajuste un poco más el ancho */
     }
 
     .logo {
-        margin-top: 9rem; /* Igual que en PC */
+        margin-top: 5rem; /* Reduce el margen superior */
     }
 
     .logo img {
-        width: 150px; /* Misma proporción */
+        width: 130px; /* Reduce ligeramente el tamaño del logo */
     }
 
     .logo h1 {
-        font-size: 2rem; /* Igual que en PC */
+        font-size: 1.8rem; /* Reduce el tamaño del título */
     }
 
     .logo p {
-        font-size: 1rem; /* Igual que en PC */
+        font-size: 0.9rem; /* Ajusta el tamaño del eslogan */
+        margin-bottom: 1.5rem;
     }
 
     .buttons {
-        height: 50%; /* Misma altura */
-        padding: 2rem 0;
+        height: auto; /* Ajusta la altura según el contenido */
+        padding: 1.5rem 0; /* Reduce el padding */
     }
 
     .buttons button {
-        width: 80%;
-        font-size: 1rem; /* Misma proporción */
+        width: 90%; /* Botones más anchos en dispositivos pequeños */
+        font-size: 0.9rem;
     }
 }
+
 
