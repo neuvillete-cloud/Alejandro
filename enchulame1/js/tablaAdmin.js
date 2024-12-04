@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Función para cargar los reportes con los filtros aplicados
-function loadReportes(searchId = '', nave = '', reportCount = 5) {
+function loadReportes(searchId = '', nave = '', reportCount = 0) {
     fetch('dao/mostrarDatosTabla.php', {
         method: 'POST',
         headers: {
