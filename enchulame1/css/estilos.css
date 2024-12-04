@@ -16,7 +16,7 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /* Distribuye los elementos */
     align-items: center;
     text-align: center;
     width: 100%;
@@ -27,25 +27,25 @@ body {
 }
 
 .logo {
-    margin-top: 4rem; /* Reduce el margen inicial */
+    margin-top: 4rem;
     flex-shrink: 0;
 }
 
 .logo img {
-    width: 180px; /* Tamaño más grande del logo */
+    width: 180px;
     margin-bottom: 1.5rem;
 }
 
 .logo h1 {
-    font-size: 2.2rem; /* Aumenta el tamaño del título */
+    font-size: 2.2rem;
     color: #0096FF;
     margin-bottom: 0.7rem;
 }
 
 .logo p {
-    font-size: 1.1rem; /* Aumenta el tamaño del texto */
+    font-size: 1.1rem;
     color: #4d4d4d;
-    margin-bottom: 1.8rem; /* Ajusta el espaciado inferior */
+    margin-bottom: 1.8rem;
 }
 
 /* Cuadro de botones */
@@ -54,21 +54,21 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #005195;
-    padding: 1.8rem 0; /* Reduce el padding */
+    padding: 2rem 0; /* Mantiene un buen padding */
     width: 100%;
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
     position: absolute;
-    bottom: 0.5rem; /* Sube el cuadro ligeramente */
-    height: 38%; /* Reduce ligeramente la altura */
-    flex-shrink: 0;
+    bottom: 0;
+    height: 40%; /* Ocupa más espacio */
+    transform: translateY(10%); /* Sube el cuadro un poco */
 }
 
 .buttons button {
     width: 80%;
     padding: 1rem;
     margin: 0.5rem 0;
-    font-size: 1.1rem; /* Aumenta ligeramente el texto del botón */
+    font-size: 1.1rem;
     color: white;
     background-color: #007bff;
     border: none;
@@ -100,24 +100,24 @@ body {
     }
 
     .logo {
-        margin-top: 3rem; /* Ajusta el margen superior */
+        margin-top: 3rem;
     }
 
     .logo img {
-        width: 160px; /* Ajusta el tamaño del logo */
+        width: 160px;
     }
 
     .logo h1 {
-        font-size: 2rem; /* Ajusta el tamaño del título */
+        font-size: 2rem;
     }
 
     .logo p {
-        font-size: 1rem; /* Ajusta el tamaño del texto */
+        font-size: 1rem;
     }
 
     .buttons {
-        height: 35%; /* Reduce la altura del cuadro */
-        bottom: 1rem; /* Sube un poco más el cuadro */
+        height: 38%; /* Ajusta la altura */
+        transform: translateY(12%); /* Sube más el cuadro */
     }
 
     .buttons button {
@@ -128,23 +128,24 @@ body {
 
 @media screen and (max-width: 480px) {
     .logo {
-        margin-top: 2.5rem; /* Mueve el logo más arriba */
+        margin-top: 2.5rem;
     }
 
     .logo img {
-        width: 140px; /* Ajusta el tamaño del logo */
+        width: 140px;
     }
 
     .logo h1 {
-        font-size: 1.8rem; /* Ajusta el tamaño del título */
+        font-size: 1.8rem;
     }
 
     .logo p {
-        font-size: 0.9rem; /* Reduce el tamaño del eslogan */
+        font-size: 0.9rem;
     }
 
     .buttons {
-        height: 32%; /* Reduce la altura del cuadro */
-        bottom: 1.5rem; /* Sube un poco más el cuadro */
+        height: 36%; /* Ajusta la altura */
+        transform: translateY(14%); /* Sube más el cuadro */
     }
 }
+
