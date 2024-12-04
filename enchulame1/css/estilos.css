@@ -89,27 +89,52 @@ body {
     color: white;
 }
 
-/* Responsividad: Forzar el diseño de escritorio en teléfonos */
-@media screen and (max-width: 768px) {
-    body {
-        justify-content: flex-start; /* Alinea el contenido correctamente */
-    }
-
-    .container {
-        height: 100vh; /* Mantiene la altura de la vista completa */
-        max-width: 400px; /* Limita el ancho máximo */
-    }
-
+/* Responsividad */
+@media screen and (max-width: 1024px) {
     .logo {
-        margin-top: 6rem; /* Ajusta el margen superior para que se vea igual */
+        margin-top: 6rem; /* Ajusta el margen superior */
     }
 
     .buttons {
-        height: 50%; /* Mantiene la altura fija del cuadro */
-        padding: 2rem 0; /* Conserva el padding para que no se desacomode */
+        height: 45%; /* Ajusta la altura del cuadro */
+        padding: 1.5rem 0;
+    }
+
+    .logo h1 {
+        font-size: 1.8rem;
+    }
+
+    .logo p {
+        font-size: 0.9rem;
+    }
+
+    .buttons button {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        max-width: 90%; /* Aumenta el ancho en dispositivos pequeños */
+        height: auto; /* Permite que la altura sea flexible */
+    }
+
+    .logo {
+        margin-top: 5rem;
+    }
+
+    .buttons {
+        height: auto; /* Permite altura dinámica */
+        padding: 1rem 0;
     }
 
     .logo img {
-        width: 150px; /* Conserva el tamaño de la imagen */
+        width: 120px; /* Reduce el tamaño del logo */
+    }
+
+    .buttons button {
+        width: 90%; /* Aumenta el tamaño de los botones en dispositivos pequeños */
+        font-size: 0.85rem;
     }
 }
+
