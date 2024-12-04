@@ -49,7 +49,7 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Redirigir a la página deseada
-                        window.location.href = 'tablaSolicitante.js.php'; // Reemplaza con la URL a la que deseas redirigir
+                        window.location.href = 'tablaSolicitante.php'; // Reemplaza con la URL a la que deseas redirigir
                     }
                 });
                 // Opcional: Puedes limpiar el formulario si lo deseas
