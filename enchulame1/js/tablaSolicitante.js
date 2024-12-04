@@ -33,7 +33,6 @@ function loadReportes(nave = '', reportCount = 0) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            searchId,
             nave,
             reportCount,
             numNomina // Enviar el NumNomina para filtrar los reportes por usuario
