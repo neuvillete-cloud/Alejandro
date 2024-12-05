@@ -14,7 +14,7 @@
             <h2>eSolicitante</h2>
         </div>
         <nav class="menu">
-            <a href="#" class="menu-item active" id="reportes-tab">Reportes</a>
+            <a href="#" class="menu-item active" id="reportes-tab">Tus Reportes</a>
         </nav>
     </aside>
 
