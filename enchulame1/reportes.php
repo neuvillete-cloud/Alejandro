@@ -15,7 +15,7 @@
 
     <div class="header-report">
         <h2>Levantar Reporte</h2>
-        <button class="new-button">Historial</button>
+        <button id="skipReportButton" class="skip-btn">Historial</button>
     </div>
 
     <!-- Formulario de reporte -->
