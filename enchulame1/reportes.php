@@ -15,6 +15,7 @@
 
     <div class="header-report">
         <h2>Levantar Reporte</h2>
+        <button class="new-button">Nuevo Botón</button>
     </div>
 
     <!-- Formulario de reporte -->

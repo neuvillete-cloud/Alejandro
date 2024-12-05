@@ -71,3 +71,9 @@ document.getElementById('reporteForm').addEventListener('submit', function(event
             });
         });
 });
+
+// Función para manejar el botón de ir a otra página
+document.getElementById('skipReportButton').addEventListener('click', function() {
+    // Redirige a la página deseada
+    window.location.href = 'otraPagina.php'; // Reemplaza con la URL de tu página
+});

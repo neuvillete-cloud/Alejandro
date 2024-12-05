@@ -243,3 +243,29 @@ select option {
         margin-top: 15px;
     }
 }
+
+.header-report {
+    position: relative; /* Permite posicionar elementos dentro del contenedor */
+}
+
+.new-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 15px;
+    background: linear-gradient(45deg, #003366, #0055aa); /* Gradiente igual que Enviar Reporte */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s ease, background 0.3s ease; /* Animación hover */
+}
+
+.new-button:hover {
+    background: linear-gradient(45deg, #0055aa, #003366);
+    transform: scale(1.05); /* Efecto de ampliación */
+}
+
