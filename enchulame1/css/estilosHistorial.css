@@ -283,7 +283,7 @@ select {
     color: white; /* Cambia el color del texto */
     text-align: center;
     text-decoration: none;
-    background-color: #007bff; /* Cambia esto al color que prefieras */
+    background: linear-gradient(45deg, #003366, #0055aa); /* Gradiente igual que Enviar Reporte */
     border: none;
     border-radius: 5px;
     margin: 5px 0;
