@@ -293,5 +293,5 @@ select {
 }
 
 .menu-item:hover {
-    background-color: #0056b3; /* Cambia esto al color que prefieras para el hover */
+    background: linear-gradient(45deg, #0055aa, #003366);
 }
