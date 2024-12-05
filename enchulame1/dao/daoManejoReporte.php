@@ -1,5 +1,13 @@
 <?php
 session_start(); // Iniciar sesión
+
+// Verificar si la sesión está iniciada
+if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
+    // Redirigir al usuario a la página de inicio de sesión si no está autenticado
+    header("Location: login.php");
+    exit;
+}
+
 include_once("conexion.php");
 
 // Establecer la zona horaria
@@ -7,12 +15,6 @@ date_default_timezone_set('America/Mexico_City'); // Cambia según tu ubicación
 
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificar que la sesión esté iniciada
-    if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
-        echo json_encode(["status" => "error", "message" => "Sesión no iniciada o número de nómina inválido"]);
-        exit;
-    }
-
     $NumNomina = $_SESSION['NumNomina'];
 
     // Obtener los datos del formulario
