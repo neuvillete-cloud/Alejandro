@@ -11,7 +11,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo">
-            <h2>eReport</h2>
+            <h2>eSolicitante</h2>
         </div>
         <nav class="menu">
             <a href="#" class="menu-item active" id="reportes-tab">Reportes</a>
