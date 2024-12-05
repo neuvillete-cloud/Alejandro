@@ -15,9 +15,6 @@
         </div>
         <nav class="menu">
             <a href="#" class="menu-item active" id="reportes-tab">Reportes</a>
-            <a href="#" class="menu-item">Estadísticas</a>
-            <a href="#" class="menu-item">Usuarios</a>
-            <a href="#" class="menu-item">Configuración</a>
         </nav>
     </aside>
 
