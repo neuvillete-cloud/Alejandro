@@ -15,6 +15,7 @@
         </div>
         <nav class="menu">
             <a href="#" class="menu-item active" id="reportes-tab">Tus Reportes</a>
+            <button id="redirectButton" class="menu-item">Ir a otra página</button> <!-- Nuevo botón -->
         </nav>
     </aside>
 

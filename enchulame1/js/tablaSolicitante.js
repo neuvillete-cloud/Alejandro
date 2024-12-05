@@ -20,6 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
             loadReportes(); // Cargar reportes nuevamente al volver a la página
         }
     });
+
+    // Evento del botón para redirigir a otra página
+    document.getElementById('redirectButton').addEventListener('click', function () {
+        window.location.href = 'reportes.php'; // Cambia 'nuevaPagina.html' por la URL deseada
+    });
 });
 
 // Función para cargar los reportes con los filtros aplicados
