@@ -1,5 +1,13 @@
 <?php
 session_start(); // Iniciar sesión
+
+// Verificar si la sesión está iniciada
+if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
+    // Redirigir al usuario a la página de inicio de sesión si no está autenticado
+    header("Location: login.php");
+    exit;
+}
+
 include_once("conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
