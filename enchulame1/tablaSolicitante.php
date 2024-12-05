@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial - Reportes</title>
-    <link rel="stylesheet" href="css/estilosAdministrador.css"> <!-- Vincula tu archivo CSS -->
+    <link rel="stylesheet" href="css/estilosHistorial.css"> <!-- Vincula tu archivo CSS -->
 </head>
 <body>
 <div class="container">
