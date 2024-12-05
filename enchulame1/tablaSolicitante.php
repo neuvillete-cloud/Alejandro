@@ -85,15 +85,5 @@
 </div>
 
 <script src="js/tablaSolicitante.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
-
-<script>
-    // JavaScript para cambiar entre las secciones sin recargar la página
-    document.getElementById("reportes-tab").addEventListener("click", function() {
-        document.getElementById("reportes-section").style.display = "block";
-        document.getElementById("filters-section").style.display = "flex"; // Usar flex aquí
-        document.getElementById("main-header").innerText = "Reportes";
-        document.getElementById("reportes-tab").classList.add("active");
-    });
-</script>
 </body>
 </html>
