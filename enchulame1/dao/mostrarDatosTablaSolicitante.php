@@ -11,38 +11,26 @@ if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
 include_once("conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificar que la sesión contenga el NumNomina
-    if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
+    // Verificar si la sesión contiene el NumNomina
+    if (!isset($_SESSION['NumNomina'])) {
         $response = array('status' => 'error', 'message' => 'Usuario no autenticado.');
         echo json_encode($response);
-        exit;
+        exit();
     }
 
-    // Verificar el encabezado HTTP_ORIGIN o REFERER para asegurar que la solicitud provenga de tu dominio
-    if (!isset($_SERVER['HTTP_ORIGIN']) || $_SERVER['HTTP_ORIGIN'] != 'https://grammermx.com/AleTest/enchulame1/reportes.php') {
-        $response = array('status' => 'error', 'message' => 'Origen no autorizado.');
-        echo json_encode($response);
-        exit;
-    }
-
-    // Verificar contenido JSON válido
-    $data = json_decode(file_get_contents("php://input"), true);
-    if ($data === null) {
-        $response = array('status' => 'error', 'message' => 'Datos inválidos.');
-        echo json_encode($response);
-        exit;
-    }
-
-    // Procesar la solicitud como lo tienes actualmente
+    // Obtener el NumNomina de la sesión
     $numNomina = $_SESSION['NumNomina'];
-    $nave = isset($data['nave']) ? $data['nave'] : '';
-    $reportCount = isset($data['reportCount']) ? $data['reportCount'] : 5;
 
+    // Obtener los parámetros adicionales enviados desde JavaScript
+    $data = json_decode(file_get_contents("php://input"), true);
+    $nave = isset($data['nave']) ? $data['nave'] : '';
+    $reportCount = isset($data['reportCount']) ? $data['reportCount'] : 5; // Default a 5 si no se especifica
+
+    // Obtener los reportes desde la base de datos
     $response = obtenerReportes($numNomina, $nave, $reportCount);
     echo json_encode($response);
-    exit;
-}
- else {
+    exit();
+} else {
     $response = array('status' => 'error', 'message' => 'Método no permitido. Solo se permite POST.');
     echo json_encode($response);
     exit();
