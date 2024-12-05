@@ -93,7 +93,7 @@ function llenarTablaReportes(reportes) {
                 spanEstatus.textContent = 'Completado';
                 spanEstatus.classList.add('status', 'completado');
                 break;
-            case 'Cancelado':
+            case 'cancelado':
                 spanEstatus.textContent = 'Cancelado';
                 spanEstatus.classList.add('status', 'cancelado');
                 break;
