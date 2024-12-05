@@ -77,7 +77,6 @@
                     <th>Descripción del Problema</th>
                     <th>Fecha Compromiso</th>
                     <th>Estado</th>
-                    <th>Acción</th>
                 </tr>
                 </thead>
                 <tbody id="tablaReportes">
