@@ -80,23 +80,18 @@ function llenarTablaReportes(reportes) {
         const celdaEstatus = document.createElement('td');
         const spanEstatus = document.createElement('span');
 
-        switch (reporte.Estatus.toLowerCase()) {
-            case 'recibido':
-                spanEstatus.textContent = 'Recibido';
-                spanEstatus.classList.add('status', 'recibido');
-                break;
-            case 'en proceso':
-                spanEstatus.textContent = 'En Proceso';
-                spanEstatus.classList.add('status', 'en-proceso');
-                break;
-            case 'completado':
-                spanEstatus.textContent = 'Completado';
-                spanEstatus.classList.add('status', 'completado');
-                break;
-            case 'cancelado':
-                spanEstatus.textContent = 'Cancelado';
-                spanEstatus.classList.add('status', 'cancelado');
-                break;
+        if (reporte.Estatus === 'recibido') {
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'recibido');
+        } else if (reporte.Estatus === 'En Proceso') {
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'en-proceso');
+        } else if (reporte.Estatus === 'Completado') {
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'completado');
+        } else if (reporte.Estatus === 'Cancelado') {
+            spanEstatus.textContent = reporte.Estatus;
+            spanEstatus.classList.add('status', 'Cancelado');
         }
 
         celdaEstatus.appendChild(spanEstatus);
