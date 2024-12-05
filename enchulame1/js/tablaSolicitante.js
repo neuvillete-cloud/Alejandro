@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Función para cargar los reportes con los filtros aplicados
 function loadReportes(searchId = '', nave = '', reportCount = 5) {
-    fetch('dao/mostrarDatosTabla.php', {
+    fetch('dao/mostrarDatosTablaSolicitante.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
