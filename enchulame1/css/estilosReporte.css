@@ -248,7 +248,7 @@ select option {
     position: relative; /* Permite posicionar elementos dentro del contenedor */
 }
 
-.new-button {
+.skip-btn {
     position: absolute;
     top: 0;
     right: 0;
@@ -264,7 +264,7 @@ select option {
     transition: transform 0.2s ease, background 0.3s ease; /* Animación hover */
 }
 
-.new-button:hover {
+.skip-btn:hover {
     background: linear-gradient(45deg, #0055aa, #003366);
     transform: scale(1.05); /* Efecto de ampliación */
 }
