@@ -21,7 +21,7 @@
     <!-- Main content -->
     <main class="main-content">
         <header class="header">
-            <h1 id="main-header">Reportes</h1>
+            <h1 id="main-header">Historial de Reportes</h1>
             <div class="filters" id="filters-section">
                 <!-- Filtro de Filtrar por Nave -->
                 <div class="filter-item">
