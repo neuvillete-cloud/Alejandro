@@ -8,34 +8,23 @@ if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
     exit;
 }
 
+include_once("conexion.php");
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificar que la sesión contenga el NumNomina
-    if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
-        // Redirigir al usuario si no está autenticado
-        header("Location: login.php");
-        exit;
-    }
-
-    // Verificar el encabezado HTTP_ORIGIN o REFERER para asegurar que la solicitud provenga de tu dominio
-    if (!isset($_SERVER['HTTP_ORIGIN']) || $_SERVER['HTTP_ORIGIN'] != 'https://grammermx.com/AleTest/enchulame1/reportes.php') {
-        // Redirigir si el origen no es autorizado
-        header("Location: login.php");
-        exit;
-    }
-
-    // Si los datos están correctamente formateados, continúa el procesamiento de la solicitud
-    $data = json_decode(file_get_contents("php://input"), true);
-    if ($data === null) {
-        $response = array('status' => 'error', 'message' => 'Datos inválidos.');
+    // Verificar si la sesión contiene el NumNomina
+    if (!isset($_SESSION['NumNomina'])) {
+        $response = array('status' => 'error', 'message' => 'Usuario no autenticado.');
         echo json_encode($response);
-        exit;
+        exit();
     }
 
-    // Obtener los parámetros necesarios y procesar la solicitud
+    // Obtener el NumNomina de la sesión
     $numNomina = $_SESSION['NumNomina'];
-    $nave = isset($data['nave']) ? $data['nave'] : '';
-    $reportCount = isset($data['reportCount']) ? $data['reportCount'] : 5;
 
+    // Obtener los parámetros adicionales enviados desde JavaScript
+    $data = json_decode(file_get_contents("php://input"), true);
+    $nave = isset($data['nave']) ? $data['nave'] : '';
+    $reportCount = isset($data['reportCount']) ? $data['reportCount'] : 5; // Default a 5 si no se especifica
 
     // Obtener los reportes desde la base de datos
     $response = obtenerReportes($numNomina, $nave, $reportCount);
