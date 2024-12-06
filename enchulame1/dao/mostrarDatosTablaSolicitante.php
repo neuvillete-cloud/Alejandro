@@ -1,27 +1,18 @@
 <?php
 session_start(); // Iniciar sesión
 
-// Desactivar cache para evitar acceso a contenido almacenado en el navegador
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
     // Redirigir al usuario a la página de inicio de sesión si no está autenticado
     header("Location: login.php");
-    exit();
+    exit;
 }
 
-// Proteger archivos incluidos
-define('SECURE_APP', true);
 include_once("conexion.php");
 
-// Manejo de solicitudes POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si la sesión contiene el NumNomina
     if (!isset($_SESSION['NumNomina'])) {
-        http_response_code(401); // Código HTTP para acceso no autorizado
         $response = array('status' => 'error', 'message' => 'Usuario no autenticado.');
         echo json_encode($response);
         exit();
@@ -40,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo json_encode($response);
     exit();
 } else {
-    http_response_code(405); // Código HTTP para método no permitido
     $response = array('status' => 'error', 'message' => 'Método no permitido. Solo se permite POST.');
     echo json_encode($response);
     exit();
