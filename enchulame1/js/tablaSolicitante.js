@@ -40,17 +40,7 @@ function loadReportes(searchId = '', nave = '', reportCount = 0) {
             reportCount
         })
     })
-        .then(response => {
-            if (response.status === 401) {
-                // Redirigir al inicio de sesión si no está autenticado
-                window.location.href = 'login.php';
-                return;
-            }
-            if (!response.ok) {
-                throw new Error('Error en la solicitud');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
                 llenarTablaReportes(data.data);
