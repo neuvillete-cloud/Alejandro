@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Verificar si la sesión está iniciada
+if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
+    // Redirigir al usuario a la página de inicio de sesión si no está autenticado
+    header("Location: https://grammermx.com/AleTest/enchulame1/login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
