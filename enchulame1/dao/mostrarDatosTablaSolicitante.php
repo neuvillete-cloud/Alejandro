@@ -1,21 +1,15 @@
 <?php
-// Iniciar sesión de manera segura
-session_start([
-    'cookie_secure' => true,  // Solo permitir cookies en HTTPS
-    'cookie_httponly' => true,  // Evitar acceso a las cookies desde JavaScript
-    'cookie_samesite' => 'Strict',  // Evitar envío de cookies a sitios de terceros
-]);
+session_start(); // Iniciar sesión
 
 // Verificar si la sesión está iniciada
 if (!isset($_SESSION['NumNomina']) || empty($_SESSION['NumNomina'])) {
     // Redirigir al usuario a la página de inicio de sesión si no está autenticado
-    header("Location: https://grammermx.com/AleTest/enchulame1/login.php?error=unauthorized");
+    header("Location: https://grammermx.com/AleTest/enchulame1/login.php");
     exit;
 }
 
 include_once("conexion.php");
 
-// Verificar el método de la solicitud
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si la sesión contiene el NumNomina
     if (!isset($_SESSION['NumNomina'])) {
