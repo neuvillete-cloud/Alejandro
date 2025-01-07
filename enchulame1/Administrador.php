@@ -113,7 +113,7 @@
 <script src="js/tablaAdmin.js"></script> <!-- Enlaza el archivo JavaScript para cargar los datos -->
 
 
-
+<script src="js/dashboard.js"></script> <!-- Enlazamos el archivo JavaScript para cargar los datos y las gráficas -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Cargamos la librería Chart.js -->
 <script>
     // JavaScript para cambiar entre las secciones sin recargar la página
