@@ -9,10 +9,12 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #f53788, #fbb040);
     color: white;
-    text-align: center;
     height: 100vh;
     overflow: hidden;
     position: relative; /* Para posicionar los círculos */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
 }
 
 .header {
@@ -24,16 +26,17 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: rgba(30, 30, 30, 0.6); /* Más transparente */
+    z-index: 10;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    margin-left: 40px; /* Mueve el logo más a la derecha */
+    margin-left: 20px; /* Mueve el logo más a la derecha */
 }
 
 .logo-img {
-    width: 50px;
+    width: 32px;
     height: 32px;
     margin-right: 10px;
 }
@@ -62,9 +65,9 @@ body {
 
 .main {
     text-align: center;
-    padding: 20px;
-    z-index: 10; /* Para que esté encima de los círculos */
     position: relative;
+    z-index: 10; /* Asegura que esté por encima de los círculos */
+    max-width: 800px; /* Limita el ancho para que no ocupe todo el espacio */
 }
 
 .title {
