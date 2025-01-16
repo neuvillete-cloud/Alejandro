@@ -22,9 +22,9 @@
     </nav>
 </header>
 <main class="main">
-    <h1 class="title">Sistema ATS.</h1>
-    <p class="subtitle">Bienvenido de Nuevo.</p>
-    <a href="#" class="button">Entrar</a>
+    <h1 class="title">Sistema de Reclutamiento Y Seleccion</h1>
+    <p class="subtitle">Bienvenido de Nuevo a tu ATS</p>
+    <a href="#" class="button">ingresar de nuevo</a>
 </main>
 </body>
 </html>
