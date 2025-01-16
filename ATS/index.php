@@ -8,7 +8,7 @@
 </head>
 <body>
 <header class="header">
-    <div class="logo">Spotify</div>
+    <div class="logo">Grammer</div>
     <nav class="nav">
         <a href="#">Premium</a>
         <a href="#">Ayuda</a>
