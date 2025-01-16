@@ -31,7 +31,7 @@ body {
 .logo-container {
     display: flex;
     align-items: center;
-    margin-left: 20px; /* Mueve el logo más a la derecha */
+    margin-left: 40px; /* Mueve el logo más a la derecha */
 }
 
 .logo-img {
