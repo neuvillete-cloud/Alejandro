@@ -15,16 +15,16 @@
     <nav class="nav">
         <a href="#">Premium</a>
         <a href="#">Ayuda</a>
-        <a href="#">Descargar</a>
+        <a href="#">Sobre Nosotros</a>
         <span>|</span>
         <a href="#">Regístrate</a>
         <a href="#">Inicia sesión</a>
     </nav>
 </header>
 <main class="main">
-    <h1 class="title">Música para todos.</h1>
-    <p class="subtitle">Millones de canciones. No necesitas tarjeta de crédito.</p>
-    <a href="#" class="button">OBTÉN SPOTIFY GRATIS</a>
+    <h1 class="title">Sistema ATS.</h1>
+    <p class="subtitle">Bienvenido de Nuevo.</p>
+    <a href="#" class="button">Entrar</a>
 </main>
 </body>
 </html>
