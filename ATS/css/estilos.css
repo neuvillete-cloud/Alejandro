@@ -21,14 +21,25 @@ body {
     position: absolute;
     top: 0;
     width: 100%;
-    padding: 20px;
+    padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #1e1e1e;
 }
 
-.logo {
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+}
+
+.logo-text {
     font-size: 24px;
     font-weight: bold;
     color: white;

@@ -8,7 +8,10 @@
 </head>
 <body>
 <header class="header">
-    <div class="logo">Grammer</div>
+    <div class="logo-container">
+        <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo de Grammer" class="logo-img">
+        <span class="logo-text">Grammer</span>
+    </div>
     <nav class="nav">
         <a href="#">Premium</a>
         <a href="#">Ayuda</a>
@@ -25,4 +28,5 @@
 </main>
 </body>
 </html>
+
 
