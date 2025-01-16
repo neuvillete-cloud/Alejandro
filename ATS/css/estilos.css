@@ -25,16 +25,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #1e1e1e;
+    background-color: rgba(30, 30, 30, 0.9); /* Barra negra con transparencia */
 }
 
 .logo-container {
     display: flex;
     align-items: center;
+    margin-left: 20px; /* Mueve el logo más a la derecha */
 }
 
 .logo-img {
-    width: 50px;
+    width: 32px;
     height: 32px;
     margin-right: 10px;
 }
@@ -43,6 +44,10 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: white;
+}
+
+.nav {
+    margin-right: 20px; /* Ajusta la separación del menú a la derecha */
 }
 
 .nav a {
