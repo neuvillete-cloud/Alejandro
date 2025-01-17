@@ -9,7 +9,7 @@
 <body>
 <div class="registro-container">
     <header class="registro-header">
-        <img src="logo.png" alt="Logo" class="logo">
+        <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo" class="logo">
         <h1>Regístrate para empezar a usar</h1>
     </header>
     <form class="registro-form">
