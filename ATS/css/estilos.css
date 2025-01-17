@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #f53788, #fbb040);
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
     height: 100vh;
     overflow: hidden;
@@ -25,18 +25,18 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(30, 30, 30, 0.6); /* Más transparente */
+    background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
     z-index: 10;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    margin-left: 45px; /* Mueve el logo más a la derecha */
+    margin-left: 20px; /* Mueve el logo más a la derecha */
 }
 
 .logo-img {
-    width: 50px;
+    width: 32px;
     height: 32px;
     margin-right: 10px;
 }
@@ -82,7 +82,7 @@ body {
 
 .button {
     text-decoration: none;
-    background-color: #1ed760;
+    background-color: #1E90FF; /* Azul brillante */
     color: white;
     padding: 15px 30px;
     font-size: 16px;
@@ -91,7 +91,7 @@ body {
 }
 
 .button:hover {
-    background-color: #1db954;
+    background-color: #4682B4; /* Azul más oscuro */
 }
 
 /* Círculos en el fondo */
@@ -104,20 +104,20 @@ body::before, body::after {
     z-index: 1; /* Debajo del contenido */
 }
 
-/* Primer círculo (naranja) */
+/* Primer círculo (azul cielo) */
 body::before {
     width: 500px;
     height: 500px;
-    background: #fbb040;
+    background: #87CEEB; /* Azul cielo */
     top: -100px;
     left: -50px;
 }
 
-/* Segundo círculo (rosa) */
+/* Segundo círculo (azul pastel) */
 body::after {
     width: 400px;
     height: 400px;
-    background: #f53788;
+    background: #B0E0E6; /* Azul claro pastel */
     bottom: -100px;
     right: -50px;
 }
