@@ -53,7 +53,7 @@ body::after {
 
 .logo-img {
     width: 10px;
-    height: auto; /* Mantén la proporción */
+    height: 10px; /* Mantén la proporción */
     margin-right: 10px;
 }
 
