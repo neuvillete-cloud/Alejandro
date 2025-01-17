@@ -43,18 +43,7 @@ body::after {
     right: -50px;
 }
 
-/* Encabezado */
-.header {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
-    z-index: 10;
-}
+
 
 .logo-container {
     display: flex;
