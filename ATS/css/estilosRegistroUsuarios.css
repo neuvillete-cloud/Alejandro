@@ -75,12 +75,12 @@ body::after {
 
 /* Contenedor del registro */
 .registro-container {
-    background-color: rgba(255, 255, 255, 0.9); /* Blanco con transparencia */
+    background-color: #E6F4F9; /* Azul pastel */
     color: #333333; /* Texto oscuro */
-    padding: 40px 50px;
+    padding: 50px 60px; /* Espaciado interno aumentado */
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 400px; /* Más ancho */
+    width: 500px; /* Más ancho */
     z-index: 10;
 }
 
