@@ -17,8 +17,8 @@
         <a href="#">Ayuda</a>
         <a href="#">Sobre Nosotros</a>
         <span>|</span>
-        <a href="login.php">Inicia sesión</a> <!-- Redirige a la página de inicio de sesión -->
         <a href="registroUsuarios.php">Regístrate</a> <!-- Redirige a la página de registro -->
+        <a href="login.php">Inicia sesión</a> <!-- Redirige a la página de inicio de sesión -->
     </nav>
 </header>
 <main class="main">
