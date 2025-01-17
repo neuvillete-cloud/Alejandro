@@ -56,6 +56,11 @@ body {
     text-decoration: none;
     margin: 0 10px;
     font-size: 14px;
+    transition: color 0.3s; /* Agrega una transición suave para el color */
+}
+
+.nav a:hover {
+    color: #1E90FF; /* Azul brillante al pasar el mouse */
 }
 
 .nav span {
