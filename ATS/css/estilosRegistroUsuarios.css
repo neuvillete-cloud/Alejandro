@@ -52,7 +52,7 @@ body::after {
 }
 
 .logo-img {
-    width: 40px;
+    width: 10px;
     height: auto; /* Mantén la proporción */
     margin-right: 10px;
 }
