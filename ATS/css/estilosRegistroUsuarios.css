@@ -50,10 +50,10 @@ body::after {
 }
 
 .logo {
-    max-width: 150px; /* Tamaño máximo en ancho */
-    max-height: 150px; /* Tamaño máximo en alto */
-    width: auto; /* Mantiene la proporción del logo */
-    height: auto; /* Mantiene la proporción del logo */
+    max-width: 150px;
+    max-height: 150px;
+    width: auto;
+    height: auto;
     display: block;
     margin: 0 auto;
 }
@@ -61,7 +61,7 @@ body::after {
 /* Contenedor del registro */
 .registro-container {
     background-color: #E6F4F9; /* Azul pastel */
-    color: #333333; /* Texto oscuro */
+    color: #333333;
     padding: 50px 60px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -85,7 +85,8 @@ h1 {
     color: #333333;
 }
 
-.registro-form input {
+.registro-form input,
+.registro-form select {
     width: 100%;
     padding: 12px 15px;
     margin-bottom: 20px;
@@ -96,10 +97,22 @@ h1 {
     color: #333333;
 }
 
+/* Placeholder para campos de texto */
 .registro-form input::placeholder {
     color: #999999;
 }
 
+/* Estilos específicos para el menú desplegable */
+.registro-form select {
+    appearance: none; /* Oculta la flecha predeterminada del navegador */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+/* Botón de registro */
 .btn-registrar {
     width: 100%;
     padding: 12px;
