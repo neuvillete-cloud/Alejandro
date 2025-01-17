@@ -9,7 +9,9 @@
 <body>
 <div class="registro-container">
     <header class="registro-header">
-        <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo" class="logo">
+        <div class="logo-container">
+            <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo" class="logo">
+        </div>
         <h1>Regístrate para empezar a usar</h1>
     </header>
     <form class="registro-form">
@@ -36,4 +38,5 @@
 </div>
 </body>
 </html>
+
 

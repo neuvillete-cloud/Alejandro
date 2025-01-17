@@ -43,48 +43,38 @@ body::after {
     right: -50px;
 }
 
-
-
+/* Contenedor del logo */
 .logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centrar horizontalmente */
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.logo-img {
-    width: 10px;
-    height: 10px; /* Mantén la proporción */
-    margin-right: 10px;
-}
-
-.logo-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
+.logo {
+    max-width: 150px; /* Tamaño máximo en ancho */
+    max-height: 150px; /* Tamaño máximo en alto */
+    width: auto; /* Mantiene la proporción del logo */
+    height: auto; /* Mantiene la proporción del logo */
+    display: block;
+    margin: 0 auto;
 }
 
 /* Contenedor del registro */
 .registro-container {
     background-color: #E6F4F9; /* Azul pastel */
     color: #333333; /* Texto oscuro */
-    padding: 50px 60px; /* Espaciado interno aumentado */
+    padding: 50px 60px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 500px; /* Más ancho */
+    width: 500px;
     z-index: 10;
+    text-align: center;
 }
 
 /* Títulos */
-.title {
-    font-size: 36px;
-    margin-bottom: 10px;
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
     color: #1E3A8A; /* Azul marino */
-}
-
-.subtitle {
-    font-size: 16px;
-    margin-bottom: 30px;
-    color: #2563EB; /* Azul medio */
 }
 
 /* Formulario */
