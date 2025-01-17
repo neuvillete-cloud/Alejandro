@@ -104,20 +104,20 @@ body::before, body::after {
     z-index: 1; /* Debajo del contenido */
 }
 
-/* Primer círculo (azul cielo) */
+/* Primer círculo (azul marino) */
 body::before {
     width: 500px;
     height: 500px;
-    background: #87CEEB; /* Azul cielo */
+    background: #1E3A8A; /* Azul marino */
     top: -100px;
     left: -50px;
 }
 
-/* Segundo círculo (azul pastel) */
+/* Segundo círculo (azul medio) */
 body::after {
     width: 400px;
     height: 400px;
-    background: #B0E0E6; /* Azul claro pastel */
+    background: #2563EB; /* Azul medio */
     bottom: -100px;
     right: -50px;
 }
