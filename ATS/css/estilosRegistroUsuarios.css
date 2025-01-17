@@ -1,93 +1,150 @@
-/* Estilo global */
-body {
+/* Estilos globales */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
     font-family: Arial, sans-serif;
-    background-color: #00264d; /* Fondo azul oscuro */
-    color: #ffffff;
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul pastel */
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+}
+
+/* Círculos en el fondo */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    filter: blur(70px);
+    z-index: 1;
+}
+
+body::before {
+    width: 500px;
+    height: 500px;
+    background: #1E3A8A; /* Azul marino */
+    top: -100px;
+    left: -50px;
+}
+
+body::after {
+    width: 400px;
+    height: 400px;
+    background: #2563EB; /* Azul medio */
+    bottom: -100px;
+    right: -50px;
+}
+
+/* Encabezado */
+.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
+    z-index: 10;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    width: 50px;
+    height: 32px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
 }
 
 /* Contenedor del registro */
 .registro-container {
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    background-color: #003366; /* Azul más claro */
+    background-color: rgba(255, 255, 255, 0.9); /* Blanco con transparencia */
+    color: #333333; /* Texto oscuro */
+    padding: 40px 50px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 20px;
+    width: 400px; /* Más ancho */
+    z-index: 10;
 }
 
-/* Encabezado */
-.registro-header {
-    margin-bottom: 20px;
-}
-
-.logo {
-    width: 80px;
+/* Títulos */
+.title {
+    font-size: 36px;
     margin-bottom: 10px;
+    color: #1E3A8A; /* Azul marino */
 }
 
-h1 {
-    font-size: 1.5em;
-    margin: 0;
-    color: #80bfff; /* Azul claro */
+.subtitle {
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: #2563EB; /* Azul medio */
 }
 
 /* Formulario */
-.registro-form {
-    text-align: left;
-}
-
 .registro-form label {
     display: block;
-    margin-bottom: 5px;
-    font-size: 0.9em;
-    color: #b3d9ff; /* Azul muy claro */
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #333333;
 }
 
 .registro-form input {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #004080; /* Azul oscuro */
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: #004080; /* Azul intermedio */
-    color: #ffffff;
+    background-color: #f5f5f5; /* Gris claro */
+    font-size: 14px;
+    color: #333333;
 }
 
 .registro-form input::placeholder {
-    color: #cce6ff; /* Azul claro */
+    color: #999999;
 }
 
 .btn-registrar {
     width: 100%;
-    padding: 10px;
-    background-color: #0059b3; /* Azul botón */
-    color: #ffffff;
+    padding: 12px;
+    background-color: #1E90FF; /* Azul brillante */
+    color: white;
     border: none;
     border-radius: 6px;
-    font-size: 1em;
+    font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .btn-registrar:hover {
-    background-color: #0066cc; /* Azul más claro */
+    background-color: #4682B4; /* Azul más oscuro */
 }
 
 /* Footer */
 .registro-footer {
     margin-top: 20px;
-    font-size: 0.9em;
+    font-size: 14px;
+    color: #2563EB;
 }
 
 .registro-footer a {
-    color: #80bfff; /* Azul claro */
+    color: #1E90FF;
     text-decoration: none;
 }
 
