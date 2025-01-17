@@ -1,0 +1,89 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.registro-container {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.registro-header {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 50px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.registro-form {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.registro-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #cccccc;
+}
+
+.registro-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #2b2b2b;
+    color: #fff;
+}
+
+.registro-form input::placeholder {
+    color: #666;
+}
+
+.btn-registrar {
+    width: 100%;
+    padding: 10px;
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-registrar:hover {
+    background-color: #1ed760;
+}
+
+.registro-footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.registro-footer a {
+    color: #1db954;
+    text-decoration: none;
+}
+
+.registro-footer a:hover {
+    text-decoration: underline;
+}
