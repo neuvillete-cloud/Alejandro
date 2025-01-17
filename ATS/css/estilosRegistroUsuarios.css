@@ -59,11 +59,12 @@ body::after {
 .logo-container {
     display: flex;
     align-items: center;
+    justify-content: center; /* Centrar horizontalmente */
 }
 
 .logo-img {
-    width: 50px;
-    height: 32px;
+    width: 40px;
+    height: auto; /* Mantén la proporción */
     margin-right: 10px;
 }
 
