@@ -13,9 +13,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $Contrasena = $_POST['Contrasena'];
         $Area = $_POST['Area'];
 
-        // Asignar automáticamente el rol de solicitante (Id_Rol = 2)
-        $response = registrarUsuarioEnDB($NumNomina, $Nombre, $Correo, $Contrasena, 2, $Area);
+        $con = new LocalConector();
+        $conex = $con->conectar();
 
+        // Buscar el IdArea correspondiente al nombre del área
+        $consultaArea = $conex->prepare("SELECT IdArea FROM Area WHERE NombreArea = ?");
+        $consultaArea->bind_param("s", $Area);
+        $consultaArea->execute();
+        $resultadoArea = $consultaArea->get_result();
+
+        if ($resultadoArea->num_rows > 0) {
+            $row = $resultadoArea->fetch_assoc();
+            $IdArea = $row['IdArea'];
+
+            // Asignar automáticamente el rol de solicitante (Id_Rol = 2)
+            $response = registrarUsuarioEnDB($conex, $NumNomina, $Nombre, $Correo, $Contrasena, 2, $IdArea);
+        } else {
+            $response = array('status' => 'error', 'message' => 'Área no encontrada.');
+        }
+
+        $conex->close();
     } else {
         $response = array('status' => 'error', 'message' => 'Datos incompletos.');
     }
@@ -27,25 +44,20 @@ echo json_encode($response);
 exit();
 
 // Función para registrar al usuario en la base de datos
-function registrarUsuarioEnDB($NumNomina, $Nombre, $Correo, $Contrasena, $IdRol, $Area)
+function registrarUsuarioEnDB($conex, $NumNomina, $Nombre, $Correo, $Contrasena, $IdRol, $IdArea)
 {
-    $con = new LocalConector();
-    $conex = $con->conectar();
-
     // Insertar el usuario con Id_Rol = 2 (solicitante)
     $insertUsuario = $conex->prepare("INSERT INTO Usuario (NumNomina, Nombre, Correo, Contrasena, IdRol, IdArea)
                                       VALUES (?, ?, ?, ?, ?, ?)");
-    $insertUsuario->bind_param("ssssii", $NumNomina, $Nombre, $Correo, $Contrasena, $IdRol, $Area);
+    $insertUsuario->bind_param("ssssii", $NumNomina, $Nombre, $Correo, $Contrasena, $IdRol, $IdArea);
     $resultado = $insertUsuario->execute();
-
-    $conex->close();
 
     if ($resultado) {
         $response = array('status' => 'success', 'message' => 'Usuario registrado exitosamente');
     } else {
         $response = array('status' => 'error', 'message' => 'Error al registrar usuario');
     }
+
     return $response;
 }
 ?>
-
