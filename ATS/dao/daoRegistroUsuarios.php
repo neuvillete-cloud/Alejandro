@@ -1,6 +1,6 @@
 <?php
 session_start(); // Iniciar sesión
-include_once("conexion.php");
+include_once("ConexionBD.php");
 
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
