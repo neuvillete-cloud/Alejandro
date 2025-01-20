@@ -43,149 +43,117 @@ body::after {
     right: -50px;
 }
 
-/* Estilo del header */
+/* Barra negra transparente */
 .header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: rgba(0, 0, 0, 0.6);
-}
-
-.header h1 {
-    font-size: 24px;
-    color: white;
-}
-
-.user-profile {
-    position: relative;
-}
-
-.user-photo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.user-menu {
-    display: none;
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background-color: white;
-    color: black;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.user-menu a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: black;
-}
-
-.user-menu a:hover {
-    background-color: #f0f0f0;
-}
-
-.menu-toggle {
-    display: none;
-    font-size: 24px;
-    color: white;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* Estilo del menú lateral */
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -250px;
-    width: 250px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    overflow-y: auto;
-    transition: left 0.3s;
-}
-
-.side-menu.active {
-    left: 0;
-}
-
-.side-menu ul {
-    list-style: none;
-    padding: 0;
-}
-
-.side-menu li {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.side-menu a {
-    display: block;
-    padding: 15px;
-    color: white;
-    text-decoration: none;
-}
-
-.side-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Contenido principal */
-.main-content {
-    margin: 20px;
+    background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
     z-index: 10;
-    flex: 1;
 }
 
-.form-section {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
+/* Contenedor del logo */
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 150px;
+    max-height: 150px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Contenedor del registro */
+.registro-container {
+    background-color: #E6F4F9; /* Azul pastel */
+    color: #333333;
+    padding: 50px 60px;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 500px;
+    z-index: 10;
+    text-align: center;
 }
 
-.form-section h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
+/* Títulos */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #1E3A8A; /* Azul marino */
 }
 
+/* Formulario */
 .registro-form label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-size: 14px;
+    color: #333333;
 }
 
 .registro-form input,
 .registro-form select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
+    background-color: #f5f5f5; /* Gris claro */
     font-size: 14px;
+    color: #333333;
 }
 
+/* Placeholder para campos de texto */
+.registro-form input::placeholder {
+    color: #999999;
+}
+
+/* Estilos específicos para el menú desplegable */
+.registro-form select {
+    appearance: none; /* Oculta la flecha predeterminada del navegador */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+/* Botón de registro */
 .btn-registrar {
-    display: block;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #1E90FF; /* Azul brillante */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .btn-registrar:hover {
-    background-color: #4682B4;
+    background-color: #4682B4; /* Azul más oscuro */
+}
+
+/* Footer */
+.registro-footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #2563EB;
+}
+
+.registro-footer a {
+    color: #1E90FF;
+    text-decoration: none;
+}
+
+.registro-footer a:hover {
+    text-decoration: underline;
 }
