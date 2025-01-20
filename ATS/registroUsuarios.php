@@ -24,8 +24,8 @@
         <label for="Correo">Correo Electrónico</label>
         <input type="email" id="Correo" name="Correo" placeholder="name@domain.com" required>
 
-        <label for="Contraseña">Contraseña</label>
-        <input type="password" id="Contraseña" name="Contraseña" placeholder="Ingrese su contraseña" required>
+        <label for="Contrasena">Contraseña</label>
+        <input type="password" id="Contrasena" name="Contrasena" placeholder="Ingrese su contraseña" required>
 
         <label for="Area">Área</label>
         <select id="Area" name="Area" required>
