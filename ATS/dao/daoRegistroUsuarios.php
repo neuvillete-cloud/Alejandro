@@ -33,7 +33,7 @@ function registrarUsuarioEnDB($NumNomina, $Nombre, $Correo, $Contrasena, $IdRol,
     $conex = $con->conectar();
 
     // Insertar el usuario con Id_Rol = 2 (solicitante)
-    $insertUsuario = $conex->prepare("INSERT INTO Usuario (NumNomina, Nombre, Correo, Contrasena, IdRol,IdArea)
+    $insertUsuario = $conex->prepare("INSERT INTO Usuario (NumNomina, Nombre, Correo, Contrasena, IdRol, IdArea)
                                       VALUES (?, ?, ?, ?, ?, ?)");
     $insertUsuario->bind_param("ssssi", $NumNomina, $Nombre, $Correo, $Contrasena, $IdRol, $Area);
     $resultado = $insertUsuario->execute();
