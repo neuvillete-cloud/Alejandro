@@ -22,7 +22,7 @@
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
 </header>
-<nav class="side-menu" id="sideMenu">
+<nav class="hamburger-menu" id="hamburgerMenu">
     <ul>
         <li><a href="#">Inicio</a></li>
         <li><a href="#">Seguimiento</a></li>
@@ -55,12 +55,11 @@
 
 <script>
     const menuToggle = document.getElementById('menuToggle');
-    const sideMenu = document.getElementById('sideMenu');
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
 
     menuToggle.addEventListener('click', () => {
-        sideMenu.classList.toggle('active');
+        hamburgerMenu.classList.toggle('active');
     });
 </script>
 </body>
 </html>
-

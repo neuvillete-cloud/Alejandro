@@ -13,8 +13,7 @@ body {
     overflow: hidden;
     position: relative;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 }
 
 /* Círculos en el fondo */
@@ -56,22 +55,64 @@ body::after {
     z-index: 10;
 }
 
-/* Contenedor del logo */
-.logo-container {
-    text-align: center;
-    margin-bottom: 20px;
+/* Menú hamburguesa */
+.menu-toggle {
+    font-size: 1.5rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 20;
 }
 
-.logo {
-    max-width: 150px;
-    max-height: 150px;
-    width: auto;
-    height: auto;
+.hamburger-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 8px;
+    z-index: 15;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hamburger-menu.active {
     display: block;
-    margin: 0 auto;
+}
+
+.hamburger-menu ul {
+    list-style: none;
+    padding: 10px 20px;
+}
+
+.hamburger-menu li {
+    margin-bottom: 15px;
+}
+
+.hamburger-menu li:last-child {
+    margin-bottom: 0;
+}
+
+.hamburger-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.hamburger-menu a:hover {
+    text-decoration: underline;
 }
 
 /* Contenedor del registro */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px;
+}
+
 .registro-container {
     background-color: #E6F4F9; /* Azul pastel */
     color: #333333;
@@ -110,14 +151,12 @@ h1 {
     color: #333333;
 }
 
-/* Placeholder para campos de texto */
 .registro-form input::placeholder {
     color: #999999;
 }
 
-/* Estilos específicos para el menú desplegable */
 .registro-form select {
-    appearance: none; /* Oculta la flecha predeterminada del navegador */
+    appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -140,20 +179,4 @@ h1 {
 
 .btn-registrar:hover {
     background-color: #4682B4; /* Azul más oscuro */
-}
-
-/* Footer */
-.registro-footer {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #2563EB;
-}
-
-.registro-footer a {
-    color: #1E90FF;
-    text-decoration: none;
-}
-
-.registro-footer a:hover {
-    text-decoration: underline;
 }
