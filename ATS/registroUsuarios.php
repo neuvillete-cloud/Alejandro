@@ -14,7 +14,8 @@
         </div>
         <h1>Regístrate para empezar a usar</h1>
     </header>
-    <form id="registro-form">
+    <div class="registro-form">
+    <form class="registroformulario">
         <label for="NumNomina">Número de Nómina</label>
         <input type="text" id="NumNomina" name="NumNomina" placeholder="Ingrese su número de nómina" required>
 
@@ -47,6 +48,7 @@
 
         <button type="submit" class="btn-registrar">Registrar</button>
     </form>
+    </div>
     <footer class="registro-footer">
         <p>¿Ya tienes una cuenta? <a href="login.php">Inicia sesión aquí</a>.</p>
     </footer>
