@@ -50,7 +50,7 @@ document.getElementById('registroformulario').addEventListener('submit', functio
     formData.append('Contrasena', Contrasena);
     formData.append('Area', Area);
 
-    fetch('dao/registroUsuarios.php', {
+    fetch('dao/daoRegistroUsuarios.php', {
         method: 'POST',
         body: formData
     })
