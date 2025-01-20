@@ -42,7 +42,7 @@ function validarCredenciales($NumNomina, $Contrasena) {
             $response = array('status' => 'success', 'redirect' => 'Administrador.php');
         } elseif ($usuario['IdRol'] == 2) {
             // Redirigir a la página de reportes
-            $response = array('status' => 'success', 'redirect' => 'reportes.php');
+            $response = array('status' => 'success', 'redirect' => 'Solicitante.php');
         } else {
             $response = array('status' => 'error', 'message' => 'Rol no reconocido.');
         }
