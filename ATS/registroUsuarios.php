@@ -14,7 +14,7 @@
         </div>
         <h1>Regístrate para empezar a usar</h1>
     </header>
-    <form class="registro-form">
+    <form id="registro-form">
         <label for="NumNomina">Número de Nómina</label>
         <input type="text" id="NumNomina" name="NumNomina" placeholder="Ingrese su número de nómina" required>
 
