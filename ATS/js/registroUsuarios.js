@@ -5,21 +5,25 @@ document.getElementById('registroformulario').addEventListener('submit', functio
     const Nombre = document.getElementById('Nombre').value.trim();
     const Correo = document.getElementById('Correo').value.trim();
     const Contrasena = document.getElementById('Contrasena').value.trim();
-    const Area = document.getElementById('Area').value.trim(); // Campo adicional de Área
-    const statusMessage = document.getElementById('statusMessage'); // Mensaje de estado
-
-    // Limpiar el mensaje de estado
-    statusMessage.textContent = '';
+    const Area = document.getElementById('Area').value.trim();
 
     // Validar que los campos no estén vacíos
     if (!NumNomina || !Nombre || !Correo || !Contrasena || !Area) {
-        statusMessage.textContent = 'Por favor, complete todos los campos.';
+        Swal.fire({
+            icon: 'error',
+            title: 'Campos incompletos',
+            text: 'Por favor, complete todos los campos.',
+        });
         return;
     }
 
     // Validar formato del correo
     if (!validateEmail(Correo)) {
-        statusMessage.textContent = 'Por favor, ingrese un correo electrónico válido.';
+        Swal.fire({
+            icon: 'error',
+            title: 'Correo inválido',
+            text: 'Por favor, ingrese un correo electrónico válido.',
+        });
         return;
     }
 
@@ -30,7 +34,11 @@ document.getElementById('registroformulario').addEventListener('submit', functio
 
     // Validar que la nómina tenga exactamente 8 caracteres
     if (NumNomina.length !== 8) {
-        statusMessage.textContent = 'La nómina debe tener exactamente 8 caracteres.';
+        Swal.fire({
+            icon: 'error',
+            title: 'Nómina inválida',
+            text: 'La nómina debe tener exactamente 8 caracteres.',
+        });
         return;
     }
 
@@ -59,11 +67,19 @@ document.getElementById('registroformulario').addEventListener('submit', functio
                     window.location.href = 'login.php'; // Redirigir a la página de inicio de sesión
                 });
             } else {
-                statusMessage.textContent = data.message; // Mostrar el mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en el registro',
+                    text: data.message,
+                });
             }
         })
         .catch(error => {
-            statusMessage.textContent = 'Error en la comunicación con el servidor.';
+            Swal.fire({
+                icon: 'error',
+                title: 'Error del servidor',
+                text: 'Hubo un problema en la comunicación con el servidor.',
+            });
         });
 });
 
