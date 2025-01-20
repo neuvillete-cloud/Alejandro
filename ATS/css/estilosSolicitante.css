@@ -1,0 +1,191 @@
+/* Estilos globales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul pastel */
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Círculos en el fondo */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    filter: blur(70px);
+    z-index: 1;
+}
+
+body::before {
+    width: 500px;
+    height: 500px;
+    background: #1E3A8A; /* Azul marino */
+    top: -100px;
+    left: -50px;
+}
+
+body::after {
+    width: 400px;
+    height: 400px;
+    background: #2563EB; /* Azul medio */
+    bottom: -100px;
+    right: -50px;
+}
+
+/* Estilo del header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.header h1 {
+    font-size: 24px;
+    color: white;
+}
+
+.user-profile {
+    position: relative;
+}
+
+.user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.user-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.user-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.user-menu a:hover {
+    background-color: #f0f0f0;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Estilo del menú lateral */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    overflow-y: auto;
+    transition: left 0.3s;
+}
+
+.side-menu.active {
+    left: 0;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-menu li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.side-menu a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.side-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Contenido principal */
+.main-content {
+    margin: 20px;
+    z-index: 10;
+    flex: 1;
+}
+
+.form-section {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.form-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.registro-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.registro-form input,
+.registro-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-registrar {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #1E90FF; /* Azul brillante */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-registrar:hover {
+    background-color: #4682B4;
+}
