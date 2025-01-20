@@ -7,28 +7,29 @@
     <link rel="stylesheet" href="css/estilosLogin.css">
 </head>
 <body>
-<div class="login-container main">
-    <header class="header">
+<div class="login-container">
+    <header class="login-header">
         <div class="logo-container">
-            <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo" class="logo-img">
-            <span class="logo-text">MiAplicación</span>
+            <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo" class="logo">
         </div>
+        <h1>Inicia sesión para continuar</h1>
     </header>
-    <div class="login-content">
-        <h1 class="title">Inicia Sesión</h1>
-        <p class="subtitle">Accede a tu cuenta para continuar</p>
-        <form id="loginformulario" class="login-form">
+    <div class="login-form">
+        <form id="loginformulario">
             <label for="NumNomina">Número de Nómina</label>
             <input type="text" id="NumNomina" name="NumNomina" placeholder="Ingrese su número de nómina" required>
 
             <label for="Contrasena">Contraseña</label>
             <input type="password" id="Contrasena" name="Contrasena" placeholder="Ingrese su contraseña" required>
 
-            <button type="submit" class="button">Iniciar Sesión</button>
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
         </form>
-        <p><a href="recuperarContrasena.php" class="button">¿Olvidaste tu contraseña?</a></p>
     </div>
+    <footer class="login-footer">
+        <p><a href="recuperarContrasena.php">¿Olvidaste tu contraseña?</a></p>
+    </footer>
 </div>
+<script src="js/login.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
