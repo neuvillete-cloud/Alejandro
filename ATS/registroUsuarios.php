@@ -51,5 +51,7 @@
         <p>¿Ya tienes una cuenta? <a href="login.php">Inicia sesión aquí</a>.</p>
     </footer>
 </div>
+<script src="js/registroUsuarios.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
