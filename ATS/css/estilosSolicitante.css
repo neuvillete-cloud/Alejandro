@@ -49,23 +49,21 @@ body::after {
     position: absolute;
     top: 0;
     width: 100%;
-    padding: 34px 40px;
+    height: 70px; /* Asegurarse de que tenga una altura fija */
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
     background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
     z-index: 10;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
+.header-left h1 {
+    margin: 0;
+    text-align: center; /* Asegura que el texto esté centrado */
+    color: white;
+    font-size: 24px; /* Ajusta el tamaño si es necesario */
 }
 
-.header-left h1 {
-    margin-right: 10px;
-    color: white;
-}
 
 .menu-toggle {
     font-size: 1.5rem;
