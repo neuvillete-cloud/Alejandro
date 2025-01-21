@@ -27,29 +27,30 @@
         <li><a href="#">Inicio</a></li>
         <li><a href="#">Seguimiento</a></li>
         <li><a href="#">Históricos</a></li>
+        <li><a href="#">Configuraciones</a></li>
     </ul>
 </nav>
 <main class="main-content">
-    <section class="form-section">
-        <h2>Registro de Solicitudes</h2>
-        <form class="registro-form">
-            <label for="tipo-contratacion">Tipo de Contratación:</label>
-            <select id="tipo-contratacion" name="tipo-contratacion">
-                <option value="nuevo">Nuevo Puesto</option>
-                <option value="reemplazo">Reemplazo</option>
-            </select>
-
-            <label for="area">Área:</label>
-            <input type="text" id="area" name="area" placeholder="Ejemplo: Recursos Humanos">
-
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" placeholder="Ejemplo: Juan Pérez">
-
-            <label for="puesto">Puesto:</label>
-            <input type="text" id="puesto" name="puesto" placeholder="Ejemplo: Analista">
-
-            <button type="submit" class="btn-registrar">Registrar</button>
-        </form>
+    <section class="welcome-section">
+        <h2>Bienvenido, Usuario</h2>
+        <p>Aquí puedes gestionar tus solicitudes y realizar un seguimiento de las mismas.</p>
+    </section>
+    <section class="widgets-section">
+        <div class="widget">
+            <h3>Resumen de Solicitudes</h3>
+            <p>Últimos cambios realizados en tus solicitudes.</p>
+            <a href="#">Ver detalles</a>
+        </div>
+        <div class="widget">
+            <h3>Solicitudes Recientes</h3>
+            <p>No hay solicitudes nuevas en este momento.</p>
+            <a href="#">Ver historial</a>
+        </div>
+        <div class="widget">
+            <h3>Estado del Sistema</h3>
+            <p>Todo está funcionando correctamente.</p>
+            <a href="#">Más información</a>
+        </div>
     </section>
 </main>
 

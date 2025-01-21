@@ -15,13 +15,12 @@ body {
     flex-direction: column;
 }
 
-/* Barra negra transparente */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background-color: rgba(30, 30, 30, 0.6);
+    background-color: rgba(30, 30, 30, 0.6); /* Fondo oscuro transparente */
     z-index: 10;
     position: relative;
 }
@@ -33,6 +32,7 @@ body {
 
 .header-left h1 {
     margin-right: 10px;
+    color: white;
 }
 
 .menu-toggle {
@@ -55,7 +55,7 @@ body {
     left: -300px;
     width: 300px;
     height: 100%;
-    background-color: rgba(30, 30, 30, 0.9);
+    background-color: #1E1E1E; /* Color oscuro */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
     padding-top: 20px;
     transition: left 0.3s ease;
@@ -88,78 +88,117 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-
-/* Contenedor del registro */
-.main-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 80px;
+/* Widgets */
+.widgets-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 40px;
 }
 
-.registro-container {
-    background-color: #E6F4F9;
-    color: #333333;
-    padding: 50px 60px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 500px;
+.widget {
+    background-color: #202020; /* Fondo oscuro para widgets */
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
-/* Títulos */
-h1 {
-    font-size: 24px;
-    color: #1E3A8A;
+.widget h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
 }
 
-/* Formulario */
-.registro-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #333333;
-}
-
-.registro-form input,
-.registro-form select {
-    width: 100%;
-    padding: 12px 15px;
+.widget p {
+    font-size: 1rem;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f5f5f5;
-    font-size: 14px;
-    color: #333333;
 }
 
-.registro-form input::placeholder {
-    color: #999999;
+.widget a {
+    text-decoration: none;
+    color: #1DBF73; /* Color para los enlaces */
+    font-weight: bold;
 }
 
-.registro-form select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
+.widget a:hover {
+    text-decoration: underline;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 300px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    background-color: #F0F0F0;
+}
+
+.sidebar:not(.active) ~ .main-content {
+    margin-left: 0;
+}
+
+/* Perfil de usuario */
+.user-profile {
+    display: flex;
+    align-items: center;
+    position: relative;
     cursor: pointer;
 }
 
-/* Botón de registro */
-.btn-registrar {
-    width: 100%;
-    padding: 12px;
-    background-color: #1E90FF;
+.user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 10px;
+    border: 2px solid white;
+}
+
+.user-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #202020;
     color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.user-profile:hover .user-menu {
+    display: block;
+}
+
+.user-menu a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
     transition: background-color 0.3s ease;
 }
 
-.btn-registrar:hover {
-    background-color: #4682B4;
+.user-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 20px;
+    }
+
+    .widgets-section {
+        grid-template-columns: 1fr;
+        margin: 20px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        width: 250px;
+    }
 }
