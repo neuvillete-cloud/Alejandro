@@ -69,7 +69,9 @@ body::after {
     margin-right: 10px;
     color: white;
     font-size: 24px; /* Puedes modificar el tamaño del título */
+    margin-top: 15px; /* Ajusta el valor para mover el título hacia abajo */
 }
+
 
 /* Estilo del botón de menú */
 .menu-toggle {
