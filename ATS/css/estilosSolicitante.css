@@ -52,7 +52,7 @@ body {
 /* Sidebar */
 .sidebar {
     position: fixed;
-    top: 60px; /* Comienza debajo del encabezado */
+    top: 80px; /* Comienza debajo del encabezado */
     left: -300px; /* Oculta inicialmente */
     width: 300px;
     height: calc(100% - 60px); /* Ajusta la altura para no cubrir el encabezado */
