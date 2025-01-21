@@ -48,8 +48,7 @@ body::after {
 .header {
     position: absolute;
     top: 0;
-    left: 0; /* Asegura que comience desde el borde izquierdo */
-    width: calc(100% - 300px); /* Resta el ancho de la barra lateral */
+    width: 100%;
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
@@ -57,7 +56,6 @@ body::after {
     background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
     z-index: 10;
 }
-
 
 .header-left {
     display: flex;
