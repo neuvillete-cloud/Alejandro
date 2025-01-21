@@ -63,7 +63,7 @@ body::after {
 }
 
 .header-left h1 {
-    margin-right: 10px;
+    margin: 0 10px 0 0; /* Mantén un espacio a la derecha */
     color: white;
 }
 
