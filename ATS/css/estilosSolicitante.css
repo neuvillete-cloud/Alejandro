@@ -9,14 +9,14 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh; /* Asegura que el contenido cubra al menos toda la pantalla */
     position: relative; /* Para posicionar los círculos */
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Alinea los elementos verticalmente */
     align-items: center;
 }
 
+/* Círculos decorativos */
 body::before, body::after {
     content: '';
     position: absolute;
@@ -46,39 +46,17 @@ body::after {
 
 /* Barra superior */
 .header {
-    position: absolute;
+    position: fixed;
     top: 0;
-    width: 100%;
+    left: 0;
+    width: 100%; /* Se extiende completamente */
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
-    z-index: 10;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-}
-
-.header-left h1 {
-    margin-right: 10px;
-    color: white;
-}
-
-.menu-toggle {
-    font-size: 1.5rem;
-    color: white;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    z-index: 20; /* Asegura que esté por encima de la barra lateral */
-}
-
-.menu-toggle:hover {
-    transform: scale(1.1);
+    z-index: 10; /* Encima de los círculos */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para separación */
 }
 
 /* Sidebar */
@@ -96,7 +74,7 @@ body::after {
 }
 
 .sidebar.active {
-    left: 0;
+    left: 0; /* Visible cuando está activo */
 }
 
 .sidebar ul {
@@ -147,6 +125,7 @@ body::after {
     width: 600px;
     z-index: 10;
     text-align: center;
+    margin-top: 100px; /* Espaciado debajo del header */
 }
 
 .form-container h1 {
@@ -209,10 +188,6 @@ body::after {
         flex-direction: column;
         align-items: flex-start;
         padding: 10px 20px;
-    }
-
-    .main-content {
-        margin-left: 0;
     }
 
     .sidebar {
