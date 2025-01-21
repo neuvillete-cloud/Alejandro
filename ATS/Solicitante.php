@@ -9,6 +9,7 @@
 <body>
 <header class="header">
     <div class="header-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
         <h1>Solicitantes</h1>
     </div>
     <div class="header-right">
@@ -19,10 +20,9 @@
                 <a href="#">Cerrar Sesión</a>
             </div>
         </div>
-        <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
 </header>
-<nav class="hamburger-menu" id="hamburgerMenu">
+<nav class="sidebar" id="sidebar">
     <ul>
         <li><a href="#">Inicio</a></li>
         <li><a href="#">Seguimiento</a></li>
@@ -55,10 +55,10 @@
 
 <script>
     const menuToggle = document.getElementById('menuToggle');
-    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const sidebar = document.getElementById('sidebar');
 
     menuToggle.addEventListener('click', () => {
-        hamburgerMenu.classList.toggle('active');
+        sidebar.classList.toggle('active');
     });
 </script>
 </body>

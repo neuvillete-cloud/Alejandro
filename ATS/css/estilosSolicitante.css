@@ -7,101 +7,77 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul pastel */
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6);
     color: white;
     height: 100vh;
     overflow: hidden;
-    position: relative;
     display: flex;
     flex-direction: column;
 }
 
-/* Círculos en el fondo */
-body::before, body::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.5;
-    filter: blur(70px);
-    z-index: 1;
-}
-
-body::before {
-    width: 500px;
-    height: 500px;
-    background: #1E3A8A; /* Azul marino */
-    top: -100px;
-    left: -50px;
-}
-
-body::after {
-    width: 400px;
-    height: 400px;
-    background: #2563EB; /* Azul medio */
-    bottom: -100px;
-    right: -50px;
-}
-
 /* Barra negra transparente */
 .header {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
+    padding: 20px 40px;
+    background-color: rgba(30, 30, 30, 0.6);
     z-index: 10;
+    position: relative;
 }
 
-/* Menú hamburguesa */
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
 .menu-toggle {
     font-size: 1.5rem;
     color: white;
     background: none;
     border: none;
     cursor: pointer;
+    margin-right: 20px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: rgba(30, 30, 30, 0.9);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    padding-top: 20px;
+    transition: left 0.3s ease;
     z-index: 20;
 }
 
-.hamburger-menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    background: rgba(30, 30, 30, 0.8);
-    border-radius: 8px;
-    z-index: 15;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.sidebar.active {
+    left: 0;
 }
 
-.hamburger-menu.active {
-    display: block;
-}
-
-.hamburger-menu ul {
+.sidebar ul {
     list-style: none;
-    padding: 10px 20px;
+    padding: 0;
 }
 
-.hamburger-menu li {
-    margin-bottom: 15px;
+.sidebar li {
+    margin: 20px 0;
 }
 
-.hamburger-menu li:last-child {
-    margin-bottom: 0;
-}
-
-.hamburger-menu a {
-    color: white;
+.sidebar a {
     text-decoration: none;
-    font-weight: bold;
-    font-size: 14px;
+    color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.3s ease;
 }
 
-.hamburger-menu a:hover {
-    text-decoration: underline;
+.sidebar a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Contenedor del registro */
@@ -114,21 +90,19 @@ body::after {
 }
 
 .registro-container {
-    background-color: #E6F4F9; /* Azul pastel */
+    background-color: #E6F4F9;
     color: #333333;
     padding: 50px 60px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     width: 500px;
-    z-index: 10;
     text-align: center;
 }
 
 /* Títulos */
 h1 {
     font-size: 24px;
-    margin-bottom: 20px;
-    color: #1E3A8A; /* Azul marino */
+    color: #1E3A8A;
 }
 
 /* Formulario */
@@ -146,7 +120,7 @@ h1 {
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: #f5f5f5; /* Gris claro */
+    background-color: #f5f5f5;
     font-size: 14px;
     color: #333333;
 }
@@ -168,7 +142,7 @@ h1 {
 .btn-registrar {
     width: 100%;
     padding: 12px;
-    background-color: #1E90FF; /* Azul brillante */
+    background-color: #1E90FF;
     color: white;
     border: none;
     border-radius: 6px;
@@ -178,5 +152,5 @@ h1 {
 }
 
 .btn-registrar:hover {
-    background-color: #4682B4; /* Azul más oscuro */
+    background-color: #4682B4;
 }
