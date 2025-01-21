@@ -9,7 +9,7 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
-    min-height: 100vh; /* Usar min-height en lugar de height */
+    height: 100vh;
     overflow: hidden;
     position: relative; /* Para posicionar los círculos */
     display: flex;
@@ -48,7 +48,8 @@ body::after {
 .header {
     position: absolute;
     top: 0;
-    width: 100%;
+    left: 0; /* Asegura que comience desde el borde izquierdo */
+    width: calc(100% - 300px); /* Resta el ancho de la barra lateral */
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
@@ -56,6 +57,7 @@ body::after {
     background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
     z-index: 10;
 }
+
 
 .header-left {
     display: flex;
