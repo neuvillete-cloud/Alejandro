@@ -9,7 +9,7 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
-    height: 100vh;
+    min-height: 100vh; /* Usar min-height en lugar de height */
     overflow: hidden;
     position: relative; /* Para posicionar los círculos */
     display: flex;
