@@ -54,6 +54,16 @@ body::after {
     position: relative;
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left h1 {
+    margin-right: 10px;
+    color: white;
+}
+
 .menu-toggle {
     font-size: 1.5rem;
     color: white;
@@ -71,7 +81,7 @@ body::after {
 /* Sidebar */
 .sidebar {
     position: fixed;
-    top: 60px; /* Comienza debajo del encabezado */
+    top: 80px; /* Comienza debajo del encabezado */
     left: -300px; /* Oculta inicialmente */
     width: 300px;
     height: calc(100% - 60px); /* Ajusta la altura para no cubrir el encabezado */
