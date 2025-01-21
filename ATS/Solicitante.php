@@ -9,7 +9,7 @@
 <body>
 <header class="header">
     <div class="header-left">
-        <h1>Formulario de Solicitudes</h1>
+        <h1>Solicitudes</h1>
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
 </header>

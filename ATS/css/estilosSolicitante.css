@@ -46,14 +46,15 @@ body::after {
 
 /* Barra superior */
 .header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
     background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
     z-index: 10;
-    position: relative;
-    height: 70px;
 }
 
 .header-left {
