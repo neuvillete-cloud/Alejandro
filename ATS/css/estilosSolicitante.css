@@ -81,7 +81,7 @@ body::after {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease;
-    z-index: 20; /* Asegura que esté por encima de la barra lateral */
+    z-index: 15; /* Asegura que esté por encima de la barra lateral */
 }
 
 .menu-toggle:hover {
