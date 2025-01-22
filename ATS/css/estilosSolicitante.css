@@ -90,8 +90,8 @@ body::after {
     left: -300px; /* Oculta inicialmente */
     width: 300px;
     height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
-    background-color: rgba(173, 216, 230, 0.6); /* Azul claro translúcido */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.15); /* Sombra más ligera */
+    background-color: rgba(135, 206, 250, 0.5); /* Azul pastel translúcido */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
     padding-top: 20px;
     overflow: hidden; /* Para que los círculos no sobresalgan */
     transition: left 0.3s ease, background-color 0.3s ease;
@@ -107,27 +107,27 @@ body::after {
     content: '';
     position: absolute;
     border-radius: 50%;
-    opacity: 0.5;
-    filter: blur(50px);
+    opacity: 0.4;
+    filter: blur(40px);
     z-index: 1; /* Detrás del contenido de la barra lateral */
 }
 
-/* Primer círculo (azul marino) */
+/* Primer círculo (cerca del borde superior izquierdo) */
 .sidebar::before {
-    width: 200px;
-    height: 200px;
-    background: #1E3A8A; /* Azul marino */
-    top: 20%;
-    left: 40%;
+    width: 180px;
+    height: 180px;
+    background: #89CFF0; /* Azul celeste */
+    top: 10%;
+    left: -50px;
 }
 
-/* Segundo círculo (azul medio) */
+/* Segundo círculo (cerca del borde inferior derecho) */
 .sidebar::after {
-    width: 150px;
-    height: 150px;
-    background: #2563EB; /* Azul medio */
-    bottom: 20%;
-    right: 10%;
+    width: 220px;
+    height: 220px;
+    background: #4682B4; /* Azul acero */
+    bottom: 10%;
+    right: -80px;
 }
 
 .sidebar ul {
@@ -143,7 +143,7 @@ body::after {
 
 .sidebar a {
     text-decoration: none;
-    color: #1E3A8A; /* Azul marino para contraste */
+    color: #333; /* Texto más oscuro */
     font-size: 18px;
     padding: 10px 20px;
     display: block;
@@ -154,8 +154,8 @@ body::after {
 }
 
 .sidebar a:hover {
-    background-color: rgba(30, 58, 138, 0.15); /* Azul marino claro más translúcido */
-    color: #1E3A8A; /* Mantén el texto azul marino */
+    background-color: rgba(70, 130, 180, 0.2); /* Azul acero translúcido */
+    color: #4682B4; /* Azul acero */
 }
 
 /* Overlay para cerrar la barra lateral */
