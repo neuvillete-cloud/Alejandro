@@ -86,15 +86,15 @@ body::after {
 /* Barra lateral */
 .sidebar {
     position: fixed;
-    top: 70px;
-    left: -300px;
+    top: 70px; /* Comienza debajo del encabezado */
+    left: -300px; /* Oculta inicialmente */
     width: 300px;
-    height: calc(100% - 70px);
-    background-color: rgba(30, 30, 30, 0.6); /* Mismo color transparente que la barra superior */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
+    background-color: rgba(176, 224, 230, 0.8); /* Azul pastel transparente */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra ligera */
     padding-top: 20px;
-    transition: left 0.3s ease;
-    z-index: 15;
+    transition: left 0.3s ease, background-color 0.3s ease;
+    z-index: 15; /* Debajo del botón de menú */
 }
 
 .sidebar.active {
@@ -112,18 +112,17 @@ body::after {
 
 .sidebar a {
     text-decoration: none;
-    color: white;
+    color: #1E3A8A; /* Azul marino para contraste */
     font-size: 18px;
     padding: 10px 20px;
     display: block;
-    border-radius: 6px; /* Añade bordes redondeados */
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 6px; /* Bordes redondeados para un diseño más moderno */
 }
 
 .sidebar a:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Efecto al pasar el cursor */
-    transform: translateX(5px); /* Desplazamiento al pasar el cursor */
-    color: #87CEEB; /* Cambio de color de texto */
+    background-color: rgba(30, 58, 138, 0.2); /* Azul marino claro */
+    color: #1E3A8A; /* Mantén el texto azul marino */
 }
 
 /* Overlay para cerrar la barra lateral */
