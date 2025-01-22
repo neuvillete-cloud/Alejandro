@@ -11,10 +11,10 @@ body {
     color: white;
     height: 100vh;
     overflow: hidden;
-    position: relative; /* Para posicionar los círculos */
+    position: relative;
     display: flex;
-    justify-content: center; /* Centrar contenido principal */
-    align-items: center; /* Centrar contenido principal */
+    justify-content: center;
+    align-items: center;
 }
 
 /* Efectos de círculos en el fondo */
@@ -24,10 +24,9 @@ body::before, body::after {
     border-radius: 50%;
     opacity: 0.5;
     filter: blur(70px);
-    z-index: 1; /* Debajo del contenido principal */
+    z-index: 1;
 }
 
-/* Primer círculo (azul marino) */
 body::before {
     width: 500px;
     height: 500px;
@@ -36,7 +35,6 @@ body::before {
     left: -50px;
 }
 
-/* Segundo círculo (azul medio) */
 body::after {
     width: 400px;
     height: 400px;
@@ -54,24 +52,21 @@ body::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(30, 30, 30, 0.6); /* Fondo de la barra */
+    background-color: rgba(30, 30, 30, 0.6);
     z-index: 10;
 }
 
-/* Contenido de la barra (Título y otros elementos) */
 .header-left {
     display: flex;
     align-items: center;
 }
 
-/* Estilos solo para el título */
 .header-left h1 {
     margin-right: 10px;
     color: white;
-    font-size: 24px; /* Puedes modificar el tamaño del título */
-    margin-top: 15px; /* Ajusta el valor para mover el título hacia abajo */
+    font-size: 24px;
+    margin-top: 15px;
 }
-
 
 .menu-toggle {
     font-size: 1.5rem;
@@ -80,27 +75,26 @@ body::after {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease;
-    margin-top: 11px; /* Elimina márgenes que puedan interferir */
-    align-self: center; /* Asegura alineación vertical */
+    margin-top: 11px;
+    align-self: center;
 }
 
 .menu-toggle:hover {
     transform: scale(1.1);
 }
 
-
 /* Barra lateral */
 .sidebar {
     position: fixed;
-    top: 70px; /* Comienza debajo del encabezado */
-    left: -300px; /* Oculta inicialmente */
+    top: 70px;
+    left: -300px;
     width: 300px;
-    height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
-    background-color: #B0E0E6;
+    height: calc(100% - 70px);
+    background-color: rgba(30, 30, 30, 0.6); /* Mismo color transparente que la barra superior */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
     padding-top: 20px;
     transition: left 0.3s ease;
-    z-index: 15; /* Debajo del botón de menú */
+    z-index: 15;
 }
 
 .sidebar.active {
@@ -122,11 +116,14 @@ body::after {
     font-size: 18px;
     padding: 10px 20px;
     display: block;
-    transition: background-color 0.3s ease;
+    border-radius: 6px; /* Añade bordes redondeados */
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .sidebar a:hover {
-    background-color: #2563EB;
+    background-color: rgba(255, 255, 255, 0.2); /* Efecto al pasar el cursor */
+    transform: translateX(5px); /* Desplazamiento al pasar el cursor */
+    color: #87CEEB; /* Cambio de color de texto */
 }
 
 /* Overlay para cerrar la barra lateral */
