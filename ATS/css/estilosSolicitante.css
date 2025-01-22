@@ -90,7 +90,7 @@ body::after {
     left: -300px; /* Oculta inicialmente */
     width: 300px;
     height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
+    background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.15); /* Sombra más ligera */
     padding-top: 20px;
     overflow: hidden; /* Para que los círculos no sobresalgan */
