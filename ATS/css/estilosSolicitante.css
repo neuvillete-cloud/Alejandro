@@ -90,9 +90,10 @@ body::after {
     left: -300px; /* Oculta inicialmente */
     width: 300px;
     height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
-    background-color: rgba(173, 216, 230, 0.6); /* Azul claro más transparente */
+    background-color: rgba(173, 216, 230, 0.6); /* Azul claro translúcido */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.15); /* Sombra más ligera */
     padding-top: 20px;
+    overflow: hidden; /* Para que los círculos no sobresalgan */
     transition: left 0.3s ease, background-color 0.3s ease;
     z-index: 15; /* Debajo del botón de menú */
 }
@@ -101,9 +102,39 @@ body::after {
     left: 0;
 }
 
+/* Efectos de círculos dentro de la barra lateral */
+.sidebar::before, .sidebar::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    filter: blur(50px);
+    z-index: 1; /* Detrás del contenido de la barra lateral */
+}
+
+/* Primer círculo (azul marino) */
+.sidebar::before {
+    width: 200px;
+    height: 200px;
+    background: #1E3A8A; /* Azul marino */
+    top: 20%;
+    left: 40%;
+}
+
+/* Segundo círculo (azul medio) */
+.sidebar::after {
+    width: 150px;
+    height: 150px;
+    background: #2563EB; /* Azul medio */
+    bottom: 20%;
+    right: 10%;
+}
+
 .sidebar ul {
     list-style: none;
     padding: 0;
+    z-index: 2; /* Sobre los círculos */
+    position: relative; /* Para que los enlaces no se superpongan a los círculos */
 }
 
 .sidebar li {
@@ -118,6 +149,8 @@ body::after {
     display: block;
     transition: background-color 0.3s ease, color 0.3s ease;
     border-radius: 6px; /* Bordes redondeados */
+    position: relative; /* Para estar encima de los círculos */
+    z-index: 2;
 }
 
 .sidebar a:hover {
