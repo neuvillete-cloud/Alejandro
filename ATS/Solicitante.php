@@ -1,3 +1,8 @@
+
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,6 +54,8 @@
                 <label for="reemplazoPuesto">Puesto a Reemplazar</label>
                 <input type="text" id="reemplazoPuesto" name="reemplazoPuesto" placeholder="Ingresa el puesto a reemplazar">
             </div>
+            
+            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina'];?>>.png" width="50" alt="">
 
             <!-- Botón para enviar el formulario -->
             <button type="submit" class="btn-submit">Registrar</button>
