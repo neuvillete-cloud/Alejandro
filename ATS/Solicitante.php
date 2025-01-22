@@ -87,6 +87,14 @@ session_start();
     menuToggle.addEventListener('click', () => {
         sidebar.classList.toggle('active');
     });
+
+    const userProfile = document.getElementById('profilePic');
+    const profileDropdown = document.getElementById('profileDropdown');
+
+    userProfile.addEventListener('click', () => {
+        profileDropdown.classList.toggle('active');
+    });
+
 </script>
 </body>
 </html>
