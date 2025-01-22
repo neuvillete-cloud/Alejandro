@@ -50,7 +50,7 @@ document.getElementById('registroformulario').addEventListener('submit', functio
     formData.append('Contrasena', Contrasena);
     formData.append('Area', Area);
 
-    fetch('https://grammermx.com/AleTest/ATS/dao/daoRegistroUsuarios.php', {
+    fetch('dao/daoRegistroUsuarios.php', {
         method: 'POST',
         body: formData
     })
