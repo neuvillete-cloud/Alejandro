@@ -16,6 +16,15 @@ session_start();
         <h1>Solicitudes</h1>
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
+    <div class="header-right">
+        <div class="user-profile" id="profilePic">
+            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+            <a href="#">Ver Perfil</a>
+            <a href="#">Cerrar Sesión</a>
+        </div>
+    </div>
 </header>
 <nav class="sidebar" id="sidebar">
     <ul>
@@ -53,17 +62,6 @@ session_start();
                 <label for="reemplazoPuesto">Puesto a Reemplazar</label>
                 <input type="text" id="reemplazoPuesto" name="reemplazoPuesto" placeholder="Ingresa el puesto a reemplazar">
             </div>
-
-            <!-- Contenedor para la foto -->
-            <div class="user-photo-container">
-                <img
-                        src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png"
-                        alt="Foto del usuario"
-                        class="user-photo"
-                >
-            </div>
-
-
             <!-- Botón para enviar el formulario -->
             <button type="submit" class="btn-submit">Registrar</button>
         </form>
