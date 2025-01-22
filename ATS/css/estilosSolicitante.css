@@ -90,8 +90,8 @@ body::after {
     left: -300px; /* Oculta inicialmente */
     width: 300px;
     height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
-    background-color: rgba(176, 224, 230, 0.8); /* Azul pastel transparente */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra ligera */
+    background-color: rgba(173, 216, 230, 0.6); /* Azul claro más transparente */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.15); /* Sombra más ligera */
     padding-top: 20px;
     transition: left 0.3s ease, background-color 0.3s ease;
     z-index: 15; /* Debajo del botón de menú */
@@ -117,11 +117,11 @@ body::after {
     padding: 10px 20px;
     display: block;
     transition: background-color 0.3s ease, color 0.3s ease;
-    border-radius: 6px; /* Bordes redondeados para un diseño más moderno */
+    border-radius: 6px; /* Bordes redondeados */
 }
 
 .sidebar a:hover {
-    background-color: rgba(30, 58, 138, 0.2); /* Azul marino claro */
+    background-color: rgba(30, 58, 138, 0.15); /* Azul marino claro más translúcido */
     color: #1E3A8A; /* Mantén el texto azul marino */
 }
 
