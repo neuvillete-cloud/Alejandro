@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 ?>
@@ -21,7 +20,7 @@ session_start();
             <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
         </div>
         <div class="profile-dropdown" id="profileDropdown">
-            <a href="#">Ver Perfil</a>
+            <a href="#" id="viewProfile">Ver Perfil</a>
             <a href="#">Cerrar Sesión</a>
         </div>
     </div>
@@ -38,15 +37,12 @@ session_start();
     <section class="form-container">
         <h1>Registrar Solicitud</h1>
         <form id="solicitudForm">
-            <!-- Campo Nombre -->
             <label for="nombre">Nombre del Solicitante</label>
             <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre completo" required>
 
-            <!-- Campo Área -->
             <label for="area">Área</label>
             <input type="text" id="area" name="area" placeholder="Ingresa el área correspondiente" required>
 
-            <!-- Campo Tipo -->
             <label for="tipo">Tipo de Solicitud</label>
             <select id="tipo" name="tipo" required>
                 <option value="" disabled selected>Selecciona una opción</option>
@@ -54,7 +50,6 @@ session_start();
                 <option value="reemplazo">Reemplazo</option>
             </select>
 
-            <!-- Campo Reemplazo (solo visible si el tipo es "Reemplazo") -->
             <div id="reemplazoFields" style="display: none;">
                 <label for="reemplazoNombre">Nombre de la Persona Reemplazada</label>
                 <input type="text" id="reemplazoNombre" name="reemplazoNombre" placeholder="Ingresa el nombre del reemplazo">
@@ -62,23 +57,29 @@ session_start();
                 <label for="reemplazoPuesto">Puesto a Reemplazar</label>
                 <input type="text" id="reemplazoPuesto" name="reemplazoPuesto" placeholder="Ingresa el puesto a reemplazar">
             </div>
-            <!-- Botón para enviar el formulario -->
+
             <button type="submit" class="btn-submit">Registrar</button>
         </form>
     </section>
 </main>
 
-<!-- Script para mostrar campos condicionales -->
+<!-- Modal para ver el perfil -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h2>Perfil de Usuario</h2>
+        <p>Nombre: <?php echo $_SESSION['nombre']; ?></p>
+        <p>Número de Nómina: <?php echo $_SESSION['NumNomina']; ?></p>
+        <p>Correo: <?php echo $_SESSION['correo']; ?></p>
+    </div>
+</div>
+
 <script>
     const tipoSelect = document.getElementById('tipo');
     const reemplazoFields = document.getElementById('reemplazoFields');
 
     tipoSelect.addEventListener('change', () => {
-        if (tipoSelect.value === 'reemplazo') {
-            reemplazoFields.style.display = 'block';
-        } else {
-            reemplazoFields.style.display = 'none';
-        }
+        reemplazoFields.style.display = tipoSelect.value === 'reemplazo' ? 'block' : 'none';
     });
 
     const menuToggle = document.getElementById('menuToggle');
@@ -95,6 +96,24 @@ session_start();
         profileDropdown.classList.toggle('active');
     });
 
+    const viewProfile = document.getElementById('viewProfile');
+    const profileModal = document.getElementById('profileModal');
+    const closeModal = document.getElementById('closeModal');
+
+    viewProfile.addEventListener('click', (e) => {
+        e.preventDefault();
+        profileModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+        profileModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === profileModal) {
+            profileModal.style.display = 'none';
+        }
+    });
 </script>
 </body>
 </html>
