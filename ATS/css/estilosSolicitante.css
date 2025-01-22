@@ -73,7 +73,6 @@ body::after {
 }
 
 
-/* Estilo del botón de menú */
 .menu-toggle {
     font-size: 1.5rem;
     color: white;
@@ -81,7 +80,9 @@ body::after {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease;
-    z-index: 5; /* Asegura que esté por encima de la barra lateral */
+    margin-top: 0; /* Elimina márgenes que puedan interferir */
+    margin-left: 20px; /* Ajusta separación si es necesario */
+    align-self: center; /* Asegura alineación vertical */
 }
 
 .menu-toggle:hover {
