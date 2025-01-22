@@ -116,7 +116,7 @@ body::after {
 .sidebar::before {
     width: 250px;
     height: 250px;
-    background: #87CEFA; /* Azul cielo */
+    background: #1E3A8A;
     top: 10%;
     left: -50px;
 }
