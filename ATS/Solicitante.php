@@ -54,7 +54,14 @@ session_start();
                 <input type="text" id="reemplazoPuesto" name="reemplazoPuesto" placeholder="Ingresa el puesto a reemplazar">
             </div>
 
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina'];?>.png" width="50" alt="">
+            <!-- Contenedor para la foto -->
+            <div class="user-photo-container">
+                <img
+                        src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png"
+                        alt="Foto del usuario"
+                        class="user-photo"
+                >
+            </div>
 
 
             <!-- Botón para enviar el formulario -->
