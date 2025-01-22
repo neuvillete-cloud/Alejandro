@@ -80,7 +80,7 @@ body::after {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease;
-    margin-top: 15px; /* Elimina márgenes que puedan interferir */
+    margin-top: 14px; /* Elimina márgenes que puedan interferir */
     align-self: center; /* Asegura alineación vertical */
 }
 
