@@ -390,7 +390,7 @@ body::after {
 }
 
 .header-icon {
-    height: 30px; /* Ajusta la altura de la imagen */
+    height: 50px; /* Ajusta la altura de la imagen */
     width: auto; /* Mantiene la proporción de la imagen */
 }
 
