@@ -382,3 +382,15 @@ body::after {
     color: white;
     font-weight: bold; /* Texto en negrita */
 }
+
+.header-left {
+    display: flex;
+    align-items: center; /* Alinea verticalmente los elementos */
+    gap: 10px; /* Espacio entre la imagen y el texto */
+}
+
+.header-icon {
+    height: 30px; /* Ajusta la altura de la imagen */
+    width: auto; /* Mantiene la proporción de la imagen */
+}
+
