@@ -365,3 +365,16 @@ body::after {
 .modal-body p strong {
     color: #1E3A8A; /* Azul oscuro */
 }
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Separación entre la foto y el nombre */
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}

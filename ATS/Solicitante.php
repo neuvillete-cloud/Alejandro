@@ -24,6 +24,7 @@ if (!isset($_SESSION['NumNomina'])) {
         <div class="user-profile" id="profilePic">
             <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
         </div>
+        <div class="user-name" id="userNameHeader"></div>
         <div class="profile-dropdown" id="profileDropdown">
             <a href="#">Ver Perfil</a>
             <a href="#">Cerrar Sesión</a>
