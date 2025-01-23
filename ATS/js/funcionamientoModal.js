@@ -7,16 +7,26 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         // Llamar al DAO para obtener los datos del usuario
-        const response = await fetch('dao/daoModal.php');
-        const userData = await response.json();
+        try {
+            const response = await fetch('dao/daoModal.php');
+            const data = await response.json();
 
-        // Rellenar los datos en el modal
-        document.getElementById('userName').textContent = userData.nombre;
-        document.getElementById('userNumNomina').textContent = userData.numNomina;
-        document.getElementById('userArea').textContent = userData.area;
+            if (data.status === 'success') {
+                const { nombre, numNomina, area } = data.perfil;
 
-        // Mostrar el modal
-        modal.style.display = 'block';
+                // Rellenar los datos en el modal
+                document.getElementById('userName').textContent = nombre;
+                document.getElementById('userNumNomina').textContent = numNomina;
+                document.getElementById('userArea').textContent = area;
+
+                // Mostrar el modal
+                modal.style.display = 'block';
+            } else {
+                console.error('Error al obtener datos:', data.message);
+            }
+        } catch (error) {
+            console.error('Error al llamar al endpoint:', error);
+        }
     });
 
     closeModalBtn.addEventListener('click', () => {
