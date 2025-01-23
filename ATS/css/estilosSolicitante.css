@@ -386,7 +386,7 @@ body::after {
 .header-left {
     display: flex;
     align-items: center; /* Alinea verticalmente los elementos */
-    gap: 10px; /* Espacio entre la imagen y el texto */
+    gap: 17px; /* Espacio entre la imagen y el texto */
 }
 
 .header-icon {
