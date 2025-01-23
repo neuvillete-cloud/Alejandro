@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.status === 'success') {
-                const { nombre, numNomina, area } = data.perfil;
+                const { Nombre: nombre, NumNomina: numNomina, Area: area } = data.perfil;
 
                 // Rellenar los datos en el modal
                 document.getElementById('userName').textContent = nombre;
@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.error('Error al obtener datos:', data.message);
             }
+
         } catch (error) {
             console.error('Error al llamar al endpoint:', error);
         }
