@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('userArea').textContent = area;
 
                 // Mostrar el modal
-                modal.style.display = 'block';
+                modal.style.display = 'flex';
             } else {
                 console.error('Error al obtener datos:', data.message);
             }
