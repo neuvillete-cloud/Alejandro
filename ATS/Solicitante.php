@@ -68,8 +68,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <label for="reemplazoNombre">Nombre de la Persona Reemplazada</label>
                 <input type="text" id="reemplazoNombre" name="reemplazoNombre" placeholder="Ingresa el nombre del reemplazo">
 
-                <label for="reemplazoPuesto">Puesto a Reemplazar</label>
-                <input type="text" id="reemplazoPuesto" name="reemplazoPuesto" placeholder="Ingresa el puesto a reemplazar">
             </div>
             <!-- Botón para enviar el formulario -->
             <button type="submit" class="btn-submit">Registrar</button>
