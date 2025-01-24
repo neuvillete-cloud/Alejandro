@@ -394,3 +394,14 @@ body::after {
     width: auto; /* Mantiene la proporción de la imagen */
 }
 
+/* Formulario cuando se expande */
+.form-container.expanded {
+    min-height: 800px; /* Ajusta según el contenido */
+    padding-bottom: 100px; /* Asegura suficiente espacio inferior */
+}
+
+/* Evitar que el formulario se superponga con otros elementos */
+body {
+    overflow-y: auto; /* Habilita el scroll si es necesario */
+    padding-top: 70px; /* Asegura que el formulario no toque la barra superior */
+}
