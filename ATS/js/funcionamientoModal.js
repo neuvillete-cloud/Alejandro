@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const openModalBtn = document.querySelector('#profileDropdown a:first-child'); // Botón "Ver Perfil"
     const closeModalBtn = document.getElementById('closeModal');
     const userNameHeader = document.getElementById('userNameHeader'); // Contenedor del nombre en el encabezado
+    const nombreInput = document.getElementById('nombre'); // Campo de nombre en el formulario
+    const areaInput = document.getElementById('area'); // Campo de área en el formulario
 
     // Función para obtener datos del usuario
     async function fetchUserData() {
@@ -18,6 +20,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     userNameHeader.textContent = nombre;
                 }
 
+                // Rellena los campos del formulario
+                if (nombreInput) {
+                    nombreInput.value = nombre;
+                }
+                if (areaInput) {
+                    areaInput.value = area;
+                }
+
                 return { nombre, numNomina, area };
             } else {
                 console.error('Error al obtener datos:', data.message);
@@ -29,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Llamar a fetchUserData al cargar la página para el encabezado
+    // Llamar a fetchUserData al cargar la página para el encabezado y los campos del formulario
     const userData = await fetchUserData();
 
     // Evento para abrir el modal
