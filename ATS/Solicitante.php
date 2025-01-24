@@ -52,6 +52,9 @@ if (!isset($_SESSION['NumNomina'])) {
             <label for="area">Área</label>
             <input type="text" id="area" name="area" placeholder="Ingresa el área correspondiente" required>
 
+            <label for="puesto">Puesto</label>
+            <input type="text" id="puesto" name="puesto" placeholder="Ingresa el puesto solicitado" required>
+
             <!-- Campo Tipo -->
             <label for="tipo">Tipo de Solicitud</label>
             <select id="tipo" name="tipo" required>
