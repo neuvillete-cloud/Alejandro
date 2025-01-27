@@ -39,7 +39,7 @@ document.getElementById('solicitudForm').addEventListener('submit', function (ev
     }
 
     // Enviar los datos al servidor mediante fetch
-    fetch('dao/reegistroSolicitud.php', {
+    fetch('dao/registroSolicitud.php', {
         method: 'POST',
         body: formData
     })
