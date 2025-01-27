@@ -7,10 +7,10 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validar que todos los datos requeridos están presentes
-    if (isset($_POST['NumNomina'], $_POST['IdArea'], $_POST['Puesto'], $_POST['TipoContratacion'], $_POST['Nombre'])) {
+    if (isset($_POST['NumNomina'], $_POST['NombreArea'], $_POST['Puesto'], $_POST['TipoContratacion'], $_POST['Nombre'])) {
         // Obtener los datos del formulario
         $NumNomina = $_POST['NumNomina'];
-        $IdArea = $_POST['IdArea'];
+        $NombreArea = $_POST['NombreArea'];
         $Puesto = $_POST['Puesto'];
         $TipoContratacion = $_POST['TipoContratacion'];
         $Nombre = $_POST['Nombre'];
@@ -22,8 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $con = new LocalConector();
         $conex = $con->conectar();
 
-        // Insertar la solicitud en la base de datos
-        $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus);
+        // Obtener el ID del área a partir del nombre del área
+        $consultaArea = $conex->prepare("SELECT IdArea FROM Areas WHERE NombreArea = ?");
+        $consultaArea->bind_param("s", $NombreArea);
+        $consultaArea->execute();
+        $resultadoArea = $consultaArea->get_result();
+
+        if ($resultadoArea->num_rows > 0) {
+            $row = $resultadoArea->fetch_assoc();
+            $IdArea = $row['IdArea'];
+
+            // Insertar la solicitud en la base de datos
+            $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus);
+        } else {
+            $response = array('status' => 'error', 'message' => 'El área proporcionada no existe.');
+        }
 
         $conex->close();
     } else {
