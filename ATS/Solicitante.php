@@ -127,7 +127,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
     logoutLink.addEventListener('click', (e) => {
         e.preventDefault();
-        fetch('logout.php', { method: 'POST' })
+        fetch('dao/logout.php', { method: 'POST' })
             .then(response => {
                 if (response.ok) {
                     window.location.href = 'login.php';
