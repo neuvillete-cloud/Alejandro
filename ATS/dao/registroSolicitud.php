@@ -7,9 +7,15 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validar que todos los datos requeridos están presentes
-    if (isset($_POST['NumNomina'], $_POST['NombreArea'], $_POST['Puesto'], $_POST['TipoContratacion'], $_POST['Nombre'])) {
+    if (isset($_POST['NombreArea'], $_POST['Puesto'], $_POST['TipoContratacion'], $_POST['Nombre'])) {
         // Obtener los datos del formulario
-        $NumNomina = $_POST['NumNomina'];
+        if (isset($_SESSION['NumNomina'])) {
+            $NumNomina = $_SESSION['NumNomina']; // Obtener NumNomina desde la sesión
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'No se encontró NumNomina en la sesión.'));
+            exit();
+        }
+
         $NombreArea = $_POST['NombreArea'];
         $Puesto = $_POST['Puesto'];
         $TipoContratacion = $_POST['TipoContratacion'];
