@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conex = $con->conectar();
 
         // Obtener el ID del área a partir del nombre del área
-        $consultaArea = $conex->prepare("SELECT IdArea FROM Areas WHERE NombreArea = ?");
+        $consultaArea = $conex->prepare("SELECT IdArea FROM Area WHERE NombreArea = ?");
         $consultaArea->bind_param("s", $NombreArea);
         $consultaArea->execute();
         $resultadoArea = $consultaArea->get_result();
