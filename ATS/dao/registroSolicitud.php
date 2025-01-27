@@ -60,7 +60,7 @@ function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContr
 {
     $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, FechaSolicitud, FolioSolicitud, IdEstatus, NombreReemplazo)
                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $insertSolicitud->bind_param("sisssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $NombreReemplazo);
+    $insertSolicitud->bind_param("sisssssis", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $NombreReemplazo);
     $resultado = $insertSolicitud->execute();
 
     if ($resultado) {
