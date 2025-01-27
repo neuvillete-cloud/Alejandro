@@ -14,7 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $NombreArea = $_POST['area'];
         $Puesto = $_POST['puesto'];
         $TipoContratacion = $_POST['tipo'];
-        $NombreReemplazo = $_POST['reemplazoNombre'] ?? null; // Campo opcional para "reemplazo"
+
+        // Asignar NombreReemplazo solo si el tipo de contratación es 'reemplazo'
+        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_POST['reemplazoNombre'])) ? $_POST['reemplazoNombre'] : null;
 
         if (!$NumNomina) {
             echo json_encode(['status' => 'error', 'message' => 'No se encontró el número de nómina en la sesión.']);
@@ -71,4 +73,5 @@ function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContr
 
     return $response;
 }
+
 ?>
