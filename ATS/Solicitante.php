@@ -28,7 +28,7 @@ if (!isset($_SESSION['NumNomina'])) {
         <div class="user-name" id="userNameHeader"></div>
         <div class="profile-dropdown" id="profileDropdown">
             <a href="#">Ver Perfil</a>
-            <a href="#">Cerrar Sesión</a>
+            <a href="#" id="logout">Cerrar Sesión</a>
         </div>
     </div>
 </header>
@@ -115,6 +115,29 @@ if (!isset($_SESSION['NumNomina'])) {
 
     userProfile.addEventListener('click', () => {
         profileDropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
+            profileDropdown.classList.remove('active');
+        }
+    });
+
+    const logoutLink = document.getElementById('logout');
+
+    logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch('logout.php', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = 'login.php';
+                } else {
+                    alert('Error al cerrar sesión. Inténtalo nuevamente.');
+                }
+            })
+            .catch(error => {
+                console.error('Error al cerrar sesión:', error);
+            });
     });
 
 </script>
