@@ -7,25 +7,18 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 // Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validar que todos los datos requeridos están presentes
-    if (isset($_POST['NombreArea'], $_POST['Puesto'], $_POST['TipoContratacion'], $_POST['Nombre'], $_POST['TipoSolicitud'])) {
+    if (isset($_POST['nombre'], $_POST['area'], $_POST['puesto'], $_POST['tipo'])) {
         // Obtener los datos del formulario
-        if (isset($_SESSION['NumNomina'])) {
-            $NumNomina = $_SESSION['NumNomina']; // Obtener NumNomina desde la sesión
-        } else {
-            echo json_encode(array('status' => 'error', 'message' => 'No se encontró NumNomina en la sesión.'));
+        $NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
+        $Nombre = $_POST['nombre'];
+        $NombreArea = $_POST['area'];
+        $Puesto = $_POST['puesto'];
+        $TipoContratacion = $_POST['tipo'];
+        $NombreReemplazo = $_POST['reemplazoNombre'] ?? null; // Campo opcional para "reemplazo"
+
+        if (!$NumNomina) {
+            echo json_encode(['status' => 'error', 'message' => 'No se encontró el número de nómina en la sesión.']);
             exit();
-        }
-
-        $NombreArea = $_POST['NombreArea'];
-        $Puesto = $_POST['Puesto'];
-        $TipoContratacion = $_POST['TipoContratacion'];
-        $Nombre = $_POST['Nombre'];
-        $TipoSolicitud = $_POST['TipoSolicitud'];
-        $NombreReemplazo = null;
-
-        // Validar si es tipo de solicitud "reemplazo" y obtener el nombre del reemplazo
-        if ($TipoSolicitud === 'reemplazo' && isset($_POST['NombreReemplazo'])) {
-            $NombreReemplazo = $_POST['NombreReemplazo'];
         }
 
         $FechaSolicitud = date('Y-m-d H:i:s'); // Generar la fecha y hora actual
@@ -46,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $IdArea = $row['IdArea'];
 
             // Insertar la solicitud en la base de datos
-            $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus);
+            $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $NombreReemplazo);
         } else {
             $response = array('status' => 'error', 'message' => 'El área proporcionada no existe.');
         }
@@ -63,11 +56,11 @@ echo json_encode($response);
 exit();
 
 // Función para registrar la solicitud en la base de datos
-function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus)
+function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $NombreReemplazo)
 {
-    $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus)
+    $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, FechaSolicitud, FolioSolicitud, IdEstatus, NombreReemplazo)
                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $insertSolicitud->bind_param("sissssssi", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus);
+    $insertSolicitud->bind_param("sisssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $NombreReemplazo);
     $resultado = $insertSolicitud->execute();
 
     if ($resultado) {
