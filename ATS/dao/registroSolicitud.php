@@ -4,21 +4,21 @@ include_once("ConexionBD.php");
 
 date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 
+$Nombre = $_GET['nombre'];
+$NombreArea = $_GET['area'];
+$Puesto = $_GET['puesto'];
+$TipoContratacion = $_GET['tipo'];
 
-
-// Revisar si la solicitud es POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Revisar si la solicitud es GET
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Validar que todos los datos requeridos están presentes
-    if (isset($_POST['nombre'], $_POST['area'], $_POST['puesto'], $_POST['tipo'])) {
+    if (isset($_GET['nombre'], $_GET['area'], $_GET['puesto'], $_GET['tipo'])) {
         // Obtener los datos del formulario
-        $NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
-        $Nombre = $_POST['nombre'];
-        $NombreArea = $_POST['area'];
-        $Puesto = $_POST['puesto'];
-        $TipoContratacion = $_POST['tipo'];
+        //$NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
+        $NumNomina='00001606';
 
         // Asignar NombreReemplazo solo si el tipo de contratación es 'reemplazo'
-        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_POST['reemplazoNombre'])) ? $_POST['reemplazoNombre'] : null;
+        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_GET['reemplazoNombre'])) ? $_GET['reemplazoNombre'] : null;
 
         if (!$NumNomina) {
             echo json_encode(['status' => 'error', 'message' => 'No se encontró el número de nómina en la sesión.']);
@@ -37,13 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $consultaArea = $conex->prepare("SELECT IdArea FROM Area WHERE NombreArea = ?");
         $consultaArea->bind_param("s", $NombreArea);
         $consultaArea->execute();
-        $resultadoArea = $consultaArea->POST_result();
+        $resultadoArea = $consultaArea->get_result();
 
+
+        echo 'aqui 2';
 
         if ($resultadoArea->num_rows > 0) {
             $row = $resultadoArea->fetch_assoc();
             $IdArea = $row['IdArea'];
 
+            echo 'aqui 3';
             // Insertar la solicitud en la base de datos
             $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,1);
         } else {
@@ -55,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response = array('status' => 'error', 'message' => 'Datos incompletos.');
     }
 } else {
-    $response = array('status' => 'error', 'message' => 'Se requiere método POST.');
+    $response = array('status' => 'error', 'message' => 'Se requiere método GET.');
 }
 
 echo json_encode($response);
@@ -64,12 +67,18 @@ exit();
 // Función para registrar la solicitud en la base de datos
 function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,$IdDescripcion)
 {
+    $insertQuery = "INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus, IdDescripcion) 
+VALUES ('$NumNomina', $IdArea, '$Puesto', '$TipoContratacion', '$Nombre', $NombreReemplazo, '$FechaSolicitud', '$FolioSolicitud', $IdEstatus, $IdDescripcion);";
+
+// Mostrar el query
+    echo $insertQuery;
     
     $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus,IdDescripcion)
                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
-    $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, "", $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
+    $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
     $resultado = $insertSolicitud->execute();
 
+    echo 'aqui 5';
 
     if ($resultado) {
         $response = array('status' => 'success', 'message' => 'Solicitud registrada exitosamente', 'folio' => $FolioSolicitud);
