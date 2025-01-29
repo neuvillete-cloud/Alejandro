@@ -33,7 +33,7 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 <nav class="sidebar" id="sidebar">
     <ul>
-        <li><a href="#" data-page="inicio.php">Inicio</a></li>
+        <li><a href="#" data-page="Solicitante.php">Inicio</a></li>
         <li><a href="#" data-page="seguimiento.php">Seguimiento</a></li>
         <li><a href="#" data-page="historicos.php">Históricos</a></li>
         <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
@@ -138,8 +138,17 @@ if (!isset($_SESSION['NumNomina'])) {
                 const page = link.getAttribute('data-page');
 
                 if (page) {
+                    // Limpiar el contenido actual de mainContent para evitar duplicados
+                    mainContent.innerHTML = "";
+
+                    // Cargar el nuevo contenido
                     fetch(page)
-                        .then(response => response.text())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al cargar la página');
+                            }
+                            return response.text();
+                        })
                         .then(html => {
                             mainContent.innerHTML = html;
                         })
@@ -148,6 +157,7 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
     });
+
 </script>
 
 <script src="js/funcionamientoModal.js"></script>
