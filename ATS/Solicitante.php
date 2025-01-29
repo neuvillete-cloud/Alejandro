@@ -141,7 +141,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     // Limpiar el contenido actual de mainContent para evitar duplicados
                     mainContent.innerHTML = "";
 
-                    // Recargar el CSS solo si no está ya cargado
+                    // Recargar el CSS y el formulario solo si no está ya cargado
                     loadCSSIfNotLoaded("css/estilosSolicitante.css");
 
                     fetch(page)
@@ -162,6 +162,9 @@ if (!isset($_SESSION['NumNomina'])) {
                             if (newContent) {
                                 // Reemplazamos el contenido de 'mainContent' solo con el contenido relevante
                                 mainContent.innerHTML = newContent.innerHTML;
+
+                                // Forzar la recarga de los estilos después de actualizar el contenido
+                                reloadStyles();
                             }
                         })
                         .catch(error => console.error('Error al cargar la página:', error));
@@ -179,7 +182,16 @@ if (!isset($_SESSION['NumNomina'])) {
                 document.head.appendChild(link);
             }
         }
+
+        // Función para forzar la recarga de los estilos
+        function reloadStyles() {
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                link.href = link.href.split('?')[0] + '?' + new Date().getTime(); // Evitar cache
+            });
+        }
     });
+
 
 
 
