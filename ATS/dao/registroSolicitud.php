@@ -27,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             exit();
         }
 
+        echo 'aqui';
+
         $FechaSolicitud = date('Y-m-d H:i:s'); // Generar la fecha y hora actual
         $FolioSolicitud = uniqid('FOLIO-'); // Generar un folio único
         $IdEstatus = 1; // Estatus inicial
