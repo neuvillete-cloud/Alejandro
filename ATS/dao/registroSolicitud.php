@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $IdArea = $row['IdArea'];
 
             // Insertar la solicitud en la base de datos
-            $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,1,2);
+            $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,1);
         } else {
             $response = array('status' => 'error', 'message' => 'El área proporcionada no existe.');
         }
@@ -58,13 +58,11 @@ echo json_encode($response);
 exit();
 
 // Función para registrar la solicitud en la base de datos
-function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,$IdDescripcion, $FolioSolCand)
+function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,$IdDescripcion)
 {
-    $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus,IdDescripcion, FolioSolCand)
-                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
-    //$insertSolicitud->bind_param("sissssssiis", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion,$FolioSolCand);
-    $insertSolicitud->bind_param("sissssssiis", '00001606',11, '', '', '', '', '', '1', 1, 0,'');
-
+    $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus,IdDescripcion)
+                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+    $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
     $resultado = $insertSolicitud->execute();
 
     if ($resultado) {
