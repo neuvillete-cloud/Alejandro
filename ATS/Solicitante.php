@@ -141,12 +141,31 @@ if (!isset($_SESSION['NumNomina'])) {
                     // Limpiar el contenido actual de mainContent para evitar duplicados
                     mainContent.innerHTML = "";
 
-                    // Forzamos la recarga de la página para que los estilos se apliquen correctamente
-                    location.reload();
+                    // Cargar la nueva página y su contenido
+                    fetch(page)
+                        .then(response => response.text())
+                        .then(html => {
+                            // Establecer el nuevo contenido en el contenedor
+                            mainContent.innerHTML = html;
+
+                            // Recargar los estilos del formulario
+                            loadStyles();
+                        })
+                        .catch(error => console.error('Error al cargar la página:', error));
                 }
             });
         });
+
+        // Función para recargar los estilos (evitar que no se apliquen)
+        function loadStyles() {
+            // Añadir los estilos de forma dinámica
+            let link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "css/estilosSolicitante.css"; // Asegúrate de que el path sea correcto
+            document.head.appendChild(link);
+        }
     });
+
 </script>
 
 <script src="js/funcionamientoModal.js"></script>
