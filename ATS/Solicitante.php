@@ -141,7 +141,9 @@ if (!isset($_SESSION['NumNomina'])) {
                     // Limpiar el contenido actual de mainContent para evitar duplicados
                     mainContent.innerHTML = "";
 
-                    // Cargar el nuevo contenido
+                    // Evitar recargar elementos duplicados, como scripts o estilos
+                    // No cargues de nuevo los scripts y estilos que ya están incluidos.
+
                     fetch(page)
                         .then(response => {
                             if (!response.ok) {
@@ -150,7 +152,17 @@ if (!isset($_SESSION['NumNomina'])) {
                             return response.text();
                         })
                         .then(html => {
-                            mainContent.innerHTML = html;
+                            // Aquí solo insertamos el contenido relevante, sin scripts ni estilos duplicados
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = html;
+
+                            // Buscar solo el contenido relevante de la página cargada
+                            const newContent = tempDiv.querySelector('.form-container') || tempDiv.querySelector('.content');
+
+                            if (newContent) {
+                                // Reemplazamos el contenido de 'mainContent' solo con el contenido relevante
+                                mainContent.innerHTML = newContent.innerHTML;
+                            }
                         })
                         .catch(error => console.error('Error al cargar la página:', error));
                 }
