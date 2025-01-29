@@ -25,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             exit();
         }
 
-        echo 'aqui';
 
         $FechaSolicitud = date('Y-m-d H:i:s'); // Generar la fecha y hora actual
         $FolioSolicitud = uniqid('FOLIO-'); // Generar un folio único
@@ -40,10 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $consultaArea->execute();
         $resultadoArea = $consultaArea->get_result();
 
+
+        echo 'aqui 2';
+
         if ($resultadoArea->num_rows > 0) {
             $row = $resultadoArea->fetch_assoc();
             $IdArea = $row['IdArea'];
 
+            echo 'aqui 3';
             // Insertar la solicitud en la base de datos
             $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,1);
         } else {
