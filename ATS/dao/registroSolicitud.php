@@ -7,7 +7,6 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 
 
 // Revisar si la solicitud es POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validar que todos los datos requeridos están presentes
     if (isset($_POST['nombre'], $_POST['area'], $_POST['puesto'], $_POST['tipo'])) {
         // Obtener los datos del formulario
@@ -55,9 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $response = array('status' => 'error', 'message' => 'Datos incompletos.');
     }
-} else {
-    $response = array('status' => 'error', 'message' => 'Se requiere método POST.');
-}
+
 
 echo json_encode($response);
 exit();
