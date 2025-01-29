@@ -68,21 +68,42 @@ exit();
 function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,$IdDescripcion)
 {
 
-    echo 'aqui 4';
-    $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus,IdDescripcion)
-                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
-    $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
-    $resultado = $insertSolicitud->execute();
+    try {
+        // Preparar la consulta
+        $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes 
+        (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus, IdDescripcion)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    echo 'aqui 5';
+        if (!$insertSolicitud) {
+            throw new Exception("Error en la preparación de la consulta: " . $conex->error);
+        }
 
-    if ($resultado) {
-        $response = array('status' => 'success', 'message' => 'Solicitud registrada exitosamente', 'folio' => $FolioSolicitud);
-    } else {
-        $response = array('status' => 'error', 'message' => 'Error al registrar la solicitud');
+        // Asignar valores a los parámetros
+        $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
+
+        // Ejecutar la consulta
+        if (!$insertSolicitud->execute()) {
+            throw new Exception("Error al ejecutar la consulta: " . $insertSolicitud->error);
+        }
+
+        // Si todo sale bien
+        $response = [
+            'status' => 'success',
+            'message' => 'Solicitud registrada exitosamente',
+            'folio' => $FolioSolicitud
+        ];
+    } catch (Exception $e) {
+        // Capturar el error y devolverlo en la respuesta
+        $response = [
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ];
+    } finally {
+        // Cerrar la consulta preparada si fue creada
+        if (isset($insertSolicitud)) {
+            $insertSolicitud->close();
+        }
     }
-
-    return $response;
 }
 
 ?>
