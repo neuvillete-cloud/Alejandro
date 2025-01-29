@@ -9,8 +9,6 @@ $NombreArea = $_GET['area'];
 $Puesto = $_GET['puesto'];
 $TipoContratacion = $_GET['tipo'];
 
-echo $_SERVER['REQUEST_METHOD'];
-
 // Revisar si la solicitud es GET
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Validar que todos los datos requeridos están presentes
