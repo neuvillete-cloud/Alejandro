@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Validar que todos los datos requeridos están presentes
     if (isset($_GET['nombre'], $_GET['area'], $_GET['puesto'], $_GET['tipo'])) {
         // Obtener los datos del formulario
-        $NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
-
+        //$NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
+        $NumNomina='00001606';
 
         // Asignar NombreReemplazo solo si el tipo de contratación es 'reemplazo'
         $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_GET['reemplazoNombre'])) ? $_GET['reemplazoNombre'] : null;
