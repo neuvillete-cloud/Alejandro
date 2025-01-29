@@ -4,19 +4,19 @@ include_once("ConexionBD.php");
 
 date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 
-// Revisar si la solicitud es POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Revisar si la solicitud es GET
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Validar que todos los datos requeridos están presentes
-    if (isset($_POST['nombre'], $_POST['area'], $_POST['puesto'], $_POST['tipo'])) {
+    if (isset($_GET['nombre'], $_GET['area'], $_GET['puesto'], $_GET['tipo'])) {
         // Obtener los datos del formulario
         $NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
-        $Nombre = $_POST['nombre'];
-        $NombreArea = $_POST['area'];
-        $Puesto = $_POST['puesto'];
-        $TipoContratacion = $_POST['tipo'];
+        $Nombre = $_GET['nombre'];
+        $NombreArea = $_GET['area'];
+        $Puesto = $_GET['puesto'];
+        $TipoContratacion = $_GET['tipo'];
 
         // Asignar NombreReemplazo solo si el tipo de contratación es 'reemplazo'
-        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_POST['reemplazoNombre'])) ? $_POST['reemplazoNombre'] : null;
+        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_GET['reemplazoNombre'])) ? $_GET['reemplazoNombre'] : null;
 
         if (!$NumNomina) {
             echo json_encode(['status' => 'error', 'message' => 'No se encontró el número de nómina en la sesión.']);
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response = array('status' => 'error', 'message' => 'Datos incompletos.');
     }
 } else {
-    $response = array('status' => 'error', 'message' => 'Se requiere método POST.');
+    $response = array('status' => 'error', 'message' => 'Se requiere método GET.');
 }
 
 echo json_encode($response);
