@@ -7,6 +7,7 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 
 
 // Revisar si la solicitud es POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validar que todos los datos requeridos están presentes
     if (isset($_POST['nombre'], $_POST['area'], $_POST['puesto'], $_POST['tipo'])) {
         // Obtener los datos del formulario
@@ -36,7 +37,7 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
         $consultaArea = $conex->prepare("SELECT IdArea FROM Area WHERE NombreArea = ?");
         $consultaArea->bind_param("s", $NombreArea);
         $consultaArea->execute();
-        $resultadoArea = $consultaArea->POST_result();
+        $resultadoArea = $consultaArea->get_result();
 
 
 
@@ -54,7 +55,9 @@ date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
     } else {
         $response = array('status' => 'error', 'message' => 'Datos incompletos.');
     }
-
+} else {
+    $response = array('status' => 'error', 'message' => 'Se requiere método POST.');
+}
 
 echo json_encode($response);
 exit();
