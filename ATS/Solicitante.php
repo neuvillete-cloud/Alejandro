@@ -142,7 +142,8 @@ if (!isset($_SESSION['NumNomina'])) {
                     mainContent.innerHTML = "";
 
                     // Evitar recargar elementos duplicados, como scripts o estilos
-                    // No cargues de nuevo los scripts y estilos que ya están incluidos.
+                    // Cargar el CSS para el contenido dinámico
+                    loadCSS("css/estilosSolicitante.css");
 
                     fetch(page)
                         .then(response => {
@@ -168,7 +169,16 @@ if (!isset($_SESSION['NumNomina'])) {
                 }
             });
         });
+
+        // Función para cargar dinámicamente el CSS
+        function loadCSS(cssFile) {
+            let link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = cssFile;
+            document.head.appendChild(link);
+        }
     });
+
 
 </script>
 
