@@ -45,6 +45,7 @@ document.getElementById('solicitudForm').addEventListener('submit', function (ev
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data.message);
             if (data.status === 'success') {
                 Swal.fire({
                     icon: 'success',
