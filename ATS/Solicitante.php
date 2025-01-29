@@ -141,60 +141,12 @@ if (!isset($_SESSION['NumNomina'])) {
                     // Limpiar el contenido actual de mainContent para evitar duplicados
                     mainContent.innerHTML = "";
 
-                    // Recargar el CSS y el formulario solo si no está ya cargado
-                    loadCSSIfNotLoaded("css/estilosSolicitante.css");
-
-                    fetch(page)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error al cargar la página');
-                            }
-                            return response.text();
-                        })
-                        .then(html => {
-                            // Aquí solo insertamos el contenido relevante, sin scripts ni estilos duplicados
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = html;
-
-                            // Buscar solo el contenido relevante de la página cargada
-                            const newContent = tempDiv.querySelector('.form-container') || tempDiv.querySelector('.content');
-
-                            if (newContent) {
-                                // Reemplazamos el contenido de 'mainContent' solo con el contenido relevante
-                                mainContent.innerHTML = newContent.innerHTML;
-
-                                // Forzar la recarga de los estilos después de actualizar el contenido
-                                reloadStyles();
-                            }
-                        })
-                        .catch(error => console.error('Error al cargar la página:', error));
+                    // Forzamos la recarga de la página para que los estilos se apliquen correctamente
+                    location.reload();
                 }
             });
         });
-
-        // Función para cargar dinámicamente el CSS si no está ya cargado
-        function loadCSSIfNotLoaded(cssFile) {
-            const existingLink = document.querySelector(`link[href="${cssFile}"]`);
-            if (!existingLink) {
-                let link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = cssFile;
-                document.head.appendChild(link);
-            }
-        }
-
-        // Función para forzar la recarga de los estilos
-        function reloadStyles() {
-            const links = document.querySelectorAll('link[rel="stylesheet"]');
-            links.forEach(link => {
-                link.href = link.href.split('?')[0] + '?' + new Date().getTime(); // Evitar cache
-            });
-        }
     });
-
-
-
-
 </script>
 
 <script src="js/funcionamientoModal.js"></script>
