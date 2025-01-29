@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $NumNomina='00001606';
 
         // Asignar NombreReemplazo solo si el tipo de contratación es 'reemplazo'
-        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_GET['reemplazoNombre'])) ? $_GET['reemplazoNombre'] : null;
+        $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_GET['reemplazoNombre'])) ? $_GET['reemplazoNombre'] : "";
 
         if (!$NumNomina) {
             echo json_encode(['status' => 'error', 'message' => 'No se encontró el número de nómina en la sesión.']);
