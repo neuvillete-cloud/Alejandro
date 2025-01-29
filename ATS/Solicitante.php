@@ -128,43 +128,46 @@ if (!isset($_SESSION['NumNomina'])) {
                 .catch(error => console.error('Error al cerrar sesión:', error));
         });
 
-        // Cargar contenido dinámicamente sin recargar la página
-        const links = document.querySelectorAll('.sidebar a');
-        const mainContent = document.getElementById('mainContent');
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll('.sidebar a');
+            const mainContent = document.getElementById('mainContent');
 
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = link.getAttribute('data-page');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page');
 
-                if (page) {
-                    // Limpiar el contenido actual de mainContent para evitar duplicados
-                    mainContent.innerHTML = "";
+                    if (page) {
+                        fetch(page)
+                            .then(response => response.text())
+                            .then(html => {
+                                // Crear un contenedor temporal para analizar el HTML recibido
+                                let tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
 
-                    // Cargar la nueva página y su contenido
-                    fetch(page)
-                        .then(response => response.text())
-                        .then(html => {
-                            // Establecer el nuevo contenido en el contenedor
-                            mainContent.innerHTML = html;
+                                // Extraer solo el contenido de <main> de la nueva página y reemplazarlo en mainContent
+                                let newMain = tempDiv.querySelector('main');
+                                if (newMain) {
+                                    mainContent.innerHTML = newMain.innerHTML;
+                                }
 
-                            // Recargar los estilos del formulario
-                            loadStyles();
-                        })
-                        .catch(error => console.error('Error al cargar la página:', error));
-                }
+                                // Recargar los estilos del formulario
+                                loadStyles();
+                            })
+                            .catch(error => console.error('Error al cargar la página:', error));
+                    }
+                });
             });
+
+            // Función para recargar los estilos (evitar que no se apliquen)
+            function loadStyles() {
+                let link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.href = "css/estilosSolicitante.css";
+                document.head.appendChild(link);
+            }
         });
 
-        // Función para recargar los estilos (evitar que no se apliquen)
-        function loadStyles() {
-            // Añadir los estilos de forma dinámica
-            let link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "css/estilosSolicitante.css"; // Asegúrate de que el path sea correcto
-            document.head.appendChild(link);
-        }
-    });
 
 </script>
 
