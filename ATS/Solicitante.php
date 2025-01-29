@@ -141,9 +141,8 @@ if (!isset($_SESSION['NumNomina'])) {
                     // Limpiar el contenido actual de mainContent para evitar duplicados
                     mainContent.innerHTML = "";
 
-                    // Evitar recargar elementos duplicados, como scripts o estilos
-                    // Cargar el CSS para el contenido dinámico
-                    loadCSS("css/estilosSolicitante.css");
+                    // Recargar el CSS solo si no está ya cargado
+                    loadCSSIfNotLoaded("css/estilosSolicitante.css");
 
                     fetch(page)
                         .then(response => {
@@ -170,14 +169,18 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
 
-        // Función para cargar dinámicamente el CSS
-        function loadCSS(cssFile) {
-            let link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = cssFile;
-            document.head.appendChild(link);
+        // Función para cargar dinámicamente el CSS si no está ya cargado
+        function loadCSSIfNotLoaded(cssFile) {
+            const existingLink = document.querySelector(`link[href="${cssFile}"]`);
+            if (!existingLink) {
+                let link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = cssFile;
+                document.head.appendChild(link);
+            }
         }
     });
+
 
 
 </script>
