@@ -4,16 +4,20 @@ include_once("ConexionBD.php");
 
 date_default_timezone_set('America/Mexico_City'); // Establecer zona horaria
 
+$Nombre = $_GET['nombre'];
+$NombreArea = $_GET['area'];
+$Puesto = $_GET['puesto'];
+$TipoContratacion = $_GET['tipo'];
+
+echo $Nombre;
+
 // Revisar si la solicitud es GET
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Validar que todos los datos requeridos están presentes
     if (isset($_GET['nombre'], $_GET['area'], $_GET['puesto'], $_GET['tipo'])) {
         // Obtener los datos del formulario
         $NumNomina = $_SESSION['NumNomina'] ?? null; // Obtener NumNomina desde la sesión
-        $Nombre = $_GET['nombre'];
-        $NombreArea = $_GET['area'];
-        $Puesto = $_GET['puesto'];
-        $TipoContratacion = $_GET['tipo'];
+
 
         // Asignar NombreReemplazo solo si el tipo de contratación es 'reemplazo'
         $NombreReemplazo = ($TipoContratacion == 'reemplazo' && isset($_GET['reemplazoNombre'])) ? $_GET['reemplazoNombre'] : null;
