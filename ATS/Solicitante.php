@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if (!isset($_SESSION['NumNomina'])) {
@@ -34,28 +33,25 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 <nav class="sidebar" id="sidebar">
     <ul>
-        <li><a href="#">Inicio</a></li>
-        <li><a href="#">Seguimiento</a></li>
-        <li><a href="#">Históricos</a></li>
-        <li><a href="#">Configuraciones</a></li>
+        <li><a href="#" data-page="inicio.php">Inicio</a></li>
+        <li><a href="#" data-page="seguimiento.php">Seguimiento</a></li>
+        <li><a href="#" data-page="historicos.php">Históricos</a></li>
+        <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
-<main class="main-content">
+<main class="main-content" id="mainContent">
     <section class="form-container">
         <h1>Registrar Solicitud</h1>
         <form id="solicitudForm">
-            <!-- Campo Nombre -->
             <label for="nombre">Nombre del Solicitante</label>
             <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre completo" required>
 
-            <!-- Campo Área -->
             <label for="area">Área</label>
             <input type="text" id="area" name="area" placeholder="Ingresa el área correspondiente" required>
 
             <label for="puesto">Puesto</label>
             <input type="text" id="puesto" name="puesto" placeholder="Ingresa el puesto solicitado" required>
 
-            <!-- Campo Tipo -->
             <label for="tipo">Tipo de Solicitud</label>
             <select id="tipo" name="tipo" required>
                 <option value="" disabled selected>Selecciona una opción</option>
@@ -63,13 +59,11 @@ if (!isset($_SESSION['NumNomina'])) {
                 <option value="reemplazo">Reemplazo</option>
             </select>
 
-            <!-- Campo Reemplazo (solo visible si el tipo es "Reemplazo") -->
             <div id="reemplazoFields" style="display: none;">
                 <label for="reemplazoNombre">Nombre de la Persona Reemplazada</label>
                 <input type="text" id="reemplazoNombre" name="reemplazoNombre" placeholder="Ingresa el nombre del reemplazo">
-
             </div>
-            <!-- Botón para enviar el formulario -->
+
             <button type="submit" class="btn-submit">Registrar</button>
         </form>
     </section>
@@ -89,58 +83,73 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
-
-<!-- Script para mostrar campos condicionales -->
+<!-- Scripts -->
 <script>
-    const tipoSelect = document.getElementById('tipo');
-    const reemplazoFields = document.getElementById('reemplazoFields');
+    document.addEventListener("DOMContentLoaded", function () {
+        const tipoSelect = document.getElementById('tipo');
+        const reemplazoFields = document.getElementById('reemplazoFields');
 
-    tipoSelect.addEventListener('change', () => {
-        if (tipoSelect.value === 'reemplazo') {
-            reemplazoFields.style.display = 'block';
-        } else {
-            reemplazoFields.style.display = 'none';
-        }
-    });
+        tipoSelect.addEventListener('change', () => {
+            reemplazoFields.style.display = tipoSelect.value === 'reemplazo' ? 'block' : 'none';
+        });
 
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
 
-    menuToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
 
-    const userProfile = document.getElementById('profilePic');
-    const profileDropdown = document.getElementById('profileDropdown');
+        const userProfile = document.getElementById('profilePic');
+        const profileDropdown = document.getElementById('profileDropdown');
 
-    userProfile.addEventListener('click', () => {
-        profileDropdown.classList.toggle('active');
-    });
+        userProfile.addEventListener('click', () => {
+            profileDropdown.classList.toggle('active');
+        });
 
-    document.addEventListener('click', (e) => {
-        if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
-            profileDropdown.classList.remove('active');
-        }
-    });
+        document.addEventListener('click', (e) => {
+            if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
+                profileDropdown.classList.remove('active');
+            }
+        });
 
-    const logoutLink = document.getElementById('logout');
+        const logoutLink = document.getElementById('logout');
 
-    logoutLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        fetch('dao/logout.php', { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = 'login.php';
-                } else {
-                    alert('Error al cerrar sesión. Inténtalo nuevamente.');
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('dao/logout.php', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'login.php';
+                    } else {
+                        alert('Error al cerrar sesión. Inténtalo nuevamente.');
+                    }
+                })
+                .catch(error => console.error('Error al cerrar sesión:', error));
+        });
+
+        // Cargar contenido dinámicamente sin recargar la página
+        const links = document.querySelectorAll('.sidebar a');
+        const mainContent = document.getElementById('mainContent');
+
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+
+                if (page) {
+                    fetch(page)
+                        .then(response => response.text())
+                        .then(html => {
+                            mainContent.innerHTML = html;
+                        })
+                        .catch(error => console.error('Error al cargar la página:', error));
                 }
-            })
-            .catch(error => {
-                console.error('Error al cerrar sesión:', error);
             });
+        });
     });
-
 </script>
+
 <script src="js/funcionamientoModal.js"></script>
 <script src="js/jsSolicitante.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
