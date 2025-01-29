@@ -36,8 +36,6 @@ document.getElementById('solicitudForm').addEventListener('submit', function (ev
     formData.append('tipo', tipo);
     if (tipo === 'reemplazo') {
         formData.append('reemplazoNombre', reemplazoNombre);
-    }else{
-        formData.append('reemplazoNombre', "");
     }
 
     // Enviar los datos al servidor mediante fetch
