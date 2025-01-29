@@ -128,7 +128,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 .catch(error => console.error('Error al cerrar sesión:', error));
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+       {
             const links = document.querySelectorAll('.sidebar a');
             const mainContent = document.getElementById('mainContent');
 
