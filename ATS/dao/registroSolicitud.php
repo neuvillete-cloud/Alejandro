@@ -67,10 +67,14 @@ exit();
 // Función para registrar la solicitud en la base de datos
 function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus,$IdDescripcion)
 {
+
+    echo 'aqui 4';
     $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus,IdDescripcion)
                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
     $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
     $resultado = $insertSolicitud->execute();
+
+    echo 'aqui 5';
 
     if ($resultado) {
         $response = array('status' => 'success', 'message' => 'Solicitud registrada exitosamente', 'folio' => $FolioSolicitud);
