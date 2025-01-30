@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const nombreInput = document.getElementById('nombre'); // Campo de nombre en el formulario
     const areaInput = document.getElementById('area'); // Campo de área en el formulario
 
-    // Función para obtener datos del usuario
+    // 🔥 Función reutilizable para obtener datos del usuario
     async function fetchUserData() {
         try {
             const response = await fetch('dao/daoModal.php');
@@ -39,13 +39,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Llamar a fetchUserData al cargar la página para el encabezado y los campos del formulario
-    const userData = await fetchUserData();
+    // 🔥 Llamamos a fetchUserData al cargar la página por primera vez
+    await fetchUserData();
 
-    // Evento para abrir el modal
+    // Evento para abrir el modal con los datos actualizados
     openModalBtn.addEventListener('click', async (event) => {
         event.preventDefault();
 
+        const userData = await fetchUserData();
         if (userData) {
             const { nombre, numNomina, area } = userData;
 

@@ -177,7 +177,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Función para ejecutar scripts en la nueva pestaña cargada
         function ejecutarScripts(container) {
             const scripts = container.querySelectorAll('script');
             scripts.forEach(oldScript => {
@@ -191,7 +190,11 @@ if (!isset($_SESSION['NumNomina'])) {
                 document.body.appendChild(newScript);
                 document.body.removeChild(newScript);
             });
+
+            // 🔥 Volvemos a rellenar los datos después de cambiar de pestaña
+            fetchUserData();
         }
+
 
         // Función para recargar los estilos y evitar que desaparezcan.
         function loadStyles() {
