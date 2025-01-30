@@ -128,7 +128,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 .catch(error => console.error('Error al cerrar sesión:', error));
         });
 
-        // Cargar contenido dinámicamente sin recargar la página
+        // Cargar contenido dinámicamente sin recargar toda la página
         const links = document.querySelectorAll('.sidebar a');
         const mainContent = document.getElementById('mainContent');
 
@@ -138,27 +138,37 @@ if (!isset($_SESSION['NumNomina'])) {
                 const page = link.getAttribute('data-page');
 
                 if (page) {
-                    // Limpiar el contenido actual de mainContent para evitar duplicados
-                    mainContent.innerHTML = "";
-
-                    // Cargar la nueva página y su contenido
                     fetch(page)
                         .then(response => response.text())
                         .then(html => {
-                            // Establecer el nuevo contenido en el contenedor
-                            mainContent.innerHTML = html;
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newContent = doc.querySelector('.main-content');
 
-                            // Recargar los estilos del formulario
-                            loadStyles();
+                            if (newContent) {
+                                mainContent.innerHTML = newContent.innerHTML;
+                                ejecutarScripts(newContent);
+                                loadStyles(); // Recargar estilos
+                            }
                         })
                         .catch(error => console.error('Error al cargar la página:', error));
                 }
             });
         });
 
-        // Función para recargar los estilos (evitar que no se apliquen)
+        // Función para ejecutar scripts de la página cargada
+        function ejecutarScripts(content) {
+            const scripts = content.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                newScript.textContent = oldScript.textContent;
+                document.body.appendChild(newScript);
+                document.body.removeChild(newScript); // Evita duplicaciones
+            });
+        }
+
+        // Función para recargar los estilos
         function loadStyles() {
-            // Añadir los estilos de forma dinámica
             let link = document.createElement("link");
             link.rel = "stylesheet";
             link.href = "css/estilosSolicitante.css"; // Asegúrate de que el path sea correcto
