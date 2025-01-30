@@ -188,7 +188,7 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Función para recargar los estilos y evitar que desaparezcan
+        // Función para recargar los estilos y evitar que desaparezcan.
         function loadStyles() {
             let link = document.createElement("link");
             link.rel = "stylesheet";
