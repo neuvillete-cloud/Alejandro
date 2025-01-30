@@ -86,88 +86,102 @@ if (!isset($_SESSION['NumNomina'])) {
 <!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Manejo del cambio de tipo de solicitud
         const tipoSelect = document.getElementById('tipo');
         const reemplazoFields = document.getElementById('reemplazoFields');
 
-        tipoSelect.addEventListener('change', () => {
-            reemplazoFields.style.display = tipoSelect.value === 'reemplazo' ? 'block' : 'none';
-        });
+        if (tipoSelect) {
+            tipoSelect.addEventListener('change', () => {
+                reemplazoFields.style.display = tipoSelect.value === 'reemplazo' ? 'block' : 'none';
+            });
+        }
 
+        // Menú lateral (sidebar)
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
 
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
 
+        // Menú de perfil
         const userProfile = document.getElementById('profilePic');
         const profileDropdown = document.getElementById('profileDropdown');
 
-        userProfile.addEventListener('click', () => {
-            profileDropdown.classList.toggle('active');
-        });
+        if (userProfile && profileDropdown) {
+            userProfile.addEventListener('click', () => {
+                profileDropdown.classList.toggle('active');
+            });
 
-        document.addEventListener('click', (e) => {
-            if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
-                profileDropdown.classList.remove('active');
-            }
-        });
+            document.addEventListener('click', (e) => {
+                if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
+                    profileDropdown.classList.remove('active');
+                }
+            });
+        }
 
+        // Cerrar sesión con fetch
         const logoutLink = document.getElementById('logout');
 
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            fetch('dao/logout.php', { method: 'POST' })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = 'login.php';
-                    } else {
-                        alert('Error al cerrar sesión. Inténtalo nuevamente.');
-                    }
-                })
-                .catch(error => console.error('Error al cerrar sesión:', error));
-        });
+        if (logoutLink) {
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                fetch('dao/logout.php', { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = 'login.php';
+                        } else {
+                            alert('Error al cerrar sesión. Inténtalo nuevamente.');
+                        }
+                    })
+                    .catch(error => console.error('Error al cerrar sesión:', error));
+            });
+        }
 
-        // Cargar contenido dinámicamente sin recargar toda la página
+        // Cargar pestañas sin recargar la página
         const links = document.querySelectorAll('.sidebar a');
         const mainContent = document.getElementById('mainContent');
 
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = link.getAttribute('data-page');
+        if (links.length > 0 && mainContent) {
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page');
 
-                if (page) {
-                    fetch(page)
-                        .then(response => response.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const newContent = doc.querySelector('.main-content');
+                    if (page) {
+                        fetch(page)
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                const newContent = doc.querySelector('.main-content');
 
-                            if (newContent) {
-                                mainContent.innerHTML = newContent.innerHTML;
-                                ejecutarScripts(newContent);
-                                loadStyles(); // Recargar estilos
-                            }
-                        })
-                        .catch(error => console.error('Error al cargar la página:', error));
-                }
+                                if (newContent) {
+                                    mainContent.innerHTML = newContent.innerHTML;
+                                    ejecutarScripts(mainContent);
+                                    loadStyles(); // Asegurar que los estilos no se pierdan
+                                }
+                            })
+                            .catch(error => console.error('Error al cargar la página:', error));
+                    }
+                });
             });
-        });
+        }
 
-        // Función para ejecutar scripts de la página cargada
-        function ejecutarScripts(content) {
-            const scripts = content.querySelectorAll('script');
+        // Función para ejecutar scripts dentro de la nueva pestaña cargada
+        function ejecutarScripts(container) {
+            const scripts = container.querySelectorAll('script');
             scripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
                 newScript.textContent = oldScript.textContent;
                 document.body.appendChild(newScript);
-                document.body.removeChild(newScript); // Evita duplicaciones
+                document.body.removeChild(newScript); // Evitar duplicaciones
             });
         }
 
-        // Función para recargar los estilos
+        // Función para recargar los estilos (evitar que se pierdan al cambiar de pestaña)
         function loadStyles() {
             let link = document.createElement("link");
             link.rel = "stylesheet";
@@ -175,6 +189,7 @@ if (!isset($_SESSION['NumNomina'])) {
             document.head.appendChild(link);
         }
     });
+
 
 </script>
 
