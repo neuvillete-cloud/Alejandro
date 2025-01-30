@@ -156,14 +156,14 @@ if (!isset($_SESSION['NumNomina'])) {
                             .then(html => {
                                 const parser = new DOMParser();
                                 const doc = parser.parseFromString(html, 'text/html');
-                                const newBody = doc.querySelector('body');
+                                const newContent = doc.querySelector('.main-content');
 
-                                if (newBody) {
-                                    mainContent.innerHTML = newBody.innerHTML;
-                                    ejecutarScripts(newBody);
+                                if (newContent) {
+                                    mainContent.innerHTML = newContent.innerHTML; // Solo reemplazamos .main-content
+                                    ejecutarScripts(mainContent);
                                     loadStyles();
                                 } else {
-                                    console.error('No se encontró contenido válido en la página cargada.');
+                                    console.error('No se encontró el contenido .main-content en la página cargada.');
                                 }
                             })
                             .catch(error => console.error('Error al cargar la página:', error));
@@ -196,8 +196,6 @@ if (!isset($_SESSION['NumNomina'])) {
             document.head.appendChild(link);
         }
     });
-
-
 
 </script>
 
