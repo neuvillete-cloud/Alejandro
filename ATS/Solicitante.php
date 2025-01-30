@@ -146,9 +146,9 @@ if (!isset($_SESSION['NumNomina'])) {
 
         if (links.length > 0 && mainContent) {
             links.forEach(link => {
-                link.addEventListener('click', (e) => {
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
-                    const page = link.getAttribute('data-page');
+                    const page = this.getAttribute('data-page'); // Obtener la URL de la pestaña
 
                     if (page) {
                         fetch(page)
@@ -156,12 +156,14 @@ if (!isset($_SESSION['NumNomina'])) {
                             .then(html => {
                                 const parser = new DOMParser();
                                 const doc = parser.parseFromString(html, 'text/html');
-                                const newContent = doc.querySelector('.main-content');
+                                const newContent = doc.querySelector('.main-content'); // Asegurar que reemplaza solo el contenido
 
                                 if (newContent) {
                                     mainContent.innerHTML = newContent.innerHTML;
                                     ejecutarScripts(mainContent);
-                                    loadStyles(); // Asegurar que los estilos no se pierdan
+                                    loadStyles(); // Recargar estilos
+                                } else {
+                                    console.error('No se encontró el contenedor .main-content en la página cargada.');
                                 }
                             })
                             .catch(error => console.error('Error al cargar la página:', error));
@@ -170,18 +172,23 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Función para ejecutar scripts dentro de la nueva pestaña cargada
+        // Función para ejecutar scripts en la nueva pestaña cargada
         function ejecutarScripts(container) {
             const scripts = container.querySelectorAll('script');
             scripts.forEach(oldScript => {
                 const newScript = document.createElement('script');
-                newScript.textContent = oldScript.textContent;
+                if (oldScript.src) {
+                    newScript.src = oldScript.src; // Si el script tiene un src, se vuelve a cargar
+                    newScript.async = true;
+                } else {
+                    newScript.textContent = oldScript.textContent; // Si es inline, se copia el contenido
+                }
                 document.body.appendChild(newScript);
-                document.body.removeChild(newScript); // Evitar duplicaciones
+                document.body.removeChild(newScript); // Evita duplicaciones
             });
         }
 
-        // Función para recargar los estilos (evitar que se pierdan al cambiar de pestaña)
+        // Función para recargar los estilos y evitar que desaparezcan
         function loadStyles() {
             let link = document.createElement("link");
             link.rel = "stylesheet";
@@ -189,6 +196,7 @@ if (!isset($_SESSION['NumNomina'])) {
             document.head.appendChild(link);
         }
     });
+
 
 
 </script>
