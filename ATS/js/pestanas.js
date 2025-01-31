@@ -2,17 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar a');
     const mainContent = document.getElementById('mainContent');
 
-    // Función para verificar si estamos en la página principal y recargar los datos
-    const cargarDatosPaginaPrincipal = async (page) => {
-        if (page === 'Solicitante.php') {
-            if (window.fetchUserData) {
-                await fetchUserData();  // Vuelve a cargar los datos del usuario
-            } else {
-                console.warn('fetchUserData no está definido en este momento.');
-            }
-        }
-    };
-
     if (links.length > 0 && mainContent) {
         links.forEach(link => {
             link.addEventListener('click', async function (e) {
@@ -21,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (page) {
                     try {
+                        // Si el usuario regresa a la página principal, recargamos la página
+                        if (page === 'Solicitante.php') {
+                            location.reload(); // 🔄 Recarga la página completamente
+                            return; // Detenemos la ejecución para evitar una doble carga
+                        }
+
                         // Cargar el contenido de la nueva página
                         const response = await fetch(page);
                         const html = await response.text();
@@ -37,9 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             // Recargamos los estilos
                             loadStyles();
-
-                            // Llamamos a la función que cargará los datos si estamos en la página principal
-                            await cargarDatosPaginaPrincipal(page);
                         } else {
                             console.error('No se encontró contenido en la página cargada.');
                         }
@@ -51,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Esta función se encargará de ejecutar los scripts de la nueva página
+    // Esta función ejecuta los scripts de la nueva página cargada dinámicamente
     async function ejecutarScripts(container) {
         const scripts = container.querySelectorAll('script');
         for (const oldScript of scripts) {
@@ -64,11 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.body.appendChild(newScript);
             document.body.removeChild(newScript);
-        }
-
-        // Asegurémonos de que se recarguen los datos del usuario después de ejecutar los scripts
-        if (window.fetchUserData) {
-            await fetchUserData();
         }
     }
 
