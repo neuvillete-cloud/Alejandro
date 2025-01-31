@@ -139,8 +139,76 @@ if (!isset($_SESSION['NumNomina'])) {
                     .catch(error => console.error('Error al cerrar sesión:', error));
             });
         }
+
+        // Cargar pestañas sin recargar la página
+        const links = document.querySelectorAll('.sidebar a');
+        const mainContent = document.getElementById('mainContent');
+
+        if (links.length > 0 && mainContent) {
+            links.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+
+                    if (page) {
+                        fetch(page)
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+
+                                // Buscamos el contenido de la nueva página dentro de .main-content
+                                let newContent = doc.querySelector('.main-content');
+                                if (!newContent) {
+                                    newContent = doc.body; // Si no tiene .main-content, usamos el body entero
+                                }
+
+                                if (newContent) {
+                                    mainContent.innerHTML = newContent.innerHTML; // Reemplazamos solo el contenido
+                                    ejecutarScripts(mainContent);
+                                    loadStyles();
+                                } else {
+                                    console.error('No se encontró contenido en la página cargada.');
+                                }
+                            })
+                            .catch(error => console.error('Error al cargar la página:', error));
+                    }
+                });
+            });
+        }
+
+        function ejecutarScripts(container) {
+            const scripts = container.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                    newScript.async = true;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                document.body.appendChild(newScript);
+                document.body.removeChild(newScript);
+            });
+
+            // 🔥 Volvemos a rellenar los datos después de cambiar de pestaña
+            fetchUserData();
+        }
+
+
+        // Función para recargar los estilos y evitar que desaparezcan.
+        function loadStyles() {
+            let link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = "css/estilosSolicitante.css";
+            document.head.appendChild(link);
+        }
+    });
+
+
+
 </script>
-<script src="js/pestanas.js"></script>
+
 <script src="js/funcionamientoModal.js"></script>
 <script src="js/jsSolicitante.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
