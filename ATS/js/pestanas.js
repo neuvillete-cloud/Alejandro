@@ -4,42 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (links.length > 0 && mainContent) {
         links.forEach(link => {
-            link.addEventListener('click', function (e) {
+            link.addEventListener('click', async function (e) {
                 e.preventDefault();
                 const page = this.getAttribute('data-page');
 
                 if (page) {
-                    fetch(page)
-                        .then(response => response.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
+                    try {
+                        const response = await fetch(page);
+                        const html = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
 
-                            let newContent = doc.querySelector('.main-content') || doc.body;
-                            if (newContent) {
-                                mainContent.innerHTML = newContent.innerHTML;
-                                ejecutarScripts(mainContent);
-                                loadStyles();
+                        let newContent = doc.querySelector('.main-content') || doc.body;
+                        if (newContent) {
+                            mainContent.innerHTML = newContent.innerHTML;
+                            ejecutarScripts(mainContent);
+                            loadStyles();
 
-                                // ✅ Si volvemos a "Solicitante.php", recargar datos del usuario
-                                if (page === 'Solicitante.php' && window.fetchUserData) {
-                                    setTimeout(() => {
-                                        window.fetchUserData();
-                                    }, 100); // Pequeño delay para asegurar la carga del DOM
-                                }
-                            } else {
-                                console.error('No se encontró contenido en la página cargada.');
+                            // ✅ Si volvemos a la página del formulario, rellenamos los datos nuevamente
+                            if (page === 'Solicitante.php' && window.fetchUserData) {
+                                await fetchUserData();
                             }
-                        })
-                        .catch(error => console.error('Error al cargar la página:', error));
+                        } else {
+                            console.error('No se encontró contenido en la página cargada.');
+                        }
+                    } catch (error) {
+                        console.error('Error al cargar la página:', error);
+                    }
                 }
             });
         });
     }
 
-    function ejecutarScripts(container) {
+    async function ejecutarScripts(container) {
         const scripts = container.querySelectorAll('script');
-        scripts.forEach(oldScript => {
+        for (const oldScript of scripts) {
             const newScript = document.createElement('script');
             if (oldScript.src) {
                 newScript.src = oldScript.src;
@@ -49,11 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.body.appendChild(newScript);
             document.body.removeChild(newScript);
-        });
+        }
 
-        // 🔥 Volver a cargar los datos del usuario si fetchUserData está disponible
+        // ✅ Llamamos a `fetchUserData` otra vez para recargar los datos en los campos del formulario
         if (window.fetchUserData) {
-            window.fetchUserData();
+            await fetchUserData();
         }
     }
 
