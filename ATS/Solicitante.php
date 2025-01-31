@@ -148,7 +148,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 
 </script>
-
+<script src="js/pestanas.js"></script>
 <script src="js/funcionamientoModal.js"></script>
 <script src="js/jsSolicitante.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
