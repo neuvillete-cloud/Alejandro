@@ -19,14 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (newContent) {
                             mainContent.innerHTML = newContent.innerHTML;
 
-                            // ⏳ Esperamos a que ejecutarScripts termine antes de seguir
+                            // Ejecutar los scripts de la página cargada
                             await ejecutarScripts(mainContent);
 
+                            // Recargar los estilos
                             loadStyles();
 
-                            // ✅ Si volvemos a la página del formulario, rellenamos los datos nuevamente
-                            if (page === 'Solicitante.php' && window.fetchUserData) {
-                                await fetchUserData();
+                            // Ahora, después de cargar la nueva página, recargamos los datos del formulario
+                            // Solo lo hacemos en la página principal o la página relevante
+                            if (page === 'Solicitante.php') {
+                                await fetchUserData();  // Asegurémonos de que los datos se recarguen
                             }
                         } else {
                             console.error('No se encontró contenido en la página cargada.');
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Esta función se encargará de ejecutar los scripts de la nueva página
     async function ejecutarScripts(container) {
         const scripts = container.querySelectorAll('script');
         for (const oldScript of scripts) {
@@ -53,12 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(newScript);
         }
 
-        // ✅ Aseguramos que fetchUserData() se ejecuta después de cargar los scripts
-        if (window.fetchUserData) {
-            await fetchUserData();
-        }
+        // Asegurarnos de que se llamen los datos del usuario después de cargar los scripts
+        await fetchUserData();
     }
 
+    // Función para recargar los estilos y evitar que desaparezcan
     function loadStyles() {
         let link = document.createElement("link");
         link.rel = "stylesheet";
