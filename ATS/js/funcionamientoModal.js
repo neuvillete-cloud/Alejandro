@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-function precarga() {
+async function precarga() {
 
     const modal = document.getElementById('profileModal');
     const openModalBtn = document.querySelector('#profileDropdown a:first-child');
