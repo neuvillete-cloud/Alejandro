@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Asegúrate de que la página principal se cargue los datos siempre
     const cargarDatosPaginaPrincipal = async (page) => {
-        if (page === 'Solicitudes.php') { // Cambia 'pagina-principal.html' al nombre real de tu página principal
+        if (page === 'Solicitante.php') {  // Cambia 'pagina-principal.html' al nombre real de tu página principal
             await fetchUserData();  // Llamamos a fetchUserData para llenar los datos al volver a la página principal
         }
     };
