@@ -177,24 +177,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        function ejecutarScripts(container) {
-            const scripts = container.querySelectorAll('script');
-            scripts.forEach(oldScript => {
-                const newScript = document.createElement('script');
-                if (oldScript.src) {
-                    newScript.src = oldScript.src;
-                    newScript.async = true;
-                } else {
-                    newScript.textContent = oldScript.textContent;
-                }
-                document.body.appendChild(newScript);
-                document.body.removeChild(newScript);
-            });
-
-            // 🔥 Volvemos a rellenar los datos después de cambiar de pestaña
-            fetchUserData();
-        }
-
     });
 
 
