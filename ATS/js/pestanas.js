@@ -4,41 +4,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (links.length > 0 && mainContent) {
         links.forEach(link => {
-            link.addEventListener('click', async function (e) {  // 🔥 Hacemos el callback `async`
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
                 const page = this.getAttribute('data-page');
 
                 if (page) {
-                    try {
-                        const response = await fetch(page);
-                        const html = await response.text();
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
+                    fetch(page)
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
 
-                        let newContent = doc.querySelector('.main-content') || doc.body;
-                        if (newContent) {
-                            mainContent.innerHTML = newContent.innerHTML;
-                            ejecutarScripts(mainContent);
-                            loadStyles();
+                            let newContent = doc.querySelector('.main-content') || doc.body;
+                            if (newContent) {
+                                mainContent.innerHTML = newContent.innerHTML;
+                                ejecutarScripts(mainContent);
+                                loadStyles();
 
-                            // ✅ Esperar a que fetchUserData termine antes de continuar
-                            if (page === 'Solicitante.php' && window.fetchUserData) {
-                                await fetchUserData();
+                                // ✅ Si volvemos a "Solicitante.php", recargar datos del usuario
+                                if (page === 'Solicitante.php' && window.fetchUserData) {
+                                    setTimeout(() => {
+                                        window.fetchUserData();
+                                    }, 100); // Pequeño delay para asegurar la carga del DOM
+                                }
+                            } else {
+                                console.error('No se encontró contenido en la página cargada.');
                             }
-                        } else {
-                            console.error('No se encontró contenido en la página cargada.');
-                        }
-                    } catch (error) {
-                        console.error('Error al cargar la página:', error);
-                    }
+                        })
+                        .catch(error => console.error('Error al cargar la página:', error));
                 }
             });
         });
     }
 
-    async function ejecutarScripts(container) {
+    function ejecutarScripts(container) {
         const scripts = container.querySelectorAll('script');
-        for (const oldScript of scripts) {
+        scripts.forEach(oldScript => {
             const newScript = document.createElement('script');
             if (oldScript.src) {
                 newScript.src = oldScript.src;
@@ -48,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.body.appendChild(newScript);
             document.body.removeChild(newScript);
-        }
+        });
 
-        // 🔥 Esperamos a que fetchUserData termine antes de continuar
+        // 🔥 Volver a cargar los datos del usuario si fetchUserData está disponible
         if (window.fetchUserData) {
-            await fetchUserData();
+            window.fetchUserData();
         }
     }
 
