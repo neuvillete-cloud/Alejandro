@@ -18,7 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         let newContent = doc.querySelector('.main-content') || doc.body;
                         if (newContent) {
                             mainContent.innerHTML = newContent.innerHTML;
-                            ejecutarScripts(mainContent);
+
+                            // ⏳ Esperamos a que ejecutarScripts termine antes de seguir
+                            await ejecutarScripts(mainContent);
+
                             loadStyles();
 
                             // ✅ Si volvemos a la página del formulario, rellenamos los datos nuevamente
@@ -50,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(newScript);
         }
 
-        // ✅ Llamamos a `fetchUserData` otra vez para recargar los datos en los campos del formulario
+        // ✅ Aseguramos que fetchUserData() se ejecuta después de cargar los scripts
         if (window.fetchUserData) {
             await fetchUserData();
         }
