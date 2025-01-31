@@ -2,6 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar a');
     const mainContent = document.getElementById('mainContent');
 
+    // Asegúrate de que la página principal se cargue los datos siempre
+    const cargarDatosPaginaPrincipal = async (page) => {
+        if (page === 'Solicitudes.php') { // Cambia 'pagina-principal.html' al nombre real de tu página principal
+            await fetchUserData();  // Llamamos a fetchUserData para llenar los datos al volver a la página principal
+        }
+    };
+
     if (links.length > 0 && mainContent) {
         links.forEach(link => {
             link.addEventListener('click', async function (e) {
@@ -21,14 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Reemplazamos el contenido principal
                             mainContent.innerHTML = newContent.innerHTML;
 
-                            // Ejecutamos los scripts que vienen con la nueva página
+                            // Ejecutamos los scripts de la nueva página
                             await ejecutarScripts(mainContent);
 
                             // Recargamos los estilos
                             loadStyles();
 
-                            // Recargamos los datos del usuario (rellenamos los campos)
-                            await fetchUserData();
+                            // Llamamos a la función que cargará los datos si estamos en la página principal
+                            await cargarDatosPaginaPrincipal(page);
                         } else {
                             console.error('No se encontró contenido en la página cargada.');
                         }
@@ -56,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Asegurémonos de que se recarguen los datos del usuario después de ejecutar los scripts
-        await fetchUserData();  // Llamamos explícitamente a esta función
+        await fetchUserData();  // Llamamos explícitamente a esta función después de ejecutar los scripts
     }
 
     // Función para recargar los estilos y evitar que desaparezcan
