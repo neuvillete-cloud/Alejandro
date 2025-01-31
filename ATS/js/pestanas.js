@@ -4,46 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (links.length > 0 && mainContent) {
         links.forEach(link => {
-            link.addEventListener('click', function (e) {
+            link.addEventListener('click', async function (e) {  // 🔥 Hacemos el callback `async`
                 e.preventDefault();
                 const page = this.getAttribute('data-page');
 
                 if (page) {
-                    fetch(page)
-                        .then(response => response.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
+                    try {
+                        const response = await fetch(page);
+                        const html = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
 
-                            // Buscamos el contenido de la nueva página dentro de .main-content
-                            let newContent = doc.querySelector('.main-content');
-                            if (!newContent) {
-                                newContent = doc.body; // Si no tiene .main-content, usamos el body entero
+                        let newContent = doc.querySelector('.main-content') || doc.body;
+                        if (newContent) {
+                            mainContent.innerHTML = newContent.innerHTML;
+                            ejecutarScripts(mainContent);
+                            loadStyles();
+
+                            // ✅ Esperar a que fetchUserData termine antes de continuar
+                            if (page === 'Solicitante.php' && window.fetchUserData) {
+                                await fetchUserData();
                             }
-
-                            if (newContent) {
-                                mainContent.innerHTML = newContent.innerHTML; // Reemplazamos solo el contenido
-                                ejecutarScripts(mainContent);
-                                loadStyles();
-
-                                // ✅ Si volvemos a la página principal, actualizamos los datos
-                                if (page === 'Solicitante.php' && window.fetchUserData) {
-                                    window.fetchUserData();
-                                }
-                            } else {
-                                console.error('No se encontró contenido en la página cargada.');
-                            }
-                        })
-                        .catch(error => console.error('Error al cargar la página:', error));
+                        } else {
+                            console.error('No se encontró contenido en la página cargada.');
+                        }
+                    } catch (error) {
+                        console.error('Error al cargar la página:', error);
+                    }
                 }
             });
         });
     }
 
-    // 🔄 Ejecutar scripts en la nueva pestaña cargada
-    function ejecutarScripts(container) {
+    async function ejecutarScripts(container) {
         const scripts = container.querySelectorAll('script');
-        scripts.forEach(oldScript => {
+        for (const oldScript of scripts) {
             const newScript = document.createElement('script');
             if (oldScript.src) {
                 newScript.src = oldScript.src;
@@ -53,15 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.body.appendChild(newScript);
             document.body.removeChild(newScript);
-        });
+        }
 
-        // 🔥 Volvemos a rellenar los datos después de cambiar de pestaña
+        // 🔥 Esperamos a que fetchUserData termine antes de continuar
         if (window.fetchUserData) {
-            window.fetchUserData();
+            await fetchUserData();
         }
     }
 
-    // 🎨 Función para recargar los estilos y evitar que desaparezcan
     function loadStyles() {
         let link = document.createElement("link");
         link.rel = "stylesheet";
