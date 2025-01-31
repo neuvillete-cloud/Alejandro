@@ -195,14 +195,6 @@ if (!isset($_SESSION['NumNomina'])) {
             fetchUserData();
         }
 
-
-        // Función para recargar los estilos y evitar que desaparezcan.
-        function loadStyles() {
-            let link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "css/estilosSolicitante.css";
-            document.head.appendChild(link);
-        }
     });
 
 
