@@ -2,10 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.sidebar a');
     const mainContent = document.getElementById('mainContent');
 
-    // Asegúrate de que la página principal se cargue los datos siempre
+    // Función para verificar si estamos en la página principal y recargar los datos
     const cargarDatosPaginaPrincipal = async (page) => {
-        if (page === 'Solicitante.php') {  // Cambia 'pagina-principal.html' al nombre real de tu página principal
-            await fetchUserData();  // Llamamos a fetchUserData para llenar los datos al volver a la página principal
+        if (page === 'Solicitante.php') {
+            if (window.fetchUserData) {
+                await fetchUserData();  // Vuelve a cargar los datos del usuario
+            } else {
+                console.warn('fetchUserData no está definido en este momento.');
+            }
         }
     };
 
@@ -63,7 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Asegurémonos de que se recarguen los datos del usuario después de ejecutar los scripts
-        await fetchUserData();  // Llamamos explícitamente a esta función después de ejecutar los scripts
+        if (window.fetchUserData) {
+            await fetchUserData();
+        }
     }
 
     // Función para recargar los estilos y evitar que desaparezcan

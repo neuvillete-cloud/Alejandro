@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (nombreInput) nombreInput.value = nombre;
                 if (areaInput) areaInput.value = area;
 
+                // Actualiza el modal con los datos del usuario
+                document.getElementById('userName').textContent = nombre;
+                document.getElementById('userNumNomina').textContent = numNomina;
+                document.getElementById('userArea').textContent = area;
+
                 return { nombre, numNomina, area };
             } else {
                 console.error('Error al obtener datos:', data.message);
@@ -33,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 🛠️ Ejecutamos fetchUserData al inicio
+    // 🛠️ Ejecutamos fetchUserData al inicio para llenar los datos
     await fetchUserData();
 
     // Evento para abrir el modal con los datos actualizados
@@ -42,9 +47,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userData = await fetchUserData();
 
         if (userData) {
-            document.getElementById('userName').textContent = userData.nombre;
-            document.getElementById('userNumNomina').textContent = userData.numNomina;
-            document.getElementById('userArea').textContent = userData.area;
             modal.style.display = 'flex';
         }
     });
@@ -57,6 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.target === modal) modal.style.display = 'none';
     });
 
-    // 🔄 Exportar la función para que la use `navegacion.js`
+    // 🔄 Exportar la función para que la use `pestanas.js`
     window.fetchUserData = fetchUserData;
 });
