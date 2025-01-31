@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (page) {
                     try {
+                        // Cargar el contenido de la nueva página
                         const response = await fetch(page);
                         const html = await response.text();
                         const parser = new DOMParser();
@@ -17,19 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         let newContent = doc.querySelector('.main-content') || doc.body;
                         if (newContent) {
+                            // Reemplazamos el contenido principal
                             mainContent.innerHTML = newContent.innerHTML;
 
-                            // Ejecutar los scripts de la página cargada
+                            // Ejecutamos los scripts que vienen con la nueva página
                             await ejecutarScripts(mainContent);
 
-                            // Recargar los estilos
+                            // Recargamos los estilos
                             loadStyles();
 
-                            // Ahora, después de cargar la nueva página, recargamos los datos del formulario
-                            // Solo lo hacemos en la página principal o la página relevante
-                            if (page === 'Solicitante.php') {
-                                await fetchUserData();  // Asegurémonos de que los datos se recarguen
-                            }
+                            // Recargamos los datos del usuario (rellenamos los campos)
+                            await fetchUserData();
                         } else {
                             console.error('No se encontró contenido en la página cargada.');
                         }
@@ -56,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(newScript);
         }
 
-        // Asegurarnos de que se llamen los datos del usuario después de cargar los scripts
-        await fetchUserData();
+        // Asegurémonos de que se recarguen los datos del usuario después de ejecutar los scripts
+        await fetchUserData();  // Llamamos explícitamente a esta función
     }
 
     // Función para recargar los estilos y evitar que desaparezcan
