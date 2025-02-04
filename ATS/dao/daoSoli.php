@@ -1,6 +1,6 @@
 <?php
 
-include_once('db/db_Inventario.php');
+include_once("ConexionBD.php");
 
 
 //$marbete = $_GET['marbete'];
