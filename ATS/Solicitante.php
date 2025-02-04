@@ -11,8 +11,8 @@ if (!isset($_SESSION['NumNomina'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Solicitudes</title>
-    <link rel="stylesheet" href="css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="css/estilosSolicitante.css">
+    <link rel="stylesheet" href="css/dataTables.bootstrap4.css">
 </head>
 <body>
 <header class="header">
