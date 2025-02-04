@@ -38,7 +38,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <ul>
         <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
         <li><a href="#" data-page="seguimiento.php">Seguimiento</a></li>
-        <li><a href="#" data-page="historicos.php">Históricos</a></li>
+        <li><a href="historicos.php">Históricos</a></li>
         <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
