@@ -38,7 +38,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <ul>
         <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
         <li><a href="#" data-page="seguimiento.php">Seguimiento</a></li>
-        <li><a href="historicos.php">Históricos</a></li> <!-- Aquí está el cambio -->
+        <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
@@ -149,13 +149,12 @@ if (!isset($_SESSION['NumNomina'])) {
 
         links.forEach(link => {
             link.addEventListener('click', function (e) {
-                // Verificar si el enlace no es "Historicos"
-                if (link.getAttribute('href') !== 'historicos.php') {
-                    e.preventDefault(); // Prevenir comportamiento por defecto
+                // Verifica si el enlace tiene el atributo data-page
+                if (link.hasAttribute('data-page')) {
+                    e.preventDefault();  // Evita que recargue la página
                     const page = link.getAttribute('data-page');
 
-                    // Aquí puedes cargar contenido dinámicamente si es necesario
-                    // Cambia el contenido del mainContent de acuerdo al enlace
+                    // Aquí puedes manejar la carga dinámica de las páginas
                     loadPage(page);
                 }
             });
