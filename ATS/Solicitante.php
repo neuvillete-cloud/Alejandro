@@ -33,10 +33,10 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 <nav class="sidebar" id="sidebar">
     <ul>
-        <li><a href="Solicitante.php" >Inicio</a></li>
-        <li><a href="seguimiento.php">Seguimiento</a></li>
-        <li><a href="historicos.php">Históricos</a></li>
-        <li><a href="configuraciones.php">Configuraciones</a></li>
+        <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
+        <li><a href="#" data-page="seguimiento.php">Seguimiento</a></li>
+        <li><a href="#" data-page="historicos.php">Históricos</a></li>
+        <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
 <main class="main-content" id="mainContent">
@@ -139,6 +139,10 @@ if (!isset($_SESSION['NumNomina'])) {
                     .catch(error => console.error('Error al cerrar sesión:', error));
             });
         }
+
+        // Cargar pestañas sin recargar la página
+        const links = document.querySelectorAll('.sidebar a');
+        const mainContent = document.getElementById('mainContent');
     });
 
 
