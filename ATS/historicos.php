@@ -10,10 +10,12 @@ if (!isset($_SESSION['NumNomina'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historicos</title>
+    <title>Históricos</title>
     <link rel="stylesheet" href="css/estilosHistoricos.css">
 </head>
 <body>
+
+<!-- Header -->
 <header class="header">
     <div class="header-left">
         <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
@@ -31,15 +33,18 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </header>
+
+<!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
     <ul>
-        <li><a href="Solicitante.php" >Inicio</a></li>
+        <li><a href="Solicitante.php">Inicio</a></li>
         <li><a href="seguimiento.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
-<!-- Modal -->
+
+<!-- Modal Perfil -->
 <div id="profileModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeModal">&times;</span>
@@ -53,9 +58,9 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
+<!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
 
         // Menú lateral (sidebar)
         const menuToggle = document.getElementById('menuToggle');
@@ -100,6 +105,10 @@ if (!isset($_SESSION['NumNomina'])) {
                     .catch(error => console.error('Error al cerrar sesión:', error));
             });
         }
-    }
+    });
+</script>
+
+<script src="js/funcionamientoModal.js"></script>
+
 </body>
 </html>
