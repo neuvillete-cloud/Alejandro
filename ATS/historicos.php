@@ -45,12 +45,10 @@ if (!isset($_SESSION['NumNomina'])) {
         $('#historicosTable').DataTable({
             ajax: 'dao/daoSoli.php',
             columns: [
-                { data: 'id' },
-                { data: 'nombre' },
-                { data: 'area' },
-                { data: 'puesto' },
-                { data: 'tipo' },
-                { data: 'fecha' }
+                { "data": "NumNomina" },
+                { "data": "IdArea" },
+                { "data": "Puesto" },
+                { "data": "TipoContratacion" }
             ],
             dom: 'Blfrtip',
             buttons: [
