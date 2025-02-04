@@ -13,6 +13,8 @@ if (!isset($_SESSION['NumNomina'])) {
     <title>Formulario de Solicitudes</title>
     <link rel="stylesheet" href="css/estilosSolicitante.css">
     <link rel="stylesheet" href="css/estilosHistoricos.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
 </head>
 <body>
 <header class="header">
