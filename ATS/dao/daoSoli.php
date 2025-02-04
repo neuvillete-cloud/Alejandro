@@ -5,10 +5,10 @@ include_once("ConexionBD.php");
 
 //$marbete = $_GET['marbete'];
 
-ContadorApu();
+consulta();
 
 
-function ContadorApu()
+function consulta()
 {
     $con = new LocalConector();
     $conex = $con->conectar();
