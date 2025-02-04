@@ -146,7 +146,28 @@ if (!isset($_SESSION['NumNomina'])) {
         // Cargar pestañas sin recargar la página
         const links = document.querySelectorAll('.sidebar a');
         const mainContent = document.getElementById('mainContent');
+
+        links.forEach(link => {
+            link.addEventListener('click', function (e) {
+                // Verificar si el enlace no es "Historicos"
+                if (link.getAttribute('href') !== 'historicos.php') {
+                    e.preventDefault(); // Prevenir comportamiento por defecto
+                    const page = link.getAttribute('data-page');
+
+                    // Aquí puedes cargar contenido dinámicamente si es necesario
+                    // Cambia el contenido del mainContent de acuerdo al enlace
+                    loadPage(page);
+                }
+            });
+        });
+
+
     });
+
+    function loadPage(page) {
+        // Esta función debe cargar el contenido de la página dinámicamente
+        // Usando fetch o cualquier otro método que tengas para cargar el contenido.
+    }
 
 
 
