@@ -163,5 +163,6 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="js/funcionamientoModal.js"></script>
 <script src="js/jsSolicitante.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
