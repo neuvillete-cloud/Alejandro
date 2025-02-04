@@ -11,7 +11,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historicos</title>
-    <link rel="stylesheet" href="css/estilosHistoricos.css">
+
     <script src="js/jquery.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
