@@ -344,7 +344,7 @@ body::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 60px; /* Más separación de la tabla */
+    margin-bottom: 200px; /* Más separación de la tabla */
     width: 100%;
     padding: 10px 0;
 }
