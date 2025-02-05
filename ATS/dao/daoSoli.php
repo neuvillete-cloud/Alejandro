@@ -19,7 +19,7 @@ try {
     $conex = $con->conectar();
 
     // Consulta SQL para obtener todas las columnas de la tabla Solicitudes del usuario
-    $sql = "SELECT * FROM Solicitudes WHERE usuario = ?";
+    $sql = "SELECT * FROM Solicitudes WHERE NumNomina = ?";
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
