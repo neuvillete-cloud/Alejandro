@@ -342,10 +342,9 @@ body::after {
 
 /* 📌 Título de la tabla (h2) */
 h2 {
-    text-align: center;
     font-size: 1.8em;
     font-weight: bold;
-    color: #2e3c5c; /* 🔼 Mismo tono que el encabezado */
+    color: white; /* 🔼 Mismo tono que el encabezado */
     margin-bottom: 20px; /* 🔼 Más separación respecto a la tabla */
     position: relative;
     z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
