@@ -336,14 +336,7 @@ body::after {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Tabla */
-#solicitudesTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-    text-align: left;
+    position: relative;
 }
 
 /* Encabezados */
@@ -369,15 +362,28 @@ body::after {
     background-color: #e2e6ea;
 }
 
-/* 🔍 Buscador y filtros */
-.dataTables_wrapper {
+/* 🔍 Buscador y Selector de Registros */
+.top-controls {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Selector de registros */
+.dataTables_length {
+    flex: 1;
+    text-align: left;
 }
 
 /* Input de búsqueda */
+.dataTables_filter {
+    flex: 1;
+    text-align: right;
+}
+
+/* Estiliza el input de búsqueda */
 .dataTables_filter input {
     padding: 8px;
     border: 1px solid #ccc;
