@@ -12,6 +12,8 @@ if (!isset($_SESSION['NumNomina'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Históricos</title>
     <link rel="stylesheet" href="css/estilosHistoricos.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
@@ -43,6 +45,40 @@ if (!isset($_SESSION['NumNomina'])) {
         <li><a href="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
+
+<!-- Tabla de Solicitudes -->
+<div class="content">
+    <h2>Mis Solicitudes</h2>
+    <div class="table-container">
+        <table id="solicitudesTable" class="display">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Descripción</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($solicitudes as $solicitud): ?>
+                <tr>
+                    <td><?php echo $solicitud['fecha']; ?></td>
+                    <td><?php echo $solicitud['estado']; ?></td>
+                    <td><?php echo $solicitud['descripcion']; ?></td>
+                    <td><?php echo $solicitud['usuario']; ?></td>
+                    <td>
+                        <button class="copy-btn">Copiar</button>
+                        <button class="pdf-btn">PDF</button>
+                        <button class="excel-btn">Excel</button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 <!-- Modal Perfil -->
 <div id="profileModal" class="modal">
@@ -107,8 +143,56 @@ if (!isset($_SESSION['NumNomina'])) {
         }
     });
 </script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/SheetJS/0.17.1/xlsx.full.min.js"></script>
 <script src="js/funcionamientoModal.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Inicializar DataTable con paginación, filtros y búsqueda
+        $('#solicitudesTable').DataTable({
+            dom: 'lfrtip', // Opciones de visualización
+            pageLength: 10, // Número de registros por página
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros por página",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                paginate: {
+                    first: "Primero",
+                    last: "Último",
+                    next: "Siguiente",
+                    previous: "Anterior"
+                }
+            }
+        });
 
+        // Funcionalidad para copiar la tabla
+        $('.copy-btn').on('click', function() {
+            const table = document.querySelector('#solicitudesTable');
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            alert('Tabla copiada al portapapeles');
+        });
+
+        // Funcionalidad para exportar a PDF
+        $('.pdf-btn').on('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: '#solicitudesTable' });
+            doc.save('solicitudes.pdf');
+        });
+
+        // Funcionalidad para exportar a Excel
+        $('.excel-btn').on('click', function() {
+            const table = document.querySelector('#solicitudesTable');
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+            XLSX.writeFile(wb, 'solicitudes.xlsx');
+        });
+    });
+</script>
 </body>
 </html>
