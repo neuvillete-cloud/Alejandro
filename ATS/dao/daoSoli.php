@@ -2,56 +2,57 @@
 session_start(); // Iniciar sesión
 include_once("ConexionBD.php");
 
-if (isset($_SESSION['NumNomina'])) {
-    $numNomina = $_SESSION['NumNomina'];
+// Verificar si la sesión tiene el número de nómina
+if (!isset($_SESSION['NumNomina'])) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Número de nómina no especificado en la sesión'
+    ]);
+    exit;
+}
 
+$numNomina = $_SESSION['NumNomina'];
+
+try {
     // Crear una conexión usando la clase `LocalConector`
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta SQL para obtener las solicitudes del usuario
-    $sql = "
-        SELECT 
-            s.id AS ID,
-            s.fecha AS Fecha,
-            s.estado AS Estado,
-            s.descripcion AS Descripcion,
-            u.Nombre AS Usuario
-        FROM 
-            Solicitudes s
-        JOIN 
-            Usuario u ON s.usuario = u.NumNomina
-        WHERE 
-            s.usuario = ?
-    ";
+    // Consulta SQL para obtener todas las columnas de la tabla Solicitudes del usuario
+    $sql = "SELECT * FROM Solicitudes WHERE usuario = ?";
 
     $stmt = $conex->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Error en la preparación de la consulta: " . $conex->error);
+    }
 
     // Vincular parámetros y ejecutar la consulta
     $stmt->bind_param('s', $numNomina);
     $stmt->execute();
+    $result = $stmt->get_result();
 
     // Obtener los resultados
-    $result = $stmt->get_result();
-    $solicitudes = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $solicitudes[] = $row;
-    }
-
-    if (!empty($solicitudes)) {
-        $response = [
-            'status' => 'success',
-            'data' => $solicitudes
-        ];
-    } else {
-        $response = [
-            'status' => 'error',
-            'message' => 'No se encontraron solicitudes'
-        ];
-    }
+    $solicitudes = $result->fetch_all(MYSQLI_ASSOC);
 
     // Cerrar recursos
+    $stmt->close();
+    $conex->close();
+
+    // Devolver respuesta JSON
+    echo json_encode([
+        'status' => 'success',
+        'data' => $solicitudes
+    ]);
+} catch (Exception $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Error en la consulta: ' . $e->getMessage()
+    ]);
+}
+?>
+
+
+// Cerrar recursos
     $stmt->close();
     $conex->close();
 } else {
