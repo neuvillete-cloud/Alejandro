@@ -384,29 +384,29 @@ body::after {
     border-collapse: collapse;
     font-size: 16px;
     text-align: left;
+    background-color: #E6F4F9; /* 🔼 Fondo para toda la tabla */
 }
 
-/* Encabezados */
+/* 📌 Encabezados */
 #solicitudesTable thead {
-    background-color: #E6F4F9;
+    background-color: #A8DAE0; /* 🔼 Color más fuerte para el encabezado */
     color: #333;
     font-weight: bold;
 }
-
 /* Bordes y espaciado */
 #solicitudesTable th, #solicitudesTable td {
     padding: 14px 18px;
     border: 1px solid #ddd;
 }
 
-/* Filas alternas */
-#solicitudesTable tbody tr:nth-child(even) {
-    background-color: #E6F4F9;
+/* 📌 Filas (todas con fondo) */
+#solicitudesTable tbody tr {
+    background-color: #E6F4F9; /* 🔼 Fondo aplicado a TODAS las filas */
 }
 
-/* Hover */
+/* 📌 Hover */
 #solicitudesTable tbody tr:hover {
-    background-color: #e2e6ea;
+    background-color: #d4edf4; /* 🔼 Un poco más oscuro en hover */
 }
 
 /* Paginación */
