@@ -388,7 +388,7 @@ body::after {
 
 /* Encabezados */
 #solicitudesTable thead {
-    background-color: #f8f9fa;
+    background-color: #E6F4F9;
     color: #333;
     font-weight: bold;
 }
@@ -401,7 +401,7 @@ body::after {
 
 /* Filas alternas */
 #solicitudesTable tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
+    background-color: #E6F4F9;
 }
 
 /* Hover */
