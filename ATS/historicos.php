@@ -4,6 +4,12 @@ if (!isset($_SESSION['NumNomina'])) {
     header('Location: login.php'); // Redirige al login si no está autenticado
     exit;
 }
+
+$solicitudes = [
+    ["id" => 1, "fecha" => "2025-02-01", "estado" => "Aprobada", "descripcion" => "Solicitud de material", "usuario" => $_SESSION['NumNomina']],
+    ["id" => 2, "fecha" => "2025-02-02", "estado" => "Pendiente", "descripcion" => "Solicitud de equipo", "usuario" => $_SESSION['NumNomina']],
+    // ... más datos
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
