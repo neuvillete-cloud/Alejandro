@@ -404,6 +404,7 @@ body::after {
 #solicitudesTable tbody tr th,
 #solicitudesTable tbody tr td {
     background-color: #E6F4F9 !important; /* 🔼 Asegura que todas las columnas tengan color */
+    color: black !important; /* 🔼 Asegura que todo el texto sea negro */
 }
 
 
