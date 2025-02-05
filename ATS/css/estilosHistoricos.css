@@ -418,9 +418,10 @@ h2 {
 
 
 /* 📌 Hover */
-#solicitudesTable tbody tr:hover {
-    background-color: #d4edf4; /* 🔼 Un poco más oscuro en hover */
+#solicitudesTable tbody tr:hover td {
+    background-color: #d4edf4 !important; /* 🔼 Un poco más oscuro en hover */
 }
+
 
 /* Paginación */
 .dataTables_paginate {
