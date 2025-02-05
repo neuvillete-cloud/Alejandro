@@ -390,7 +390,7 @@ body::after {
 
 /* 📌 Encabezados */
 #solicitudesTable thead {
-    background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.30)); /* Azul cielo y azul claro pastel */
+    background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
     color: white;
     font-weight: bold;
 }
