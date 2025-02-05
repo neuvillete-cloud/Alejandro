@@ -400,10 +400,12 @@ body::after {
     border: 1px solid #ddd;
 }
 
-/* 📌 Filas (todas con fondo) */
-#solicitudesTable tbody tr {
-    background-color: #E6F4F9; /* 🔼 Fondo aplicado a TODAS las filas */
+/* 📌 Aplicar fondo a TODAS las filas y columnas */
+#solicitudesTable tbody tr th,
+#solicitudesTable tbody tr td {
+    background-color: #E6F4F9 !important; /* 🔼 Asegura que todas las columnas tengan color */
 }
+
 
 /* 📌 Hover */
 #solicitudesTable tbody tr:hover {
