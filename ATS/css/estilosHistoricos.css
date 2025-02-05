@@ -443,7 +443,7 @@ h2 {
 
 /* Hover en paginación */
 .dataTables_paginate .paginate_button:hover {
-    background-color: #0056b3 !important;
+    background-color: #d4edf4  !important;
 }
 
 /* Texto de info */
