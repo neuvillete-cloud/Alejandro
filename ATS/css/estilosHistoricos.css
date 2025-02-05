@@ -404,14 +404,6 @@ body::after {
     background-color: #E6F4F9;
 }
 
-table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
-    background-color: #E6F4F9;
-}
-
-table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
-    background-color: #E6F4F9;
-}
-
 /* Hover */
 #solicitudesTable tbody tr:hover {
     background-color: #e2e6ea;
