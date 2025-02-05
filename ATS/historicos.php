@@ -4,12 +4,6 @@ if (!isset($_SESSION['NumNomina'])) {
     header('Location: login.php'); // Redirige al login si no está autenticado
     exit;
 }
-
-$solicitudes = [
-    ["id" => 1, "fecha" => "2025-02-01", "estado" => "Aprobada", "descripcion" => "Solicitud de material", "usuario" => $_SESSION['NumNomina']],
-    ["id" => 2, "fecha" => "2025-02-02", "estado" => "Pendiente", "descripcion" => "Solicitud de equipo", "usuario" => $_SESSION['NumNomina']],
-    // ... más datos
-];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,21 +60,7 @@ $solicitudes = [
                 <th>Acciones</th>
             </tr>
             </thead>
-            <tbody>
-            <?php foreach ($solicitudes as $solicitud): ?>
-                <tr>
-                    <td><?php echo $solicitud['fecha']; ?></td>
-                    <td><?php echo $solicitud['estado']; ?></td>
-                    <td><?php echo $solicitud['descripcion']; ?></td>
-                    <td><?php echo $solicitud['usuario']; ?></td>
-                    <td>
-                        <button class="copy-btn">Copiar</button>
-                        <button class="pdf-btn">PDF</button>
-                        <button class="excel-btn">Excel</button>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
@@ -156,25 +136,45 @@ $solicitudes = [
 <script src="js/funcionamientoModal.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Inicializar DataTable con paginación, filtros y búsqueda
-        $('#solicitudesTable').DataTable({
-            dom: 'lfrtip', // Opciones de visualización
-            pageLength: 10, // Número de registros por página
-            language: {
-                search: "Buscar:",
-                lengthMenu: "Mostrar _MENU_ registros por página",
-                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                paginate: {
-                    first: "Primero",
-                    last: "Último",
-                    next: "Siguiente",
-                    previous: "Anterior"
+        // Inicializar DataTable con AJAX
+        var tabla = $('#solicitudesTable').DataTable({
+            "responsive": true,
+            "ajax": {
+                "url": 'dao/daoSoli.php',
+                "dataSrc": "data"
+            },
+            "columns": [
+                { "data": "IdSolicitud" },
+                { "data": "NumNomina" },
+                { "data": "IdArea" },
+                { "data": "Puesto" },
+                { "data": "TipoContratacion" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                        <button class="copy-btn">Copiar</button>
+                        <button class="pdf-btn">PDF</button>
+                        <button class="excel-btn">Excel</button>
+                    `;
+                    }
+                }
+            ],
+            "language": {
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
                 }
             }
         });
 
-        // Funcionalidad para copiar la tabla
-        $('.copy-btn').on('click', function() {
+        // Exportar datos
+        $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
             const table = document.querySelector('#solicitudesTable');
             const range = document.createRange();
             range.selectNode(table);
@@ -184,16 +184,14 @@ $solicitudes = [
             alert('Tabla copiada al portapapeles');
         });
 
-        // Funcionalidad para exportar a PDF
-        $('.pdf-btn').on('click', function() {
+        $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.autoTable({ html: '#solicitudesTable' });
             doc.save('solicitudes.pdf');
         });
 
-        // Funcionalidad para exportar a Excel
-        $('.excel-btn').on('click', function() {
+        $('#solicitudesTable tbody').on('click', '.excel-btn', function () {
             const table = document.querySelector('#solicitudesTable');
             const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
             XLSX.writeFile(wb, 'solicitudes.xlsx');

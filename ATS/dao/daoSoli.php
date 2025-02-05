@@ -3,7 +3,7 @@
 include_once("ConexionBD.php");
 
 
-//$marbete = $_GET['marbete'];
+
 
 consulta();
 
