@@ -327,3 +327,123 @@ body::after {
     width: auto; /* Mantiene la proporción de la imagen */
 }
 
+/* Contenedor general de la tabla */
+.table-container {
+    width: 90%; /* Ajusta el ancho de la tabla */
+    max-width: 1200px; /* Tamaño máximo para que no sea demasiado ancha */
+    margin: 80px auto; /* Centra la tabla en la página */
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos de la tabla */
+#solicitudesTable {
+    width: 100%; /* Ocupará todo el espacio del contenedor */
+    border-collapse: collapse;
+    font-size: 18px; /* Tamaño del texto */
+}
+
+/* Estilo para las celdas */
+#solicitudesTable th, #solicitudesTable td {
+    padding: 15px; /* Espacio dentro de cada celda */
+    text-align: center; /* Centrar texto */
+    border: 1px solid #ddd; /* Bordes sutiles */
+}
+
+/* Encabezados de la tabla */
+#solicitudesTable thead {
+    background-color: #007BFF; /* Azul */
+    color: white;
+    font-weight: bold;
+}
+
+/* Alternar colores en filas */
+#solicitudesTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa; /* Color claro en filas pares */
+}
+
+/* Hover en filas */
+#solicitudesTable tbody tr:hover {
+    background-color: #e2e6ea; /* Gris claro */
+}
+
+/* 🎯 Botones de Exportación y Copiar */
+.buttons-container {
+    display: flex;
+    justify-content: space-between; /* Distribuye los botones */
+    max-width: 1200px;
+    margin: 20px auto; /* Centrado */
+    padding: 10px;
+}
+
+/* Estilos de los botones */
+.copy-btn, .pdf-btn, .excel-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s ease-in-out;
+}
+
+/* Colores de cada botón */
+.copy-btn { background-color: #17a2b8; } /* Azul claro */
+.pdf-btn { background-color: #dc3545; } /* Rojo */
+.excel-btn { background-color: #28a745; } /* Verde */
+
+/* Efecto Hover */
+.copy-btn:hover { background-color: #138496; }
+.pdf-btn:hover { background-color: #c82333; }
+.excel-btn:hover { background-color: #218838; }
+
+/* 🔍 Estilos del buscador y paginación */
+.dataTables_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar los controles */
+    margin-bottom: 20px;
+}
+
+/* Input de búsqueda */
+.dataTables_filter input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Selector de cantidad de registros */
+.dataTables_length select {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+/* Paginación */
+.dataTables_paginate {
+    margin-top: 10px;
+}
+
+/* Botones de paginación */
+.dataTables_paginate .paginate_button {
+    padding: 8px 12px;
+    margin: 3px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+/* Hover en botones de paginación */
+.dataTables_paginate .paginate_button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para el texto de info */
+.dataTables_info {
+    font-size: 16px;
+    margin-top: 10px;
+}
