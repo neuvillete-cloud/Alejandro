@@ -329,7 +329,7 @@ body::after {
 
 /* Contenedor de la tabla */
 .table-container {
-    width: 90%;
+    width: 110%;
     max-width: 1300px;
     margin: 40px auto; /* Centrada */
     padding: 20px;
