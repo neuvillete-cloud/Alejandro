@@ -329,13 +329,62 @@ body::after {
 
 /* Contenedor de la tabla */
 .table-container {
-    width: 130%;
+    width: 90%;
     max-width: 1300px;
-    margin: 40px auto; /* Centrada */
+    margin: 20px auto; /* Más arriba y centrado */
     padding: 20px;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* 🔍 Buscador y Selector de Registros */
+.top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px; /* Más separación de la tabla */
+    width: 100%;
+    padding: 10px 0;
+}
+
+/* Selector de registros */
+.dataTables_length {
+    flex: 1;
+    text-align: left;
+    margin-left: 10px; /* Separado del borde */
+}
+
+/* Input de búsqueda */
+.dataTables_filter {
+    flex: 1;
+    text-align: right;
+    margin-right: 10px; /* Separado del borde */
+}
+
+/* Estiliza el input de búsqueda */
+.dataTables_filter input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 200px; /* Tamaño ajustado */
+}
+
+/* Selector de registros */
+.dataTables_length select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+/* 📌 Tabla */
+#solicitudesTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: left;
 }
 
 /* Encabezados */
@@ -347,7 +396,7 @@ body::after {
 
 /* Bordes y espaciado */
 #solicitudesTable th, #solicitudesTable td {
-    padding: 12px 15px;
+    padding: 14px 18px;
     border: 1px solid #ddd;
 }
 
@@ -361,53 +410,17 @@ body::after {
     background-color: #e2e6ea;
 }
 
-/* 🔍 Buscador y Selector de Registros */
-.top-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-/* Selector de registros */
-.dataTables_length {
-    flex: 1;
-    text-align: left;
-}
-
-/* Input de búsqueda */
-.dataTables_filter {
-    flex: 1;
-    text-align: right;
-}
-
-/* Estiliza el input de búsqueda */
-.dataTables_filter input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-/* Selector de registros */
-.dataTables_length select {
-    padding: 6px;
-    font-size: 14px;
-    border-radius: 5px;
-}
-
 /* Paginación */
 .dataTables_paginate {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 /* Botones de paginación */
 .dataTables_paginate .paginate_button {
-    padding: 8px 12px;
-    margin: 3px;
+    padding: 10px 15px;
+    margin: 5px;
     border-radius: 5px;
     background-color: #007bff;
     color: white;
@@ -423,7 +436,7 @@ body::after {
 /* Texto de info */
 .dataTables_info {
     font-size: 14px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 /* 🎯 Botones de Exportación */
@@ -432,12 +445,12 @@ body::after {
     justify-content: flex-start;
     gap: 10px;
     width: 90%;
-    margin: 10px auto;
+    margin: 20px auto;
 }
 
 /* Botones */
 .copy-btn, .pdf-btn, .excel-btn {
-    padding: 8px 15px;
+    padding: 10px 18px;
     font-size: 14px;
     border: none;
     border-radius: 5px;
