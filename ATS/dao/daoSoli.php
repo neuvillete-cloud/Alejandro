@@ -50,18 +50,3 @@ try {
     ]);
 }
 ?>
-
-
-// Cerrar recursos
-    $stmt->close();
-    $conex->close();
-} else {
-    $response = [
-        'status' => 'error',
-        'message' => 'Número de nómina no especificado en la sesión'
-    ];
-}
-
-// Devolver la respuesta en formato JSON
-echo json_encode($response);
-?>
