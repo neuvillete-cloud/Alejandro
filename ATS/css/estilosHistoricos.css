@@ -340,15 +340,16 @@ body::after {
     z-index: 10; /* 🔼 Lleva la tabla al frente */
 }
 
-/* 📌 Título de la tabla */
-.table-title {
-    text-align: center;
-    font-size: 22px;
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
     font-weight: bold;
-    color: #2e3c5c; /* 🔼 Mismo tono que el encabezado */
-    margin-bottom: 15px; /* 🔼 Más separación */
-    position: relative;
-    z-index: 11; /* 🔼 Asegura que esté por encima */
+    unicode-bidi: isolate;
+    z-index: 11;
 }
 
 /* 🔍 Controles superiores (selector y buscador) */
