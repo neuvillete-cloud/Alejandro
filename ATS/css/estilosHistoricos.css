@@ -331,7 +331,7 @@ body::after {
 .table-container {
     width: 130%;
     max-width: 1300px;
-    margin: 20px auto; /* Más arriba y centrado */
+    margin: 60px auto; /* Más arriba y centrado */
     padding: 20px;
     background: #fff;
     border-radius: 10px;
