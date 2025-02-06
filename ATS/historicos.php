@@ -136,11 +136,13 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="js/funcionamientoModal.js"></script>
 <script>
     $(document).ready(function () {
-
+        // Agregar filtros en cada columna
         $('#solicitudesTable tfoot th').each(function () {
             var title = $(this).text();
             $(this).html('<input type="text" placeholder="Filtrar..." class="form-control input-sm" size="3px" />');
         });
+
+        // Inicializar DataTable con botones de exportación
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
@@ -148,6 +150,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 "dataSrc": "data"
             },
             "columns": [
+                { "data": "IdSolicitud" },
                 { "data": "NumNomina" },
                 { "data": "IdArea" },
                 { "data": "Puesto" },
@@ -158,48 +161,33 @@ if (!isset($_SESSION['NumNomina'])) {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
                         if (that.search() !== this.value) {
-                            that
-                                .search(this.value)
-                                .draw();
+                            that.search(this.value).draw();
                         }
                     });
                 });
             },
-            dom: 'lBfrtip',
-            buttons: [
+            "dom": 'Bfrtip', // Se agregan los botones arriba de la tabla
+            "buttons": [
                 {
                     extend: 'copyHtml5',
-                    text: 'Copiar',
-                    exportOptions: {
-                        columns: [ 0, ':visible' ]
-                    },
-                    titleAttr: 'Copiar Texto',
+                    text: '<i class="fas fa-copy"></i> Copiar',
+                    exportOptions: { columns: ':visible' },
                     className: 'btn btn-secondary'
                 },
                 {
                     extend: 'excelHtml5',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    },
-                    titleAttr: 'Exportar a Excel',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    exportOptions: { columns: ':visible' },
                     className: 'btn btn-success'
                 },
                 {
                     extend: 'pdfHtml5',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    },
-                    titleAttr: 'Exportar a PDF',
+                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    exportOptions: { columns: ':visible' },
                     className: 'btn btn-danger',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
                 }
-                /*
-                {
-                    text: 'Seleccione las columnas',
-                    extend: 'colvis',
-                    className: 'btn btn-info'
-                }*/
             ],
             "paging": true,
             "lengthChange": true,
@@ -209,23 +197,10 @@ if (!isset($_SESSION['NumNomina'])) {
             "autoWidth": false,
             "responsive": true,
             "loadingRecords": "Cargando...",
-            "deferRender": true,
-            "search": {
-                "regex": true,
-                "caseInsensitive": true,
-            },
+            "deferRender": true
         });
-
-
-        $('#min').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-        $('#max').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-        //  var table = $('#example').DataTable();
-
-        $('#min, #max').change(function () {
-            table.draw();
-        });
-        //
     });
+
 </script>
 </body>
 </html>
