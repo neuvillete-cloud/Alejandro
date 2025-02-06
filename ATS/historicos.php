@@ -137,7 +137,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <script>
     $(document).ready(function () {
 
-        $('#example tfoot th').each(function () {
+        $('#solicitudesTable tfoot th').each(function () {
             var title = $(this).text();
             $(this).html('<input type="text" placeholder="Filtrar..." class="form-control input-sm" size="3px" />');
         });
