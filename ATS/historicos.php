@@ -58,6 +58,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>IdArea</th>
                 <th>Puesto</th>
                 <th>TipoContratacion</th>
+                <th>Acciones</th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -136,13 +137,6 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="js/funcionamientoModal.js"></script>
 <script>
     $(document).ready(function () {
-        // Agregar filtros en cada columna
-        $('#solicitudesTable tfoot th').each(function () {
-            var title = $(this).text();
-            $(this).html('<input type="text" placeholder="Filtrar..." class="form-control input-sm" size="3px" />');
-        });
-
-        // Inicializar DataTable con botones de exportación
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
@@ -154,14 +148,22 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "NumNomina" },
                 { "data": "IdArea" },
                 { "data": "Puesto" },
-                { "data": "TipoContratacion" }
+                { "data": "TipoContratacion" },
+                {
+                    "data": null,
+                    "defaultContent": '<button class="btn btn-secondary copy-btn"><i class="fas fa-copy"></i></button>' +
+                        '<button class="btn btn-danger pdf-btn"><i class="fas fa-file-pdf"></i></button>' +
+                        '<button class="btn btn-success excel-btn"><i class="fas fa-file-excel"></i></button>'
+                }
             ],
             "initComplete": function () {
                 this.api().columns().every(function () {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
                         if (that.search() !== this.value) {
-                            that.search(this.value).draw();
+                            that
+                                .search(this.value)
+                                .draw();
                         }
                     });
                 });
@@ -199,7 +201,34 @@ if (!isset($_SESSION['NumNomina'])) {
             "loadingRecords": "Cargando...",
             "deferRender": true
         });
+
+        // Copiar tabla
+        $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
+            const table = document.querySelector('#solicitudesTable');
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            alert('Tabla copiada al portapapeles');
+        });
+
+        // Exportar a PDF
+        $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: '#solicitudesTable' });
+            doc.save('solicitudes.pdf');
+        });
+
+        // Exportar a Excel
+        $('#solicitudesTable tbody').on('click', '.excel-btn', function () {
+            const table = document.querySelector('#solicitudesTable');
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+            XLSX.writeFile(wb, 'solicitudes.xlsx');
+        });
     });
+
 
 </script>
 </body>
