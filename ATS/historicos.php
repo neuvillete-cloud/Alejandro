@@ -228,7 +228,7 @@ if (!isset($_SESSION['NumNomina'])) {
             }
 
             // Forzar que la barra de búsqueda de DataTables funcione correctamente
-            $('.dataTables_filter input').on('keyup', function () {
+            ('.dataTables_filter input').on('keyup', function () {
             tabla.search(this.value).draw();
         });
         })
