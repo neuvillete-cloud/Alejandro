@@ -212,6 +212,8 @@ if (!isset($_SESSION['NumNomina'])) {
             "search": {
                 "regex": true,
                 "caseInsensitive": true,
+
+            }
         });
 
         // Copiar tabla
