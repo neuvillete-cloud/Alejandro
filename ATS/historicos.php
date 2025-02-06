@@ -53,11 +53,11 @@ if (!isset($_SESSION['NumNomina'])) {
         <table id="solicitudesTable" class="display">
             <thead>
             <tr>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Descripción</th>
-                <th>Usuario</th>
-                <th>Acciones</th>
+                <th>IdSolicitud</th>
+                <th>NumNomina</th>
+                <th>IdArea</th>
+                <th>Puesto</th>
+                <th>TipoContratacion</th>
             </tr>
             </thead>
             <tbody></tbody>
