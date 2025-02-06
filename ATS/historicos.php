@@ -135,12 +135,8 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/SheetJS/0.17.1/xlsx.full.min.js"></script>
 <script src="js/funcionamientoModal.js"></script>
 <script>
-    $(document).ready(function () {
-
-        $('#solicitudesTable tfoot th').each(function () {
-            var title = $(this).text();
-            $(this).html('<input type="text" placeholder="Filtrar..." class="form-control input-sm" size="3px" />');
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+        // Inicializar DataTable con AJAX
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
@@ -148,83 +144,58 @@ if (!isset($_SESSION['NumNomina'])) {
                 "dataSrc": "data"
             },
             "columns": [
+                { "data": "IdSolicitud" },
                 { "data": "NumNomina" },
                 { "data": "IdArea" },
                 { "data": "Puesto" },
-                { "data": "TipoContratacion" }
-            ],
-            "initComplete": function () {
-                this.api().columns().every(function () {
-                    var that = this;
-                    $('input', this.footer()).on('keyup change', function () {
-                        if (that.search() !== this.value) {
-                            that
-                                .search(this.value)
-                                .draw();
-                        }
-                    });
-                });
-            },
-            dom: 'lBfrtip',
-            buttons: [
+                { "data": "TipoContratacion" },
                 {
-                    extend: 'copyHtml5',
-                    text: 'Copiar',
-                    exportOptions: {
-                        columns: [ 0, ':visible' ]
-                    },
-                    titleAttr: 'Copiar Texto',
-                    className: 'btn btn-secondary'
-                },
-                {
-                    extend: 'excelHtml5',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    },
-                    titleAttr: 'Exportar a Excel',
-                    className: 'btn btn-success'
-                },
-                {
-                    extend: 'pdfHtml5',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    },
-                    titleAttr: 'Exportar a PDF',
-                    className: 'btn btn-danger',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                        <button class="copy-btn">Copiar</button>
+                        <button class="pdf-btn">PDF</button>
+                        <button class="excel-btn">Excel</button>
+                    `;
+                    }
                 }
-                /*
-                {
-                    text: 'Seleccione las columnas',
-                    extend: 'colvis',
-                    className: 'btn btn-info'
-                }*/
             ],
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "loadingRecords": "Cargando...",
-            "deferRender": true,
-            "search": {
-                "regex": true,
-                "caseInsensitive": true,
-            },
+            "language": {
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            }
         });
 
-
-        $('#min').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-        $('#max').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-        //  var table = $('#example').DataTable();
-
-        $('#min, #max').change(function () {
-            table.draw();
+        // Exportar datos
+        $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
+            const table = document.querySelector('#solicitudesTable');
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            alert('Tabla copiada al portapapeles');
         });
-        //
+
+        $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: '#solicitudesTable' });
+            doc.save('solicitudes.pdf');
+        });
+
+        $('#solicitudesTable tbody').on('click', '.excel-btn', function () {
+            const table = document.querySelector('#solicitudesTable');
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+            XLSX.writeFile(wb, 'solicitudes.xlsx');
+        });
     });
 </script>
 </body>
