@@ -220,7 +220,7 @@ if (!isset($_SESSION['NumNomina'])) {
             "info": true,
             "autoWidth": false,
             "responsive": true,
-
+            "loadingRecords": "Cargando...",
             "deferRender": true,
             "search": {
                 "regex": true,
