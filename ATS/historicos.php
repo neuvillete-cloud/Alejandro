@@ -241,6 +241,10 @@ if (!isset($_SESSION['NumNomina'])) {
             const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
             XLSX.writeFile(wb, 'solicitudes.xlsx');
         });
+
+        $('#min, #max').change(function () {
+            table.draw();
+        });
     });
 
 
