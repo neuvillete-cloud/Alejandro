@@ -141,7 +141,10 @@ if (!isset($_SESSION['NumNomina'])) {
             "responsive": true,
             "ajax": {
                 "url": 'https://grammermx.com/AleTest/ATS/dao/daoSoli.php',
-                "dataSrc": "data"
+                "dataSrc": function(json) {
+                    console.log("Datos recibidos:", json);
+                    return json.data || []; // Evita errores si `data` no está definido
+                }
             },
             "columns": [
                 { "data": "IdSolicitud" },
