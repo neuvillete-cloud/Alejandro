@@ -178,7 +178,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     });
                 });
             },
-            "dom": 'lBfrtip', // Se agregan los botones arriba de la tabla
+            "dom": 'lfrtip', // Se agregan los botones arriba de la tabla
             "buttons": [
                 {
                     extend: 'copyHtml5',
