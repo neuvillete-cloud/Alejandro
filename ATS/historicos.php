@@ -256,7 +256,6 @@ if (!isset($_SESSION['NumNomina'])) {
 
 
 
-
 </script>
 </body>
 </html>
