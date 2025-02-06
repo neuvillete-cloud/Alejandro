@@ -160,24 +160,14 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "TipoContratacion" },
                 {
                     "data": null,
-                    "defaultContent": '<button class="btn btn-secondary copy-btn"><i class="fas fa-copy"></i></button>' +
-                        '<button class="btn btn-danger pdf-btn"><i class="fas fa-file-pdf"></i></button>' +
-                        '<button class="btn btn-success excel-btn"><i class="fas fa-file-excel"></i></button>'
+                    "defaultContent": `
+                    <button class="btn btn-secondary copy-btn"><i class="fas fa-copy"></i></button>
+                    <button class="btn btn-danger pdf-btn"><i class="fas fa-file-pdf"></i></button>
+                    <button class="btn btn-success excel-btn"><i class="fas fa-file-excel"></i></button>
+                `
                 }
             ],
-            "initComplete": function () {
-                this.api().columns().every(function () {
-                    var that = this;
-                    $('input', this.footer()).on('keyup change', function () {
-                        if (that.search() !== this.value) {
-                            that
-                                .search(this.value)
-                                .draw();
-                        }
-                    });
-                });
-            },
-            "dom": 'Bfrtip', // Se agregan los botones arriba de la tabla
+            "dom": 'Bfrtip',
             "buttons": [
                 {
                     extend: 'copyHtml5',
@@ -208,25 +198,51 @@ if (!isset($_SESSION['NumNomina'])) {
             "autoWidth": false,
             "responsive": true,
             "loadingRecords": "Cargando...",
-            "deferRender": true
+            "deferRender": true,
+            "initComplete": function () {
+                var api = this.api();
+
+                // Agregar el footer si no existe
+                if ($('#solicitudesTable tfoot').length === 0) {
+                    $('#solicitudesTable').append('<tfoot><tr></tr></tfoot>');
+                    $('#solicitudesTable thead th').each(function () {
+                        $('#solicitudesTable tfoot tr').append('<th><input type="text" placeholder="Buscar" class="form-control form-control-sm" /></th>');
+                    });
+                }
+
+                // Aplicar búsqueda por columna
+                api.columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            }
         });
 
         // Copiar tabla
         $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
-            const table = document.querySelector('#solicitudesTable');
-            const range = document.createRange();
-            range.selectNode(table);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            alert('Tabla copiada al portapapeles');
+            let tableData = [];
+            $('#solicitudesTable tbody tr').each(function () {
+                let rowData = [];
+                $(this).find('td').each(function () {
+                    rowData.push($(this).text().trim());
+                });
+                tableData.push(rowData.join('\t'));
+            });
+
+            navigator.clipboard.writeText(tableData.join('\n')).then(() => {
+                alert('Tabla copiada al portapapeles');
+            });
         });
 
         // Exportar a PDF
         $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.autoTable({ html: '#solicitudesTable' }); // Asegúrate de que autoTable esté disponible
+            doc.autoTable({ html: '#solicitudesTable' });
             doc.save('solicitudes.pdf');
         });
 
@@ -237,6 +253,7 @@ if (!isset($_SESSION['NumNomina'])) {
             XLSX.writeFile(wb, 'solicitudes.xlsx');
         });
     });
+
 
 
 </script>
