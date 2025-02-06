@@ -224,7 +224,7 @@ if (!isset($_SESSION['NumNomina'])) {
             "deferRender": true,
             "search": {
                 "regex": true,
-                "caseInsensitive": true,
+                "caseInsensitive": false,
             }
         });
 
