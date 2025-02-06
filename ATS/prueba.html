@@ -43,24 +43,27 @@
 
 <script>
     $(document).ready(function () {
-
-        $('#example tfoot th').each(function () {
-            var title = $(this).text();
-            $(this).html('<input type="text" placeholder="Filtrar..." class="form-control input-sm" size="3px" />');
-        });
-        var tabla = $('#example').DataTable({
+        var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
                 "url": 'https://grammermx.com/AleTest/ATS/dao/daoSoli.php',
                 "dataSrc": "data"
             },
             "columns": [
+                { "data": "IdSolicitud" },
                 { "data": "NumNomina" },
                 { "data": "IdArea" },
                 { "data": "Puesto" },
-                { "data": "TipoContratacion" }
+                { "data": "TipoContratacion" },
+                {
+                    "data": null,
+                    "defaultContent": '<button class="btn btn-secondary copy-btn"><i class="fas fa-copy"></i></button>' +
+                        '<button class="btn btn-danger pdf-btn"><i class="fas fa-file-pdf"></i></button>' +
+                        '<button class="btn btn-success excel-btn"><i class="fas fa-file-excel"></i></button>'
+                }
             ],
             "initComplete": function () {
+                // Función para agregar filtros de búsqueda a cada columna
                 this.api().columns().every(function () {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
@@ -72,41 +75,28 @@
                     });
                 });
             },
-            dom: 'lBfrtip',
-            buttons: [
+            "dom": 'Bfrtip', // Se agregan los botones arriba de la tabla
+            "buttons": [
                 {
                     extend: 'copyHtml5',
-                    text: 'Copiar',
-                    exportOptions: {
-                        columns: [ 0, ':visible' ]
-                    },
-                    titleAttr: 'Copiar Texto',
+                    text: '<i class="fas fa-copy"></i> Copiar',
+                    exportOptions: { columns: ':visible' },
                     className: 'btn btn-secondary'
                 },
                 {
                     extend: 'excelHtml5',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    },
-                    titleAttr: 'Exportar a Excel',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    exportOptions: { columns: ':visible' },
                     className: 'btn btn-success'
                 },
                 {
                     extend: 'pdfHtml5',
-                    exportOptions: {
-                        columns: [0, ':visible']
-                    },
-                    titleAttr: 'Exportar a PDF',
+                    text: '<i class="fas fa-file-pdf"></i> PDF',
+                    exportOptions: { columns: ':visible' },
                     className: 'btn btn-danger',
                     orientation: 'landscape',
                     pageSize: 'LEGAL'
                 }
-                /*
-                {
-                    text: 'Seleccione las columnas',
-                    extend: 'colvis',
-                    className: 'btn btn-info'
-                }*/
             ],
             "paging": true,
             "lengthChange": true,
@@ -116,23 +106,36 @@
             "autoWidth": false,
             "responsive": true,
             "loadingRecords": "Cargando...",
-            "deferRender": true,
-            "search": {
-                "regex": true,
-                "caseInsensitive": true,
-            },
+            "deferRender": true
         });
 
-
-        $('#min').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-        $('#max').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-        //  var table = $('#example').DataTable();
-
-        $('#min, #max').change(function () {
-            table.draw();
+        // Copiar tabla
+        $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
+            const table = document.querySelector('#solicitudesTable');
+            const range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            alert('Tabla copiada al portapapeles');
         });
-        //
+
+        // Exportar a PDF
+        $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: '#solicitudesTable' }); // Asegúrate de que autoTable esté disponible
+            doc.save('solicitudes.pdf');
+        });
+
+        // Exportar a Excel
+        $('#solicitudesTable tbody').on('click', '.excel-btn', function () {
+            const table = document.querySelector('#solicitudesTable');
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+            XLSX.writeFile(wb, 'solicitudes.xlsx');
+        });
     });
+
 </script>
 </body>
 </html>
