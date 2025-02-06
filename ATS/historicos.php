@@ -244,6 +244,15 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
 
+        $('#min').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+        $('#max').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+        //  var table = $('#example').DataTable();
+
+        $('#min, #max').change(function () {
+            table.draw();
+        });
+
+
     });
 
 
