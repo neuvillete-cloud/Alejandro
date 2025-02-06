@@ -179,6 +179,18 @@ if (!isset($_SESSION['NumNomina'])) {
                 });
             },
             "dom": 'lfrtip', // Se agregan los botones arriba de la tabla
+            "pageLength": 10, // Número de registros por página
+            "language": {
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            },
             "buttons": [
                 {
                     extend: 'copyHtml5',
@@ -213,7 +225,6 @@ if (!isset($_SESSION['NumNomina'])) {
             "search": {
                 "regex": true,
                 "caseInsensitive": true,
-
             }
         });
 
@@ -244,6 +255,7 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
     });
+
 
 
 </script>
