@@ -171,15 +171,13 @@ if (!isset($_SESSION['NumNomina'])) {
                     var that = this;
                     $('input', this.footer()).on('keyup change', function () {
                         if (that.search() !== this.value) {
-                            that
-                                .search(this.value)
-                                .draw();
+                            that.search(this.value).draw();
                         }
                     });
                 });
             },
-            "dom": 'lfrtip', // Se agregan los botones arriba de la tabla
-            "pageLength": 10, // Número de registros por página
+            "dom": 'lfrtip', // Agrega la barra de búsqueda
+            "pageLength": 10,
             "language": {
                 "search": "Buscar:",
                 "lengthMenu": "Mostrar _MENU_ registros por página",
@@ -224,10 +222,13 @@ if (!isset($_SESSION['NumNomina'])) {
             "deferRender": true,
             "search": {
                 "regex": true,
-                "caseInsensitive": false,
+                "caseInsensitive": false
             }
+        });
 
-
+        // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
+        $('.dataTables_filter input').on('keyup', function () {
+            tabla.search(this.value).draw();
         });
 
         // Copiar tabla
@@ -257,6 +258,7 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
     });
+
 
 
 
