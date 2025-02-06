@@ -225,13 +225,10 @@ if (!isset($_SESSION['NumNomina'])) {
             "search": {
                 "regex": true,
                 "caseInsensitive": false,
-            };
+            }
 
-            // Forzar que la barra de búsqueda de DataTables funcione correctamente
-            ('.dataTables_filter input').on('keyup', function () {
-            tabla.search(this.value).draw();
+
         });
-        })
 
         // Copiar tabla
         $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
