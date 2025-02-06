@@ -136,45 +136,41 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="js/funcionamientoModal.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Inicializar DataTable con AJAX
-        var tabla = $('#solicitudesTable').DataTable({
-            "responsive": true,
-            "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSoli.php',
-                "dataSrc": function(json) {
-                    console.log("Datos recibidos:", json);
-                    return json.data || []; // Evita errores si `data` no está definido
+        fetch('https://grammermx.com/AleTest/ATS/dao/daoSoli.php')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Datos recibidos:", data);
+                if (!data || !data.data) {
+                    console.error("Error: No se encontraron datos.");
+                    return;
                 }
-            },
-            "columns": [
-                { "data": "IdSolicitud" },
-                { "data": "NumNomina" },
-                { "data": "IdArea" },
-                { "data": "Puesto" },
-                { "data": "TipoContratacion" },
-                {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        return `
-                        <button class="copy-btn">Copiar</button>
-                        <button class="pdf-btn">PDF</button>
-                        <button class="excel-btn">Excel</button>
-                    `;
+
+                // Inicializa DataTable con los datos manualmente
+                $('#solicitudesTable').DataTable({
+                    "responsive": true,
+                    "data": data.data,  // En lugar de AJAX, pasamos los datos aquí
+                    "columns": [
+                        { "data": "IdSolicitud" },
+                        { "data": "NumNomina" },
+                        { "data": "IdArea" },
+                        { "data": "Puesto" },
+                        { "data": "TipoContratacion" }
+                    ],
+                    "language": {
+                        "search": "Buscar:",
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        }
                     }
-                }
-            ],
-            "language": {
-                "search": "Buscar:",
-                "lengthMenu": "Mostrar _MENU_ registros por página",
-                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "paginate": {
-                    "first": "Primero",
-                    "last": "Último",
-                    "next": "Siguiente",
-                    "previous": "Anterior"
-                }
-            }
-        });
+                });
+            })
+            .catch(error => console.error("Error al obtener datos:", error));
+    });
 
         // Exportar datos
         $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
