@@ -222,10 +222,6 @@ if (!isset($_SESSION['NumNomina'])) {
             "responsive": true,
             "loadingRecords": "Cargando...",
             "deferRender": true,
-            "search": {
-                "regex": true,
-                "caseInsensitive": true,
-            }
         });
 
         // Copiar tabla
