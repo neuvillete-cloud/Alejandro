@@ -148,7 +148,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 "dataSrc": "data"
             },
             "columns": [
-                { "data": "IdSolicitud"}
                 { "data": "NumNomina" },
                 { "data": "IdArea" },
                 { "data": "Puesto" },
