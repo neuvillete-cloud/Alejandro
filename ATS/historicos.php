@@ -134,6 +134,15 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/SheetJS/0.17.1/xlsx.full.min.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- jsPDF AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+<!-- SheetJS (para exportar a Excel) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
 <script src="js/funcionamientoModal.js"></script>
 <script>
     $(document).ready(function () {
@@ -217,7 +226,7 @@ if (!isset($_SESSION['NumNomina'])) {
         $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.autoTable({ html: '#solicitudesTable' });
+            doc.autoTable({ html: '#solicitudesTable' }); // Asegúrate de que autoTable esté disponible
             doc.save('solicitudes.pdf');
         });
 
