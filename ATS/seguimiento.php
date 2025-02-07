@@ -67,6 +67,16 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Manejo del cambio de tipo de solicitud
+        const tipoSelect = document.getElementById('tipo');
+        const reemplazoFields = document.getElementById('reemplazoFields');
+
+        if (tipoSelect) {
+            tipoSelect.addEventListener('change', () => {
+                reemplazoFields.style.display = tipoSelect.value === 'reemplazo' ? 'block' : 'none';
+            });
+        }
+
         // Menú lateral (sidebar)
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
