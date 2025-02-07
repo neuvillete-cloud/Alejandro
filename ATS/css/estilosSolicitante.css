@@ -406,45 +406,5 @@ body {
 }
 
 
-.progress-container {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-}
-
-.circle {
-    position: relative;
-    width: 120px;
-    height: 120px;
-}
-
-svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-}
-
-circle {
-    fill: none;
-    stroke: #e6e6e6;
-    stroke-width: 10;
-}
-
-circle.progress {
-    stroke: #3498db;
-    stroke-dasharray: 283; /* 2 * Math.PI * R (R = 45) */
-    stroke-dashoffset: 283;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 1s ease-in-out;
-}
-
-.percentage {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.5rem;
-    font-weight: bold;
-}
 
 
