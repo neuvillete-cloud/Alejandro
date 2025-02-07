@@ -32,7 +32,14 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </header>
-
+<nav class="sidebar" id="sidebar">
+    <ul>
+        <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
+        <li><a href="seguimiento.php">Seguimiento</a></li>
+        <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
+        <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
+    </ul>
+</nav>
 <h1>Seguimiento de Progreso</h1>
 <div class="progress-container">
     <div class="circle">
