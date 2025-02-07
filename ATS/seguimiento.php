@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php'); // Redirige al login si no está autenticado
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
