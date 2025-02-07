@@ -50,6 +50,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <div class="content">
     <h2>Mis Solicitudes</h2>
     <div class="table-container">
+        <input type="text" id="sear">
         <table id="solicitudesTable" class="display">
             <thead>
             <tr>
@@ -61,7 +62,18 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>Acciones</th>
             </tr>
             </thead>
-            <tbody></tbody>
+            <tfoot>
+            <tr style="display:none;">
+                <th>#</th>
+                <th>Nomina</th>
+                <th>Nombre</th>
+                <th>Fecha</th>
+                <th>Pregunta</th>
+                <th>Pregunta</th>
+            </tr>
+            </tfoot>
+            <tbody>
+            </tbody>
         </table>
     </div>
 </div>
@@ -255,6 +267,15 @@ if (!isset($_SESSION['NumNomina'])) {
             const table = document.querySelector('#solicitudesTable');
             const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
             XLSX.writeFile(wb, 'solicitudes.xlsx');
+        });
+
+        $('#sear').on('keyup', function () {
+            tabla.search(this.value).draw();
+        });
+
+        $('.dataTables_filter input').on('keyup', function () {
+            console.log("Valor de búsqueda:", this.value); // Verifica si el valor se captura correctamente
+            tabla.search(this.value).draw();
         });
 
     });
