@@ -50,7 +50,6 @@ if (!isset($_SESSION['NumNomina'])) {
 <div class="content">
     <h2>Mis Solicitudes</h2>
     <div class="table-container">
-        <input type="text" id="sear">
         <table id="solicitudesTable" class="display">
             <thead>
             <tr>
