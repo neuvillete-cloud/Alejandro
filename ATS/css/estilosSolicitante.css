@@ -405,6 +405,38 @@ body {
     padding-top: 70px; /* Asegura que el formulario no toque la barra superior */
 }
 
+/* Corrección de estilos para círculos de porcentaje */
+.porcentaje-circulo {
+    position: relative !important;
+    width: 150px; /* Tamaño fijo */
+    height: 150px;
+    margin: 20px auto; /* Centrar y evitar colisiones */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5; /* Asegurar que estén sobre los efectos de fondo */
+}
+
+.porcentaje-circulo svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible; /* Evita que se recorten las animaciones */
+    box-sizing: content-box; /* Evita que los estilos globales afecten el tamaño */
+}
+
+.porcentaje-circulo circle {
+    stroke-linecap: round; /* Hace que las líneas sean más suaves */
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+/* Ajustes para evitar conflictos con los estilos del body */
+body {
+    overflow-x: hidden; /* Permite animaciones sin cortar los círculos */
+}
+
+body::before, body::after {
+    z-index: 0; /* Asegurar que no cubran los círculos de porcentaje */
+}
 
 
 
