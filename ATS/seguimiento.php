@@ -71,8 +71,38 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const percentages = [75, 50, 90]; // Porcentajes a llenar
+        const circles = document.querySelectorAll(".circle");
 
-<script src="js/funcionamientoModal.js"></script>
+        circles.forEach((circle, index) => {
+            const progressCircle = circle.querySelector(".progress");
+            const percentageText = circle.querySelector(".percentage");
+
+            const radius = progressCircle.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+
+            progressCircle.style.strokeDasharray = `${circumference}`;
+            progressCircle.style.strokeDashoffset = circumference;
+
+            let progress = 0;
+            const target = percentages[index];
+
+            const interval = setInterval(() => {
+                if (progress <= target) {
+                    const offset = circumference - (progress / 100) * circumference;
+                    progressCircle.style.strokeDashoffset = offset;
+                    percentageText.textContent = `${progress}%`;
+                    progress++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 20); // Velocidad de animación
+        });
+    });
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Manejo del cambio de tipo de solicitud
@@ -131,38 +161,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
     });
 </script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const percentages = [75, 50, 90]; // Porcentajes a llenar
-        const circles = document.querySelectorAll(".circle");
-
-        circles.forEach((circle, index) => {
-            const progressCircle = circle.querySelector(".progress");
-            const percentageText = circle.querySelector(".percentage");
-
-            const radius = progressCircle.r.baseVal.value;
-            const circumference = 2 * Math.PI * radius;
-
-            progressCircle.style.strokeDasharray = `${circumference}`;
-            progressCircle.style.strokeDashoffset = circumference;
-
-            let progress = 0;
-            const target = percentages[index];
-
-            const interval = setInterval(() => {
-                if (progress <= target) {
-                    const offset = circumference - (progress / 100) * circumference;
-                    progressCircle.style.strokeDashoffset = offset;
-                    percentageText.textContent = `${progress}%`;
-                    progress++;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 20); // Velocidad de animación
-        });
-    });
-</script>
+<script src="js/funcionamientoModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
