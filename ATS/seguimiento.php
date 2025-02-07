@@ -72,6 +72,7 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
+<script src="js/funcionamientoModal.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Manejo del cambio de tipo de solicitud
