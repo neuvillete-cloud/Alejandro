@@ -37,7 +37,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <nav class="sidebar" id="sidebar">
     <ul>
         <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
-        <li><a href="#" data-page="seguimiento.php">Seguimiento</a></li>
+        <li><a href="seguimiento.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
     </ul>
@@ -143,35 +143,9 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Cargar pestañas sin recargar la página
-        const links = document.querySelectorAll('.sidebar a');
-        const mainContent = document.getElementById('mainContent');
-
-        links.forEach(link => {
-            link.addEventListener('click', function (e) {
-                // Verifica si el enlace tiene el atributo data-page
-                if (link.hasAttribute('data-page')) {
-                    e.preventDefault();  // Evita que recargue la página
-                    const page = link.getAttribute('data-page');
-
-                    // Aquí puedes manejar la carga dinámica de las páginas
-                    loadPage(page);
-                }
-            });
-        });
-
-
     });
-
-    function loadPage(page) {
-        // Esta función debe cargar el contenido de la página dinámicamente
-        // Usando fetch o cualquier otro método que tengas para cargar el contenido.
-    }
-
-
-
 </script>
-<script src="js/pestanas.js"></script>
+
 <script src="js/funcionamientoModal.js"></script>
 <script src="js/jsSolicitante.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
