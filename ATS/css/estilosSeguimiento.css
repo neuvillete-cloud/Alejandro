@@ -376,6 +376,13 @@ circle.progress {
     color: #3498db;
 }
 
-
+/* Texto debajo del círculo */
+.circle-label {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+}
 
 
