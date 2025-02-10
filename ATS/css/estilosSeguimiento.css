@@ -330,9 +330,9 @@ body::after {
 .progress-container {
     display: flex;
     justify-content: center;
-    gap: 10rem;
+    gap: 5rem;
     align-items: center;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-left: 100px; /* Ajusta según el espacio que necesites */
 }
 .circle {
