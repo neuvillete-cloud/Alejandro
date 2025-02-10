@@ -43,33 +43,27 @@ if (!isset($_SESSION['NumNomina'])) {
 <h1>Seguimiento de Progreso</h1>
 <div class="progress-container">
     <div class="circle">
-        <svg width="130" height="130" viewBox="0 0 140 140">
-            <circle cx="65" cy="65" r="60"></circle>
-            <circle class="progress" cx="65" cy="65" r="60"></circle>
+        <svg>
+            <circle cx="50" cy="50" r="45"></circle>
+            <circle cx="50" cy="50" r="45" class="progress"></circle>
         </svg>
         <div class="percentage">0%</div>
-        <div class="circle-label">RH</div>
     </div>
-
     <div class="circle">
-        <svg width="130" height="130" viewBox="0 0 140 140">
-            <circle cx="65" cy="65" r="60"></circle>
-            <circle class="progress" cx="65" cy="65" r="60"></circle>
+        <svg>
+            <circle cx="50" cy="50" r="45"></circle>
+            <circle cx="50" cy="50" r="45" class="progress"></circle>
         </svg>
         <div class="percentage">0%</div>
-        <div class="circle-label">Gerentes</div>
     </div>
-
     <div class="circle">
-        <svg width="130" height="130" viewBox="0 0 140 140">
-            <circle cx="65" cy="65" r="60"></circle>
-            <circle class="progress" cx="65" cy="65" r="60"></circle>
+        <svg>
+            <circle cx="50" cy="50" r="45"></circle>
+            <circle cx="50" cy="50" r="45" class="progress"></circle>
         </svg>
         <div class="percentage">0%</div>
-        <div class="circle-label">Aprobado</div>
     </div>
 </div>
-
 
 
 <div id="profileModal" class="modal">
