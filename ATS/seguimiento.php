@@ -43,25 +43,30 @@ if (!isset($_SESSION['NumNomina'])) {
 <h1>Seguimiento de Progreso</h1>
 <div class="progress-container">
     <div class="circle">
-        <svg>
-            <circle cx="50" cy="50" r="45"></circle>
-            <circle cx="50" cy="50" r="45" class="progress"></circle>
+        <svg width="120" height="120">
+            <circle cx="60" cy="60" r="60"></circle>
+            <circle class="progress" cx="60" cy="60" r="60"></circle>
         </svg>
         <div class="percentage">0%</div>
+        <div class="circle-label">RH</div>
     </div>
+
     <div class="circle">
-        <svg>
-            <circle cx="50" cy="50" r="45"></circle>
-            <circle cx="50" cy="50" r="45" class="progress"></circle>
+        <svg width="120" height="120">
+            <circle cx="60" cy="60" r="60"></circle>
+            <circle class="progress" cx="60" cy="60" r="60"></circle>
         </svg>
         <div class="percentage">0%</div>
+        <div class="circle-label">Gerentes</div>
     </div>
+
     <div class="circle">
-        <svg>
-            <circle cx="50" cy="50" r="45"></circle>
-            <circle cx="50" cy="50" r="45" class="progress"></circle>
+        <svg width="120" height="120">
+            <circle cx="60" cy="60" r="60"></circle>
+            <circle class="progress" cx="60" cy="60" r="60"></circle>
         </svg>
         <div class="percentage">0%</div>
+        <div class="circle-label">Aprobado</div>
     </div>
 </div>
 
