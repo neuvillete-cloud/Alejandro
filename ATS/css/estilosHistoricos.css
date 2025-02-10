@@ -482,13 +482,3 @@ h2 {
 .pdf-btn:hover { background-color: #c82333; }
 .excel-btn:hover { background-color: #218838; }
 
-/* Cuando la barra lateral está activa, la tabla se queda en su lugar */
-.table-container {
-    transition: margin-left 0.3s ease;
-    margin-left: 300px; /* Espacio que ocupa la sidebar */
-}
-
-/* Cuando la sidebar está oculta, la tabla se mueve a la izquierda */
-.sidebar:not(.active) + .table-container {
-    margin-left: 0;
-}
