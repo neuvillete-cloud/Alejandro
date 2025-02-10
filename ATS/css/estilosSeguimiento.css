@@ -369,7 +369,7 @@ circle.progress {
 .percentage {
     position: absolute;
     top: 55%;
-    left: 40%;
+    left: 45%;
     transform: translate(-50%, -50%);
     font-size: 22px;
     font-weight: bold;
