@@ -332,7 +332,7 @@ body::after {
     justify-content: center;
     gap: 2rem;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 100px; /* Ajusta según el espacio que necesites */
 }
 .circle {
