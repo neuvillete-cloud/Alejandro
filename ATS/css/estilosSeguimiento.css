@@ -330,15 +330,15 @@ body::after {
 .progress-container {
     display: flex;
     justify-content: center;
-    gap: 4rem; /* Aumenta la separación entre los círculos */
+    gap: 2rem;
     align-items: center;
-    margin-top: -30px; /* Aumenta la separación del título */
+    margin-top: 20px;
 }
 
 .circle {
     position: relative;
-    width: 160px; /* Aumenta el tamaño del círculo */
-    height: 160px;
+    width: 120px;
+    height: 120px;
 }
 
 /* Asegura que el SVG ocupe todo el espacio disponible */
@@ -352,16 +352,16 @@ body::after {
 circle {
     fill: none;
     stroke: #e6e6e6;
-    stroke-width: 12; /* Un poco más grueso */
+    stroke-width: 10;
 }
 
 /* Círculo de progreso */
 circle.progress {
-    stroke: #3498db;
-    stroke-width: 12;
+    stroke: #3498db; /* Color del progreso */
+    stroke-width: 10;
     stroke-linecap: round;
-    stroke-dasharray: 502; /* Ajustado para el nuevo tamaño (2 * π * 80) */
-    stroke-dashoffset: 502;
+    stroke-dasharray: 377; /* Circunferencia de un círculo de radio 60 (2 * π * 60) */
+    stroke-dashoffset: 377; /* Inicia vacío */
     transition: stroke-dashoffset 1s ease-in-out;
 }
 
@@ -371,7 +371,11 @@ circle.progress {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 26px; /* Aumenta el tamaño del número */
+    font-size: 22px;
     font-weight: bold;
     color: #3498db;
 }
+
+
+
+
