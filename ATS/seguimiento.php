@@ -48,6 +48,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <circle cx="50" cy="50" r="45" class="progress"></circle>
         </svg>
         <div class="percentage">0%</div>
+        <div class="circle-label">RH</div>
     </div>
     <div class="circle">
         <svg>
@@ -55,6 +56,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <circle cx="50" cy="50" r="45" class="progress"></circle>
         </svg>
         <div class="percentage">0%</div>
+        <div class="circle-label">Gerentes</div>
     </div>
     <div class="circle">
         <svg>
@@ -62,6 +64,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <circle cx="50" cy="50" r="45" class="progress"></circle>
         </svg>
         <div class="percentage">0%</div>
+        <div class="circle-label">Aprobado</div>
     </div>
 </div>
 
