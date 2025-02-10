@@ -337,8 +337,8 @@ body::after {
 }
 .circle {
     position: relative;
-    width: 130px;
-    height: 130px;
+    width: 140px;
+    height: 140px;
 }
 
 /* Asegura que el SVG ocupe todo el espacio disponible */
