@@ -333,8 +333,8 @@ body::after {
     gap: 2rem;
     align-items: center;
     margin-top: 20px;
+    margin-left: 100px; /* Ajusta según el espacio que necesites */
 }
-
 .circle {
     position: relative;
     width: 120px;
