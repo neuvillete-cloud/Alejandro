@@ -330,16 +330,15 @@ body::after {
 .progress-container {
     display: flex;
     justify-content: center;
-    gap: 4rem; /* Aumentado para más separación */
+    gap: 2rem;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 100px; /* Ajusta según el espacio que necesites */
 }
-
 .circle {
     position: relative;
-    width: 180px;  /* Aumentado */
-    height: 180px; /* Aumentado */
+    width: 120px;
+    height: 120px;
 }
 
 /* Asegura que el SVG ocupe todo el espacio disponible */
@@ -353,16 +352,16 @@ body::after {
 circle {
     fill: none;
     stroke: #e6e6e6;
-    stroke-width: 12; /* Aumenta el grosor */
+    stroke-width: 10;
 }
 
 /* Círculo de progreso */
 circle.progress {
     stroke: #3498db; /* Color del progreso */
-    stroke-width: 12; /* Aumenta el grosor de la línea */
+    stroke-width: 10;
     stroke-linecap: round;
-    stroke-dasharray: 565; /* Ajusta el tamaño del trazo (2 * π * 90, con radio 90) */
-    stroke-dashoffset: 565; /* Inicia vacío */
+    stroke-dasharray: 377; /* Circunferencia de un círculo de radio 60 (2 * π * 60) */
+    stroke-dashoffset: 377; /* Inicia vacío */
     transition: stroke-dashoffset 1s ease-in-out;
 }
 
@@ -372,13 +371,11 @@ circle.progress {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 28px; /* Aumentado */
+    font-size: 22px;
     font-weight: bold;
     color: #3498db;
 }
 
-/* Línea separadora entre círculos (opcional, si la quieres) */
-.circle:not(:last-child) {
-    border-right: 2px solid #ccc; /* Línea separadora */
-    padding-right: 20px; /* Espacio extra */
-}
+
+
+
