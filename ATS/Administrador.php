@@ -48,7 +48,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <!-- Tabla de Solicitudes -->
 <div class="content">
-    <h2>Mis Solicitudes</h2>
+    <h2>Solicitudes</h2>
     <div class="table-container">
         <table id="solicitudesTable" class="display">
             <thead>
