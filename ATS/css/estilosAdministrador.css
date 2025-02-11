@@ -344,7 +344,7 @@ body::after {
 h2 {
     font-size: 1.8em;
     font-weight: bold;
-    margin-bottom: -49px; /* 🔼 Más separación respecto a la tabla */
+    margin-bottom: -44px; /* 🔼 Más separación respecto a la tabla */
     position: relative;
     z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
 }
