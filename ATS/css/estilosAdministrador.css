@@ -473,14 +473,14 @@ h2 {
 }
 
 /* Colores */
-.copy-btn { background-color: #6c757d; }
-.pdf-btn { background-color: #dc3545; }
-.excel-btn { background-color: #28a745; }
+.copyBtn { background-color: #6c757d; }
+.pdfBtn { background-color: #dc3545; }
+.excelBtn { background-color: #28a745; }
 
 /* Hover */
-.copy-btn:hover { background-color: #5a6268; }
-.pdf-btn:hover { background-color: #c82333; }
-.excel-btn:hover { background-color: #218838; }
+.copyBtn:hover { background-color: #5a6268; }
+.pdfBtn:hover { background-color: #c82333; }
+.excelBtn:hover { background-color: #218838; }
 
 /* Ocultar el título cuando la sidebar está activa */
 .sidebar.active ~ .content h2 {
