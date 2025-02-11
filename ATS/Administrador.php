@@ -21,7 +21,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <header class="header">
     <div class="header-left">
         <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>Admin</h1>
+        <h1>Administrador</h1>
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
     <div class="header-right">
