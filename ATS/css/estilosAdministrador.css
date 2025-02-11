@@ -435,7 +435,7 @@ h2 {
     padding: 10px 15px;
     margin: 5px;
     border-radius: 5px;
-    background-color: #00bbff;
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
     cursor: pointer;
     border: none;
