@@ -329,8 +329,8 @@ body::after {
 
 /* Contenedor de la tabla */
 .table-container {
-    width: 150%;
-    max-width: 1300px;
+    width: 100%;
+    max-width: 1400px;
     margin: 20px auto; /* Más arriba y centrado */
     padding: 20px;
     background: #E6F4F9;
