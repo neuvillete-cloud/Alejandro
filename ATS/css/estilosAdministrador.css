@@ -466,7 +466,7 @@ h2 {
     display: flex;
     justify-content: flex-end; /* Alinea los botones a la derecha */
     gap: 10px; /* Espaciado entre los botones */
-    margin: 10px 0; /* Espaciado superior e inferior */
+
 }
 
 /* Botones */
