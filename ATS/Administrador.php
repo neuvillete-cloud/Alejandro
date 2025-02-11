@@ -10,7 +10,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Históricos</title>
+    <title>Administrador</title>
     <link rel="stylesheet" href="css/estilosAdministrador.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -21,7 +21,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <header class="header">
     <div class="header-left">
         <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>Solicitudes</h1>
+        <h1>Administrador</h1>
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
     <div class="header-right">
