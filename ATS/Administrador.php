@@ -189,19 +189,8 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "NombreReemplazo" },
                 { "data": "FechaSolicitud" },
                 { "data": "FolioSolicitud" }
-
             ],
-            "initComplete": function () {
-                this.api().columns().every(function () {
-                    var that = this;
-                    $('input', this.footer()).on('keyup change', function () {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-                });
-            },
-            "dom": 'lfrtip', // Agrega la barra de búsqueda
+            "dom": 'lfrtip',
             "pageLength": 2,
             "language": {
                 "search": "Buscar:",
@@ -214,7 +203,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     "previous": "Anterior"
                 }
             },
-
             "paging": true,
             "lengthChange": true,
             "searching": true,
@@ -236,15 +224,17 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
         // Funcionalidad de botones
+
         $('#copyBtn').on('click', function () {
             let text = "";
-            tabla.rows().data().each(function (value) {
-                text += value.join("\t") + "\n";
+            tabla.rows().every(function () {
+                let data = this.data();
+                text += Object.values(data).join("\t") + "\n";
             });
 
             navigator.clipboard.writeText(text).then(function () {
                 alert('Tabla copiada al portapapeles');
-            });
+            }).catch(err => console.error('Error al copiar:', err));
         });
 
         $('#pdfBtn').on('click', function () {
@@ -255,21 +245,17 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
         $('#excelBtn').on('click', function () {
-            const wb = XLSX.utils.table_to_book(document.querySelector('#solicitudesTable'), { sheet: "Solicitudes" });
-            XLSX.writeFile(wb, 'solicitudes.xlsx');
-        });
-
-
-        $('#sear').on('keyup', function () {
-            tabla.search(this.value).draw();
-        });
-
-        $('.dataTables_filter input').on('keyup', function () {
-            console.log("Valor de búsqueda:", this.value); // Verifica si el valor se captura correctamente
-            tabla.search(this.value).draw();
+            const table = document.querySelector('#solicitudesTable');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+                XLSX.writeFile(wb, 'solicitudes.xlsx');
+            } else {
+                alert('No se encontró la tabla para exportar');
+            }
         });
 
     });
+
 
 
 </script>
