@@ -1,0 +1,484 @@
+/* Estilos globales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Efectos de círculos en el fondo */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    filter: blur(70px);
+    z-index: 1;
+}
+
+body::before {
+    width: 500px;
+    height: 500px;
+    background: #1E3A8A;
+    top: -100px;
+    left: -50px;
+}
+
+body::after {
+    width: 400px;
+    height: 400px;
+    background: #2563EB;
+    bottom: -100px;
+    right: -50px;
+}
+
+/* Barra superior */
+.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(30, 30, 30, 0.6);
+    z-index: 10;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left h1 {
+    margin-right: 10px;
+    color: white;
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.menu-toggle {
+    font-size: 1.5rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-top: 7px;
+    align-self: center;
+}
+
+.menu-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* Nueva sección para el perfil de usuario */
+.header-right {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.user-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #1E90FF;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.user-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    width: 200px;
+}
+
+.profile-dropdown.active {
+    display: block;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+}
+
+.profile-dropdown a:hover {
+    background-color: #1E90FF;
+    color: white;
+}
+
+/* Barra lateral */
+.sidebar {
+    position: fixed;
+    top: 70px; /* Comienza debajo del encabezado */
+    left: -300px; /* Oculta inicialmente */
+    width: 300px;
+    height: calc(100% - 70px); /* Ajusta la altura para no cubrir el encabezado */
+    background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.15); /* Sombra más ligera */
+    padding-top: 20px;
+    overflow: hidden; /* Para que los círculos no sobresalgan */
+    transition: left 0.3s ease, background-color 0.3s ease;
+    z-index: 15; /* Debajo del botón de menú */
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+/* Nuevos efectos de círculos */
+.sidebar::before, .sidebar::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.4;
+    filter: blur(60px);
+    z-index: 1; /* Detrás del contenido de la barra lateral */
+}
+
+/* Primer círculo */
+.sidebar::before {
+    width: 250px;
+    height: 250px;
+    background: #1E3A8A;
+    top: 10%;
+    left: -50px;
+}
+
+/* Segundo círculo */
+.sidebar::after {
+    width: 300px;
+    height: 300px;
+    background: #2563EB;
+    bottom: -50px;
+    right: -100px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    z-index: 2; /* Sobre los círculos */
+    position: relative; /* Para que los enlaces no se superpongan a los círculos */
+}
+
+.sidebar li {
+    margin: 20px 0;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 6px; /* Bordes redondeados */
+    position: relative; /* Para estar encima de los círculos */
+    z-index: 2;
+}
+
+.sidebar a:hover {
+    background-color: rgba(28, 59, 87, 0.2); /* Fondo azul oscuro translúcido */
+    color: #B0E0E6
+}
+
+/* Overlay para cerrar la barra lateral */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* Estilos del Modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 20;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro traslúcido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+}
+
+.modal-content {
+    background-color: #E6F4F9; /* Fondo claro */
+    border-radius: 12px;
+    width: 400px; /* Ajusta el tamaño del modal */
+    max-width: 90%; /* Adaptable a pantallas pequeñas */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra */
+    text-align: center;
+    position: relative; /* Para posicionar el botón de cerrar */
+}
+
+.modal-content h2 {
+    color: #1E3A8A; /* Azul oscuro */
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #1E90FF; /* Azul claro */
+}
+
+/* Contenido del cuerpo del Modal */
+.modal-body {
+    margin-top: 20px;
+}
+
+.user-photo {
+    width: 120px; /* Tamaño ajustado para la foto */
+    height: 120px;
+    border-radius: 50%; /* Forma circular */
+    object-fit: cover; /* Asegura que la foto no se deforme */
+    border: 3px solid #1E90FF; /* Borde azul */
+    margin-bottom: 15px; /* Separación inferior */
+}
+
+.modal-body p {
+    font-size: 16px;
+    color: #333;
+    margin: 8px 0;
+}
+
+.modal-body p strong {
+    color: #1E3A8A; /* Azul oscuro */
+}
+
+.header-right {
+    display: flex;
+    align-items: center; /* Alinea verticalmente el contenido */
+    gap: 10px; /* Espacio entre los elementos */
+}
+
+.user-profile {
+    order: 2; /* Mueve la foto después del nombre */
+}
+
+.user-name {
+    order: 1; /* Mantiene el nombre antes de la foto */
+    font-size: 16px; /* Ajusta el tamaño del texto si es necesario */
+    color: white;
+    font-weight: bold; /* Texto en negrita */
+}
+
+.header-left {
+    display: flex;
+    align-items: center; /* Alinea verticalmente los elementos */
+    gap: 17px; /* Espacio entre la imagen y el texto */
+}
+
+.header-icon {
+    height: 40px; /* Ajusta la altura de la imagen */
+    width: auto; /* Mantiene la proporción de la imagen */
+}
+
+/* Contenedor de la tabla */
+.table-container {
+    width: 130%;
+    max-width: 1300px;
+    margin: 20px auto; /* Más arriba y centrado */
+    padding: 20px;
+    background: #E6F4F9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 10; /* 🔼 Lleva la tabla al frente */
+}
+
+/* 📌 Título de la tabla (h2) */
+h2 {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-bottom: 20px; /* 🔼 Más separación respecto a la tabla */
+    position: relative;
+    z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
+}
+
+/* 🔍 Controles superiores (selector y buscador) */
+.top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px; /* 🔼 Más separación de la tabla */
+    width: 100%;
+    padding: 15px 0;
+}
+
+/* Selector de registros */
+.dataTables_length {
+    flex: 1;
+    text-align: left;
+    margin-left: 20px; /* 🔼 Más separación */
+}
+
+/* Buscador */
+.dataTables_filter {
+    flex: 1;
+    text-align: right;
+    margin-right: 20px; /* 🔼 Más separación */
+}
+
+/* 📌 Estiliza el input de búsqueda */
+.dataTables_filter input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 220px; /* 🔼 Más ancho */
+}
+
+/* Selector de registros */
+.dataTables_length select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+/* 📌 Tabla */
+#solicitudesTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: left;
+    background-color: #E6F4F9; /* 🔼 Fondo para toda la tabla */
+}
+
+/* 📌 Encabezados */
+#solicitudesTable thead {
+    background: linear-gradient(135deg, #2e3c5c, rgba(0.15, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
+    color: white;
+    font-weight: bold;
+}
+/* Bordes y espaciado */
+#solicitudesTable th, #solicitudesTable td {
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+}
+
+/* 📌 Aplicar fondo a TODAS las filas y columnas */
+#solicitudesTable tbody tr th,
+#solicitudesTable tbody tr td {
+    background-color: #E6F4F9 !important; /* 🔼 Asegura que todas las columnas tengan color */
+    color: black !important; /* 🔼 Asegura que todo el texto sea negro */
+}
+
+
+/* 📌 Hover */
+#solicitudesTable tbody tr:hover td {
+    background-color: #d4edf4 !important; /* 🔼 Un poco más oscuro en hover */
+}
+
+
+/* Paginación */
+.dataTables_paginate {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+/* Botones de paginación */
+.dataTables_paginate .paginate_button {
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+/* Hover en paginación */
+.dataTables_paginate .paginate_button:hover {
+    background-color: #d4edf4  !important;
+}
+
+/* Texto de info */
+.dataTables_info {
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+/* 🎯 Botones de Exportación */
+.buttons-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 90%;
+    margin: 20px auto;
+}
+
+/* Botones */
+.copy-btn, .pdf-btn, .excel-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s;
+}
+
+/* Colores */
+.copy-btn { background-color: #6c757d; }
+.pdf-btn { background-color: #dc3545; }
+.excel-btn { background-color: #28a745; }
+
+/* Hover */
+.copy-btn:hover { background-color: #5a6268; }
+.pdf-btn:hover { background-color: #c82333; }
+.excel-btn:hover { background-color: #218838; }
+
