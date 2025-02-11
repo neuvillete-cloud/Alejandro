@@ -49,6 +49,13 @@ if (!isset($_SESSION['NumNomina'])) {
 <!-- Tabla de Solicitudes -->
 <div class="content">
     <h2>Solicitudes</h2>
+
+    <!-- Contenedor de botones de exportación -->
+    <div class="export-buttons">
+        <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copiar</button>
+        <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
+        <button id="pdfBtn" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
+    </div>
     <div class="table-container">
         <table id="solicitudesTable" class="display">
             <thead>
@@ -181,13 +188,8 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "Nombre" },
                 { "data": "NombreReemplazo" },
                 { "data": "FechaSolicitud" },
-                { "data": "FolioSolicitud" },
-                {
-                    "data": null,
-                    "defaultContent": '<button class="btn btn-secondary copy-btn"><i class="fas fa-copy"></i></button>' +
-                        '<button class="btn btn-danger pdf-btn"><i class="fas fa-file-pdf"></i></button>' +
-                        '<button class="btn btn-success excel-btn"><i class="fas fa-file-excel"></i></button>'
-                }
+                { "data": "FolioSolicitud" }
+
             ],
             "initComplete": function () {
                 this.api().columns().every(function () {
@@ -212,28 +214,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     "previous": "Anterior"
                 }
             },
-            "buttons": [
-                {
-                    extend: 'copyHtml5',
-                    text: '<i class="fas fa-copy"></i> Copiar',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btn btn-secondary'
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fas fa-file-excel"></i> Excel',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btn btn-success'
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="fas fa-file-pdf"></i> PDF',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btn btn-danger',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
-                }
-            ],
+
             "paging": true,
             "lengthChange": true,
             "searching": true,
@@ -254,31 +235,30 @@ if (!isset($_SESSION['NumNomina'])) {
             tabla.search(this.value).draw();
         });
 
-        // Copiar tabla
-        $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
-            const table = document.querySelector('#solicitudesTable');
-            const range = document.createRange();
-            range.selectNode(table);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            alert('Tabla copiada al portapapeles');
+        // Funcionalidad de botones
+        $('#copyBtn').on('click', function () {
+            let text = "";
+            tabla.rows().data().each(function (value) {
+                text += value.join("\t") + "\n";
+            });
+
+            navigator.clipboard.writeText(text).then(function () {
+                alert('Tabla copiada al portapapeles');
+            });
         });
 
-        // Exportar a PDF
-        $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
+        $('#pdfBtn').on('click', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.autoTable({ html: '#solicitudesTable' }); // Asegúrate de que autoTable esté disponible
+            doc.autoTable({ html: '#solicitudesTable' });
             doc.save('solicitudes.pdf');
         });
 
-        // Exportar a Excel
-        $('#solicitudesTable tbody').on('click', '.excel-btn', function () {
-            const table = document.querySelector('#solicitudesTable');
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+        $('#excelBtn').on('click', function () {
+            const wb = XLSX.utils.table_to_book(document.querySelector('#solicitudesTable'), { sheet: "Solicitudes" });
             XLSX.writeFile(wb, 'solicitudes.xlsx');
         });
+
 
         $('#sear').on('keyup', function () {
             tabla.search(this.value).draw();
