@@ -83,7 +83,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
-                <th>Pregunta</th>
+
             </tr>
             </tfoot>
             <tbody>
