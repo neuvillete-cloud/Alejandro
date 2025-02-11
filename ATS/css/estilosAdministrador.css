@@ -482,7 +482,8 @@ h2 {
 .pdf-btn:hover { background-color: #c82333; }
 .excel-btn:hover { background-color: #218838; }
 
-.sidebar.active ~ .table-container h2 {
-    display: none;
+.sidebar.active h2 {
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
