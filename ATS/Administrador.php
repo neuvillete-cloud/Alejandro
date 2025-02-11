@@ -169,7 +169,7 @@ if (!isset($_SESSION['NumNomina'])) {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSoli.php',
+                "url": 'https://grammermx.com/AleTest/ATS/dao/daoAdmin.php',
                 "dataSrc": "data"
             },
             "columns": [
