@@ -69,7 +69,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>NombreReemplazo</th>
                 <th>FechaSolicitud</th>
                 <th>FolioSolicitud</th>
-                <th>Acciones</th>
+
             </tr>
             </thead>
             <tfoot>
