@@ -483,6 +483,5 @@ h2 {
 .excel-btn:hover { background-color: #218838; }
 
 .sidebar.active ~ .table-container h2 {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    display: none;
 }
