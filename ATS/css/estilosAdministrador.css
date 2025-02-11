@@ -462,7 +462,7 @@ h2 {
 }
 
 /* Botones */
-.copy-btn, .pdf-btn, .excel-btn {
+.copyBtn, .pdfBtn, .excelBtn {
     padding: 10px 18px;
     font-size: 14px;
     border: none;
