@@ -462,7 +462,7 @@ h2 {
 }
 
 /* Botones */
-.copyBtn, .pdfBtn, .excelBtn {
+#copyBtn, #pdfBtn, #excelBtn {
     padding: 10px 18px;
     font-size: 14px;
     border: none;
@@ -473,14 +473,14 @@ h2 {
 }
 
 /* Colores */
-.copyBtn { background-color: #6c757d; }
-.pdfBtn { background-color: #dc3545; }
-.excelBtn { background-color: #28a745; }
+#copyBtn { background-color: #6c757d; }
+#pdfBtn { background-color: #dc3545; }
+#excelBtn { background-color: #28a745; }
 
 /* Hover */
-.copyBtn:hover { background-color: #5a6268; }
-.pdfBtn:hover { background-color: #c82333; }
-.excelBtn:hover { background-color: #218838; }
+#copyBtn:hover { background-color: #5a6268; }
+#pdfBtn:hover { background-color: #c82333; }
+#excelBtn:hover { background-color: #218838; }
 
 /* Ocultar el título cuando la sidebar está activa */
 .sidebar.active ~ .content h2 {
