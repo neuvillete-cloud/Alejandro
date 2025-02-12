@@ -69,6 +69,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>NombreReemplazo</th>
                 <th>FechaSolicitud</th>
                 <th>FolioSolicitud</th>
+                <th>Acciones</th> <!-- Nueva columna -->
 
             </tr>
             </thead>
@@ -78,6 +79,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>Nomina</th>
                 <th>Nombre</th>
                 <th>Fecha</th>
+                <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
@@ -188,7 +190,24 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "Nombre" },
                 { "data": "NombreReemplazo" },
                 { "data": "FechaSolicitud" },
-                { "data": "FolioSolicitud" }
+                { "data": "FolioSolicitud" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        return `
+                        <button class="btn btn-primary btn-sm edit-btn" data-id="${row.IdSolicitud}">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.IdSolicitud}">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                        <button class="btn btn-info btn-sm view-btn" data-id="${row.IdSolicitud}">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                    `;
+                    }
+                }
+
             ],
             "dom": 'lfrtip',
             "pageLength": 2,
@@ -221,6 +240,27 @@ if (!isset($_SESSION['NumNomina'])) {
         // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
         $('.dataTables_filter input').on('keyup', function () {
             tabla.search(this.value).draw();
+        });
+
+        // Eventos para los botones de acción
+        $('#solicitudesTable tbody').on('click', '.edit-btn', function () {
+            let id = $(this).data('id');
+            alert(`Editar solicitud ID: ${id}`);
+            // Aquí puedes redirigir o abrir un modal de edición
+        });
+
+        $('#solicitudesTable tbody').on('click', '.delete-btn', function () {
+            let id = $(this).data('id');
+            if (confirm(`¿Estás seguro de eliminar la solicitud ID: ${id}?`)) {
+                // Aquí puedes realizar una petición AJAX para eliminar la solicitud
+                alert(`Solicitud ${id} eliminada`);
+            }
+        });
+
+        $('#solicitudesTable tbody').on('click', '.view-btn', function () {
+            let id = $(this).data('id');
+            alert(`Ver detalles de la solicitud ID: ${id}`);
+            // Puedes abrir un modal o redirigir a una página de detalles
         });
 
         // Funcionalidad de botones
