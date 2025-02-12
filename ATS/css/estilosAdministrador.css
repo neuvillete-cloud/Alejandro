@@ -513,7 +513,7 @@ h2 {
     border: 2px solid #218838; /* Borde verde oscuro */
     color: white;
     font-weight: bold;
-    padding: 6px 14px; /* Ajusta el tamaño del botón */
+    padding: 4px 10px; /* Ajusta el tamaño del botón */
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
     margin-right: 8px; /* Espacio entre botones */
