@@ -193,7 +193,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "NombreReemplazo" },
                 { "data": "FechaSolicitud" },
                 { "data": "FolioSolicitud" },
-                { "data": "IdEstatus" },
+                { "data": "NombreEstatus" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
