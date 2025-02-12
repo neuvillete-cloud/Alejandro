@@ -198,19 +198,15 @@ if (!isset($_SESSION['NumNomina'])) {
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-                        <button class="btn btn-primary btn-sm edit-btn" data-id="${row.IdSolicitud}">
-                            <i class="fas fa-edit"></i> Editar
+                        <button class="btn btn-success btn-sm accept-btn" data-id="${row.IdSolicitud}">
+                            <i class="fas fa-check"></i> Aceptar
                         </button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.IdSolicitud}">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                        <button class="btn btn-info btn-sm view-btn" data-id="${row.IdSolicitud}">
-                            <i class="fas fa-eye"></i> Ver
+                        <button class="btn btn-danger btn-sm reject-btn" data-id="${row.IdSolicitud}">
+                            <i class="fas fa-times"></i> Rechazar
                         </button>
                     `;
                     }
                 }
-
             ],
             "dom": 'lfrtip',
             "pageLength": 2,
@@ -245,25 +241,22 @@ if (!isset($_SESSION['NumNomina'])) {
             tabla.search(this.value).draw();
         });
 
-        // Eventos para los botones de acción
-        $('#solicitudesTable tbody').on('click', '.edit-btn', function () {
+        // Evento para botón Aceptar
+        $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
             let id = $(this).data('id');
-            alert(`Editar solicitud ID: ${id}`);
-            // Aquí puedes redirigir o abrir un modal de edición
-        });
-
-        $('#solicitudesTable tbody').on('click', '.delete-btn', function () {
-            let id = $(this).data('id');
-            if (confirm(`¿Estás seguro de eliminar la solicitud ID: ${id}?`)) {
-                // Aquí puedes realizar una petición AJAX para eliminar la solicitud
-                alert(`Solicitud ${id} eliminada`);
+            if (confirm(`¿Estás seguro de aprobar la solicitud ID: ${id}?`)) {
+                // Aquí puedes realizar una petición AJAX para aprobar la solicitud
+                alert(`Solicitud ${id} aprobada`);
             }
         });
 
-        $('#solicitudesTable tbody').on('click', '.view-btn', function () {
+        // Evento para botón Rechazar
+        $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
             let id = $(this).data('id');
-            alert(`Ver detalles de la solicitud ID: ${id}`);
-            // Puedes abrir un modal o redirigir a una página de detalles
+            if (confirm(`¿Estás seguro de rechazar la solicitud ID: ${id}?`)) {
+                // Aquí puedes realizar una petición AJAX para rechazar la solicitud
+                alert(`Solicitud ${id} rechazada`);
+            }
         });
 
         // Funcionalidad de botones
@@ -298,9 +291,7 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
     });
-
-
-
 </script>
+
 </body>
 </html>
