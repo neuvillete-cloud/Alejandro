@@ -507,3 +507,40 @@ h2 {
     transition: opacity 0.3s ease;
 }
 
+/* Botón Aceptar */
+.accept-btn {
+    background-color: #28a745; /* Verde */
+    border: 2px solid #218838; /* Borde verde oscuro */
+    color: white;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.accept-btn:hover {
+    background-color: #218838; /* Verde más oscuro */
+    border-color: #1e7e34;
+}
+
+/* Botón Rechazar */
+.reject-btn {
+    background-color: #dc3545; /* Rojo */
+    border: 2px solid #c82333; /* Borde rojo oscuro */
+    color: white;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.reject-btn:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+    border-color: #bd2130;
+}
+
+/* Estilos opcionales para los íconos */
+.accept-btn i,
+.reject-btn i {
+    margin-right: 5px; /* Espaciado entre el icono y el texto */
+}
