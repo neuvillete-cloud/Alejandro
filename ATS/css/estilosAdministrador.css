@@ -516,7 +516,7 @@ h2 {
     padding: 4px 10px; /* Ajusta el tamaño del botón */
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
-    margin-right: 12px; /* Espacio entre botones */
+    margin-right: 8px; /* Espacio entre botones */
 }
 
 .accept-btn:hover {
