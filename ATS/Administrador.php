@@ -111,6 +111,28 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
+<!-- Modal para ingresar correos -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Enviar Notificación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="emailList">Correos de los destinatarios:</label>
+                <textarea id="emailList" class="form-control" rows="3" placeholder="Ingresa los correos separados por comas"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="sendEmailsBtn">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -288,6 +310,58 @@ if (!isset($_SESSION['NumNomina'])) {
             } else {
                 alert('No se encontró la tabla para exportar');
             }
+        });
+
+        // Evento para botón Aceptar
+        $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: `¿Aprobar la solicitud ID: ${id}?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, aprobar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('https://grammermx.com/AleTest/ATS/dao/updateStatus.php', { id: id, status: 2 })
+                        .done(function (response) {
+                            let jsonResponse = JSON.parse(response);
+                            if (jsonResponse.success) {
+                                Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success");
+                                tabla.ajax.reload();
+                            } else {
+                                Swal.fire("Error", "No se pudo aprobar la solicitud", "error");
+                            }
+                        });
+                }
+            });
+        });
+
+        // Evento para botón Rechazar
+        $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
+            let id = $(this).data('id');
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: `¿Rechazar la solicitud ID: ${id}?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, rechazar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('https://grammermx.com/AleTest/ATS/dao/updateStatus.php', { id: id, status: 3 })
+                        .done(function (response) {
+                            let jsonResponse = JSON.parse(response);
+                            if (jsonResponse.success) {
+                                Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success");
+                                tabla.ajax.reload();
+                            } else {
+                                Swal.fire("Error", "No se pudo rechazar la solicitud", "error");
+                            }
+                        });
+                }
+            });
         });
 
     });
