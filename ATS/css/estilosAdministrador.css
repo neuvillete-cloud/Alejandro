@@ -513,9 +513,10 @@ h2 {
     border: 2px solid #218838; /* Borde verde oscuro */
     color: white;
     font-weight: bold;
-    padding: 6px 12px;
+    padding: 6px 14px; /* Ajusta el tamaño del botón */
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
+    margin-right: 8px; /* Espacio entre botones */
 }
 
 .accept-btn:hover {
@@ -523,13 +524,14 @@ h2 {
     border-color: #1e7e34;
 }
 
-/* Botón Rechazar */
+/* Botón Rechazar (más pequeño) */
 .reject-btn {
     background-color: #dc3545; /* Rojo */
     border: 2px solid #c82333; /* Borde rojo oscuro */
     color: white;
     font-weight: bold;
-    padding: 6px 12px;
+    padding: 4px 10px; /* Tamaño más pequeño */
+    font-size: 0.85em; /* Reduce el tamaño de la fuente */
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
 }
