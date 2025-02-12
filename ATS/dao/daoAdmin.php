@@ -13,7 +13,7 @@ try {
                 a.NombreArea, 
                 e.NombreEstatus 
             FROM Solicitudes s
-            JOIN Areas a ON s.IdArea = a.IdArea
+            JOIN Area a ON s.IdArea = a.IdArea
             JOIN Estatus e ON s.IdEstatus = e.IdEstatus";
 
     $stmt = $conex->prepare($sql);
