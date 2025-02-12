@@ -186,7 +186,7 @@ if (!isset($_SESSION['NumNomina'])) {
             "columns": [
                 { "data": "IdSolicitud" },
                 { "data": "NumNomina" },
-                { "data": "IdArea" },
+                { "data": "NombreArea" },
                 { "data": "Puesto" },
                 { "data": "TipoContratacion" },
                 { "data": "Nombre" },
