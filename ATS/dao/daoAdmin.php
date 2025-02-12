@@ -7,8 +7,14 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta SQL para obtener todas las columnas de la tabla Solicitudes (sin filtrar por NumNomina)
-    $sql = "SELECT * FROM Solicitudes";
+    // Consulta SQL con JOIN para obtener los nombres en lugar de los IDs
+    $sql = "SELECT 
+                s.*, 
+                a.NombreArea, 
+                e.NombreEstatus 
+            FROM Solicitudes s
+            JOIN Areas a ON s.IdArea = a.IdArea
+            JOIN Estatus e ON s.IdEstatus = e.IdEstatus";
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
@@ -37,5 +43,6 @@ try {
         'message' => 'Error en la consulta: ' . $e->getMessage()
     ]);
 }
+
 ?>
 
