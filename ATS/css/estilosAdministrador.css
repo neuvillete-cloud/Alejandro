@@ -465,7 +465,7 @@ h2 {
 
 /* Contenedor de los botones de exportación */
 .export-buttons {
-    display: flex;
+    display: flex !important;
     justify-content: flex-end; /* Alinea los botones a la derecha */
     gap: 10px; /* Espaciado entre botones */
     margin: 10px 0; /* Espaciado superior e inferior */
