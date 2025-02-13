@@ -110,7 +110,9 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </div>
-
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">
+    Launch demo modal
+</button>
 <!-- Modal para ingresar correos -->
 <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
     <div class="modal-dialog">
