@@ -263,24 +263,6 @@ if (!isset($_SESSION['NumNomina'])) {
             tabla.search(this.value).draw();
         });
 
-        // Evento para botón Aceptar
-        $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
-            let id = $(this).data('id');
-            if (confirm(`¿Estás seguro de aprobar la solicitud ID: ${id}?`)) {
-                // Aquí puedes realizar una petición AJAX para aprobar la solicitud
-                alert(`Solicitud ${id} aprobada`);
-            }
-        });
-
-        // Evento para botón Rechazar
-        $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
-            let id = $(this).data('id');
-            if (confirm(`¿Estás seguro de rechazar la solicitud ID: ${id}?`)) {
-                // Aquí puedes realizar una petición AJAX para rechazar la solicitud
-                alert(`Solicitud ${id} rechazada`);
-            }
-        });
-
         // Funcionalidad de botones
 
         $('#copyBtn').on('click', function () {
