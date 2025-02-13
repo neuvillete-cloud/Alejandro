@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
         exit();
     }
 
-    // Preparar la consulta SQL
-    $stmt = $conex->prepare("UPDATE Solicitudes SET NombreEstatus = ? WHERE IdSolicitud = ?");
+    // 🔹 CORRECCIÓN: Actualizar "IdEstatus" en lugar de "NombreEstatus"
+    $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
     if (!$stmt) {
         echo json_encode(["success" => false, "message" => "Error en la preparación de la consulta"]);
         exit();
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
     if ($stmt->affected_rows > 0) {
         echo json_encode(["success" => true, "message" => "Estado actualizado correctamente"]);
     } else {
-        echo json_encode(["success" => false, "message" => "No se encontró la solicitud o el estado es el mismo"]);
+        echo json_encode(["success" => false, "message" => "No se encontró la solicitud o el estado ya estaba actualizado"]);
     }
 
     // Cerrar conexiones
@@ -42,4 +42,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
     echo json_encode(["success" => false, "message" => "Datos inválidos o método incorrecto"]);
 }
 ?>
-
