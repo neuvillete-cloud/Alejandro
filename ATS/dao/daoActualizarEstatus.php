@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
     }
 
     // Preparar la consulta SQL
-    $stmt = $conex->prepare("UPDATE solicitudes SET NombreEstatus = ? WHERE IdSolicitud = ?");
+    $stmt = $conex->prepare("UPDATE Solicitudes SET NombreEstatus = ? WHERE IdSolicitud = ?");
     if (!$stmt) {
         echo json_encode(["success" => false, "message" => "Error en la preparación de la consulta"]);
         exit();
