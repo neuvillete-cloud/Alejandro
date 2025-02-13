@@ -475,7 +475,7 @@ h2 {
 
 /* Botones */
 #copyBtn, #pdfBtn, #excelBtn {
-    display: inline-flex; /* Mantiene tamaño correcto */
+    display: inline-flex !important; /* Mantiene tamaño correcto */
     align-items: center; /* Centra el contenido verticalmente */
     justify-content: center; /* Centra el texto y el icono */
     padding: 10px 18px;
