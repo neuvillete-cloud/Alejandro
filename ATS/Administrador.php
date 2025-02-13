@@ -310,18 +310,33 @@ if (!isset($_SESSION['NumNomina'])) {
                 if (result.isConfirmed) {
                     $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 2 })
                         .done(function (response) {
-                            let jsonResponse = JSON.parse(response);
+                            console.log("🔹 Respuesta del servidor:", response);
+
+                            let jsonResponse;
+                            try {
+                                jsonResponse = typeof response === "object" ? response : JSON.parse(response);
+                            } catch (error) {
+                                console.error("🔴 Error al parsear JSON:", error, response);
+                                Swal.fire("Error", "Respuesta no válida del servidor", "error");
+                                return;
+                            }
+
                             if (jsonResponse.success) {
                                 Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success");
                                 $('#emailModal').modal('show'); // Abre el modal para los correos
                                 $('#sendEmailsBtn').data('id', id); // Guarda el ID de la solicitud en el botón
                             } else {
-                                Swal.fire("Error", "No se pudo aprobar la solicitud", "error");
+                                Swal.fire("Error", jsonResponse.message || "No se pudo aprobar la solicitud", "error");
                             }
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            console.error("❌ Error en AJAX:", textStatus, errorThrown);
+                            Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                         });
                 }
             });
         });
+
 
         // Evento para botón Rechazar
         $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
