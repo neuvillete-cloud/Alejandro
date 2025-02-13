@@ -347,6 +347,7 @@ h2 {
     margin-bottom: -44px !important; /* 🔼 Más separación respecto a la tabla */
     position: relative!important;
     z-index: 20!important; /* 🔼 Asegura que esté por encima de la tabla */
+    color: white !important;
 }
 
 /* 🔍 Controles superiores (selector y buscador) */
