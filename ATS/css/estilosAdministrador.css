@@ -546,3 +546,124 @@ h2 {
 .reject-btn i {
     margin-right: 5px; /* Espaciado entre el icono y el texto */
 }
+
+/* 🔹 Fondo del modal (oscuro y semi-transparente) */
+.modal {
+    background-color: rgba(0, 0, 0, 0.5); /* Efecto de overlay */
+}
+
+/* 🔹 Contenedor del modal */
+.modal-dialog {
+    max-width: 500px; /* Ajusta el tamaño del modal */
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* 🔹 Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 🔹 Encabezado del modal */
+.modal-header {
+    background: #007bff;
+    color: white;
+    border-radius: 8px 8px 0 0;
+    padding: 15px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 🔹 Botón de cerrar */
+.close {
+    color: white;
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+.close:hover {
+    opacity: 1;
+    color: #ffcccb;
+}
+
+/* 🔹 Cuerpo del modal */
+.modal-body {
+    padding: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* 🔹 Campo de entrada (textarea) */
+#emailList {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+/* 🔹 Placeholder del textarea */
+#emailList::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* 🔹 Pie de página del modal (botones) */
+.modal-footer {
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #ddd;
+}
+
+/* 🔹 Botón Cancelar */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* 🔹 Botón Enviar */
+.btn-primary {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+}
+
+/* 🔹 Diseño responsivo */
+@media (max-width: 600px) {
+    .modal-dialog {
+        max-width: 90%;
+    }
+}
