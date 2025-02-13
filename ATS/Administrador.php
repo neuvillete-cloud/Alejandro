@@ -307,7 +307,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post('https://grammermx.com/AleTest/ATS/dao/updateStatus.php', { id: id, status: 2 })
+                    $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 2 })
                         .done(function (response) {
                             let jsonResponse = JSON.parse(response);
                             if (jsonResponse.success) {
