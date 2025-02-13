@@ -315,6 +315,7 @@ if (!isset($_SESSION['NumNomina'])) {
         // Evento para botón Aceptar
         $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
             let id = $(this).data('id');
+
             Swal.fire({
                 title: "¿Estás seguro?",
                 text: `¿Aprobar la solicitud ID: ${id}?`,
@@ -329,7 +330,8 @@ if (!isset($_SESSION['NumNomina'])) {
                             let jsonResponse = JSON.parse(response);
                             if (jsonResponse.success) {
                                 Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success");
-                                tabla.ajax.reload();
+                                $('#emailModal').modal('show'); // Abre el modal para los correos
+                                $('#sendEmailsBtn').data('id', id); // Guarda el ID de la solicitud en el botón
                             } else {
                                 Swal.fire("Error", "No se pudo aprobar la solicitud", "error");
                             }
@@ -341,6 +343,7 @@ if (!isset($_SESSION['NumNomina'])) {
         // Evento para botón Rechazar
         $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
             let id = $(this).data('id');
+
             Swal.fire({
                 title: "¿Estás seguro?",
                 text: `¿Rechazar la solicitud ID: ${id}?`,
@@ -362,6 +365,29 @@ if (!isset($_SESSION['NumNomina'])) {
                         });
                 }
             });
+        });
+
+        // Evento para enviar correos desde el modal
+        $('#sendEmailsBtn').on('click', function () {
+            let idSolicitud = $(this).data('id');
+            let emails = $('#emailList').val().trim();
+
+            if (emails === '') {
+                Swal.fire("Error", "Por favor, ingresa al menos un correo.", "error");
+                return;
+            }
+
+            $.post('https://grammermx.com/AleTest/ATS/dao/sendEmails.php', { id: idSolicitud, emails: emails })
+                .done(function (response) {
+                    let jsonResponse = JSON.parse(response);
+                    if (jsonResponse.success) {
+                        Swal.fire("Enviado", "Correos enviados correctamente.", "success");
+                        $('#emailModal').modal('hide');
+                        tabla.ajax.reload();
+                    } else {
+                        Swal.fire("Error", "No se pudieron enviar los correos.", "error");
+                    }
+                });
         });
 
     });
