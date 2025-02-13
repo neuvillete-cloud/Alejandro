@@ -113,7 +113,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <!-- Modal para ingresar correos -->
 <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Agregamos modal-dialog-centered aquí -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="emailModalLabel">Enviar Notificación</h5>
@@ -132,6 +132,7 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </div>
+
 
 <!-- Scripts -->
 <script>
