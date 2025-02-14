@@ -113,27 +113,15 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
-<!-- Modal para ingresar correos -->
-<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"> <!-- Agregamos modal-dialog-centered aquí -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="emailModalLabel">Enviar Notificación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <label for="emailList">Correos de los destinatarios:</label>
-                <textarea id="emailList" class="form-control" rows="3" placeholder="Ingresa los correos separados por comas"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="sendEmailsBtn">Enviar</button>
-            </div>
-        </div>
+<div id="customEmailModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Enviar correos</h2>
+        <p>¿Deseas enviar correos de notificación?</p>
+        <button id="sendEmailsBtn">Enviar</button>
     </div>
 </div>
+
 
 
 <!-- Scripts -->
@@ -300,7 +288,6 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         });
 
-        // Evento para botón Aceptar
         $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
             let id = $(this).data('id');
 
@@ -327,9 +314,10 @@ if (!isset($_SESSION['NumNomina'])) {
                             }
 
                             if (jsonResponse.success) {
-                                Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success");
-                                $('#emailModal').modal('show'); // Abre el modal para los correos
-                                $('#sendEmailsBtn').data('id', id); // Guarda el ID de la solicitud en el botón
+                                Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success").then(() => {
+                                    document.getElementById('customEmailModal').style.display = 'flex';
+                                    document.getElementById('sendEmailsBtn').setAttribute('data-id', id);
+                                });
                             } else {
                                 Swal.fire("Error", jsonResponse.message || "No se pudo aprobar la solicitud", "error");
                             }
@@ -341,6 +329,45 @@ if (!isset($_SESSION['NumNomina'])) {
                 }
             });
         });
+
+// Evento para enviar el correo
+        document.getElementById('sendEmailsBtn').addEventListener('click', function () {
+            let solicitudId = this.getAttribute('data-id');
+
+            // Petición AJAX para enviar el correo
+            fetch('https://grammermx.com/AleTest/ATS/dao/daoEnviarCorreo.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${solicitudId}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
+                        document.getElementById('customEmailModal').style.display = 'none';
+                    } else {
+                        Swal.fire("Error", data.message || "No se pudo enviar el correo", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error("❌ Error en la petición:", error);
+                    Swal.fire("Error", "No se pudo conectar con el servidor", "error");
+                });
+        });
+
+// Cerrar el modal al hacer clic en la 'X'
+        document.querySelector('.close-modal').addEventListener('click', function () {
+            document.getElementById('customEmailModal').style.display = 'none';
+        });
+
+// Cerrar el modal si se hace clic fuera del contenido
+        window.onclick = function (event) {
+            let modal = document.getElementById('customEmailModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+
 
 
         // Evento para botón Rechazar
@@ -368,29 +395,6 @@ if (!isset($_SESSION['NumNomina'])) {
                         });
                 }
             });
-        });
-
-        // Evento para enviar correos desde el modal
-        $('#sendEmailsBtn').on('click', function () {
-            let idSolicitud = $(this).data('id');
-            let emails = $('#emailList').val().trim();
-
-            if (emails === '') {
-                Swal.fire("Error", "Por favor, ingresa al menos un correo.", "error");
-                return;
-            }
-
-            $.post('https://grammermx.com/AleTest/ATS/dao/sendEmails.php', { id: idSolicitud, emails: emails })
-                .done(function (response) {
-                    let jsonResponse = JSON.parse(response);
-                    if (jsonResponse.success) {
-                        Swal.fire("Enviado", "Correos enviados correctamente.", "success");
-                        $('#emailModal').modal('hide');
-                        tabla.ajax.reload();
-                    } else {
-                        Swal.fire("Error", "No se pudieron enviar los correos.", "error");
-                    }
-                });
         });
 
     });
