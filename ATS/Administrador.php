@@ -14,10 +14,8 @@ if (!isset($_SESSION['NumNomina'])) {
     <!-- Bootstrap CSS -->
 
     <link rel="stylesheet" href="css/estilosAdministrador.css">
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
