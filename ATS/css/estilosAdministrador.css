@@ -342,12 +342,11 @@ body::after {
 
 /* 📌 Título de la tabla (h2) */
 h2 {
-    font-size: 1.8em !important;
-    font-weight: bold !important;
-    margin-bottom: -44px !important; /* 🔼 Más separación respecto a la tabla */
-    position: relative!important;
-    z-index: 20!important; /* 🔼 Asegura que esté por encima de la tabla */
-    color: white !important;
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-bottom: -44px; /* 🔼 Más separación respecto a la tabla */
+    position: relative;
+    z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
 }
 
 /* 🔍 Controles superiores (selector y buscador) */
