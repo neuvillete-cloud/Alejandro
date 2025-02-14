@@ -530,7 +530,7 @@ h2 {
     border: 2px solid #c82333; /* Borde rojo oscuro */
     color: white;
     font-weight: bold;
-    padding: 4px 10px; /* Tamaño más pequeño */
+    padding: 2px 10px; /* Tamaño más pequeño */
     font-size: 0.85em; /* Reduce el tamaño de la fuente */
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
