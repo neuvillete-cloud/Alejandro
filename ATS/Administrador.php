@@ -298,6 +298,7 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         });
 
+        // Funcionalidad de botones
         $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
             let id = $(this).data('id');
 
@@ -312,13 +313,10 @@ if (!isset($_SESSION['NumNomina'])) {
                 if (result.isConfirmed) {
                     $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 2 })
                         .done(function (response) {
-                            console.log("🔹 Respuesta del servidor:", response);
-
                             let jsonResponse;
                             try {
                                 jsonResponse = typeof response === "object" ? response : JSON.parse(response);
                             } catch (error) {
-                                console.error("🔴 Error al parsear JSON:", error, response);
                                 Swal.fire("Error", "Respuesta no válida del servidor", "error");
                                 return;
                             }
@@ -338,21 +336,29 @@ if (!isset($_SESSION['NumNomina'])) {
                             }
                         })
                         .fail(function (jqXHR, textStatus, errorThrown) {
-                            console.error("❌ Error en AJAX:", textStatus, errorThrown);
                             Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                         });
                 }
             });
         });
 
-// Evento para enviar el correo
+        // Evento para enviar el correo
         document.getElementById('sendEmailsBtn').addEventListener('click', function () {
             let solicitudId = this.getAttribute('data-id');
+            let email1 = document.getElementById('email1').value;
+            let email2 = document.getElementById('email2').value;
+            let email3 = document.getElementById('email3').value;
 
+            if (!email1) {
+                Swal.fire("Error", "El primer correo es obligatorio", "error");
+                return;
+            }
+
+            // Petición AJAX para enviar el correo
             fetch('https://grammermx.com/AleTest/ATS/dao/daoEnviarCorreo.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `id=${solicitudId}`
+                body: `id=${solicitudId}&email1=${encodeURIComponent(email1)}&email2=${encodeURIComponent(email2)}&email3=${encodeURIComponent(email3)}`
             })
                 .then(response => response.json())
                 .then(data => {
@@ -369,21 +375,18 @@ if (!isset($_SESSION['NumNomina'])) {
                 });
         });
 
-// Cerrar el modal al hacer clic en la 'X'
+        // Cerrar el modal al hacer clic en la 'X'
         document.querySelector('.close-modal').addEventListener('click', function () {
             document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal
         });
 
-// Cerrar el modal si se hace clic fuera del contenido
+        // Cerrar el modal si se hace clic fuera del contenido
         window.onclick = function (event) {
             let modal = document.getElementById('customEmailModal');
             if (event.target === modal) {
                 modal.classList.remove('show'); // Ocultar modal
             }
         };
-
-
-
 
         // Evento para botón Rechazar
         $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
@@ -411,7 +414,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 }
             });
         });
-
     });
 </script>
 </body>
