@@ -315,8 +315,13 @@ if (!isset($_SESSION['NumNomina'])) {
 
                             if (jsonResponse.success) {
                                 Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success").then(() => {
-                                    document.getElementById('customEmailModal').style.display = 'flex';
-                                    document.getElementById('sendEmailsBtn').setAttribute('data-id', id);
+                                    let modal = document.getElementById('customEmailModal');
+                                    if (modal) {
+                                        modal.classList.add('show'); // Mostrar modal correctamente
+                                        document.getElementById('sendEmailsBtn').setAttribute('data-id', id);
+                                    } else {
+                                        console.error("🔴 No se encontró el modal en el DOM");
+                                    }
                                 });
                             } else {
                                 Swal.fire("Error", jsonResponse.message || "No se pudo aprobar la solicitud", "error");
@@ -334,7 +339,6 @@ if (!isset($_SESSION['NumNomina'])) {
         document.getElementById('sendEmailsBtn').addEventListener('click', function () {
             let solicitudId = this.getAttribute('data-id');
 
-            // Petición AJAX para enviar el correo
             fetch('https://grammermx.com/AleTest/ATS/dao/daoEnviarCorreo.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -344,7 +348,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 .then(data => {
                     if (data.success) {
                         Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
-                        document.getElementById('customEmailModal').style.display = 'none';
+                        document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal correctamente
                     } else {
                         Swal.fire("Error", data.message || "No se pudo enviar el correo", "error");
                     }
@@ -357,16 +361,17 @@ if (!isset($_SESSION['NumNomina'])) {
 
 // Cerrar el modal al hacer clic en la 'X'
         document.querySelector('.close-modal').addEventListener('click', function () {
-            document.getElementById('customEmailModal').style.display = 'none';
+            document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal
         });
 
 // Cerrar el modal si se hace clic fuera del contenido
         window.onclick = function (event) {
             let modal = document.getElementById('customEmailModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
+            if (event.target === modal) {
+                modal.classList.remove('show'); // Ocultar modal
             }
         };
+
 
 
 
