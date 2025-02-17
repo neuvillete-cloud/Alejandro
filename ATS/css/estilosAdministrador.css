@@ -547,6 +547,17 @@ h2 {
     margin-right: 5px; /* Espaciado entre el icono y el texto */
 }
 
+/* Título del modal */
+.custom-modal-content h2 {
+    margin: 0; /* Elimina cualquier margen por defecto */
+    padding-bottom: 15px; /* Un poco de espacio debajo del título */
+    font-size: 24px; /* Tamaño del título */
+    color: #2c3e50; /* Azul oscuro */
+    font-weight: bold; /* Negrita */
+    text-align: center; /* Centrar el título */
+}
+
+/* Otros estilos del modal siguen igual */
 .custom-modal {
     position: fixed;
     top: 0;
