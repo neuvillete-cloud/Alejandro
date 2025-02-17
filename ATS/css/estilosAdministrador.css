@@ -579,7 +579,7 @@ h2 {
 
 /* Contenido del modal */
 .custom-modal-content {
-    background: #ffffff; /* Fondo blanco para el modal */
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     padding: 25px;
     border-radius: 12px;
     width: 400px;
