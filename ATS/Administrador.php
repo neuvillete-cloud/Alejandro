@@ -343,36 +343,36 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
 
-// Evento para enviar el correo
         document.getElementById('sendEmailsBtn').addEventListener('click', function () {
             let solicitudId = this.getAttribute('data-id');
-            let email1 = document.getElementById('email1').value;
-            let email2 = document.getElementById('email2').value;
-            let email3 = document.getElementById('email3').value;
+            let email1 = document.getElementById('email1').value.trim();
+            let email2 = document.getElementById('email2').value.trim();
+            let email3 = document.getElementById('email3').value.trim();
 
-            if (!email1) {
-                Swal.fire("Error", "El primer correo es obligatorio", "error");
+            if (!solicitudId || !email1) {
+                Swal.fire("Error", "El ID de la solicitud y el primer correo son obligatorios", "error");
                 return;
             }
 
-            console.log(`📨 Enviando correo con ID: ${solicitudId}`); // DEBUG
+            let formData = new URLSearchParams();
+            formData.append("id", solicitudId);
+            formData.append("email1", email1);
+            if (email2) formData.append("email2", email2);
+            if (email3) formData.append("email3", email3);
 
-            // Petición AJAX para enviar el correo
+            console.log("📤 Enviando datos:", formData.toString()); // <-- Verifica la salida en la consola
+
             fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: solicitudId,
-                    email1: email1,
-                    email2: email2 || '',
-                    email3: email3 || ''
-                })
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.status === 'success') {
+                    console.log("📩 Respuesta del servidor:", data); // <-- Verifica la respuesta en la consola
+                    if (data.status === "success") {
                         Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
-                        document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal correctamente
+                        document.getElementById('customEmailModal').classList.remove('show');
                     } else {
                         Swal.fire("Error", data.message || "No se pudo enviar el correo", "error");
                     }
@@ -382,6 +382,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                 });
         });
+
 
         // Cerrar el modal al hacer clic en la 'X'
         document.querySelector('.close-modal').addEventListener('click', function () {
