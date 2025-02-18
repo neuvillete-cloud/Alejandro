@@ -327,6 +327,7 @@ if (!isset($_SESSION['NumNomina'])) {
                                     if (modal) {
                                         modal.classList.add('show'); // Mostrar modal correctamente
                                         document.getElementById('sendEmailsBtn').setAttribute('data-id', id);
+                                        console.log(`✅ ID guardado en modal: ${id}`); // DEBUG
                                     } else {
                                         console.error("🔴 No se encontró el modal en el DOM");
                                     }
@@ -342,7 +343,7 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
 
-        // Evento para enviar el correo
+// Evento para enviar el correo
         document.getElementById('sendEmailsBtn').addEventListener('click', function () {
             let solicitudId = this.getAttribute('data-id');
             let email1 = document.getElementById('email1').value;
@@ -354,15 +355,22 @@ if (!isset($_SESSION['NumNomina'])) {
                 return;
             }
 
+            console.log(`📨 Enviando correo con ID: ${solicitudId}`); // DEBUG
+
             // Petición AJAX para enviar el correo
             fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `id=${solicitudId}&email1=${encodeURIComponent(email1)}&email2=${encodeURIComponent(email2)}&email3=${encodeURIComponent(email3)}`
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: solicitudId,
+                    email1: email1,
+                    email2: email2 || '',
+                    email3: email3 || ''
+                })
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.status === 'success') {
                         Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
                         document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal correctamente
                     } else {
