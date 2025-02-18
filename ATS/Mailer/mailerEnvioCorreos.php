@@ -89,13 +89,13 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
         $mail->Password = 'SATSGrammer2024.';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
-        $mail->setFrom('tickets_enchulamelanave@grammermx.com', 'Administración ATS Grammer');
+        $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
 
         $mail->addAddress($email1);
         if (!empty($email2)) $mail->addAddress($email2);
         if (!empty($email3)) $mail->addAddress($email3);
 
-        $mail->addBCC('tickets_enchulamelanave@grammermx.com');
+        $mail->addBCC('sistema_ats@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
 
         $mail->isHTML(true);
