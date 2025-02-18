@@ -355,7 +355,7 @@ if (!isset($_SESSION['NumNomina'])) {
             }
 
             // Petición AJAX para enviar el correo
-            fetch('https://grammermx.com/AleTest/ATS/dao/daoEnviarCorreo.php', {
+            fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `id=${solicitudId}&email1=${encodeURIComponent(email1)}&email2=${encodeURIComponent(email2)}&email3=${encodeURIComponent(email3)}`
