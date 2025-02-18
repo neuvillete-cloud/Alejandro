@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("ConexionBD.PHP");
+include_once("ConexionBD.php");
 require 'Phpmailer/Exception.php';
 require 'Phpmailer/PHPMailer.php';
 require 'Phpmailer/SMTP.php';
