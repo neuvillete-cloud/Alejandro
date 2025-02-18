@@ -9,7 +9,20 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+// Guardar datos de la petición en un log
+file_put_contents('debug_post.log', print_r($_POST, true));
+
+// Mostrar en pantalla qué datos están llegando
+echo json_encode(["debug_post" => $_POST]);
+
+// Verifica si los valores existen
+if (!isset($_POST['id']) || !isset($_POST['email1'])) {
+    echo json_encode(["status" => "error", "message" => "ID de solicitud y primer correo son obligatorios."]);
+    exit;
+}
 if (isset($_POST['id']) && isset($_POST['email1'])) {
     $idSolicitud = $_POST['id'];
     $email1 = $_POST['email1'];
