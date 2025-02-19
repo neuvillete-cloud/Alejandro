@@ -56,6 +56,11 @@ body::after {
     z-index: 10;
 }
 
+.header-icon {
+    width: 50px; /* Ajusta según el tamaño deseado */
+    height: auto; /* Mantiene la proporción */
+}
+
 .header-left {
     display: flex;
     align-items: center;
