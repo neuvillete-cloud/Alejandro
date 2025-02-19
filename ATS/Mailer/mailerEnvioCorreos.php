@@ -8,7 +8,7 @@ require 'Phpmailer/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=UTF-8');
 
 if (isset($_POST['id']) && isset($_POST['email1'])) {
     $idSolicitud = $_POST['id'];
@@ -41,12 +41,20 @@ if (isset($_POST['id']) && isset($_POST['email1'])) {
     // Enviar correo
     $asunto = "Solicitud Pendiente de Aprobación";
     $mensaje = "
-        <p>Estimado usuario,</p>
-        <p>Se ha generado una nueva solicitud con el folio <strong>$folio</strong>.</p>
-        <p>Puedes aprobar o rechazar la solicitud en el siguiente enlace:</p>
-        <p><a href='$linkAprobacion' style='background: #28a745; color: #fff; padding: 10px 15px; text-decoration: none;'>Ver Solicitud</a></p>
-        <p>Saludos,<br>ATS - Grammer</p>
-    ";
+    <p>Estimado usuario,</p>
+    <p>Se ha generado una nueva solicitud con el folio <strong>$folio</strong>.</p>
+    <p>Puedes aprobar o rechazar la solicitud en el siguiente enlace:</p>
+    
+    <p>
+        <a href='$linkAprobacion' target='_blank' style='background: #E6F4F9; color: #005195; 
+        padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
+        display: inline-block;'>
+            Ver Solicitud
+        </a>
+    </p>
+
+    <p>Saludos,<br>ATS - Grammer</p>
+";
 
     $correoResponse = enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje);
 
@@ -64,18 +72,27 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
     $contenido = "
     <html>
     <head>
+        <meta charset='UTF-8'>
         <title>$asunto</title>
     </head>
-    <body style='font-family: Arial, sans-serif; text-align: center; background-color: #f6f6f6;'>
-        <div style='background-color: #005195; padding: 20px; color: #ffffff;'>
-            <h2>Notificación de Solicitud</h2>
-        </div>
-        <div style='padding: 20px;'>
-            <p>$mensaje</p>
-        </div>
-        <footer style='background-color: #f6f6f6; padding: 10px;'>
-            <p>© Grammer Querétaro.</p>
-        </footer>
+    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #87CEEB, #B0E0E6); color: #FFFFFF; text-align: center;'>
+        <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
+            <tr>
+                <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
+                    <h2>Notificación de Solicitud</h2>
+                </td>
+            </tr>
+            <tr>
+                <td style='padding: 20px; text-align: left; color: #333333;'>
+                    $mensaje
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #005195; color: #FFFFFF; padding: 10px; text-align: center;'>
+                    <p>© Grammer Querétaro.</p>
+                </td>
+            </tr>
+        </table>
     </body>
     </html>";
 
@@ -99,6 +116,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
         $mail->addBCC('extern.alejandro.torres@grammer.com');
 
         $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';  // **CORRECCIÓN PRINCIPAL**
         $mail->Subject = $asunto;
         $mail->Body = $contenido;
 
@@ -112,4 +130,5 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
     }
 }
 ?>
+
 
