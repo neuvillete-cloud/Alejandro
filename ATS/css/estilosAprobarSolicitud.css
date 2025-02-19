@@ -68,21 +68,6 @@ body::after {
     margin-top: 10px;
 }
 
-.menu-toggle {
-    font-size: 1.5rem;
-    color: white;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    margin-top: 7px;
-    align-self: center;
-}
-
-.menu-toggle:hover {
-    transform: scale(1.1);
-}
-
 /* Nueva sección para el perfil de usuario */
 .header-right {
     display: flex;
