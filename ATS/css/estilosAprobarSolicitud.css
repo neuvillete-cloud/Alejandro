@@ -1,0 +1,121 @@
+/* Estilos globales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Efectos de círculos en el fondo */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    filter: blur(70px);
+    z-index: 1;
+}
+
+body::before {
+    width: 500px;
+    height: 500px;
+    background: #1E3A8A;
+    top: -100px;
+    left: -50px;
+}
+
+body::after {
+    width: 400px;
+    height: 400px;
+    background: #2563EB;
+    bottom: -100px;
+    right: -50px;
+}
+
+/* Barra superior */
+.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(30, 30, 30, 0.6);
+    z-index: 10;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left h1 {
+    margin-right: 10px;
+    color: white;
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.menu-toggle {
+    font-size: 1.5rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-top: 7px;
+    align-self: center;
+}
+
+.menu-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* Nueva sección para el perfil de usuario */
+.header-right {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Contenedor central tipo hoja */
+.contenedor-solicitud {
+    width: 60%;
+    max-width: 800px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    color: black;
+    position: relative;
+    z-index: 2;
+}
+
+/* Estilos de la solicitud */
+.solicitud h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1E3A8A;
+}
+
+.solicitud p {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.solicitud strong {
+    color: #2563EB;
+}
