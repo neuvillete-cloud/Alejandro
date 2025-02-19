@@ -344,7 +344,7 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
         document.getElementById('sendEmailsBtn').addEventListener('click', function () {
-            let button = this; // Guardamos referencia al botón
+            let button = this;
             let solicitudId = button.getAttribute('data-id');
             let email1 = document.getElementById('email1').value.trim();
             let email2 = document.getElementById('email2').value.trim();
@@ -355,9 +355,8 @@ if (!isset($_SESSION['NumNomina'])) {
                 return;
             }
 
-            // Deshabilitar botón para evitar múltiples clics
             button.disabled = true;
-            button.textContent = "Enviando..."; // Cambia el texto del botón para indicar que está en proceso
+            button.textContent = "Enviando...";
 
             let formData = new URLSearchParams();
             formData.append("id", solicitudId);
@@ -376,8 +375,16 @@ if (!isset($_SESSION['NumNomina'])) {
                 .then(data => {
                     console.log("📩 Respuesta del servidor:", data);
                     if (data.status === "success") {
-                        Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
-                        document.getElementById('customEmailModal').classList.remove('show');
+                        Swal.fire("Enviado", "El correo fue enviado correctamente", "success").then(() => {
+                            document.getElementById('customEmailModal').classList.remove('show');
+
+                            // 🔄 Recargar la tabla después de enviar el correo
+                            if ($.fn.DataTable.isDataTable("#solicitudesTable")) {
+                                $('#solicitudesTable').DataTable().ajax.reload();
+                            } else {
+                                cargarSolicitudes(); // Si no usas DataTables, llama a tu función de carga de datos
+                            }
+                        });
                     } else {
                         Swal.fire("Error", data.message || "No se pudo enviar el correo", "error");
                     }
@@ -387,9 +394,8 @@ if (!isset($_SESSION['NumNomina'])) {
                     Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                 })
                 .finally(() => {
-                    // Rehabilitar botón después de recibir respuesta del servidor
                     button.disabled = false;
-                    button.textContent = "Enviar Correos"; // Restablece el texto original del botón
+                    button.textContent = "Enviar Correos";
                 });
         });
 
