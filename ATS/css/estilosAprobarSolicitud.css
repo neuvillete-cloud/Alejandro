@@ -89,6 +89,14 @@ body::after {
     color: black;
 }
 
+/* Título principal fuera de la sección */
+.contenedor-solicitud h2 {
+    font-size: 22px;
+    color: #3a6788;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 /* Secciones dentro del contenedor */
 .solicitud {
     background-color: #f0f7fd;
@@ -100,14 +108,6 @@ body::after {
     font-size: 16px;
 }
 
-.solicitud h2 {
-    font-size: 18px;
-    color: #3a6788;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
 .solicitud p {
     margin-bottom: 8px;
 }
-

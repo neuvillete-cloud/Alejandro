@@ -18,8 +18,8 @@
 
 <!-- Contenedor central tipo "hoja" -->
 <main class="contenedor-solicitud">
+    <h2>Detalles de la Solicitud</h2>
     <div class="solicitud">
-        <h2>Detalles de la Solicitud</h2>
         <p><strong>Nombre:</strong> <span id="nombre"></span></p>
         <p><strong>Área:</strong> <span id="area"></span></p>
         <p><strong>Puesto:</strong> <span id="puesto"></span></p>
