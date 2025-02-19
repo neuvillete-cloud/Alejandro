@@ -421,17 +421,29 @@ if (!isset($_SESSION['NumNomina'])) {
                 if (result.isConfirmed) {
                     $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 3 })
                         .done(function (response) {
-                            let jsonResponse = JSON.parse(response);
-                            if (jsonResponse.success) {
-                                Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success");
-                                tabla.ajax.reload();
-                            } else {
-                                Swal.fire("Error", "No se pudo rechazar la solicitud", "error");
+                            let jsonResponse;
+                            try {
+                                jsonResponse = typeof response === "object" ? response : JSON.parse(response);
+                            } catch (error) {
+                                Swal.fire("Error", "Respuesta no válida del servidor", "error");
+                                return;
                             }
+
+                            if (jsonResponse.success) {
+                                Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success").then(() => {
+                                    tabla.ajax.reload();
+                                });
+                            } else {
+                                Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
+                            }
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                         });
                 }
             });
         });
+
     });
 </script>
 </body>
