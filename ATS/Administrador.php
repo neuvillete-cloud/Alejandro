@@ -400,14 +400,6 @@ if (!isset($_SESSION['NumNomina'])) {
             document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal
         });
 
-        // Cerrar el modal si se hace clic fuera del contenido
-        window.onclick = function (event) {
-            let modal = document.getElementById('customEmailModal');
-            if (event.target === modal) {
-                modal.classList.remove('show'); // Ocultar modal
-            }
-        };
-
         // Evento para botón Rechazar
         $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
             let id = $(this).data('id');
