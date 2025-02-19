@@ -344,7 +344,8 @@ if (!isset($_SESSION['NumNomina'])) {
         });
 
         document.getElementById('sendEmailsBtn').addEventListener('click', function () {
-            let solicitudId = this.getAttribute('data-id');
+            let button = this; // Guardamos referencia al botón
+            let solicitudId = button.getAttribute('data-id');
             let email1 = document.getElementById('email1').value.trim();
             let email2 = document.getElementById('email2').value.trim();
             let email3 = document.getElementById('email3').value.trim();
@@ -354,13 +355,17 @@ if (!isset($_SESSION['NumNomina'])) {
                 return;
             }
 
+            // Deshabilitar botón para evitar múltiples clics
+            button.disabled = true;
+            button.textContent = "Enviando..."; // Cambia el texto del botón para indicar que está en proceso
+
             let formData = new URLSearchParams();
             formData.append("id", solicitudId);
             formData.append("email1", email1);
             if (email2) formData.append("email2", email2);
             if (email3) formData.append("email3", email3);
 
-            console.log("📤 Enviando datos:", formData.toString()); // <-- Verifica la salida en la consola
+            console.log("📤 Enviando datos:", formData.toString());
 
             fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', {
                 method: 'POST',
@@ -369,7 +374,7 @@ if (!isset($_SESSION['NumNomina'])) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("📩 Respuesta del servidor:", data); // <-- Verifica la respuesta en la consola
+                    console.log("📩 Respuesta del servidor:", data);
                     if (data.status === "success") {
                         Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
                         document.getElementById('customEmailModal').classList.remove('show');
@@ -380,8 +385,14 @@ if (!isset($_SESSION['NumNomina'])) {
                 .catch(error => {
                     console.error("❌ Error en la petición:", error);
                     Swal.fire("Error", "No se pudo conectar con el servidor", "error");
+                })
+                .finally(() => {
+                    // Rehabilitar botón después de recibir respuesta del servidor
+                    button.disabled = false;
+                    button.textContent = "Enviar Correos"; // Restablece el texto original del botón
                 });
         });
+
 
 
         // Cerrar el modal al hacer clic en la 'X'
