@@ -75,30 +75,39 @@ body::after {
 
 /* Contenedor central tipo hoja */
 .contenedor-solicitud {
-    width: 60%;
-    max-width: 800px;
-    background: white;
+    background-color: #ffffff;
+    border: 5px solid #b0cde0;
+    border-radius: 15px;
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 700px;
+    max-width: 90%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-size: 16px;
+    overflow: hidden;
     text-align: left;
     color: black;
-    position: relative;
-    z-index: 2;
 }
 
-/* Estilos de la solicitud */
-.solicitud h2 {
-    text-align: center;
+/* Secciones dentro del contenedor */
+.solicitud {
+    background-color: #f0f7fd;
+    border: 2px solid #b0cde0;
+    border-radius: 12px;
+    padding: 20px;
     margin-bottom: 20px;
-    color: #1E3A8A;
+    position: relative;
+    font-size: 16px;
+}
+
+.solicitud h2 {
+    font-size: 18px;
+    color: #3a6788;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 .solicitud p {
-    font-size: 18px;
-    margin: 10px 0;
+    margin-bottom: 8px;
 }
 
-.solicitud strong {
-    color: #2563EB;
-}
