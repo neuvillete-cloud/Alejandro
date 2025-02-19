@@ -57,7 +57,7 @@ body::after {
 }
 
 .header-icon {
-    width: 50px; /* Ajusta según el tamaño deseado */
+    width: 40px; /* Ajusta según el tamaño deseado */
     height: auto; /* Mantiene la proporción */
 }
 
