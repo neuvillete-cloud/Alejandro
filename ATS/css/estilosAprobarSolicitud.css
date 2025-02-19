@@ -56,6 +56,13 @@ body::after {
     z-index: 10;
 }
 
+.header-left h1 {
+    margin-right: 10px;
+    color: white;
+    font-size: 24px;
+    margin-top: 10px;
+}
+
 .header-icon {
     width: 40px; /* Ajusta según el tamaño deseado */
     height: auto; /* Mantiene la proporción */
@@ -64,20 +71,6 @@ body::after {
 .header-left {
     display: flex;
     align-items: center;
-}
-
-.header-left h1 {
-    margin-right: 10px;
-    color: white;
-    font-size: 24px;
-    margin-top: 10px;
-}
-
-/* Nueva sección para el perfil de usuario */
-.header-right {
-    display: flex;
-    align-items: center;
-    position: relative;
 }
 
 /* Contenedor central tipo hoja */
