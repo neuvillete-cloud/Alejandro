@@ -26,6 +26,12 @@
         <p><strong>Tipo de Solicitud:</strong> <span id="tipo"></span></p>
         <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
     </div>
+
+    <!-- Contenedor de los botones -->
+    <div class="botones-solicitud">
+        <button class="boton boton-cancelar">Cancelar</button>
+        <button class="boton boton-aceptar">Aceptar</button>
+    </div>
 </main>
 
 <script src="js/cargarSolicitud.js"></script>

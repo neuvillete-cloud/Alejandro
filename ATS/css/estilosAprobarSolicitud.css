@@ -111,3 +111,43 @@ body::after {
 .solicitud p {
     margin-bottom: 8px;
 }
+
+/* Contenedor para los botones */
+.botones-solicitud {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #b0d3e8; /* Línea separadora sutil */
+}
+
+/* Estilos generales de los botones */
+.boton {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Estilos específicos */
+.boton-cancelar {
+    background: #E53E3E; /* Rojo para cancelar */
+}
+
+.boton-cancelar:hover {
+    background: #C53030;
+    transform: scale(1.05);
+}
+
+.boton-aceptar {
+    background: #2563EB; /* Azul acorde a la página */
+}
+
+.boton-aceptar:hover {
+    background: #1E3A8A;
+    transform: scale(1.05);
+}
