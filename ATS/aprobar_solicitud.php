@@ -20,6 +20,7 @@
 <main class="contenedor-solicitud">
     <h2>Detalles de la Solicitud</h2>
     <div class="solicitud">
+        <img src="imagenes/solicitud-icono.png" alt="Icono de solicitud" class="solicitud-imagen">
         <p><strong>Nombre:</strong> <span id="nombre"></span></p>
         <p><strong>Área:</strong> <span id="area"></span></p>
         <p><strong>Puesto:</strong> <span id="puesto"></span></p>

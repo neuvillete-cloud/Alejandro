@@ -97,16 +97,26 @@ body::after {
     margin-bottom: 20px;
 }
 
-/* Secciones dentro del contenedor */
+/* Contenedor de la solicitud */
 .solicitud {
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    position: relative;
+    position: relative; /* Necesario para posicionar la imagen dentro */
     font-size: 16px;
 }
+
+/* Imagen dentro de la solicitud */
+.solicitud .solicitud-imagen {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50px; /* Ajusta según el tamaño deseado */
+    height: auto; /* Mantiene la proporción */
+}
+
 
 .solicitud p {
     margin-bottom: 8px;
