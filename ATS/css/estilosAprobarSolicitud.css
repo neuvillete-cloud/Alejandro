@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6);
     color: white;
     height: 100vh;
     overflow: hidden;
@@ -64,8 +64,8 @@ body::after {
 }
 
 .header-icon {
-    width: 40px; /* Ajusta según el tamaño deseado */
-    height: auto; /* Mantiene la proporción */
+    width: 40px;
+    height: auto;
 }
 
 .header-left {
@@ -80,18 +80,19 @@ body::after {
     border-radius: 15px;
     padding: 30px;
     width: 700px;
+    height: 80vh; /* Aumentando la altura */
     max-width: 90%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
     font-size: 16px;
-    overflow: hidden;
+    overflow-y: auto; /* Permitir desplazamiento si es necesario */
     text-align: left;
     color: black;
 }
 
 /* Título principal fuera de la sección */
 .contenedor-solicitud h2 {
-    font-size: 22px;
+    font-size: 24px;
     color: #3a6788;
     text-align: center;
     margin-bottom: 20px;
@@ -102,14 +103,14 @@ body::after {
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
-    padding: 20px;
+    padding: 30px;
     margin-bottom: 20px;
-    position: relative;
-    font-size: 16px;
+    font-size: 18px;
+    min-height: 300px; /* Aumentando la altura de la solicitud */
 }
 
 .solicitud p {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 /* Contenedor para los botones */
@@ -118,13 +119,13 @@ body::after {
     justify-content: space-between;
     margin-top: 20px;
     padding-top: 15px;
-    border-top: 2px solid #b0d3e8; /* Línea separadora sutil */
+    border-top: 2px solid #b0d3e8;
 }
 
 /* Estilos generales de los botones */
 .boton {
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 14px 22px;
+    font-size: 18px;
     font-weight: bold;
     color: white;
     border: none;
@@ -135,7 +136,7 @@ body::after {
 
 /* Estilos específicos */
 .boton-cancelar {
-    background: #E53E3E; /* Rojo para cancelar */
+    background: #E53E3E;
 }
 
 .boton-cancelar:hover {
@@ -144,7 +145,7 @@ body::after {
 }
 
 .boton-aceptar {
-    background: #2563EB; /* Azul acorde a la página */
+    background: #2563EB;
 }
 
 .boton-aceptar:hover {
