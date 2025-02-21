@@ -161,4 +161,5 @@ body::after {
     left: 10px; /* Ajusta según lo necesites */
     max-width: 80px; /* Reduce el tamaño de la imagen */
     height: auto;
+    margin: 0 auto 15px; /* Centra la imagen y agrega margen inferior */
 }
