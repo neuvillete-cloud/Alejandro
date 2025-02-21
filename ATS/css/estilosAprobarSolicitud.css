@@ -100,15 +100,23 @@ body::after {
 
 /* Secciones dentro del contenedor */
 .solicitud {
-    position: relative; /* Permite posicionar elementos hijos de manera absoluta */
+    position: relative;
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
-    padding: 30px;
+    padding: 30px 30px 30px 120px; /* padding: arriba derecha abajo izquierda */
     margin-bottom: 20px;
     font-size: 18px;
-    min-height: 300px; /* Se mantiene pero permite crecimiento */
-    flex-grow: 1; /* Crece con el contenido */
+    min-height: 300px;
+    flex-grow: 1;
+}
+
+.solicitud-imagen {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    max-width: 80px;
+    height: auto;
 }
 
 .solicitud p {
@@ -153,13 +161,4 @@ body::after {
 .boton-aceptar:hover {
     background: #1E3A8A;
     transform: scale(1.05);
-}
-
-.solicitud-imagen {
-    position: absolute;
-    top: 10px; /* Ajusta según lo necesites */
-    left: 10px; /* Ajusta según lo necesites */
-    max-width: 80px; /* Reduce el tamaño de la imagen */
-    height: auto;
-    margin: 0 auto 15px; /* Centra la imagen y agrega margen inferior */
 }
