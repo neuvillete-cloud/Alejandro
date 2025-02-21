@@ -80,10 +80,10 @@ body::after {
     border-radius: 15px;
     padding: 30px;
     width: 700px;
-    height: 70vh; /* Aumentando la altura */
+    min-height: 70vh; /* Ahora es flexible */
     max-width: 90%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    position: relative;
+    position: relative; /* Mantiene la posición */
     font-size: 16px;
     overflow-y: auto; /* Permitir desplazamiento si es necesario */
     text-align: left;
@@ -106,7 +106,8 @@ body::after {
     padding: 30px;
     margin-bottom: 20px;
     font-size: 18px;
-    min-height: 300px; /* Aumentando la altura de la solicitud */
+    min-height: 300px; /* Se mantiene pero permite crecimiento */
+    flex-grow: 1; /* Crece con el contenido */
 }
 
 .solicitud p {
