@@ -100,6 +100,7 @@ body::after {
 
 /* Secciones dentro del contenedor */
 .solicitud {
+    position: relative; /* Permite posicionar elementos hijos de manera absoluta */
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
@@ -155,8 +156,9 @@ body::after {
 }
 
 .solicitud-imagen {
-    max-width: 100px; /* Ajusta el tamaño según lo necesites */
-    height: auto; /* Mantiene la proporción */
-    display: block; /* Asegura que no tenga margen extra */
-    margin: 0 auto 15px; /* Centra la imagen y agrega margen inferior */
+    position: absolute;
+    top: 10px; /* Ajusta según lo necesites */
+    left: 10px; /* Ajusta según lo necesites */
+    max-width: 80px; /* Reduce el tamaño de la imagen */
+    height: auto;
 }
