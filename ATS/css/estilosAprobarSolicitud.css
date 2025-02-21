@@ -78,16 +78,17 @@ body::after {
     background-color: #ffffff;
     border: 5px solid #b0d3e8;
     border-radius: 15px;
-    padding: 30px;
-    width: 700px;
-    max-width: 90%;
+    padding: 40px; /* Aumenté el padding */
+    width: 850px; /* Aumenté el ancho */
+    max-width: 95%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
-    font-size: 16px;
+    font-size: 18px; /* Aumenté el tamaño de fuente */
     overflow: hidden;
     text-align: left;
     color: black;
 }
+
 
 /* Título principal fuera de la sección */
 .contenedor-solicitud h2 {
@@ -102,11 +103,12 @@ body::after {
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative; /* Necesario para posicionar la imagen dentro */
-    font-size: 16px;
+    padding: 30px; /* Aumenté el padding */
+    margin-bottom: 25px;
+    position: relative;
+    font-size: 18px; /* Aumenté el tamaño de fuente */
 }
+
 
 /* Imagen dentro de la solicitud */
 .solicitud .solicitud-imagen {
