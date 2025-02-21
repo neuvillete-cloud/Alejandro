@@ -1,18 +1,21 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Obtener parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const folio = urlParams.get("folio"); // Tomamos el folio de la URL
 
     if (folio) {
-        fetch(`dao/daoAprobarSolicitud.php?folio=${folio}`) // No hay que cambiar esto, ya que es el nombre del parámetro
+        fetch(`dao/daoAprobarSolicitud.php?folio=${folio}`)
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    document.getElementById("nombre").textContent = data.nombre;
-                    document.getElementById("area").textContent = data.area;
-                    document.getElementById("puesto").textContent = data.puesto;
-                    document.getElementById("tipo").textContent = data.tipo;
-                    document.getElementById("descripcion").textContent = data.descripcion;
+                if (data.status === "success") { // Validamos el estado correcto
+                    const solicitud = data.data; // Extraemos los datos correctamente
+
+                    // Asignamos los valores a los elementos HTML
+                    document.getElementById("nombre").textContent = solicitud.Nombre || "N/A";
+                    document.getElementById("area").textContent = solicitud.IdArea || "N/A"; // Ajustar si hay una relación con otra tabla
+                    document.getElementById("puesto").textContent = solicitud.Puesto || "N/A";
+                    document.getElementById("tipo").textContent = solicitud.TipoContratacion || "N/A";
+                    document.getElementById("descripcion").textContent = solicitud.NombreReemplazo || "N/A"; // Si aplica, puede ser otro campo relevante
                 } else {
                     document.querySelector(".solicitud").innerHTML = `<p>No se encontró la solicitud.</p>`;
                 }
@@ -22,3 +25,4 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector(".solicitud").innerHTML = `<p>No se proporcionó un folio.</p>`;
     }
 });
+
