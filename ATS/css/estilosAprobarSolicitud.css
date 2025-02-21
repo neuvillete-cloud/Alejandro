@@ -78,17 +78,16 @@ body::after {
     background-color: #ffffff;
     border: 5px solid #b0d3e8;
     border-radius: 15px;
-    padding: 40px; /* Aumenté el padding */
-    width: 850px; /* Aumenté el ancho */
-    max-width: 95%;
+    padding: 30px;
+    width: 700px;
+    max-width: 90%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
-    font-size: 18px; /* Aumenté el tamaño de fuente */
+    font-size: 16px;
     overflow: hidden;
     text-align: left;
     color: black;
 }
-
 
 /* Título principal fuera de la sección */
 .contenedor-solicitud h2 {
@@ -98,27 +97,16 @@ body::after {
     margin-bottom: 20px;
 }
 
-/* Contenedor de la solicitud */
+/* Secciones dentro del contenedor */
 .solicitud {
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
-    padding: 30px; /* Aumenté el padding */
-    margin-bottom: 25px;
+    padding: 20px;
+    margin-bottom: 20px;
     position: relative;
-    font-size: 18px; /* Aumenté el tamaño de fuente */
+    font-size: 16px;
 }
-
-
-/* Imagen dentro de la solicitud */
-.solicitud .solicitud-imagen {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 50px; /* Ajusta según el tamaño deseado */
-    height: auto; /* Mantiene la proporción */
-}
-
 
 .solicitud p {
     margin-bottom: 8px;
