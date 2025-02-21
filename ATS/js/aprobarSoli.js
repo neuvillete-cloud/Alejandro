@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const folio = urlParams.get("folio"); // Tomamos el folio de la URL
 
     if (folio) {
-        fetch(`php/obtenerSolicitud.php?folio=${folio}`) // No hay que cambiar esto, ya que es el nombre del parámetro
+        fetch(`dao/daoAprobarSolicitud.php?folio=${folio}`) // No hay que cambiar esto, ya que es el nombre del parámetro
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

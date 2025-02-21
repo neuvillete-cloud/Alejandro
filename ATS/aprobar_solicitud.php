@@ -34,7 +34,7 @@
     </div>
 </main>
 
-<script src="js/cargarSolicitud.js"></script>
+<script src="js/aprobarSoli.js"></script>
 
 </body>
 </html>
