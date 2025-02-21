@@ -80,7 +80,7 @@ body::after {
     border-radius: 15px;
     padding: 30px;
     width: 700px;
-    height: 80vh; /* Aumentando la altura */
+    height: 70vh; /* Aumentando la altura */
     max-width: 90%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     position: relative;
