@@ -30,11 +30,34 @@
         </div>
 
         <!-- Datos con líneas -->
-        <div class="dato"><label>Nombre:</label> <span class="linea" id="nombre"></span></div>
-        <div class="dato"><label>Área:</label> <span class="linea" id="area"></span></div>
-        <div class="dato"><label>Puesto:</label> <span class="linea" id="puesto"></span></div>
-        <div class="dato"><label>Tipo de Solicitud:</label> <span class="linea" id="tipo"></span></div>
-        <div class="dato"><label>Descripción:</label> <span class="linea" id="descripcion"></span></div>
+        <div class="datos">
+            <div class="dato">
+                <label>Nombre:</label>
+                <span class="linea" id="nombre"></span>
+            </div>
+            <div class="dato">
+                <label>Área:</label>
+                <span class="linea" id="area"></span>
+            </div>
+        </div>
+
+        <div class="datos">
+            <div class="dato">
+                <label>Puesto:</label>
+                <span class="linea" id="puesto"></span>
+            </div>
+            <div class="dato">
+                <label>Tipo de Solicitud:</label>
+                <span class="linea" id="tipo"></span>
+            </div>
+        </div>
+
+        <div class="datos">
+            <div class="dato">
+                <label>Descripción:</label>
+                <span class="linea" id="descripcion"></span>
+            </div>
+        </div>
     </div>
 
     <!-- Contenedor de los botones -->
