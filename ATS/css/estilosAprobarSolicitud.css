@@ -141,23 +141,24 @@ body::after {
     display: flex;
     align-items: center;
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     position: relative;
     width: 100%;
 }
 
 .dato label {
     font-weight: bold;
-    min-width: 150px; /* Mantiene alineado el texto */
-    margin-right: 10px;
+    white-space: nowrap; /* Evita que el texto del label salte de línea */
+    margin-right: 3px; /* Reduce el espacio entre el label y el dato */
 }
 
-/* Línea negra debajo del texto */
 .dato .linea {
-    display: inline-block; /* Se ajusta al tamaño del contenido */
+    display: inline-block;
     border-bottom: 2px solid black;
     padding-bottom: 3px;
-    min-width: 50px; /* Para que no sea demasiado corta si hay poco texto */
+    flex-grow: 1; /* Permite que la línea solo ocupe el espacio necesario */
+    min-width: auto; /* Elimina el ancho mínimo forzado */
+    width: fit-content; /* Ajusta el ancho de la línea al contenido */
 }
 
 .dato .linea::after {
