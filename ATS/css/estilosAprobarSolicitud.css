@@ -97,6 +97,7 @@ body::after {
     position: relative;
     padding-bottom: 15px;
     border-bottom: 2px solid #b0d3e8;
+    margin-bottom: 20px; /* Espacio extra entre el encabezado y los datos */
 }
 
 /* Imagen en la esquina superior izquierda */
@@ -140,29 +141,30 @@ body::after {
     display: flex;
     align-items: center;
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 15px; /* Más espacio entre cada dato */
 }
 
 .dato label {
     font-weight: bold;
-    margin-right: 10px;
+    width: 150px; /* Mantiene alineado el texto */
 }
 
 /* Línea donde se muestra la información */
 .dato .linea {
     flex-grow: 1;
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
     min-width: 200px;
-    height: 20px;
-    line-height: 20px;
+    height: 25px;
+    line-height: 25px;
     padding-left: 5px;
+    background-color: #ffffff;
 }
 
 /* Contenedor para los botones */
 .botones-solicitud {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 30px;
     padding-top: 15px;
     border-top: 2px solid #b0d3e8;
 }
