@@ -141,15 +141,15 @@ body::after {
     display: flex;
     align-items: center;
     font-size: 18px;
-    margin-bottom: 10px; /* Reducimos el espacio entre filas */
+    margin-bottom: 15px;
     position: relative;
     width: 100%;
 }
 
 .dato label {
     font-weight: bold;
-    min-width: 120px; /* Reducimos el espacio reservado para el nombre del dato */
-    margin-right: 5px; /* Hacemos que esté más pegado al valor */
+    min-width: 150px; /* Mantiene alineado el texto */
+    margin-right: 10px;
 }
 
 /* Línea negra debajo del texto */
