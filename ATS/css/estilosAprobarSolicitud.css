@@ -148,18 +148,20 @@ body::after {
 
 .dato label {
     font-weight: bold;
-    white-space: nowrap; /* Evita que el texto del label salte de línea */
-    margin-right: 3px; /* Reduce el espacio entre el label y el dato */
+    white-space: nowrap; /* Evita que el texto del label se divida en varias líneas */
+    margin-right: 5px; /* Acerca el dato al label */
 }
 
 .dato .linea {
     display: inline-block;
     border-bottom: 2px solid black;
     padding-bottom: 3px;
-    flex-grow: 1; /* Permite que la línea solo ocupe el espacio necesario */
-    min-width: auto; /* Elimina el ancho mínimo forzado */
-    width: fit-content; /* Ajusta el ancho de la línea al contenido */
+    width: fit-content; /* La línea se ajusta al tamaño del dato */
+    min-width: 50px; /* Para evitar que desaparezca si hay texto corto */
+    text-align: left; /* Asegura que el texto se alinee correctamente */
+    padding-right: 5px; /* Agrega un pequeño margen al final del texto */
 }
+
 
 .dato .linea::after {
     content: "";
