@@ -89,29 +89,18 @@ body::after {
     color: black;
 }
 
-/* Contenedor de la solicitud (incluye imagen, título, fecha y datos) */
-.solicitud {
-    background-color: #f0f7fd;
-    border: 2px solid #b0cde0;
-    border-radius: 12px;
-    padding: 30px;
-    margin-top: 20px;
-    font-size: 18px;
-    position: relative;
-}
-
-/* Encabezado dentro de la solicitud */
-.solicitud .encabezado-solicitud {
+/* Encabezado dentro del contenedor */
+.encabezado {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid #b0d3e8;
-    padding-bottom: 10px;
     position: relative;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #b0d3e8;
 }
 
 /* Imagen en la esquina superior izquierda */
-.solicitud .solicitud-imagen {
+.solicitud-imagen {
     max-width: 80px;
     height: auto;
     position: absolute;
@@ -119,8 +108,8 @@ body::after {
     left: 0;
 }
 
-/* Título centrado */
-.solicitud h3 {
+/* Título centrado en la parte superior */
+.encabezado h3 {
     font-size: 24px;
     color: #3a6788;
     text-align: center;
@@ -128,7 +117,7 @@ body::after {
 }
 
 /* Fecha en la esquina superior derecha */
-.solicitud .fecha {
+.fecha {
     font-size: 16px;
     color: #555;
     position: absolute;
@@ -136,12 +125,22 @@ body::after {
     right: 0;
 }
 
+/* Sección del contenido */
+.solicitud {
+    background-color: #f0f7fd;
+    border: 2px solid #b0cde0;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
 /* Estilos para los datos con línea */
 .dato {
     display: flex;
     align-items: center;
     font-size: 18px;
-    margin-top: 15px;
+    margin-bottom: 10px;
 }
 
 .dato label {
