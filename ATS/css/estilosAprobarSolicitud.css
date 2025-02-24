@@ -136,10 +136,9 @@ body::after {
     font-size: 18px;
 }
 
-/* Estilos para los datos con línea */
 .dato {
     display: flex;
-    align-items: center;
+    align-items: center; /* Alinea el label y el dato verticalmente */
     font-size: 18px;
     margin-bottom: 10px;
     position: relative;
@@ -157,10 +156,12 @@ body::after {
     border-bottom: 2px solid black;
     padding-bottom: 3px;
     width: fit-content; /* La línea se ajusta al tamaño del dato */
-    min-width: 50px; /* Para evitar que desaparezca si hay texto corto */
+    min-width: 50px; /* Evita que desaparezca si hay texto corto */
     text-align: left; /* Asegura que el texto se alinee correctamente */
-    padding-right: 5px; /* Agrega un pequeño margen al final del texto */
+    padding-right: 5px; /* Espacio al final del dato */
+    line-height: 1.4; /* Ajusta la altura de línea para centrar mejor el texto */
 }
+
 
 
 .dato .linea::after {
