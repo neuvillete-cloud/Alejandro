@@ -80,47 +80,82 @@ body::after {
     border-radius: 15px;
     padding: 30px;
     width: 700px;
-    min-height: 70vh; /* Ahora es flexible */
+    min-height: 70vh;
     max-width: 90%;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    position: relative; /* Mantiene la posición */
+    position: relative;
     font-size: 16px;
-    overflow-y: auto; /* Permitir desplazamiento si es necesario */
-    text-align: left;
+    overflow-y: auto;
     color: black;
 }
 
-/* Título principal fuera de la sección */
-.contenedor-solicitud h2 {
+/* Encabezado dentro del contenedor */
+.encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #b0d3e8;
+}
+
+/* Imagen en la esquina superior izquierda */
+.solicitud-imagen {
+    max-width: 80px;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Título centrado en la parte superior */
+.encabezado h3 {
     font-size: 24px;
     color: #3a6788;
     text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Secciones dentro del contenedor */
-.solicitud {
-    position: relative;
-    background-color: #f0f7fd;
-    border: 2px solid #b0cde0;
-    border-radius: 12px;
-    padding: 30px 30px 30px 120px; /* padding: arriba derecha abajo izquierda */
-    margin-bottom: 20px;
-    font-size: 18px;
-    min-height: 300px;
     flex-grow: 1;
 }
 
-.solicitud-imagen {
+/* Fecha en la esquina superior derecha */
+.fecha {
+    font-size: 16px;
+    color: #555;
     position: absolute;
-    top: 10px;
-    left: 10px;
-    max-width: 80px;
-    height: auto;
+    top: 0;
+    right: 0;
 }
 
-.solicitud p {
+/* Sección del contenido */
+.solicitud {
+    background-color: #f0f7fd;
+    border: 2px solid #b0cde0;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+/* Estilos para los datos con línea */
+.dato {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
     margin-bottom: 10px;
+}
+
+.dato label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Línea donde se muestra la información */
+.dato .linea {
+    flex-grow: 1;
+    border-bottom: 1px solid black;
+    min-width: 200px;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 5px;
 }
 
 /* Contenedor para los botones */

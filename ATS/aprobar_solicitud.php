@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,8 +19,16 @@
 <!-- Contenedor central tipo "hoja" -->
 <main class="contenedor-solicitud">
     <h2>Detalles de la Solicitud</h2>
-    <div class="solicitud">
+
+    <!-- Encabezado dentro del contenedor -->
+    <div class="encabezado">
         <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Icono de solicitud" class="solicitud-imagen">
+        <h3>Información General</h3>
+        <span class="fecha">Fecha: <span id="fecha"></span></span>
+    </div>
+
+    <!-- Contenedor de solicitud -->
+    <div class="solicitud">
         <p><strong>Nombre:</strong> <span id="nombre"></span></p>
         <p><strong>Área:</strong> <span id="area"></span></p>
         <p><strong>Puesto:</strong> <span id="puesto"></span></p>
@@ -28,12 +36,17 @@
         <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
     </div>
 
-    <!-- Contenedor de los botones -->
+    <!-- Contenedor de los botones (sin título) -->
     <div class="botones-solicitud">
         <button class="boton boton-cancelar">Cancelar</button>
         <button class="boton boton-aceptar">Aceptar</button>
     </div>
 </main>
+
+<script>
+    // Script para agregar la fecha actual
+    document.getElementById("fecha").textContent = new Date().toLocaleDateString();
+</script>
 
 <script src="js/aprobarSoli.js"></script>
 
