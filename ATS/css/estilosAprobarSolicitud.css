@@ -136,12 +136,13 @@ body::after {
     font-size: 18px;
 }
 
+/* Estilos para los datos */
 .dato {
     display: flex;
-    align-items: center;
+    flex-direction: column; /* Los datos estarán apilados verticalmente */
+    align-items: flex-start; /* Alineamos los datos a la izquierda (más a la derecha con el padding) */
     font-size: 18px;
-    margin-bottom: 10px;
-    position: relative;
+    margin-bottom: 15px;
     width: 100%;
 }
 
@@ -162,6 +163,10 @@ body::after {
     margin-top: 0; /* Elimina cualquier espacio entre el texto y la línea */
 }
 
+/* Para mover los datos más a la derecha */
+.dato {
+    padding-left: 15px; /* Aumenta el valor para mover más a la derecha */
+}
 
 .dato .linea::after {
     content: "";
