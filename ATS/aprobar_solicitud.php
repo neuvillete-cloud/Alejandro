@@ -29,11 +29,12 @@
             <span class="fecha">Fecha: <span id="fecha"></span></span>
         </div>
 
-        <p><strong>Nombre:</strong> <span id="nombre"></span></p>
-        <p><strong>Área:</strong> <span id="area"></span></p>
-        <p><strong>Puesto:</strong> <span id="puesto"></span></p>
-        <p><strong>Tipo de Solicitud:</strong> <span id="tipo"></span></p>
-        <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
+        <!-- Datos con líneas -->
+        <div class="dato"><label>Nombre:</label> <span class="linea" id="nombre"></span></div>
+        <div class="dato"><label>Área:</label> <span class="linea" id="area"></span></div>
+        <div class="dato"><label>Puesto:</label> <span class="linea" id="puesto"></span></div>
+        <div class="dato"><label>Tipo de Solicitud:</label> <span class="linea" id="tipo"></span></div>
+        <div class="dato"><label>Descripción:</label> <span class="linea" id="descripcion"></span></div>
     </div>
 
     <!-- Contenedor de los botones -->
