@@ -145,14 +145,17 @@ body::after {
 
 .dato {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     font-size: 18px;
-    width: 45%; /* Cada par de etiqueta-dato ocupa el 45% del ancho */
+    margin-bottom: 10px;
+    position: relative;
+    width: 100%;
 }
 
 .dato label {
     font-weight: bold;
-    margin-bottom: 5px; /* Espacio entre el label y el dato */
+    white-space: nowrap;
+    margin-right: 5px;
 }
 
 .dato .linea {
