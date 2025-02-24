@@ -20,15 +20,15 @@
 <main class="contenedor-solicitud">
     <h2>Detalles de la Solicitud</h2>
 
-    <!-- Encabezado dentro del contenedor -->
-    <div class="encabezado">
-        <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Icono de solicitud" class="solicitud-imagen">
-        <h3>Información General</h3>
-        <span class="fecha">Fecha: <span id="fecha"></span></span>
-    </div>
-
-    <!-- Contenedor de solicitud -->
+    <!-- Contenedor de solicitud (ahora incluye el encabezado) -->
     <div class="solicitud">
+        <!-- Encabezado ahora dentro de .solicitud -->
+        <div class="encabezado">
+            <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Icono de solicitud" class="solicitud-imagen">
+            <h3>Información General</h3>
+            <span class="fecha">Fecha: <span id="fecha"></span></span>
+        </div>
+
         <p><strong>Nombre:</strong> <span id="nombre"></span></p>
         <p><strong>Área:</strong> <span id="area"></span></p>
         <p><strong>Puesto:</strong> <span id="puesto"></span></p>
@@ -36,7 +36,7 @@
         <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
     </div>
 
-    <!-- Contenedor de los botones (sin título) -->
+    <!-- Contenedor de los botones -->
     <div class="botones-solicitud">
         <button class="boton boton-cancelar">Cancelar</button>
         <button class="boton boton-aceptar">Aceptar</button>
