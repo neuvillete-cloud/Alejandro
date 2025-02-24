@@ -143,7 +143,6 @@ body::after {
     margin-bottom: 10px;
     position: relative;
     width: 100%;
-    margin-top: 5px; /* Ajusta la distancia entre el dato y la línea */
 }
 
 .dato label {
@@ -155,16 +154,13 @@ body::after {
 .dato .linea {
     display: inline-block;
     border-bottom: 2px solid black;
-    padding-bottom: 3px;
+    padding-bottom: 0px; /* Eliminamos cualquier padding extra */
     width: fit-content;
     min-width: 50px;
     text-align: left;
-    padding-right: 5px;
-    line-height: 1.4;
-    margin-top: 3px; /* Alinea la línea un poco más cerca del dato */
+    line-height: 1; /* Asegura que el texto y la línea estén muy cerca */
+    margin-top: 0; /* Elimina cualquier espacio entre el texto y la línea */
 }
-
-
 
 
 .dato .linea::after {
