@@ -154,9 +154,10 @@ body::after {
 
 /* Línea negra debajo del texto */
 .dato .linea {
-    flex-grow: 1;
-    position: relative;
-    padding-bottom: 3px; /* Espacio para la línea */
+    display: inline-block; /* Se ajusta al tamaño del contenido */
+    border-bottom: 2px solid black;
+    padding-bottom: 3px;
+    min-width: 50px; /* Para que no sea demasiado corta si hay poco texto */
 }
 
 .dato .linea::after {
