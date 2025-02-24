@@ -105,7 +105,7 @@ body::after {
     max-width: 80px;
     height: auto;
     position: absolute;
-    top: 2px;
+    top: -25px;
     left: 0;
 }
 
