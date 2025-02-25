@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById("area").textContent = solicitud.IdArea || "N/A"; // Ajustar si hay una relación con otra tabla
                     document.getElementById("puesto").textContent = solicitud.Puesto || "N/A";
                     document.getElementById("tipo").textContent = solicitud.TipoContratacion || "N/A";
-                    document.getElementById("descripcion").textContent = solicitud.NombreReemplazo || "N/A"; // Si aplica, puede ser otro campo relevante
+                    document.getElementById("NombreReemplazo").textContent = solicitud.NombreReemplazo || "N/A"; // Si aplica, puede ser otro campo relevante
+                    document.getElementById("FechaSolicitud").textContent = solicitud.FechaSolicitud || "N/A";
+                    document.getElementById("FolioSolicitud").textContent = solicitud.FolioSolicitud || "N/A";
                 } else {
                     document.querySelector(".solicitud").innerHTML = `<p>No se encontró la solicitud.</p>`;
                 }

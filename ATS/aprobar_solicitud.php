@@ -54,10 +54,27 @@
 
         <div class="datos">
             <div class="dato">
-                <label>Descripción:</label>
-                <span class="linea" id="descripcion"></span>
+                <label>Nombre Reemplazo:</label>
+                <span class="linea" id="NombreReemplazo"></span>
             </div>
         </div>
+
+        <div class="datos">
+            <div class="dato">
+                <label>Fecha de Solicitud:</label>
+                <span class="linea" id="FechaSolicitud"></span>
+            </div>
+        </div>
+
+        <div class="datos">
+            <div class="dato">
+                <label>Folio Solicitud:</label>
+                <span class="linea" id="FolioSolicitud"></span>
+            </div>
+        </div>
+
+
+
     </div>
 
     <!-- Contenedor de los botones -->
