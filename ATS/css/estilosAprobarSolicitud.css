@@ -145,7 +145,7 @@ body::after {
 
 .dato {
     display: flex;
-    align-items: center;
+    align-items: baseline; /* Alinea los textos en la misma línea base */
     font-size: 18px;
     margin-bottom: 10px;
     position: relative;
@@ -162,12 +162,10 @@ body::after {
 .dato .linea {
     display: inline-block;
     border-bottom: 2px solid black;
-    padding-bottom: 0px; /* Eliminamos cualquier padding extra */
-    width: fit-content;
     min-width: 50px;
+    padding: 2px 0; /* Ajusta el padding para acercar la línea */
     text-align: left;
-    line-height: 1; /* Asegura que el texto y la línea estén muy cerca */
-    margin-top: 0; /* Elimina cualquier espacio entre el texto y la línea */
+    line-height: 1.2; /* Ajusta la altura de línea para alinear mejor */
 }
 
 
