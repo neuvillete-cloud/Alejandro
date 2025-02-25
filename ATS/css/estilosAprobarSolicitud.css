@@ -132,9 +132,10 @@ body::after {
     border: 2px solid #b0cde0;
     border-radius: 12px;
     padding: 30px;
-    margin-top: 20px;
+    margin-top: 50px; /* 🔽 Aumenta la separación entre el encabezado y los datos */
     font-size: 18px;
 }
+
 
 /* Sección de los datos */
 .datos {
