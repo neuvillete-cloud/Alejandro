@@ -126,22 +126,21 @@ body::after {
     right: 0;
 }
 
-/* También puedes aumentar el margen superior en la sección principal */
+/* Sección del contenido */
 .solicitud {
     background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
     padding: 30px;
-    margin-top: 40px; /* Aumenta separación con el encabezado */
+    margin-top: 20px;
     font-size: 18px;
 }
 
 /* Sección de los datos */
 .datos {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    margin-top: 30px; /* Aumenta espacio entre el encabezado y los datos */
+    justify-content: space-between; /* Alinea los datos en dos columnas */
+    margin-bottom: 20px; /* Espacio entre bloques de datos */
 }
 
 .dato {
