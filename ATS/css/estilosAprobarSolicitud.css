@@ -158,12 +158,6 @@ body::after {
     margin-right: 5px;
 }
 
-.linea {
-    display: inline-block;
-    text-decoration: underline;
-    text-decoration-thickness: 2px; /* Grosor de la línea */
-    text-underline-offset: 3px; /* Distancia de la línea al texto */
-}
 
 .dato .linea {
     display: inline-block;
