@@ -145,7 +145,7 @@ body::after {
 
 .dato {
     display: flex;
-    align-items: baseline; /* Alinea los textos en la misma línea base */
+    align-items: center; /* Alinea verticalmente el label y el dato */
     font-size: 18px;
     margin-bottom: 10px;
     position: relative;
@@ -161,11 +161,11 @@ body::after {
 
 .dato .linea {
     display: inline-block;
-    border-bottom: 2px solid black;
+    text-decoration: underline; /* Usa subrayado en lugar de border-bottom */
+    text-underline-offset: 3px; /* Ajusta la distancia del subrayado */
+    text-decoration-thickness: 2px; /* Grosor del subrayado */
     min-width: 50px;
-    padding: 2px 0; /* Ajusta el padding para acercar la línea */
-    text-align: left;
-    line-height: 1.2; /* Ajusta la altura de línea para alinear mejor */
+    padding: 2px 0;
 }
 
 
