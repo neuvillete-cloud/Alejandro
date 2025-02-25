@@ -141,7 +141,7 @@ body::after {
     display: flex;
     justify-content: space-between; /* Alinea los datos en dos columnas */
     margin-bottom: 20px; /* Espacio entre bloques de datos */
-    margin-top: 40px; /* 🔽 Baja todos los datos */
+    margin-top: 50px; /* 🔽 Baja todos los datos */
 }
 
 
