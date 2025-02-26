@@ -134,21 +134,13 @@ body::after {
     padding: 30px;
     margin-top: 20px;
     font-size: 18px;
-}
 
-.fondo-imagen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../imagenes/Grammer_Logo.png'); /* Reemplaza con la ruta de tu imagen */
-    background-size: cover;
+    /* Imagen de fondo directamente en este contenedor */
+    background-image: url('../imagenes/Grammer_Logo.png'); /* Asegúrate de que la ruta es correcta */
+    background-size: contain; /* Ajusta el tamaño para que no se distorsione */
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.2; /* Ajusta la opacidad para que el texto sea visible */
-    z-index: -1; /* Envía la imagen detrás del contenido */
-    border-radius: 12px; /* Ajusta el borde para que coincida con el contenedor */
+    opacity: 0.2; /* Ajusta la opacidad */
 }
 
 
