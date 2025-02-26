@@ -113,6 +113,29 @@
     document.getElementById("fecha").textContent = new Date().toLocaleDateString();
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const accionSelect = document.getElementById("accion");
+        const comentarioLabel = document.querySelector("label[for='comentario']");
+        const comentarioTextarea = document.getElementById("comentario");
+
+        // Ocultar el campo de comentario al inicio
+        comentarioLabel.style.display = "none";
+        comentarioTextarea.style.display = "none";
+
+        // Agregar evento para detectar cambios en el select
+        accionSelect.addEventListener("change", function () {
+            if (accionSelect.value === "rechazar") {
+                comentarioLabel.style.display = "block";
+                comentarioTextarea.style.display = "block";
+            } else {
+                comentarioLabel.style.display = "none";
+                comentarioTextarea.style.display = "none";
+            }
+        });
+    });
+
+</script>
 <script src="js/aprobarSoli.js"></script>
 
 </body>
