@@ -128,19 +128,18 @@ body::after {
 
 /* Sección del contenido */
 .solicitud {
-    background-color: #f0f7fd;
+    background-color: rgba(240, 247, 253, 0.95); /* Usa rgba en lugar de opacity */
     border: 2px solid #b0cde0;
     border-radius: 12px;
     padding: 30px;
     margin-top: 20px;
     font-size: 18px;
 
-    /* Imagen de fondo directamente en este contenedor */
-    background-image: url('../imagenes/Grammer_Logo.png'); /* Asegúrate de que la ruta es correcta */
-    background-size: contain; /* Ajusta el tamaño para que no se distorsione */
+    /* Imagen de fondo */
+    background-image: url('../imagenes/Grammer_Logo.png');
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.2; /* Ajusta la opacidad */
 }
 
 
