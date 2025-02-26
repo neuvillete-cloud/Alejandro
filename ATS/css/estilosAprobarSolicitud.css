@@ -138,10 +138,10 @@ body::after {
 
 /* Sección de los datos */
 .datos {
-    display: flex;
-    justify-content: space-between; /* Alinea los datos en dos columnas */
+    display: block; /* Ahora los datos se mostrarán en una sola columna */
     margin-bottom: 20px; /* Espacio entre bloques de datos */
 }
+
 
 .dato {
     display: flex;
