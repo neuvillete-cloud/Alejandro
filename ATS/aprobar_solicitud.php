@@ -47,7 +47,7 @@
                 <span class="linea" id="puesto"></span>
             </div>
             <div class="dato">
-                <label>Tipo de Solicitud:</label>
+                <label>Tipo de Contratacion:</label>
                 <span class="linea" id="tipo"></span>
             </div>
         </div>
