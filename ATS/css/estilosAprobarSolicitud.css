@@ -277,6 +277,7 @@ body::after {
     margin-bottom: 8px;
     font-size: 14px;
     color: #333333;
+    text-align: left;
 }
 
 /* Estilos para campos de entrada */
@@ -309,32 +310,15 @@ body::after {
     cursor: pointer;
 }
 
-/* Botones del modal */
+/* Contenedor de los botones */
 .modal-botones {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
 }
 
-/* Botón aceptar */
-.boton-aprobar {
-    width: 48%;
-    padding: 12px;
-    background-color: #1E90FF; /* Azul brillante */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.boton-aprobar:hover {
-    background-color: #4682B4; /* Azul más oscuro */
-}
-
 /* Botón cancelar */
-.boton-rechazar {
+.boton-modal-cerrar {
     width: 48%;
     padding: 12px;
     background-color: #E53E3E; /* Rojo */
@@ -346,6 +330,23 @@ body::after {
     transition: background-color 0.3s ease;
 }
 
-.boton-rechazar:hover {
+.boton-modal-cerrar:hover {
     background-color: #C53030; /* Rojo más oscuro */
+}
+
+/* Botón confirmar */
+.boton-modal-confirmar {
+    width: 48%;
+    padding: 12px;
+    background-color: #1E90FF; /* Azul brillante */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.boton-modal-confirmar:hover {
+    background-color: #4682B4; /* Azul más oscuro */
 }
