@@ -1,21 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Obtener parámetros de la URL
+    obtenerSolicitud();
+    manejarModal();
+});
+
+function obtenerSolicitud() {
     const urlParams = new URLSearchParams(window.location.search);
-    const folio = urlParams.get("folio"); // Tomamos el folio de la URL
+    const folio = urlParams.get("folio");
 
     if (folio) {
         fetch(`dao/daoAprobarSolicitud.php?folio=${folio}`)
             .then(response => response.json())
             .then(data => {
-                if (data.status === "success") { // Validamos el estado correcto
-                    const solicitud = data.data; // Extraemos los datos correctamente
-
-                    // Asignamos los valores a los elementos HTML
+                if (data.status === "success") {
+                    const solicitud = data.data;
                     document.getElementById("nombre").textContent = solicitud.Nombre || "N/A";
-                    document.getElementById("area").textContent = solicitud.NombreArea || "N/A"; // Ajustar si hay una relación con otra tabla
+                    document.getElementById("area").textContent = solicitud.NombreArea || "N/A";
                     document.getElementById("puesto").textContent = solicitud.Puesto || "N/A";
                     document.getElementById("tipo").textContent = solicitud.TipoContratacion || "N/A";
-                    document.getElementById("NombreReemplazo").textContent = solicitud.NombreReemplazo || "N/A"; // Si aplica, puede ser otro campo relevante
+                    document.getElementById("NombreReemplazo").textContent = solicitud.NombreReemplazo || "N/A";
                     document.getElementById("FechaSolicitud").textContent = solicitud.FechaSolicitud || "N/A";
                     document.getElementById("FolioSolicitud").textContent = solicitud.FolioSolicitud || "N/A";
                 } else {
@@ -26,5 +28,34 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         document.querySelector(".solicitud").innerHTML = `<p>No se proporcionó un folio.</p>`;
     }
-});
+}
 
+function manejarModal() {
+    const modal = document.getElementById("modalAprobacion");
+    const btnAbrirModal = document.querySelector(".boton-aceptar");
+    const btnCerrarModal = document.getElementById("cerrarModal");
+    const btnConfirmarAccion = document.getElementById("confirmarAccion");
+    const selectAccion = document.getElementById("accion");
+    const comentario = document.getElementById("comentario");
+
+    btnAbrirModal.addEventListener("click", () => {
+        modal.style.display = "flex";
+    });
+
+    btnCerrarModal.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    btnConfirmarAccion.addEventListener("click", () => {
+        const accionSeleccionada = selectAccion.value;
+        const comentarioTexto = comentario.value.trim();
+
+        if (accionSeleccionada === "rechazar" && comentarioTexto === "") {
+            alert("Debes ingresar un comentario si rechazas la solicitud.");
+            return;
+        }
+
+        alert(`Solicitud ${accionSeleccionada} con éxito.`);
+        modal.style.display = "none";
+    });
+}
