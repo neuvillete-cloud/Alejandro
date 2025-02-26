@@ -37,6 +37,7 @@ function manejarModal() {
     const btnConfirmarAccion = document.getElementById("confirmarAccion");
     const selectAccion = document.getElementById("accion");
     const comentario = document.getElementById("comentario");
+    const nombreAprobador = document.getElementById("nombreAprobador");
 
     btnAbrirModal.addEventListener("click", () => {
         modal.style.display = "flex";
@@ -49,13 +50,63 @@ function manejarModal() {
     btnConfirmarAccion.addEventListener("click", () => {
         const accionSeleccionada = selectAccion.value;
         const comentarioTexto = comentario.value.trim();
+        const nombreAprobadorTexto = nombreAprobador.value.trim();
 
-        if (accionSeleccionada === "rechazar" && comentarioTexto === "") {
-            alert("Debes ingresar un comentario si rechazas la solicitud.");
+        // Validaciones con SweetAlert
+        if (!nombreAprobadorTexto) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Nombre faltante',
+                text: 'Debes ingresar tu nombre.',
+            });
             return;
         }
 
-        alert(`Solicitud ${accionSeleccionada} con éxito.`);
-        modal.style.display = "none";
+        if (accionSeleccionada === "rechazar" && comentarioTexto === "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Comentario requerido',
+                text: 'Debes ingresar un comentario si rechazas la solicitud.',
+            });
+            return;
+        }
+
+        // Crear un objeto FormData para enviar los datos
+        const formData = new FormData();
+        formData.append('nombreAprobador', nombreAprobadorTexto);
+        formData.append('accion', accionSeleccionada);
+        formData.append('comentario', comentarioTexto);
+        formData.append('folio', new URLSearchParams(window.location.search).get("folio"));
+
+        // Enviar los datos al servidor mediante fetch
+        fetch('dao/daoAprobarSolicitud.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `Solicitud ${accionSeleccionada} con éxito`,
+                        text: `La solicitud ha sido ${accionSeleccionada} exitosamente.`,
+                    }).then(() => {
+                        modal.style.display = "none";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la solicitud',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error del servidor',
+                    text: 'Hubo un problema en la comunicación con el servidor. Por favor, inténtelo de nuevo más tarde.',
+                });
+            });
     });
 }
