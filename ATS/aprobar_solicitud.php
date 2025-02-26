@@ -32,7 +32,7 @@
         <!-- Datos con líneas -->
         <div class="datos">
             <div class="dato">
-                <label>Nombre:</label>
+                <label>Nombre del Solicitante:</label>
                 <span class="linea" id="nombre"></span>
             </div>
             <div class="dato">
@@ -68,7 +68,7 @@
 
         <div class="datos">
             <div class="dato">
-                <label>Folio Solicitud:</label>
+                <label>Folio de la Solicitud:</label>
                 <span class="linea" id="FolioSolicitud"></span>
             </div>
         </div>
