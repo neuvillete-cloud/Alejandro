@@ -149,7 +149,7 @@ body::after {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.2; /* Ajusta la opacidad solo de la imagen */
-    z-index: -1; /* Envía la imagen detrás del contenido */
+    z-index: 0; /* Envía la imagen detrás del contenido */
     border-radius: 12px; /* Para que coincida con el borde del contenedor */
 }
 
