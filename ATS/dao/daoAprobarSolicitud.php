@@ -19,7 +19,13 @@ try {
     $conex = $con->conectar();
 
     // Consulta SQL para obtener la solicitud específica
-    $sql = "SELECT * FROM Solicitudes WHERE FolioSolicitud = ?";
+    $sql = "SELECT 
+            s.*, 
+            a.NombreArea 
+        FROM Solicitudes s
+        JOIN Area a ON s.IdArea = a.IdArea
+        WHERE s.FolioSolicitud = ?";
+
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
