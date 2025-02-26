@@ -22,6 +22,9 @@
 
     <!-- Contenedor de solicitud (ahora incluye el encabezado) -->
     <div class="solicitud">
+
+        <div class="fondo-imagen"></div>
+
         <!-- Encabezado ahora dentro de .solicitud -->
         <div class="encabezado">
             <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Icono de solicitud" class="solicitud-imagen">
