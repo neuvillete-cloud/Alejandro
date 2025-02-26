@@ -277,7 +277,7 @@ body::after {
     margin-bottom: 8px;
     font-size: 14px;
     color: #333333;
-    text-align: left;
+    text-align: center; /* Centra el texto */
 }
 
 /* Estilos para campos de entrada */
