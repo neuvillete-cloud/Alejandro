@@ -99,7 +99,7 @@
         </select>
 
         <label for="comentario">Comentario:</label>
-        <textarea id="comentario" placeholder="Opcional si aprueba, obligatorio si rechaza"></textarea>
+        <textarea id="comentario" placeholder="ingresa un comentario"></textarea>
 
         <div class="modal-botones">
             <button id="cerrarModal" class="boton-modal-cerrar">Cancelar</button>
