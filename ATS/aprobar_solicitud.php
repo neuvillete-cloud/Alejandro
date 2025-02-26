@@ -54,7 +54,7 @@
 
         <div class="datos">
             <div class="dato">
-                <label>Nombre Reemplazo:</label>
+                <label>Nombre de la persona a reemplazar:</label>
                 <span class="linea" id="NombreReemplazo"></span>
             </div>
         </div>
