@@ -139,11 +139,11 @@ body::after {
 .solicitud::before {
     content: "";
     position: absolute;
-    top: 50%; /* Centra la imagen verticalmente */
+    top: 58%; /* Centra la imagen verticalmente */
     left: 50%; /* Centra la imagen horizontalmente */
     transform: translate(-50%, -50%); /* Ajusta la imagen para que esté centrada exactamente */
-    width: 200px; /* Tamaño de la imagen (ajusta según lo necesites) */
-    height: 200px; /* Tamaño de la imagen (ajusta según lo necesites) */
+    width: 300px; /* Tamaño de la imagen (ajusta según lo necesites) */
+    height: 300px; /* Tamaño de la imagen (ajusta según lo necesites) */
     background-image: url('../imagenes/Grammer_Logo.png');
     background-size: contain; /* Mantén la imagen proporcionalmente pequeña */
     background-position: center; /* Asegura que la imagen esté centrada */
