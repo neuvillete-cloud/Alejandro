@@ -48,7 +48,7 @@
             </div>
             <div class="dato">
                 <label>Tipo de Contratacion:</label>
-                <span class="linea" id="tipo"></span>
+
             </div>
         </div>
 
