@@ -128,19 +128,31 @@ body::after {
 
 /* Sección del contenido */
 .solicitud {
-    background-color: rgba(240, 247, 253, 0.95); /* Usa rgba en lugar de opacity */
+    position: relative;
+    background-color: #f0f7fd;
     border: 2px solid #b0cde0;
     border-radius: 12px;
     padding: 30px;
     margin-top: 20px;
     font-size: 18px;
+}
 
-    /* Imagen de fondo */
+.solicitud::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('../imagenes/Grammer_Logo.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    opacity: 0.2; /* Ajusta la opacidad solo de la imagen */
+    z-index: -1; /* Envía la imagen detrás del contenido */
+    border-radius: 12px; /* Para que coincida con el borde del contenedor */
 }
+
 
 
 /* Sección de los datos */
