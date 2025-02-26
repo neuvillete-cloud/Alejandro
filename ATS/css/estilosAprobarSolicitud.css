@@ -239,7 +239,7 @@ body::after {
     transform: scale(1.05);
 }
 
-/* Estilos para el modal */
+/* Estilos para el fondo del modal */
 .modal {
     display: none;
     position: fixed;
@@ -253,69 +253,99 @@ body::after {
     align-items: center;
 }
 
+/* Contenedor del modal */
 .modal-contenido {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
+    background-color: #E6F4F9; /* Azul pastel */
+    color: #333333;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 400px;
     text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.modal label {
-    font-weight: bold;
+/* Título del modal */
+.modal-contenido h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #1E3A8A; /* Azul marino */
+}
+
+/* Estilos para etiquetas */
+.modal-contenido label {
     display: block;
-    margin-top: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #333333;
 }
 
-.modal input,
-.modal select,
-.modal textarea {
+/* Estilos para campos de entrada */
+.modal-contenido input,
+.modal-contenido select,
+.modal-contenido textarea {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    padding: 12px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
+    background-color: #f5f5f5; /* Gris claro */
+    font-size: 14px;
+    color: #333333;
 }
 
-.modal textarea {
-    resize: none;
-    height: 60px;
+/* Placeholder para los campos */
+.modal-contenido input::placeholder,
+.modal-contenido textarea::placeholder {
+    color: #999999;
 }
 
+/* Estilos para el select */
+.modal-contenido select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+/* Botones del modal */
 .modal-botones {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
 }
 
-/* Nombres específicos para evitar conflictos */
-.boton-modal-cerrar {
-    background-color: #E53E3E;
+/* Botón aceptar */
+.boton-aprobar {
+    width: 48%;
+    padding: 12px;
+    background-color: #1E90FF; /* Azul brillante */
     color: white;
-    padding: 8px 15px;
     border: none;
+    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-.boton-modal-cerrar:hover {
-    background-color: #C53030;
-    transform: scale(1.05);
+.boton-aprobar:hover {
+    background-color: #4682B4; /* Azul más oscuro */
 }
 
-.boton-modal-confirmar {
-    background-color: #2563EB;
+/* Botón cancelar */
+.boton-rechazar {
+    width: 48%;
+    padding: 12px;
+    background-color: #E53E3E; /* Rojo */
     color: white;
-    padding: 8px 15px;
     border: none;
+    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-.boton-modal-confirmar:hover {
-    background-color: #1E3A8A;
-    transform: scale(1.05);
+.boton-rechazar:hover {
+    background-color: #C53030; /* Rojo más oscuro */
 }
