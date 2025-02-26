@@ -84,6 +84,30 @@
     </div>
 </main>
 
+<!-- Modal para aprobación/rechazo -->
+<div id="modalAprobacion" class="modal">
+    <div class="modal-contenido">
+        <h2>Aprobar o Rechazar Solicitud</h2>
+        <label for="nombreAprobador">Nombre del Aprobador:</label>
+        <input type="text" id="nombreAprobador" placeholder="Ingrese su nombre">
+
+        <label for="accion">Acción:</label>
+        <select id="accion">
+            <option value="">Seleccione una opción</option>
+            <option value="aprobar">Aprobar</option>
+            <option value="rechazar">Rechazar</option>
+        </select>
+
+        <label for="comentario">Comentario:</label>
+        <textarea id="comentario" placeholder="Opcional si aprueba, obligatorio si rechaza"></textarea>
+
+        <div class="modal-botones">
+            <button id="cerrarModal" class="boton-modal-cerrar">Cancelar</button>
+            <button id="confirmarAccion" class="boton-modal-confirmar">Confirmar</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // Script para agregar la fecha actual
     document.getElementById("fecha").textContent = new Date().toLocaleDateString();
