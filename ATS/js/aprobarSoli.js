@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Asignamos los valores a los elementos HTML
                     document.getElementById("nombre").textContent = solicitud.Nombre || "N/A";
-                    document.getElementById("area").textContent = solicitud.IdArea || "N/A"; // Ajustar si hay una relación con otra tabla
+                    document.getElementById("area").textContent = solicitud.NombreArea || "N/A"; // Ajustar si hay una relación con otra tabla
                     document.getElementById("puesto").textContent = solicitud.Puesto || "N/A";
                     document.getElementById("tipo").textContent = solicitud.TipoContratacion || "N/A";
                     document.getElementById("NombreReemplazo").textContent = solicitud.NombreReemplazo || "N/A"; // Si aplica, puede ser otro campo relevante
