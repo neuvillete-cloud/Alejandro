@@ -1,5 +1,4 @@
 <?php
-session_start(); // Iniciar sesión
 include_once("ConexionBD.php");
 
 // Revisar si la solicitud es POST
@@ -36,7 +35,7 @@ function registrarAprobacionEnDB($conex, $NombreAprobador, $Accion, $Comentario,
     $Estatus = 1;
 
     // Insertar la acción del aprobador en la tabla de Aprobadores
-    $insertAprobacion = $conex->prepare("INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentario)
+    $insertAprobacion = $conex->prepare("INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentarios)
                                         VALUES (?, ?, ?, ?)");
     $insertAprobacion->bind_param("siss", $NombreAprobador, $Estatus, $FolioSolicitud, $Comentario);
 
