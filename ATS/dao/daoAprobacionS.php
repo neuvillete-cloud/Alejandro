@@ -38,13 +38,25 @@ exit();
 // Función para registrar la aprobación/rechazo en la BD
 function registrarAprobacionEnDB($conex, $NombreAprobador, $Comentario, $FolioSolicitud)
 {
-    $Estatus = 1; // Se asume que siempre es 1
+    $Estatus = 1; // Siempre en 1
 
+    // ✅ Verificar si el FolioSolicitud existe en Solicitudes
+    $verificarFolio = $conex->prepare("SELECT COUNT(*) FROM Solicitudes WHERE FolioSolicitud = ?");
+    $verificarFolio->bind_param("s", $FolioSolicitud);
+    $verificarFolio->execute();
+    $verificarFolio->bind_result($existe);
+    $verificarFolio->fetch();
+    $verificarFolio->close();
+
+    if ($existe == 0) {
+        return ['status' => 'error', 'message' => 'El folio proporcionado no existe en Solicitudes.'];
+    }
+
+    // ✅ Insertar en Aprobadores solo si el folio es válido
     $insertAprobacion = $conex->prepare("INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentarios) 
-                                        VALUES (?, ?, ?, ?)");
-
+                                         VALUES (?, ?, ?, ?)");
     if (!$insertAprobacion) {
-        return ['status' => 'error', 'message' => 'Error en la preparación de la consulta.'];
+        return ['status' => 'error', 'message' => 'Error en la consulta: ' . $conex->error];
     }
 
     $insertAprobacion->bind_param("siss", $NombreAprobador, $Estatus, $FolioSolicitud, $Comentario);
@@ -55,4 +67,5 @@ function registrarAprobacionEnDB($conex, $NombreAprobador, $Comentario, $FolioSo
         return ['status' => 'error', 'message' => 'Error al registrar la acción del aprobador: ' . $insertAprobacion->error];
     }
 }
+
 ?>
