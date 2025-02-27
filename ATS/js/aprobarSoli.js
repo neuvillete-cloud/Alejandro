@@ -83,7 +83,7 @@ function manejarModal() {
         }
 
         // Enviar los datos al servidor mediante fetch
-        fetch('dao/daoAprobarSolicitud.php', {
+        fetch('dao/daoAprobacionS.php', {
             method: 'POST',
             body: formData
         })
