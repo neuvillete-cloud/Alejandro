@@ -71,6 +71,8 @@ function manejarModal() {
             return;
         }
 
+        console.log(new URLSearchParams(window.location.search).get("folio"));
+
         // Crear un objeto FormData para enviar los datos
         const formData = new FormData();
         formData.append('nombreAprobador', nombreAprobadorTexto);
