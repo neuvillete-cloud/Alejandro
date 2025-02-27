@@ -13,8 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Si la acción es "rechazar", obtenemos el comentario
         $Comentario = ($Accion == 'rechazar' && isset($_POST['comentario'])) ? $_POST['comentario'] : "";
 
-        echo 'INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentarios) VALUES ("'.$NombreAprobador.'", 1, "'.$FolioSolicitud.'", "'.$Comentario.'")';
-
         // Conectar a la base de datos
         $con = new LocalConector();
         $conex = $con->conectar();
