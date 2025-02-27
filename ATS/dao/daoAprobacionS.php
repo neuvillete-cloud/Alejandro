@@ -1,52 +1,55 @@
 <?php
 include_once("ConexionBD.php");
 
-// Revisar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Validar que los datos requeridos están presentes
     if (isset($_POST['nombreAprobador'], $_POST['accion'], $_POST['folio'])) {
-        // Obtener los datos del formulario
         $NombreAprobador = $_POST['nombreAprobador'];
-        $Accion = $_POST['accion'];
+        $Accion = $_POST['accion']; // Solo usado para lógica, NO se guarda en la BD
         $FolioSolicitud = $_POST['folio'];
 
-        // Asignar Comentario solo si la acción es "rechazar", de lo contrario, se deja vacío
+        // Si la acción es "rechazar", obtenemos el comentario
         $Comentario = ($Accion == 'rechazar' && isset($_POST['comentario'])) ? $_POST['comentario'] : "";
 
         // Conectar a la base de datos
         $con = new LocalConector();
         $conex = $con->conectar();
-        $response = registrarAprobacionEnDB($conex, $NombreAprobador, $Accion, $Comentario, $FolioSolicitud);
+
+        if (!$conex) {
+            echo json_encode(['status' => 'error', 'message' => 'Error al conectar con la base de datos.']);
+            exit();
+        }
+
+        // Guardamos la acción en la BD sin la variable "Accion"
+        $response = registrarAprobacionEnDB($conex, $NombreAprobador, $Comentario, $FolioSolicitud);
         $conex->close();
     } else {
-        $response = array('status' => 'error', 'message' => 'Datos incompletos.');
+        $response = ['status' => 'error', 'message' => 'Datos incompletos.'];
     }
 } else {
-    $response = array('status' => 'error', 'message' => 'Se requiere método POST.');
+    $response = ['status' => 'error', 'message' => 'Se requiere método POST.'];
 }
 
 echo json_encode($response);
 exit();
 
-// Función para registrar la aprobación/rechazo en la base de datos
-function registrarAprobacionEnDB($conex, $NombreAprobador, $Accion, $Comentario, $FolioSolicitud)
+// Función para registrar la aprobación/rechazo en la BD
+function registrarAprobacionEnDB($conex, $NombreAprobador, $Comentario, $FolioSolicitud)
 {
-    // Siempre establecer el estatus en 1
-    $Estatus = 1;
+    $Estatus = 1; // Se asume que siempre es 1
 
-    // Insertar la acción del aprobador en la tabla de Aprobadores
-    $insertAprobacion = $conex->prepare("INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentarios)
+    $insertAprobacion = $conex->prepare("INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentarios) 
                                         VALUES (?, ?, ?, ?)");
-    $insertAprobacion->bind_param("siss", $NombreAprobador, $Estatus, $FolioSolicitud, $Comentario);
 
-    $resultado = $insertAprobacion->execute();
-
-    if ($resultado) {
-        $response = array('status' => 'success', 'message' => "Solicitud {$Accion} con éxito.");
-    } else {
-        $response = array('status' => 'error', 'message' => 'Error al registrar la acción del aprobador.');
+    if (!$insertAprobacion) {
+        return ['status' => 'error', 'message' => 'Error en la preparación de la consulta.'];
     }
 
-    return $response;
+    $insertAprobacion->bind_param("siss", $NombreAprobador, $Estatus, $FolioSolicitud, $Comentario);
+
+    if ($insertAprobacion->execute()) {
+        return ['status' => 'success', 'message' => "Acción registrada con éxito."];
+    } else {
+        return ['status' => 'error', 'message' => 'Error al registrar la acción del aprobador: ' . $insertAprobacion->error];
+    }
 }
 ?>
