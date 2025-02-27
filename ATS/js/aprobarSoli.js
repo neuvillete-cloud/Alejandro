@@ -75,8 +75,12 @@ function manejarModal() {
         const formData = new FormData();
         formData.append('nombreAprobador', nombreAprobadorTexto);
         formData.append('accion', accionSeleccionada);
-        formData.append('comentario', comentarioTexto);
         formData.append('folio', new URLSearchParams(window.location.search).get("folio"));
+
+        // Solo agregar el comentario si la acción es "rechazar"
+        if (accionSeleccionada === "rechazar") {
+            formData.append('comentario', comentarioTexto);
+        }
 
         // Enviar los datos al servidor mediante fetch
         fetch('dao/daoAprobarSolicitud.php', {
