@@ -1,7 +1,6 @@
 <?php
 include_once("ConexionBD.php");
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['nombreAprobador'], $_POST['accion'], $_POST['folio'])) {
         $NombreAprobador = $_POST['nombreAprobador'];
@@ -10,6 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Si la acción es "rechazar", obtenemos el comentario
         $Comentario = ($Accion == 'rechazar' && isset($_POST['comentario'])) ? $_POST['comentario'] : "";
+
+        // Determinar el estatus según la acción
+        $Estatus = ($Accion == 'rechazar') ? 3 : 1;
 
         // Conectar a la base de datos
         $con = new LocalConector();
@@ -20,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
 
-        // Guardamos la acción en la BD sin la variable "Accion"
-        $response = registrarAprobacionEnDB($conex, $NombreAprobador, $Comentario, $FolioSolicitud);
+        // Guardamos la acción en la BD con el estatus correcto
+        $response = registrarAprobacionEnDB($conex, $NombreAprobador, $Estatus, $Comentario, $FolioSolicitud);
         $conex->close();
     } else {
         $response = ['status' => 'error', 'message' => 'Datos incompletos.'];
@@ -34,14 +36,10 @@ echo json_encode($response);
 exit();
 
 // Función para registrar la aprobación/rechazo en la BD
-function registrarAprobacionEnDB($conex, $NombreAprobador, $Comentario, $FolioSolicitud)
+function registrarAprobacionEnDB($conex, $NombreAprobador, $Estatus, $Comentario, $FolioSolicitud)
 {
-    $Estatus = 1; // Se asume que siempre es 1
-
     $insertAprobacion = $conex->prepare("INSERT INTO Aprobadores (Nombre, IdEstatus, FolioSolicitud, Comentarios) 
                                         VALUES (?, ?, ?, ?)");
-
-
 
     if (!$insertAprobacion) {
         return ['status' => 'error', 'message' => 'Error en la preparación de la consulta.'];
