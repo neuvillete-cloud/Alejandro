@@ -63,15 +63,10 @@ if (!isset($_SESSION['NumNomina'])) {
             <thead>
             <tr>
                 <th>IdSolicitud</th>
-                <th>NumNomina</th>
                 <th>IdArea</th>
                 <th>Puesto</th>
-                <th>TipoContratacion</th>
                 <th>Nombre</th>
-                <th>NombreReemplazo</th>
-                <th>FechaSolicitud</th>
                 <th>FolioSolicitud</th>
-                <th>Estatus</th>
                 <th>Acciones</th> <!-- Nueva columna -->
 
             </tr>
@@ -81,11 +76,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>#</th>
                 <th>Nomina</th>
                 <th>Nombre</th>
-                <th>Fecha</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
@@ -211,15 +201,10 @@ if (!isset($_SESSION['NumNomina'])) {
             },
             "columns": [
                 { "data": "IdSolicitud" },
-                { "data": "NumNomina" },
                 { "data": "NombreArea" },
                 { "data": "Puesto" },
-                { "data": "TipoContratacion" },
                 { "data": "Nombre" },
-                { "data": "NombreReemplazo" },
-                { "data": "FechaSolicitud" },
                 { "data": "FolioSolicitud" },
-                { "data": "NombreEstatus" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
