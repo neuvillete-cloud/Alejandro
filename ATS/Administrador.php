@@ -42,7 +42,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <nav class="sidebar" id="sidebar">
     <ul>
         <li><a href="Solicitante.php">Inicio</a></li>
-        <li><a href="seguimiento.php">Seguimiento</a></li>
+        <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="configuraciones.php">Configuraciones</a></li>
     </ul>
