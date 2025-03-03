@@ -63,7 +63,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <thead>
             <tr>
                 <th>IdSolicitud</th>
-                <th>IdArea</th>
+                <th>Area</th>
                 <th>Puesto</th>
                 <th>Nombre</th>
                 <th>FolioSolicitud</th>
