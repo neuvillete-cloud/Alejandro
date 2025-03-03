@@ -1,0 +1,78 @@
+
+<?php
+session_start(); // Iniciar sesión
+include_once("ConexionBD.php");
+
+try {
+    // Crear una conexión usando la clase `LocalConector`
+    $con = new LocalConector();
+    $conex = $con->conectar();
+
+    // Consulta para obtener los folios de solicitudes aprobadas (IdEstatus = 1 es "Aprobado")
+    $sql = "
+        SELECT FolioSolicitud
+        FROM Aprovadores
+        WHERE IdEstatus = 1
+        GROUP BY FolioSolicitud
+        HAVING COUNT(DISTINCT IdEstatus) = 1
+    ";
+
+    $stmt = $conex->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Error en la preparación de la consulta: " . $conex->error);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $foliosAprobados = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $foliosAprobados[] = $row['FolioSolicitud'];
+    }
+
+    $stmt->close();
+
+    $solicitudes = [];
+
+    if (!empty($foliosAprobados)) {
+        // Construcción de placeholders dinámicos para la consulta segura
+        $placeholders = implode(',', array_fill(0, count($foliosAprobados), '?'));
+
+        // Consulta para obtener las solicitudes aprobadas
+        $sqlSolicitudes = "
+            SELECT * FROM Solicitudes 
+            WHERE FolioSolicitud IN ($placeholders)
+        ";
+
+        $stmtSolicitudes = $conex->prepare($sqlSolicitudes);
+        if (!$stmtSolicitudes) {
+            throw new Exception("Error en la preparación de la consulta: " . $conex->error);
+        }
+
+        // Crear array con los tipos de datos (s = string)
+        $types = str_repeat('s', count($foliosAprobados));
+        $stmtSolicitudes->bind_param($types, ...$foliosAprobados);
+        $stmtSolicitudes->execute();
+        $resultSolicitudes = $stmtSolicitudes->get_result();
+
+        while ($row = $resultSolicitudes->fetch_assoc()) {
+            $solicitudes[] = $row;
+        }
+
+        $stmtSolicitudes->close();
+    }
+
+    $conex->close();
+
+    // Devolver respuesta JSON
+    echo json_encode([
+        'status' => 'success',
+        'data' => $solicitudes
+    ]);
+} catch (Exception $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Error en la consulta: ' . $e->getMessage()
+    ]);
+}
+?>
