@@ -38,10 +38,12 @@ try {
         // Construcción de placeholders dinámicos para la consulta segura
         $placeholders = implode(',', array_fill(0, count($foliosAprobados), '?'));
 
-        // Consulta para obtener las solicitudes aprobadas
+        // Consulta para obtener las solicitudes aprobadas con NombreArea
         $sqlSolicitudes = "
-            SELECT * FROM Solicitudes 
-            WHERE FolioSolicitud IN ($placeholders)
+            SELECT s.*, a.NombreArea
+            FROM Solicitudes s
+            JOIN Area a ON s.IdArea = a.IdArea
+            WHERE s.FolioSolicitud IN ($placeholders)
         ";
 
         $stmtSolicitudes = $conex->prepare($sqlSolicitudes);
