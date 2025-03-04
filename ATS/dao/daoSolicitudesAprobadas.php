@@ -11,7 +11,7 @@ try {
     // Consulta para obtener los folios de solicitudes aprobadas (IdEstatus = 1 es "Aprobado")
     $sql = "
         SELECT FolioSolicitud
-        FROM Aprovadores
+        FROM Aprobadores
         WHERE IdEstatus = 1
         GROUP BY FolioSolicitud
         HAVING COUNT(DISTINCT IdEstatus) = 1
