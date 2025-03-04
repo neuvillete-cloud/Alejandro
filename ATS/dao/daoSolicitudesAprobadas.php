@@ -8,13 +8,12 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta para obtener los folios de solicitudes aprobadas (IdEstatus = 1 es "Aprobado")
+    // Consulta para obtener los folios que SOLO tengan estatus 1 (Aprobado)
     $sql = "
         SELECT FolioSolicitud
         FROM Aprobadores
-        WHERE IdEstatus = 1
         GROUP BY FolioSolicitud
-        HAVING COUNT(DISTINCT IdEstatus) = 1
+        HAVING COUNT(DISTINCT IdEstatus) = 1 AND MAX(IdEstatus) = 1
     ";
 
     $stmt = $conex->prepare($sql);
