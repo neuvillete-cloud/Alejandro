@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $idSolicitud = intval($_POST['idSolicitud']);
     $baseUrl = "https://grammermx.com/AleTest/ATS/descripciones/"; // URL pública de archivos
-    $uploadDir = "../uploads/"; // Carpeta en el servidor
+    $uploadDir = "../descripciones/"; // Carpeta en el servidor
 
     $archivo = $_FILES['documento'];
     $extensionesPermitidas = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
