@@ -103,27 +103,6 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
-<div id="customEmailModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Enviar correos</h2>
-
-        <label for="email1">Correo 1 (obligatorio):</label>
-        <input type="email" id="email1" required>
-
-        <label for="email2">Correo 2 (opcional):</label>
-        <input type="email" id="email2">
-
-        <label for="email3">Correo 3 (opcional):</label>
-        <input type="email" id="email3">
-
-        <button id="sendEmailsBtn">Enviar</button>
-    </div>
-</div>
-
-
-
-
 <!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
