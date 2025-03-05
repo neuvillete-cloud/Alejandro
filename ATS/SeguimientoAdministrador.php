@@ -275,7 +275,7 @@ if (!isset($_SESSION['NumNomina'])) {
             formData.append('id', id);
 
             $.ajax({
-                url: 'https://grammermx.com/AleTest/ATS/dao/uploadFile.php', // Asegúrate de tener un script en el servidor para manejar la subida
+                url: 'https://grammermx.com/AleTest/ATS/dao/daoSubirDescripciones.php', // Asegúrate de tener un script en el servidor para manejar la subida
                 type: 'POST',
                 data: formData,
                 contentType: false,
