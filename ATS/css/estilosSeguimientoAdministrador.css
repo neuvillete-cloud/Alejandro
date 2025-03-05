@@ -507,155 +507,42 @@ h2 {
     transition: opacity 0.3s ease;
 }
 
-/* Botón Aceptar */
-.accept-btn {
-    background-color: #28a745; /* Verde */
-    border: 2px solid #218838; /* Borde verde oscuro */
-    color: white;
-    font-weight: bold;
-    padding: 4px 10px; /* Ajusta el tamaño del botón */
+.file-upload {
+    display: inline-block;
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-    margin-bottom: 8px; /* Espacio debajo del botón */
-}
-
-.accept-btn:hover {
-    background-color: #218838; /* Verde más oscuro */
-    border-color: #1e7e34;
-}
-
-/* Botón Rechazar (más pequeño) */
-.reject-btn {
-    background-color: #dc3545; /* Rojo */
-    border: 2px solid #c82333; /* Borde rojo oscuro */
-    color: white;
-    font-weight: bold;
-    padding: 2px 10px; /* Tamaño más pequeño */
-    font-size: 0.85em; /* Reduce el tamaño de la fuente */
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-}
-
-.reject-btn:hover {
-    background-color: #c82333; /* Rojo más oscuro */
-    border-color: #bd2130;
-}
-
-/* Estilos opcionales para los íconos */
-.accept-btn i,
-.reject-btn i {
-    margin-right: 5px; /* Espaciado entre el icono y el texto */
-}
-
-/* Título del modal */
-.custom-modal-content h2 {
-    margin: 0; /* Elimina cualquier margen por defecto */
-    padding-bottom: 15px; /* Un poco de espacio debajo del título */
-    font-size: 24px; /* Tamaño del título */
-    color: #2c3e50; /* Azul oscuro */
-    font-weight: bold; /* Negrita */
-    text-align: center; /* Centrar el título */
-}
-
-/* Otros estilos del modal siguen igual */
-.custom-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(230, 244, 249, 0.8); /* Fondo azul pastel semitransparente */
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-
-    /* Ocultar por defecto */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-}
-
-/* Contenido del modal */
-.custom-modal-content {
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
-    padding: 25px;
-    border-radius: 12px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-    position: relative;
-    transform: scale(0.8);
-    transition: transform 0.3s ease-in-out;
-    color: #2c3e50; /* Azul oscuro para texto */
-}
-
-/* Mostrar el modal */
-.custom-modal.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.custom-modal.show .custom-modal-content {
-    transform: scale(1);
-}
-
-/* Botón de cerrar */
-.close-modal {
-    position: absolute;
-    top: 12px;
-    right: 15px;
-    font-size: 22px;
-    cursor: pointer;
-    color: #2c3e50;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.close-modal:hover {
-    color: #3498db; /* Azul pastel más vibrante */
-}
-
-/* Inputs de correo */
-.custom-modal-content label {
-    display: block;
-    text-align: left;
-    margin: 10px 0 5px;
+    background-color: #f8f9fa;
     font-size: 14px;
-    color: #34495e; /* Azul oscuro pero suave */
-}
-
-.custom-modal-content input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #b0d3e8; /* Azul pastel suave */
-    border-radius: 5px;
-    background: #e6f4f9; /* Azul pastel claro */
-    color: #2c3e50; /* Azul oscuro */
-    font-size: 16px;
-}
-
-.custom-modal-content input:focus {
-    outline: 2px solid #5dade2; /* Azul pastel más intenso */
-}
-
-/* Botón de enviar */
-#sendEmailsBtn {
-    margin-top: 15px;
-    padding: 12px;
-    width: 100%;
-    background: #5dade2; /* Azul pastel más vibrante */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-#sendEmailsBtn:hover {
-    background: #3498db; /* Azul un poco más fuerte */
-    transform: scale(1.05);
+.file-upload:hover {
+    background-color: #e9ecef;
+}
+
+.upload-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.upload-btn:hover {
+    background-color: #0056b3;
+}
+
+.upload-btn i {
+    margin-right: 5px;
+}
+
+/* Ajuste para que los elementos estén alineados correctamente en la tabla */
+td {
+    vertical-align: middle;
 }
