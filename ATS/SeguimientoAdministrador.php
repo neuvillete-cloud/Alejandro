@@ -271,11 +271,11 @@ if (!isset($_SESSION['NumNomina'])) {
             }
 
             let formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-            formData.append('id', id);
+            formData.append('documento', fileInput.files[0]); // Corregido: "documento"
+            formData.append('idSolicitud', id); // Corregido: "idSolicitud"
 
             $.ajax({
-                url: 'https://grammermx.com/AleTest/ATS/dao/daoSubirDescripciones.php', // Asegúrate de tener un script en el servidor para manejar la subida
+                url: 'https://grammermx.com/AleTest/ATS/dao/daoSubirDescripciones.php',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -283,9 +283,9 @@ if (!isset($_SESSION['NumNomina'])) {
                 success: function (response) {
                     try {
                         let jsonResponse = typeof response === "object" ? response : JSON.parse(response);
-                        if (jsonResponse.success) {
+                        if (jsonResponse.status === "success") { // Corregido: "status"
                             Swal.fire("Éxito", "Archivo subido correctamente", "success");
-                            tabla.ajax.reload();
+                            tabla.ajax.reload(); // Recargar la tabla
                         } else {
                             Swal.fire("Error", jsonResponse.message || "No se pudo subir el archivo", "error");
                         }
@@ -298,7 +298,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 }
             });
         });
-
     });
 </script>
 </body>
