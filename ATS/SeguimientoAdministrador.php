@@ -43,7 +43,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <ul>
         <li><a href="Administrador.php">Inicio</a></li>
         <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-        <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
+        <li><a href="SAprobadas.php">Históricos</a></li>
         <li><a href="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
