@@ -68,6 +68,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>Nombre</th>
                 <th>FolioSolicitud</th>
                 <th>IdEstatus</th> <!-- Nueva columna -->
+                <th>Acciones</th>
 
             </tr>
             </thead>
@@ -76,6 +77,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>#</th>
                 <th>Nomina</th>
                 <th>Nombre</th>
+                <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
