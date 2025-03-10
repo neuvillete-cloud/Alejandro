@@ -65,7 +65,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>IdSolicitud</th>
                 <th>Nombre</th>
                 <th>Area</th>
-                <th>Nombre</th>
+                <th>Nombre Aprobador</th>
                 <th>FolioSolicitud</th>
                 <th>Estatus</th> <!-- Nueva columna -->
                 <th>Acciones</th>
