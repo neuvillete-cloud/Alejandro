@@ -9,15 +9,19 @@ try {
 
     // Consulta para obtener las solicitudes con estatus 2 y el nombre del estatus
     $sql = "
-    SELECT s.IdSolicitud, s.FolioSolicitud, s.Nombre AS NombreSolicitante, 
-           ar.NombreArea, 
-           COALESCE(a.Nombre, 'Pendiente') AS NombreAprobador, 
-           COALESCE(e.NombreEstatus, 'Pendiente') AS NombreEstatus, 
-    FROM Solicitudes s
-    LEFT JOIN Aprobadores a ON s.FolioSolicitud = a.FolioSolicitud
-    LEFT JOIN Estatus e ON a.IdEstatus = e.IdEstatus
-    LEFT JOIN Area ar ON s.IdArea = ar.IdArea
-    WHERE s.IdEstatus = 2
+    SELECT 
+    s.IdSolicitud, 
+    s.FolioSolicitud, 
+    s.Nombre AS NombreSolicitante, 
+    ar.NombreArea, 
+    COALESCE(a.Nombre, 'Pendiente') AS NombreAprobador, 
+    COALESCE(e.NombreEstatus, 'Pendiente') AS NombreEstatus, 
+FROM Solicitudes s
+LEFT JOIN Aprobadores a ON s.FolioSolicitud = a.FolioSolicitud
+LEFT JOIN Estatus e ON a.IdEstatus = e.IdEstatus
+LEFT JOIN Area ar ON s.IdArea = ar.IdArea
+WHERE s.IdEstatus = 2;
+
 ";
 
 
