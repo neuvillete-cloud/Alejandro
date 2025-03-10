@@ -9,7 +9,7 @@ try {
 
     // Consulta para obtener las solicitudes con estatus 2 y el nombre del estatus
     $sql = "
-        SELECT s.FolioSolicitud, s.Nombre, s.FechaSolicitud, 
+        SELECT s.FolioSolicitud, s.Nombre, s.FechaSolicitud, s.IdSolicitud, 
                a.Nombre, e.IdEstatus
         FROM Solicitudes s
         LEFT JOIN Aprobadores a ON s.FolioSolicitud = a.FolioSolicitud
