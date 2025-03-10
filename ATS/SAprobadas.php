@@ -183,7 +183,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "IdSolicitud" },
                 { "data": "NombreSolicitante" },
                 { "data": "NombreArea" },
-                { "data": "NombreAprovador" },
+                { "data": "NombreAprobador" },
                 { "data": "FolioSolicitud" },
                 { "data": "NombreEstatus" },
                 {
