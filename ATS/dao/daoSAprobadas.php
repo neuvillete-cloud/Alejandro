@@ -15,7 +15,7 @@ try {
     s.Nombre AS NombreSolicitante, 
     ar.NombreArea, 
     COALESCE(a.Nombre, 'Pendiente') AS NombreAprobador, 
-    COALESCE(e.NombreEstatus, 'Pendiente') AS NombreEstatus, 
+    COALESCE(e.NombreEstatus, 'Pendiente') AS NombreEstatus 
 FROM Solicitudes s
 LEFT JOIN Aprobadores a ON s.FolioSolicitud = a.FolioSolicitud
 LEFT JOIN Estatus e ON a.IdEstatus = e.IdEstatus
