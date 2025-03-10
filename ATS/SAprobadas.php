@@ -181,9 +181,9 @@ if (!isset($_SESSION['NumNomina'])) {
             },
             "columns": [
                 { "data": "IdSolicitud" },
-                { "data": "Nombre" },
+                { "data": "NombreSolicitante" },
                 { "data": "NombreArea" },
-                { "data": "Nombre" },
+                { "data": "NombreAprovador" },
                 { "data": "FolioSolicitud" },
                 { "data": "NombreEstatus" },
                 {
