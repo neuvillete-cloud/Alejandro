@@ -7,12 +7,13 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta para obtener las solicitudes con estatus 2
+    // Consulta para obtener las solicitudes con estatus 2 y el nombre del estatus
     $sql = "
         SELECT s.FolioSolicitud, s.NombreSolicitante, s.FechaSolicitud, 
-               a.NombreAprobador, a.EstatusAprobacion, a.FechaAprobacion
+               a.NombreAprobador, e.NombreEstatus, a.FechaAprobacion
         FROM Solicitudes s
         LEFT JOIN Aprobadores a ON s.FolioSolicitud = a.FolioSolicitud
+        LEFT JOIN Estatus e ON a.EstatusAprobacion = e.IdEstatus
         WHERE s.Estatus = 2
     ";
 
