@@ -63,11 +63,11 @@ if (!isset($_SESSION['NumNomina'])) {
             <thead>
             <tr>
                 <th>IdSolicitud</th>
-                <th>Area</th>
-                <th>Puesto</th>
+                <th>Nombre</th>
+                <th>FechaSolicitud</th>
                 <th>Nombre</th>
                 <th>FolioSolicitud</th>
-                <th>Acciones</th> <!-- Nueva columna -->
+                <th>IdEstatus</th> <!-- Nueva columna -->
 
             </tr>
             </thead>
@@ -174,15 +174,16 @@ if (!isset($_SESSION['NumNomina'])) {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoAdmin.php',
+                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSAprobadas.php',
                 "dataSrc": "data"
             },
             "columns": [
                 { "data": "IdSolicitud" },
-                { "data": "NombreArea" },
-                { "data": "Puesto" },
+                { "data": "Nombre" },
+                { "data": "FechaSolicitud" },
                 { "data": "Nombre" },
                 { "data": "FolioSolicitud" },
+                { "data": "IdEstatus" },
                 {
                     "data": null,
                     "render": function (data, type, row) {

@@ -9,12 +9,12 @@ try {
 
     // Consulta para obtener las solicitudes con estatus 2 y el nombre del estatus
     $sql = "
-        SELECT s.FolioSolicitud, s.NombreSolicitante, s.FechaSolicitud, 
-               a.NombreAprobador, e.NombreEstatus, a.FechaAprobacion
+        SELECT s.FolioSolicitud, s.Nombre, s.FechaSolicitud, 
+               a.Nombre, e.IdEstatus
         FROM Solicitudes s
         LEFT JOIN Aprobadores a ON s.FolioSolicitud = a.FolioSolicitud
-        LEFT JOIN Estatus e ON a.EstatusAprobacion = e.IdEstatus
-        WHERE s.Estatus = 2
+        LEFT JOIN Estatus e ON a.IdEstatus = e.IdEstatus
+        WHERE s.IdEstatus = 2
     ";
 
     $stmt = $conex->prepare($sql);
