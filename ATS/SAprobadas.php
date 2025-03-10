@@ -64,10 +64,10 @@ if (!isset($_SESSION['NumNomina'])) {
             <tr>
                 <th>IdSolicitud</th>
                 <th>Nombre</th>
-                <th>FechaSolicitud</th>
+                <th>Area</th>
                 <th>Nombre</th>
                 <th>FolioSolicitud</th>
-                <th>IdEstatus</th> <!-- Nueva columna -->
+                <th>Estatus</th> <!-- Nueva columna -->
                 <th>Acciones</th>
 
             </tr>
@@ -182,10 +182,10 @@ if (!isset($_SESSION['NumNomina'])) {
             "columns": [
                 { "data": "IdSolicitud" },
                 { "data": "Nombre" },
-                { "data": "FechaSolicitud" },
+                { "data": "NombreArea" },
                 { "data": "Nombre" },
                 { "data": "FolioSolicitud" },
-                { "data": "IdEstatus" },
+                { "data": "NombreEstatus" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
