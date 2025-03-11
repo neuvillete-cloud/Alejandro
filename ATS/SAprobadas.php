@@ -189,14 +189,15 @@ if (!isset($_SESSION['NumNomina'])) {
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return `
-                        <button class="btn btn-success btn-sm accept-btn" data-id="${row.IdSolicitud}">
-                            <i class="fas fa-check"></i> Aceptar
+                        if (row.NombreEstatus === "En Aprobacion") { // Ajusta "Aprobado" según tu base de datos
+                            return `
+                        <button class="btn btn-primary btn-sm go-to-page-btn">
+                            <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
                         </button>
-                        <button class="btn btn-danger btn-sm reject-btn" data-id="${row.IdSolicitud}">
-                            <i class="fas fa-times"></i> Rechazar
-                        </button>
-                    `;
+                        `;
+                        } else {
+                            return ''; // No mostrar nada si no está aprobado
+                        }
                     }
                 }
             ],
@@ -264,150 +265,14 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         });
 
-        // Funcionalidad de botones
-        $('#solicitudesTable tbody').on('click', '.accept-btn', function () {
-            let id = $(this).data('id');
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: `¿Aprobar la solicitud ID: ${id}?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Sí, aprobar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 2 })
-                        .done(function (response) {
-                            let jsonResponse;
-                            try {
-                                jsonResponse = typeof response === "object" ? response : JSON.parse(response);
-                            } catch (error) {
-                                Swal.fire("Error", "Respuesta no válida del servidor", "error");
-                                return;
-                            }
-
-                            if (jsonResponse.success) {
-                                Swal.fire("Aprobado", "Solicitud aprobada con éxito", "success").then(() => {
-                                    let modal = document.getElementById('customEmailModal');
-                                    if (modal) {
-                                        modal.classList.add('show'); // Mostrar modal correctamente
-                                        document.getElementById('sendEmailsBtn').setAttribute('data-id', id);
-                                        console.log(`✅ ID guardado en modal: ${id}`); // DEBUG
-                                    } else {
-                                        console.error("🔴 No se encontró el modal en el DOM");
-                                    }
-                                });
-                            } else {
-                                Swal.fire("Error", jsonResponse.message || "No se pudo aprobar la solicitud", "error");
-                            }
-                        })
-                        .fail(function (jqXHR, textStatus, errorThrown) {
-                            Swal.fire("Error", "No se pudo conectar con el servidor", "error");
-                        });
-                }
-            });
+        // Evento para el botón "Ir a Seguimiento"
+        $('#solicitudesTable tbody').on('click', '.go-to-page-btn', function () {
+            window.location.href = 'SeguimientoAdministrador.php';
         });
-
-        document.getElementById('sendEmailsBtn').addEventListener('click', function () {
-            let button = this;
-            let solicitudId = button.getAttribute('data-id');
-            let email1 = document.getElementById('email1').value.trim();
-            let email2 = document.getElementById('email2').value.trim();
-            let email3 = document.getElementById('email3').value.trim();
-
-            if (!solicitudId || !email1) {
-                Swal.fire("Error", "El ID de la solicitud y el primer correo son obligatorios", "error");
-                return;
-            }
-
-            button.disabled = true;
-            button.textContent = "Enviando...";
-
-            let formData = new URLSearchParams();
-            formData.append("id", solicitudId);
-            formData.append("email1", email1);
-            if (email2) formData.append("email2", email2);
-            if (email3) formData.append("email3", email3);
-
-            console.log("📤 Enviando datos:", formData.toString());
-
-            fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData.toString()
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("📩 Respuesta del servidor:", data);
-                    if (data.status === "success") {
-                        Swal.fire("Enviado", "El correo fue enviado correctamente", "success").then(() => {
-                            document.getElementById('customEmailModal').classList.remove('show');
-
-                            // 🔄 Recargar la tabla después de enviar el correo
-                            if ($.fn.DataTable.isDataTable("#solicitudesTable")) {
-                                $('#solicitudesTable').DataTable().ajax.reload();
-                            } else {
-                                cargarSolicitudes(); // Si no usas DataTables, llama a tu función de carga de datos
-                            }
-                        });
-                    } else {
-                        Swal.fire("Error", data.message || "No se pudo enviar el correo", "error");
-                    }
-                })
-                .catch(error => {
-                    console.error("❌ Error en la petición:", error);
-                    Swal.fire("Error", "No se pudo conectar con el servidor", "error");
-                })
-                .finally(() => {
-                    button.disabled = false;
-                    button.textContent = "Enviar Correos";
-                });
-        });
-
-
 
         // Cerrar el modal al hacer clic en la 'X'
         document.querySelector('.close-modal').addEventListener('click', function () {
             document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal
-        });
-
-        // Evento para botón Rechazar
-        $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
-            let id = $(this).data('id');
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: `¿Rechazar la solicitud ID: ${id}?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Sí, rechazar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 3 })
-                        .done(function (response) {
-                            let jsonResponse;
-                            try {
-                                jsonResponse = typeof response === "object" ? response : JSON.parse(response);
-                            } catch (error) {
-                                Swal.fire("Error", "Respuesta no válida del servidor", "error");
-                                return;
-                            }
-
-                            if (jsonResponse.success) {
-                                Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success").then(() => {
-                                    tabla.ajax.reload();
-                                });
-                            } else {
-                                Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
-                            }
-                        })
-                        .fail(function (jqXHR, textStatus, errorThrown) {
-                            Swal.fire("Error", "No se pudo conectar con el servidor", "error");
-                        });
-                }
-            });
         });
 
     });
