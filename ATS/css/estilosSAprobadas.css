@@ -507,43 +507,27 @@ h2 {
     transition: opacity 0.3s ease;
 }
 
-/* Botón Aceptar */
-.accept-btn {
-    background-color: #28a745; /* Verde */
-    border: 2px solid #218838; /* Borde verde oscuro */
+.go-to-page-btn {
+    background-color: #007bff; /* Azul brillante */
     color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
     font-weight: bold;
-    padding: 4px 10px; /* Ajusta el tamaño del botón */
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
-    margin-bottom: 8px; /* Espacio debajo del botón */
+    cursor: pointer;
 }
 
-.accept-btn:hover {
-    background-color: #218838; /* Verde más oscuro */
-    border-color: #1e7e34;
-}
-
-/* Botón Rechazar (más pequeño) */
-.reject-btn {
-    background-color: #dc3545; /* Rojo */
-    border: 2px solid #c82333; /* Borde rojo oscuro */
-    color: white;
-    font-weight: bold;
-    padding: 2px 10px; /* Tamaño más pequeño */
-    font-size: 0.85em; /* Reduce el tamaño de la fuente */
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-}
-
-.reject-btn:hover {
-    background-color: #c82333; /* Rojo más oscuro */
-    border-color: #bd2130;
-}
-
-/* Estilos opcionales para los íconos */
-.accept-btn i,
-.reject-btn i {
+.go-to-page-btn i {
     margin-right: 5px; /* Espaciado entre el icono y el texto */
 }
 
+.go-to-page-btn:hover {
+    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+}
+
+.go-to-page-btn:active {
+    background-color: #004494; /* Azul aún más oscuro al hacer clic */
+    transform: scale(0.98); /* Pequeño efecto de clic */
+}
