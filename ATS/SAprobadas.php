@@ -270,10 +270,6 @@ if (!isset($_SESSION['NumNomina'])) {
             window.location.href = 'SeguimientoAdministrador.php';
         });
 
-        // Cerrar el modal al hacer clic en la 'X'
-        document.querySelector('.close-modal').addEventListener('click', function () {
-            document.getElementById('customEmailModal').classList.remove('show'); // Ocultar modal
-        });
 
     });
 </script>
