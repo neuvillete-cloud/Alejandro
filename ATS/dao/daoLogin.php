@@ -33,16 +33,15 @@ function validarCredenciales($NumNomina, $Contrasena) {
         $usuario = $resultado->fetch_assoc(); // Obtener los datos del usuario
         // Guardar la nómina y rol en la sesión
         $_SESSION['NumNomina'] = $NumNomina;
-        $_SESSION['Rol'] = $usuario['IdRol']; // Suponiendo que el campo del rol en la tabla se llama 'rol'
-
+        $_SESSION['Rol'] = $usuario['IdRol']; // Suponiendo que el campo del rol en la tabla se llama 'IdRol'
 
         // Retornar éxito y redireccionar dependiendo del rol
         if ($usuario['IdRol'] == 1) {
-            // Redirigir a la página de administrador
             $response = array('status' => 'success', 'redirect' => 'Administrador.php');
         } elseif ($usuario['IdRol'] == 2) {
-            // Redirigir a la página de reportes
             $response = array('status' => 'success', 'redirect' => 'Solicitante.php');
+        } elseif ($usuario['IdRol'] == 3) {
+            $response = array('status' => 'success', 'redirect' => 'AdministradorIng.php');
         } else {
             $response = array('status' => 'error', 'message' => 'Rol no reconocido.');
         }
