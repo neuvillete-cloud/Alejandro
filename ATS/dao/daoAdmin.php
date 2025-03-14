@@ -7,14 +7,15 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta SQL con JOIN para obtener los nombres en lugar de los IDs
+    // Consulta SQL con filtro para IdEstatus = 5
     $sql = "SELECT 
                 s.*, 
                 a.NombreArea, 
                 e.NombreEstatus 
             FROM Solicitudes s
             JOIN Area a ON s.IdArea = a.IdArea
-            JOIN Estatus e ON s.IdEstatus = e.IdEstatus";
+            JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+            WHERE s.IdEstatus = 5";
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
@@ -43,6 +44,4 @@ try {
         'message' => 'Error en la consulta: ' . $e->getMessage()
     ]);
 }
-
 ?>
-
