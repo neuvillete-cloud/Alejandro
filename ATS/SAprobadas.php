@@ -189,7 +189,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        if (row.NombreEstatus === "En Aprobacion") { // Ajusta "Aprobado" según tu base de datos
+                        if (row.NombreEstatus === "Aprobado") { // Ajusta "Aprobado" según tu base de datos
                             return `
                         <button class="btn btn-primary btn-sm go-to-page-btn">
                             <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
