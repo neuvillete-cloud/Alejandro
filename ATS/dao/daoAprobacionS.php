@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $Comentario = ($Accion == 'rechazar' && isset($_POST['comentario'])) ? $_POST['comentario'] : "";
 
         // Determinar el estatus según la acción
-        $Estatus = ($Accion == 'rechazar') ? 3 : 1;
+        $Estatus = ($Accion == 'rechazar') ? 3 : 4;
 
         // Conectar a la base de datos
         $con = new LocalConector();
