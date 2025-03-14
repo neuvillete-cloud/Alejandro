@@ -13,7 +13,7 @@ try {
         SELECT FolioSolicitud
         FROM Aprobadores
         GROUP BY FolioSolicitud
-        HAVING COUNT(DISTINCT IdEstatus) = 4 AND MAX(IdEstatus) = 4
+        HAVING COUNT(DISTINCT IdEstatus) = 1 AND MAX(IdEstatus) = 4
     ";
 
     $stmt = $conex->prepare($sql);
