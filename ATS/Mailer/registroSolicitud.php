@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Si la solicitud se registró exitosamente, enviamos correo
             if ($response['status'] == 'success') {
-                $linkAprobacion = "https://grammermx.com/AleTest/ATS/aprobar_solicitud.php";
+                $linkAprobacion = "https://grammermx.com/AleTest/ATS/AdministradorIng.php";
 
                 $asunto = "Nueva solicitud registrada - Folio $FolioSolicitud";
                 $mensaje = "
