@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
 
     // Si es rechazo, guardar también el comentario
     if ($nuevoEstado == 3 && !empty($comentario)) {
-        $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, ComentarioRechazo = ? WHERE IdSolicitud = ?");
+        $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, Comentario = ? WHERE IdSolicitud = ?");
         $stmt->bind_param("isi", $nuevoEstado, $comentario, $idSolicitud);
     } else {
         $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
-        if ($nuevoEstado == 2) {
+        if ($nuevoEstado == 5) {
             // Envío correo cuando es aprobado
             $consultaDatos = $conex->prepare("SELECT FolioSolicitud, Nombre FROM Solicitudes WHERE IdSolicitud = ?");
             $consultaDatos->bind_param("i", $idSolicitud);
