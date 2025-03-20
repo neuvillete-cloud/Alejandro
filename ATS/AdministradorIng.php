@@ -302,14 +302,17 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
 
-        // Rechazar solicitud — mostrar modal
+        // Declarar variable global para el ID de la solicitud a rechazar
+        let rejectSolicitudId = null;
+
+// Mostrar modal al dar clic en el botón "Rechazar"
         $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
             rejectSolicitudId = $(this).data('id');
             document.getElementById('rejectComment').value = '';
             document.getElementById('rejectModal').classList.add('show');
         });
 
-        // Confirmar rechazo desde modal
+// Confirmar rechazo desde modal
         document.getElementById('confirmRejectBtn').addEventListener('click', function () {
             const comentario = document.getElementById('rejectComment').value.trim();
             if (!comentario) {
@@ -338,25 +341,35 @@ if (!isset($_SESSION['NumNomina'])) {
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
                     })
-                        .then(response => response.json())
-                        .then(jsonResponse => {
-                            if (jsonResponse.success) {
-                                Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success").then(() => {
-                                    tabla.ajax.reload();
-                                });
-                            } else {
-                                Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
+                        .then(async response => {
+                            // Leer respuesta como texto para evitar errores si el JSON viene mal formado
+                            const textResponse = await response.text();
+                            console.log("Respuesta cruda del servidor:", textResponse);
+
+                            // Intentar parsear la respuesta
+                            try {
+                                const jsonResponse = JSON.parse(textResponse);
+                                if (jsonResponse.success) {
+                                    Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success").then(() => {
+                                        tabla.ajax.reload(); // Recargar tu tabla
+                                    });
+                                } else {
+                                    Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
+                                }
+                            } catch (err) {
+                                console.error("Error al parsear JSON:", err);
+                                Swal.fire("Error", `Respuesta inesperada del servidor: ${textResponse}`, "error");
                             }
                         })
                         .catch(error => {
-                            console.error("❌ Error en la petición:", error);
+                            console.error("❌ Error en la petición fetch:", error);
                             Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                         });
                 }
             });
         });
 
-        // Cerrar modal con la X
+// Cerrar modal con la X
         document.querySelector('.close-reject-modal').addEventListener('click', function () {
             document.getElementById('rejectModal').classList.remove('show');
         });
