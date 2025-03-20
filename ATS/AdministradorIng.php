@@ -333,7 +333,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     formData.append("status", 3);
                     formData.append("comentario", comentario);
 
-                    fetch('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', {
+                    fetch('https://grammermx.com/AleTest/ATS/Mailer/mailerActualizarEstatus.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
