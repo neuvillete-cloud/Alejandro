@@ -23,7 +23,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
         <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
             <tr>
                 <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
-                    <h2>Notificación de Solicitud Aprobada</h2>
+                    <h2>Notificación de Solicitud</h2>
                 </td>
             </tr>
             <tr>
@@ -73,6 +73,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status'])) {
     $idSolicitud = intval($_POST['id']);
     $nuevoEstado = intval($_POST['status']);
+    $comentario = isset($_POST['comentario']) ? trim($_POST['comentario']) : '';
 
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -82,17 +83,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
         exit();
     }
 
-    $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
-    if (!$stmt) {
-        echo json_encode(["success" => false, "message" => "Error en la preparación de la consulta"]);
-        exit();
+    // Si es rechazo, guardar también el comentario
+    if ($nuevoEstado == 3 && !empty($comentario)) {
+        $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, ComentarioRechazo = ? WHERE IdSolicitud = ?");
+        $stmt->bind_param("isi", $nuevoEstado, $comentario, $idSolicitud);
+    } else {
+        $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
+        $stmt->bind_param("ii", $nuevoEstado, $idSolicitud);
     }
 
-    $stmt->bind_param("ii", $nuevoEstado, $idSolicitud);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
         if ($nuevoEstado == 2) {
+            // Envío correo cuando es aprobado
             $consultaDatos = $conex->prepare("SELECT FolioSolicitud, Nombre FROM Solicitudes WHERE IdSolicitud = ?");
             $consultaDatos->bind_param("i", $idSolicitud);
             $consultaDatos->execute();
@@ -122,6 +126,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'], $_POST['status']
                 <p>Saludos,<br>ATS - Grammer</p>";
 
                 enviarCorreoNotificacion('siguienteadmin@tudominio.com', 'otroadmin@tudominio.com', '', $asunto, $mensaje);
+            }
+        } elseif ($nuevoEstado == 3) {
+            // Envío correo cuando es rechazo
+            $consultaDatos = $conex->prepare("SELECT FolioSolicitud, Nombre FROM Solicitudes WHERE IdSolicitud = ?");
+            $consultaDatos->bind_param("i", $idSolicitud);
+            $consultaDatos->execute();
+            $resultado = $consultaDatos->get_result();
+
+            if ($resultado->num_rows > 0) {
+                $solicitud = $resultado->fetch_assoc();
+                $folio = $solicitud['FolioSolicitud'];
+                $nombreSolicitante = $solicitud['Nombre'];
+
+                $asunto = "Tu solicitud con folio $folio ha sido rechazada";
+                $mensaje = "
+                <p>Hola <strong>$nombreSolicitante</strong>,</p>
+                <p>Lamentamos informarte que tu solicitud con el folio <strong>$folio</strong> ha sido rechazada.</p>
+                <p>Motivo del rechazo:</p>
+                <blockquote style='color: #d9534f;'><em>$comentario</em></blockquote>
+                <p>Si tienes alguna duda, por favor contacta a tu administrador.</p>
+                <p>Saludos,<br>ATS - Grammer</p>";
+
+                enviarCorreoNotificacion('correo_solicitante@tudominio.com', '', '', $asunto, $mensaje);
             }
         }
 
