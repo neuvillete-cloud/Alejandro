@@ -277,7 +277,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post('https://grammermx.com/AleTest/ATS/Mailer/mailerActualizarEstatus.php', { id: id, status: 5 })
+                    $.post('https://grammermx.com/Mailer/mailerActualizarEstatus.php', { id: id, status: 5 })
                         .done(function (response) {
                             let jsonResponse;
                             try {
@@ -336,7 +336,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     formData.append("status", 3);
                     formData.append("comentario", comentario);
 
-                    fetch('https://grammermx.com/AleTest/ATS/Mailer/mailerActualizarEstatus.php', {
+                    fetch('https://grammermx.com/Mailer/mailerActualizarEstatus.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
