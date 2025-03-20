@@ -102,21 +102,12 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
-<div id="customEmailModal" class="custom-modal">
+<div id="rejectModal" class="custom-modal">
     <div class="custom-modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Enviar correos</h2>
-
-        <label for="email1">Correo 1 (obligatorio):</label>
-        <input type="email" id="email1" required>
-
-        <label for="email2">Correo 2 (opcional):</label>
-        <input type="email" id="email2">
-
-        <label for="email3">Correo 3 (opcional):</label>
-        <input type="email" id="email3">
-
-        <button id="sendEmailsBtn">Enviar</button>
+        <span class="close-reject-modal">&times;</span>
+        <h2>Comentario de Rechazo</h2>
+        <textarea id="rejectComment" placeholder="Escribe el motivo del rechazo aquí..." rows="5" style="width:100%; margin-bottom: 15px;"></textarea>
+        <button id="confirmRejectBtn" class="btn btn-danger">Confirmar Rechazo</button>
     </div>
 </div>
 
@@ -286,7 +277,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 5 })
+                    $.post('https://grammermx.com/AleTest/ATS/Mailer/mailerActualizarEstatus.php', { id: id, status: 5 })
                         .done(function (response) {
                             let jsonResponse;
                             try {
@@ -311,28 +302,44 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
 
+        // Rechazar solicitud — mostrar modal
         $('#solicitudesTable tbody').on('click', '.reject-btn', function () {
-            let id = $(this).data('id');
+            rejectSolicitudId = $(this).data('id');
+            document.getElementById('rejectComment').value = '';
+            document.getElementById('rejectModal').classList.add('show');
+        });
+
+        // Confirmar rechazo desde modal
+        document.getElementById('confirmRejectBtn').addEventListener('click', function () {
+            const comentario = document.getElementById('rejectComment').value.trim();
+            if (!comentario) {
+                Swal.fire("Atención", "Debes ingresar un comentario para rechazar.", "warning");
+                return;
+            }
+
+            document.getElementById('rejectModal').classList.remove('show');
 
             Swal.fire({
                 title: "¿Estás seguro?",
-                text: `¿Rechazar la solicitud ID: ${id}?`,
+                text: `¿Rechazar la solicitud ID: ${rejectSolicitudId}?`,
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Sí, rechazar",
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { id: id, status: 3 })
-                        .done(function (response) {
-                            let jsonResponse;
-                            try {
-                                jsonResponse = typeof response === "object" ? response : JSON.parse(response);
-                            } catch (error) {
-                                Swal.fire("Error", "Respuesta no válida del servidor", "error");
-                                return;
-                            }
+                    const formData = new URLSearchParams();
+                    formData.append("id", rejectSolicitudId);
+                    formData.append("status", 3);
+                    formData.append("comentario", comentario);
 
+                    fetch('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: formData.toString()
+                    })
+                        .then(response => response.json())
+                        .then(jsonResponse => {
                             if (jsonResponse.success) {
                                 Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success").then(() => {
                                     tabla.ajax.reload();
@@ -341,11 +348,17 @@ if (!isset($_SESSION['NumNomina'])) {
                                 Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
                             }
                         })
-                        .fail(function () {
+                        .catch(error => {
+                            console.error("❌ Error en la petición:", error);
                             Swal.fire("Error", "No se pudo conectar con el servidor", "error");
                         });
                 }
             });
+        });
+
+        // Cerrar modal con la X
+        document.querySelector('.close-reject-modal').addEventListener('click', function () {
+            document.getElementById('rejectModal').classList.remove('show');
         });
 
     });
