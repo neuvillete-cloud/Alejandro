@@ -16,6 +16,33 @@ date_default_timezone_set('America/Mexico_City');
 
 function enviarCorreoNotificacion($emails, $asunto, $mensaje)
 {
+    $contenido = "
+    <html>
+    <head>
+        <meta charset='UTF-8'>
+        <title>$asunto</title>
+    </head>
+    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #87CEEB, #B0E0E6); color: #FFFFFF; text-align: center;'>
+        <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
+            <tr>
+                <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
+                    <h2>Notificación de Solicitud</h2>
+                </td>
+            </tr>
+            <tr>
+                <td style='padding: 20px; text-align: left; color: #333333;'>
+                    $mensaje
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #005195; color: #FFFFFF; padding: 10px; text-align: center;'>
+                    <p>© Grammer Querétaro.</p>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>";
+
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -37,16 +64,17 @@ function enviarCorreoNotificacion($emails, $asunto, $mensaje)
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
-        $mail->Body = $mensaje;
+        $mail->Body = $contenido;
         $mail->send();
     } catch (Exception $e) {
         error_log("Error enviando correo: " . $e->getMessage());
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'], $_POST['correo'])) {
     $idSolicitud = (int)$_POST['id'];
     $nuevoEstado = (int)$_POST['status'];
+    $correoSolicitante = $_POST['correo'];
     $comentario = trim($_POST['comentario'] ?? '');
 
     $con = new LocalConector();
@@ -57,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
         exit;
     }
 
-    // Actualizar estado
     if ($nuevoEstado === 3 && !empty($comentario)) {
         $stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, Comentario = ? WHERE IdSolicitud = ?");
         $stmt->bind_param("isi", $nuevoEstado, $comentario, $idSolicitud);
@@ -76,8 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
         exit;
     }
 
-    // Consultar datos del solicitante
-    $consultaDatos = $conex->prepare("SELECT FolioSolicitud, Nombre, Correo FROM Solicitudes WHERE IdSolicitud = ?");
+    $consultaDatos = $conex->prepare("SELECT FolioSolicitud, Nombre FROM Solicitudes WHERE IdSolicitud = ?");
     $consultaDatos->bind_param("i", $idSolicitud);
     $consultaDatos->execute();
     $resultado = $consultaDatos->get_result();
@@ -86,38 +112,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
         $solicitud = $resultado->fetch_assoc();
         $folio = $solicitud['FolioSolicitud'];
         $nombreSolicitante = $solicitud['Nombre'];
-        $correoSolicitante = $solicitud['Correo'] ?? 'correo_solicitante@tudominio.com';
 
         if ($nuevoEstado === 5) {
-            // Notificar aprobación
             $mensaje = "
-                <p>Estimado administrador,</p>
-                <p>Una solicitud ha sido aprobada y ahora requiere tu revisión.</p>
-                <p>Folio: <strong>$folio</strong></p>
-                <p>Nombre del solicitante: <strong>$nombreSolicitante</strong></p>
-                <p>
-                    <a href='https://grammermx.com/AleTest/ATS/Administrador.php' target='_blank' 
-                    style='background: #E6F4F9; color: #005195; padding: 10px 20px; border-radius: 5px; 
-                    text-decoration: none; font-weight: bold;'>Ver Solicitud</a>
-                </p>
-                <p>Saludos,<br>ATS - Grammer</p>";
-            enviarCorreoNotificacion(['siguienteadmin@tudominio.com', 'otroadmin@tudominio.com'], "Nueva solicitud pendiente - Folio $folio", $mensaje);
+            <p>Hola <strong>$nombreSolicitante</strong>,</p>
+            <p>Tu solicitud con folio <strong>$folio</strong> ha sido aprobada.</p>
+            <p>Puedes ver el detalle en el siguiente enlace:</p>
+            <p>
+                <a href='https://grammermx.com/AleTest/ATS/Administrador.php' target='_blank' style='background: #E6F4F9; color: #005195; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;'>
+                    Ver Solicitud
+                </a>
+            </p>
+            <p>Saludos,<br>ATS - Grammer</p>";
+            enviarCorreoNotificacion([$correoSolicitante], "Tu solicitud con folio $folio ha sido aprobada", $mensaje);
         } elseif ($nuevoEstado === 3) {
-            // Notificar rechazo
             $mensaje = "
-                <p>Hola <strong>$nombreSolicitante</strong>,</p>
-                <p>Tu solicitud con folio <strong>$folio</strong> ha sido rechazada.</p>
-                <p>Motivo:</p>
-                <blockquote style='color: #d9534f;'><em>$comentario</em></blockquote>
-                <p>Para más información, contacta a tu administrador.</p>
-                <p>Saludos,<br>ATS - Grammer</p>";
+            <p>Hola <strong>$nombreSolicitante</strong>,</p>
+            <p>Tu solicitud con folio <strong>$folio</strong> ha sido rechazada.</p>
+            <p>Motivo:</p>
+            <blockquote style='color: #d9534f;'><em>$comentario</em></blockquote>
+            <p>Para más información, contacta a tu administrador.</p>
+            <p>Saludos,<br>ATS - Grammer</p>";
             enviarCorreoNotificacion([$correoSolicitante], "Tu solicitud con folio $folio ha sido rechazada", $mensaje);
         }
     }
 
-    echo json_encode(["success" => true, "message" => "Estado actualizado y notificación enviada."]);
+    echo json_encode(["success" => true, "message" => "Estado actualizado y correo enviado."]);
     exit;
 } else {
     echo json_encode(["success" => false, "message" => "Datos incompletos o método incorrecto."]);
     exit;
 }
+
