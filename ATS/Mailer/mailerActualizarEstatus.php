@@ -12,9 +12,7 @@ require 'Phpmailer/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-date_default_timezone_set('America/Mexico_City');
-
-function enviarCorreoNotificacion($emails, $asunto, $mensaje)
+function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
 {
     $contenido = "
     <html>
@@ -54,9 +52,9 @@ function enviarCorreoNotificacion($emails, $asunto, $mensaje)
         $mail->Port = 465;
         $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
 
-        foreach ($emails as $email) {
-            if (!empty($email)) $mail->addAddress($email);
-        }
+        $mail->addAddress($email1);
+        if (!empty($email2)) $mail->addAddress($email2);
+        if (!empty($email3)) $mail->addAddress($email3);
 
         $mail->addBCC('sistema_ats@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
@@ -65,23 +63,27 @@ function enviarCorreoNotificacion($emails, $asunto, $mensaje)
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
         $mail->Body = $contenido;
+
         $mail->send();
+        return ['status' => 'success'];
     } catch (Exception $e) {
-        error_log("Error enviando correo: " . $e->getMessage());
+        return ['status' => 'error', 'message' => $e->getMessage()];
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'], $_POST['correo'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'], $_POST['email1'])) {
     $idSolicitud = (int)$_POST['id'];
     $nuevoEstado = (int)$_POST['status'];
-    $correoSolicitante = $_POST['correo'];
     $comentario = trim($_POST['comentario'] ?? '');
+    $email1 = $_POST['email1'];
+    $email2 = $_POST['email2'] ?? '';
+    $email3 = $_POST['email3'] ?? '';
 
     $con = new LocalConector();
     $conex = $con->conectar();
 
     if (!$conex) {
-        echo json_encode(["success" => false, "message" => "Error de conexión a la base de datos."]);
+        echo json_encode(["success" => false, "message" => "Error de conexión."]);
         exit;
     }
 
@@ -94,53 +96,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
     }
 
     if (!$stmt->execute()) {
-        echo json_encode(["success" => false, "message" => "Error al actualizar la solicitud."]);
+        echo json_encode(["success" => false, "message" => "Error al actualizar."]);
         exit;
     }
 
     if ($stmt->affected_rows === 0) {
-        echo json_encode(["success" => false, "message" => "No se encontró la solicitud o ya estaba actualizada."]);
+        echo json_encode(["success" => false, "message" => "No se encontró la solicitud."]);
         exit;
     }
 
-    $consultaDatos = $conex->prepare("SELECT FolioSolicitud, Nombre FROM Solicitudes WHERE IdSolicitud = ?");
-    $consultaDatos->bind_param("i", $idSolicitud);
-    $consultaDatos->execute();
-    $resultado = $consultaDatos->get_result();
+    // Obtener folio para el correo
+    $consulta = $conex->prepare("SELECT FolioSolicitud FROM Solicitudes WHERE IdSolicitud = ?");
+    $consulta->bind_param("i", $idSolicitud);
+    $consulta->execute();
+    $res = $consulta->get_result();
+    $fila = $res->fetch_assoc();
+    $folio = $fila['FolioSolicitud'];
 
-    if ($resultado->num_rows > 0) {
-        $solicitud = $resultado->fetch_assoc();
-        $folio = $solicitud['FolioSolicitud'];
-        $nombreSolicitante = $solicitud['Nombre'];
-
-        if ($nuevoEstado === 5) {
-            $mensaje = "
-            <p>Hola <strong>$nombreSolicitante</strong>,</p>
-            <p>Tu solicitud con folio <strong>$folio</strong> ha sido aprobada.</p>
-            <p>Puedes ver el detalle en el siguiente enlace:</p>
-            <p>
-                <a href='https://grammermx.com/AleTest/ATS/Administrador.php' target='_blank' style='background: #E6F4F9; color: #005195; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;'>
-                    Ver Solicitud
-                </a>
-            </p>
-            <p>Saludos,<br>ATS - Grammer</p>";
-            enviarCorreoNotificacion([$correoSolicitante], "Tu solicitud con folio $folio ha sido aprobada", $mensaje);
-        } elseif ($nuevoEstado === 3) {
-            $mensaje = "
-            <p>Hola <strong>$nombreSolicitante</strong>,</p>
-            <p>Tu solicitud con folio <strong>$folio</strong> ha sido rechazada.</p>
-            <p>Motivo:</p>
-            <blockquote style='color: #d9534f;'><em>$comentario</em></blockquote>
-            <p>Para más información, contacta a tu administrador.</p>
-            <p>Saludos,<br>ATS - Grammer</p>";
-            enviarCorreoNotificacion([$correoSolicitante], "Tu solicitud con folio $folio ha sido rechazada", $mensaje);
-        }
+    if ($nuevoEstado === 5) {
+        $mensaje = "
+        <p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>aprobada</strong>.</p>
+        <p>Revisa en el sistema o contacta con administración si necesitas más información.</p>
+        <p>Saludos,<br>ATS - Grammer</p>";
+        enviarCorreoNotificacion($email1, $email2, $email3, "Solicitud aprobada: $folio", $mensaje);
+    } elseif ($nuevoEstado === 3) {
+        $mensaje = "
+        <p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>rechazada</strong>.</p>
+        <p>Motivo:</p>
+        <blockquote>$comentario</blockquote>
+        <p>Para más detalles, acércate a tu administrador.</p>
+        <p>Saludos,<br>ATS - Grammer</p>";
+        enviarCorreoNotificacion($email1, $email2, $email3, "Solicitud rechazada: $folio", $mensaje);
     }
 
     echo json_encode(["success" => true, "message" => "Estado actualizado y correo enviado."]);
-    exit;
 } else {
-    echo json_encode(["success" => false, "message" => "Datos incompletos o método incorrecto."]);
-    exit;
+    echo json_encode(["success" => false, "message" => "Faltan datos."]);
 }
-
