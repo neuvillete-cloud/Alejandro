@@ -52,7 +52,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
         $mail->Port = 465;
         $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
 
-        $mail->addAddress($email1);
+        if (!empty($email1)) $mail->addAddress($email1);
         if (!empty($email2)) $mail->addAddress($email2);
         if (!empty($email3)) $mail->addAddress($email3);
 
@@ -71,11 +71,11 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'], $_POST['email1'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'])) {
     $idSolicitud = (int)$_POST['id'];
     $nuevoEstado = (int)$_POST['status'];
     $comentario = trim($_POST['comentario'] ?? '');
-    $email1 = $_POST['email1'];
+    $email1 = $_POST['email1'] ?? '';
     $email2 = $_POST['email2'] ?? '';
     $email3 = $_POST['email3'] ?? '';
 
@@ -133,3 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
 } else {
     echo json_encode(["success" => false, "message" => "Faltan datos."]);
 }
+?>
+
+
