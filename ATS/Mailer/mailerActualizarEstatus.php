@@ -114,11 +114,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
     $folio = $fila['FolioSolicitud'];
 
     if ($nuevoEstado === 5) {
-        $mensaje = "
-        <p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>aprobada</strong>.</p>
-        <p>Revisa en el sistema o contacta con administración si necesitas más información.</p>
-        <p>Saludos,<br>ATS - Grammer</p>";
-        enviarCorreoNotificacion($email1, $email2, $email3, "Solicitud aprobada: $folio", $mensaje);
+    $linkSistema = "https://grammermx.com/AleTest/ATS/Administrador.php";
+
+    $mensaje = "
+    <p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>aprobada</strong>.</p>
+    <p>Revisa en el sistema o contacta con administración si necesitas más información.</p>
+    <p>
+        <a href='$linkSistema' target='_blank' style='background: #E6F4F9; color: #005195; 
+        padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
+        display: inline-block;'>
+            Ir al sistema
+        </a>
+    </p>
+    <p>Saludos,<br>ATS - Grammer</p>";
+
+    enviarCorreoNotificacion($email1, $email2, $email3, "Solicitud aprobada: $folio", $mensaje);
+
     } elseif ($nuevoEstado === 3) {
         $mensaje = "
         <p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>rechazada</strong>.</p>
