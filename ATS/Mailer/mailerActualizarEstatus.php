@@ -19,83 +19,25 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
     <head>
         <meta charset='UTF-8'>
         <title>$asunto</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif; 
-                background: linear-gradient(135deg, #a6d5f7, #d4ebf9); 
-                margin: 0; 
-                padding: 20px;
-            }
-            .container {
-                background: #ffffff;
-                max-width: 600px;
-                margin: 0 auto;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-            }
-            .header {
-                background-color: #005195;
-                color: #ffffff;
-                padding: 30px;
-                text-align: center;
-            }
-            .header h2 {
-                margin: 0;
-                font-size: 26px;
-            }
-            .content {
-                padding: 30px;
-                color: #333333;
-                font-size: 16px;
-                line-height: 1.7;
-            }
-            .content p {
-                margin-bottom: 18px;
-            }
-            blockquote {
-                border-left: 4px solid #4fa3d1;
-                padding-left: 12px;
-                margin: 20px 0;
-                background-color: #f0f7fc;
-                color: #444;
-            }
-            .button {
-                display: inline-block;
-                margin-top: 25px;
-                padding: 12px 24px;
-                background-color: #4fa3d1;
-                color: #ffffff !important;
-                text-decoration: none;
-                border-radius: 8px;
-                font-weight: bold;
-                transition: background-color 0.3s ease;
-            }
-            .button:hover {
-                background-color: #3a8db3;
-            }
-            .footer {
-                background-color: #005195;
-                color: #ffffff;
-                padding: 15px;
-                text-align: center;
-                font-size: 13px;
-            }
-        </style>
     </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <h2>Notificación de Solicitud</h2>
-            </div>
-            <div class='content'>
-                $mensaje
-                <a href='https://tusistema.com' class='button'>Acceder al Sistema</a>
-            </div>
-            <div class='footer'>
-                © 2024 Grammer Querétaro — Este correo es automático, por favor no respondas.
-            </div>
-        </div>
+    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #87CEEB, #B0E0E6); color: #FFFFFF; text-align: center;'>
+        <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
+            <tr>
+                <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
+                    <h2>Notificación de Solicitud</h2>
+                </td>
+            </tr>
+            <tr>
+                <td style='padding: 20px; text-align: left; color: #333333;'>
+                    $mensaje
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #005195; color: #FFFFFF; padding: 10px; text-align: center;'>
+                    <p>© Grammer Querétaro.</p>
+                </td>
+            </tr>
+        </table>
     </body>
     </html>";
 
@@ -128,7 +70,6 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
         return ['status' => 'error', 'message' => $e->getMessage()];
     }
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'])) {
     $idSolicitud = (int)$_POST['id'];
