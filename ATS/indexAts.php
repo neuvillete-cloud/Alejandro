@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siemens Energy Clone</title>
-    <link rel="stylesheet" href="css/indexAts.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
@@ -18,16 +18,22 @@
         <a href="#">Programa de posgrado</a>
         <a href="#">Inclusión y diversidad</a>
         <a href="#">Inicio de sesión</a>
-        <a href="#">🌐 Español</a>
+        <a href="#">🌐 Español ▾</a>
     </nav>
 </header>
 
-<div class="center-content">
-    <h2>Hagamos que el mañana sea diferente, hoy mismo.</h2>
-    <div class="search-box">
-        <input type="text" placeholder="">
-        <button>Search Jobs</button>
+<main>
+    <section class="hero">
+        <h2>Take your next step</h2>
+    </section>
+
+    <div class="search-container">
+        <h3>Hagamos que el mañana sea diferente, hoy mismo.</h3>
+        <div class="search-box">
+            <input type="text" placeholder="">
+            <button>Search Jobs</button>
+        </div>
     </div>
-</div>
+</main>
 </body>
 </html>
