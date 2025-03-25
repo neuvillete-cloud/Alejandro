@@ -37,20 +37,21 @@ nav a::after {
     width: 0;
     height: 4px;
     background: #a86bd5;
-    transition: width 0.4s ease;
+    transform-origin: left;
+    transition: none;
 }
 nav a:hover::after {
-    width: 100%;
+    animation: smooth-loading-bar 0.8s forwards cubic-bezier(0.4, 0, 0.2, 1);
 }
-nav a:hover::after {
-    animation: loading-bar 0.8s forwards;
-}
-@keyframes loading-bar {
+@keyframes smooth-loading-bar {
     0% {
         width: 0%;
     }
-    50% {
-        width: 60%;
+    30% {
+        width: 50%;
+    }
+    60% {
+        width: 75%;
     }
     100% {
         width: 100%;
