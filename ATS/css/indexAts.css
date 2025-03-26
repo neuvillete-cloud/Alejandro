@@ -69,42 +69,48 @@ nav a:hover::after {
 }
 .search-container {
     text-align: center;
-    margin-top: -60px; /* Ajusta la posición */
+    margin-top: -100px; /* Ajustar la posición para que no esté tan encima */
     background: #fff;
     color: #140c33;
-    padding: 30px 20px; /* Reduce el padding para hacerlo más pequeño */
+    padding: 20px 25px; /* Reducir padding para hacerlo más compacto */
     border-radius: 12px;
-    width: 45%; /* Reduce el ancho */
+    width: 40%; /* Reducir el ancho */
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Suavizar la sombra */
 }
+
 .search-container h3 {
-    font-size: 26px;
-    margin-bottom: 35px;
+    font-size: 20px; /* Reducir tamaño del texto */
+    margin-bottom: 15px;
 }
+
 .search-box {
     display: flex;
     border: 1px solid #ccc;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
-    max-width: 700px;
+    max-width: 500px; /* Reducir ancho máximo */
     margin: 0 auto;
 }
+
 .search-box input {
     flex: 1;
-    padding: 18px;
+    padding: 12px; /* Reducir padding */
     border: none;
-    font-size: 18px;
+    font-size: 16px; /* Reducir tamaño de fuente */
 }
+
 .search-box button {
     background: #8000c8;
     border: none;
     color: white;
-    padding: 0 30px;
-    font-size: 18px;
+    padding: 10px 20px; /* Reducir tamaño del botón */
+    font-size: 16px; /* Reducir tamaño del texto del botón */
     cursor: pointer;
+    border-radius: 0 8px 8px 0;
 }
+
 .search-box button:hover {
     background: #9900e6;
 }
