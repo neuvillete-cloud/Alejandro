@@ -61,6 +61,7 @@ nav a:hover::after {
     background-color: #1b133d;
     text-align: center;
     padding: 250px 20px 200px 20px; /* Aumenta la altura */
+    position: relative; /* Permite posicionar el search-container sobre él */
 }
 .hero h2 {
     font-size: 72px;
@@ -68,52 +69,60 @@ nav a:hover::after {
     margin: 0;
 }
 .search-container {
-    text-align: center;
-    margin-top: -100px; /* Ajustar la posición para que no esté tan encima */
+    position: absolute;
+    bottom: -50px; /* Moverlo hacia abajo para que sobresalga */
+    left: 50%;
+    transform: translateX(-50%); /* Centrar horizontalmente */
     background: #fff;
     color: #140c33;
-    padding: 20px 25px; /* Reducir padding para hacerlo más compacto */
+    padding: 25px 30px; /* Ajustar el espacio interno */
     border-radius: 12px;
-    width: 40%; /* Reducir el ancho */
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Suavizar la sombra */
+    width: 50%; /* Ajustar el ancho */
+    max-width: 600px; /* No permitir que se haga muy grande */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    text-align: center;
 }
 
 .search-container h3 {
-    font-size: 20px; /* Reducir tamaño del texto */
+    font-size: 20px;
     margin-bottom: 15px;
 }
 
 .search-box {
     display: flex;
+    align-items: center;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 50px; /* Borde redondeado */
     overflow: hidden;
-    max-width: 500px; /* Reducir ancho máximo */
-    margin: 0 auto;
+    width: 100%;
 }
 
 .search-box input {
     flex: 1;
-    padding: 12px; /* Reducir padding */
+    padding: 14px; /* Tamaño adecuado */
     border: none;
-    font-size: 16px; /* Reducir tamaño de fuente */
+    font-size: 16px;
+    outline: none;
+    border-radius: 50px 0 0 50px;
 }
 
 .search-box button {
     background: #8000c8;
     border: none;
     color: white;
-    padding: 10px 20px; /* Reducir tamaño del botón */
-    font-size: 16px; /* Reducir tamaño del texto del botón */
+    padding: 12px 25px;
+    font-size: 16px;
     cursor: pointer;
-    border-radius: 0 8px 8px 0;
+    border-radius: 50px;
+    margin-left: -5px;
+    font-weight: bold;
+    transition: background 0.3s;
 }
 
 .search-box button:hover {
     background: #9900e6;
 }
+
 @media(max-width: 768px) {
     .header-container {
         flex-direction: column;
