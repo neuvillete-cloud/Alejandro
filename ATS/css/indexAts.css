@@ -41,24 +41,15 @@ nav a::after {
     transition: none;
 }
 nav a:hover::after {
-    animation: smooth-loading-bar 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
+    animation: ultra-smooth-bar 1.2s forwards cubic-bezier(0.25, 1, 0.5, 1);
 }
-@keyframes smooth-loading-bar {
-    0% {
-        width: 0%;
-    }
-    25% {
-        width: 40%;
-    }
-    50% {
-        width: 70%;
-    }
-    75% {
-        width: 90%;
-    }
-    100% {
-        width: 100%;
-    }
+@keyframes ultra-smooth-bar {
+    0% { width: 0%; }
+    10% { width: 20%; }
+    30% { width: 45%; }
+    60% { width: 75%; }
+    90% { width: 95%; }
+    100% { width: 100%; }
 }
 .logo h1 {
     font-size: 28px;
