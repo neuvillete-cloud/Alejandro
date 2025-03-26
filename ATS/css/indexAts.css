@@ -41,17 +41,20 @@ nav a::after {
     transition: none;
 }
 nav a:hover::after {
-    animation: smooth-loading-bar 0.8s forwards cubic-bezier(0.4, 0, 0.2, 1);
+    animation: smooth-loading-bar 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
 }
 @keyframes smooth-loading-bar {
     0% {
         width: 0%;
     }
-    30% {
-        width: 50%;
+    25% {
+        width: 40%;
     }
-    60% {
-        width: 75%;
+    50% {
+        width: 70%;
+    }
+    75% {
+        width: 90%;
     }
     100% {
         width: 100%;
