@@ -60,7 +60,7 @@ nav a:hover::after {
 .hero {
     background-color: #1b133d;
     text-align: center;
-    padding: 200px 20px 160px 20px;
+    padding: 250px 20px 200px 20px; /* Aumenta la altura */
 }
 .hero h2 {
     font-size: 72px;
@@ -69,12 +69,12 @@ nav a:hover::after {
 }
 .search-container {
     text-align: center;
-    margin-top: -80px;
+    margin-top: -60px; /* Ajusta la posición */
     background: #fff;
     color: #140c33;
-    padding: 50px 30px;
+    padding: 30px 20px; /* Reduce el padding para hacerlo más pequeño */
     border-radius: 12px;
-    width: 55%;
+    width: 45%; /* Reduce el ancho */
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 6px 15px rgba(0,0,0,0.25);
