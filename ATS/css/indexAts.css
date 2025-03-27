@@ -70,7 +70,7 @@ nav a:hover::after {
 }
 .search-container {
     position: absolute;
-    top: 65%; /* Lo subimos más */
+    top: 50%; /* Lo subimos más */
     left: 50%;
     transform: translate(-50%, -50%); /* Centrado perfecto */
     background: #fff;
