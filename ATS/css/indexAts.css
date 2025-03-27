@@ -70,18 +70,19 @@ nav a:hover::after {
 }
 .search-container {
     position: absolute;
-    bottom: -50px; /* Moverlo hacia abajo para que sobresalga */
+    top: 65%; /* Lo subimos más */
     left: 50%;
-    transform: translateX(-50%); /* Centrar horizontalmente */
+    transform: translate(-50%, -50%); /* Centrado perfecto */
     background: #fff;
     color: #140c33;
-    padding: 25px 30px; /* Ajustar el espacio interno */
+    padding: 25px 30px;
     border-radius: 12px;
-    width: 50%; /* Ajustar el ancho */
-    max-width: 600px; /* No permitir que se haga muy grande */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    width: 50%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
+
 
 .search-container h3 {
     font-size: 20px;
