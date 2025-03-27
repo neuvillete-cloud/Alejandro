@@ -46,7 +46,7 @@ nav a:last-of-type::before {
     position: absolute;
     left: -10px;
     color: white;
-    font-size: 18px;
+    font-size: 25px;
 }
 
 nav a::after {
