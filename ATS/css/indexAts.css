@@ -70,19 +70,18 @@ nav a:hover::after {
 }
 .search-container {
     position: absolute;
-    top: 80%; /* Lo subimos más */
+    top: 80%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centrado perfecto */
+    transform: translate(-50%, -50%);
     background: #fff;
     color: #140c33;
-    padding: 25px 30px;
+    padding: 25px 40px; /* Aumentamos un poco el padding lateral */
     border-radius: 12px;
-    width: 50%;
-    max-width: 600px;
+    width: 60%; /* Aumentamos el ancho */
+    max-width: 750px; /* Permitimos que crezca más en pantallas grandes */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
-
 
 .search-container h3 {
     font-size: 20px;
