@@ -27,7 +27,7 @@
 <main>
     <section class="hero">
         <video autoplay muted loop playsinline class="hero-video">
-            <source src="videos/Video.mp4" type="video/mp4">
+            <source src="videos/Video2.mp4" type="video/mp4">
             Tu navegador no soporta la etiqueta de video.
         </video>
     </section>
