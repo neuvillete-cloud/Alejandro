@@ -46,8 +46,11 @@ nav a:last-of-type::before {
     position: absolute;
     left: -10px;
     color: white;
-    font-size: 30px;
+    font-size: 18px; /* Tamaño base */
+    transform: scaleY(2); /* La barra se alarga sin ensancharse */
+    display: inline-block; /* Asegura que la transformación se aplique correctamente */
 }
+
 
 nav a::after {
     content: '';
