@@ -75,10 +75,10 @@ nav a:hover::after {
     transform: translate(-50%, -50%);
     background: #fff;
     color: #140c33;
-    padding: 25px 40px; /* Aumentamos un poco el padding lateral */
+    padding: 30px 50px; /* Más espacio alrededor */
     border-radius: 12px;
-    width: 60%; /* Aumentamos el ancho */
-    max-width: 750px; /* Permitimos que crezca más en pantallas grandes */
+    width: 70%; /* Más ancho */
+    max-width: 850px; /* Permitimos mayor tamaño en pantallas grandes */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
@@ -91,30 +91,27 @@ nav a:hover::after {
 .search-box {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 50px; /* Borde redondeado */
-    overflow: hidden;
+    gap: 10px; /* Separamos el input del botón */
     width: 100%;
 }
 
 .search-box input {
     flex: 1;
-    padding: 14px; /* Tamaño adecuado */
-    border: none;
+    padding: 14px 20px; /* Más espacio interno */
+    border: 1px solid #ccc;
     font-size: 16px;
     outline: none;
-    border-radius: 50px 0 0 50px;
+    border-radius: 50px;
 }
 
 .search-box button {
     background: #8000c8;
     border: none;
     color: white;
-    padding: 12px 25px;
+    padding: 14px 30px; /* Más grande */
     font-size: 16px;
     cursor: pointer;
     border-radius: 50px;
-    margin-left: -5px;
     font-weight: bold;
     transition: background 0.3s;
 }
@@ -122,6 +119,7 @@ nav a:hover::after {
 .search-box button:hover {
     background: #9900e6;
 }
+
 
 @media(max-width: 768px) {
     .header-container {
