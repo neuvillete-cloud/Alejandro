@@ -26,7 +26,10 @@
 
 <main>
     <section class="hero">
-        <h2>Take your next step</h2>
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="videos/Video.mp4" type="video/mp4">
+            Tu navegador no soporta la etiqueta de video.
+        </video>
     </section>
 
     <div class="search-container">
