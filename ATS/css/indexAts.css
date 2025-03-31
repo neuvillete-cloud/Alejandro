@@ -121,7 +121,7 @@ nav a:hover::after {
 }
 .search-container {
     position: absolute;
-    top: 80%;
+    top: 82%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: #fff;
