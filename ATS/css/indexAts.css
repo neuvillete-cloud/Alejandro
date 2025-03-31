@@ -214,3 +214,9 @@ nav a:hover::after {
     margin: 90px auto 0 auto; /* Baja el párrafo y lo centra */
     text-align: left; /* Alineación de texto */
 }
+
+.white-section h2 {
+    margin-top: 10px;  /* Reduce el espacio superior del título */
+    margin-bottom: 5px; /* Reduce el espacio debajo del título */
+    font-size: 24px; /* Ajusta el tamaño si es necesario */
+}
