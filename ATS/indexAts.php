@@ -43,7 +43,11 @@
     <!-- Sección blanca agregada -->
     <div class="white-section">
         <p>En Grammer Querétaro, la innovación y la calidad nos impulsan cada día. Queremos redefinir la experiencia de confort y seguridad en la industria automotriz, y para ello, necesitamos tu talento. Únete a nuestro equipo y sé parte del futuro de la movilidad, donde juntos superamos límites y creamos soluciones que marcan la diferencia. La evolución de la industria comienza contigo.</p>
+
+        <h2>Descubre cómo puedes encajar en nuestro equipo global</h2>
+        <p>¿Sabías que Grammer está presente en 4 continentes con 48 compañías en 20 países? Nuestra presencia mundial nos permite estar siempre cerca de nuestros clientes, garantizando altos estándares de calidad en cada solución que ofrecemos. Únete a un equipo global donde la innovación y la excelencia marcan la diferencia. Déjate inspirar por nuestros equipos diversos y en constante crecimiento.</p>
     </div>
+
 </main>
 </body>
 </html>
