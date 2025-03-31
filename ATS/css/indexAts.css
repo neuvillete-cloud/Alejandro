@@ -3,6 +3,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #140c33;
     color: white;
+    overflow-x: hidden; /* Asegura que no haya desbordamiento en toda la página */
 }
 
 header {
