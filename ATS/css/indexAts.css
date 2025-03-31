@@ -202,7 +202,6 @@ nav a:hover::after {
     padding: 50px 20px; /* Espaciado para que el contenido no quede pegado */
     text-align: center;
     color: black; /* Ajusta el color del texto para que se vea en fondo blanco */
-    overflow-x: hidden; /* Evita que el contenido desborde horizontalmente */
 }
 
 .white-section p {
