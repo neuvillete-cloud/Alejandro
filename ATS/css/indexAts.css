@@ -104,7 +104,7 @@ nav a:hover::after {
 .hero {
     position: relative; /* Necesario para que el video se ajuste dentro */
     text-align: center;
-    padding: 330px 20px 200px 20px; /* Conserva el tamaño */
+    padding: 353px 20px 200px 20px; /* Conserva el tamaño */
     overflow: hidden; /* Oculta cualquier desbordamiento del video */
 }
 
