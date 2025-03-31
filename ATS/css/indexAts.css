@@ -210,6 +210,6 @@ nav a:hover::after {
     line-height: 1.5; /* Espaciado entre líneas para mejor legibilidad */
     color: #12123b; /* Color oscuro similar al de la imagen */
     max-width: 900px; /* Limita el ancho del párrafo */
-    margin: 70px auto 0 auto; /* Baja el párrafo y lo centra */
+    margin: 90px auto 0 auto; /* Baja el párrafo y lo centra */
     text-align: left; /* Alineación de texto */
 }
