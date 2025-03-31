@@ -202,3 +202,14 @@ nav a:hover::after {
     text-align: center;
     color: black; /* Ajusta el color del texto para que se vea en fondo blanco */
 }
+
+.white-section p {
+    font-family: "Arial", sans-serif; /* Ajustamos la tipografía */
+    font-size: 22px; /* Tamaño similar al de la imagen */
+    font-weight: 400; /* Grosor estándar */
+    line-height: 1.5; /* Espaciado entre líneas para mejor legibilidad */
+    color: #12123b; /* Color oscuro similar al de la imagen */
+    max-width: 900px; /* Limita el ancho del párrafo */
+    margin: 40px auto 0 auto; /* Baja el párrafo y lo centra */
+    text-align: left; /* Alineación de texto */
+}
