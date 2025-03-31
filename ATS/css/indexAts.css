@@ -125,13 +125,15 @@ nav a:hover::after {
     transform: translate(-50%, -50%);
     background: #fff;
     color: #140c33;
-    padding: 30px 50px; /* Más espacio alrededor */
+    padding: 30px 50px;
     border-radius: 12px;
-    width: 70%; /* Más ancho */
-    max-width: 850px; /* Permitimos mayor tamaño en pantallas grandes */
+    width: 70%;
+    max-width: 850px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
+    z-index: 2; /* Asegura que esté por encima */
 }
+
 
 .search-container h3 {
     font-size: 20px;
