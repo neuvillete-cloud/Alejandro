@@ -189,3 +189,14 @@ nav a:hover::after {
         width: 90%;
     }
 }
+
+.white-section {
+    background-color: white;
+    min-height: 600px; /* Ajusta la altura según necesites */
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    padding: 50px 20px; /* Espaciado para que el contenido no quede pegado */
+    text-align: center;
+    color: black; /* Ajusta el color del texto para que se vea en fondo blanco */
+}

@@ -39,6 +39,12 @@
             <button>Search Jobs</button>
         </div>
     </div>
+
+    <!-- Sección blanca agregada -->
+    <div class="white-section">
+        <h2>Bienvenido a Siemens Energy</h2>
+        <p>Aquí puedes agregar más contenido si lo deseas.</p>
+    </div>
 </main>
 </body>
 </html>
