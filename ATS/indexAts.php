@@ -42,8 +42,7 @@
 
     <!-- Sección blanca agregada -->
     <div class="white-section">
-        <h2>Bienvenido a Siemens Energy</h2>
-        <p>Aquí puedes agregar más contenido si lo deseas.</p>
+        <p>En Grammer Querétaro, la innovación y la calidad nos impulsan cada día. Queremos redefinir la experiencia de confort y seguridad en la industria automotriz, y para ello, necesitamos tu talento. Únete a nuestro equipo y sé parte del futuro de la movilidad, donde juntos superamos límites y creamos soluciones que marcan la diferencia. La evolución de la industria comienza contigo.</p>
     </div>
 </main>
 </body>
