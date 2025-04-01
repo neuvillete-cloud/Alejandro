@@ -216,5 +216,5 @@ nav a:hover::after {
 }
 
 .white-section h2 {
-    margin-bottom: 0; /* Elimina el espacio debajo del título */
+    margin-bottom: 5px; /* Ajusta este valor según lo pegado que lo quieras */
 }
