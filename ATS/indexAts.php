@@ -55,7 +55,7 @@
                     <h3>Alemania</h3>
                 </div>
                 <div class="carousel-item">
-                    <img src="imagenes/estados-unidos.jpg" alt="Estados Unidos">
+                    <img src="imagenes/IMG_3238-min.JPG" alt="Estados Unidos">
                     <h3>Estados Unidos</h3>
                 </div>
                 <div class="carousel-item">
