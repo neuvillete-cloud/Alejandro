@@ -216,5 +216,13 @@ nav a:hover::after {
 }
 
 .white-section h2 {
-    margin-bottom: 5px; /* Ajusta este valor según lo pegado que lo quieras */
+    margin-bottom: 0px; /* Elimina el espacio inferior del título */
+}
+
+.white-section p:first-of-type {
+    margin-bottom: 20px; /* Mantiene la separación del primer párrafo */
+}
+
+.white-section p:last-of-type {
+    margin-top: 5px; /* Reduce el espacio superior del párrafo debajo del título */
 }
