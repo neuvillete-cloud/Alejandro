@@ -220,7 +220,7 @@ nav a:hover::after {
 }
 
 .white-section p:first-of-type {
-    margin-bottom: 20px; /* Mantiene la separación del primer párrafo */
+    margin-bottom: 40px; /* Mantiene la separación del primer párrafo */
 }
 
 .white-section p:last-of-type {
