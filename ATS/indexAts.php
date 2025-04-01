@@ -51,7 +51,7 @@
             <button class="carousel-btn prev">&lt;</button>
             <div class="carousel">
                 <div class="carousel-item">
-                    <img src="imagenes/IMG_0076.JPG" alt="Alemania">
+                    <img src="imagenes/IMG_0076-min.JPG" alt="Alemania">
                     <h3>Alemania</h3>
                 </div>
                 <div class="carousel-item">
