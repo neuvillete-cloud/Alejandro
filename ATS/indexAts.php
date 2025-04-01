@@ -48,6 +48,29 @@
         <p>¿Sabías que Grammer está presente en 4 continentes con 48 compañías en 20 países? Nuestra presencia mundial nos permite estar siempre cerca de nuestros clientes, garantizando altos estándares de calidad en cada solución que ofrecemos. Únete a un equipo global donde la innovación y la excelencia marcan la diferencia. Déjate inspirar por nuestros equipos diversos y en constante crecimiento.</p>
     </div>
 
+    <div class="carousel-container">
+        <button class="carousel-btn prev">&lt;</button>
+        <div class="carousel">
+            <div class="carousel-item">
+                <img src="imagenes/alemania.jpg" alt="Alemania">
+                <h3>Alemania</h3>
+            </div>
+            <div class="carousel-item">
+                <img src="imagenes/estados-unidos.jpg" alt="Estados Unidos">
+                <h3>Estados Unidos</h3>
+            </div>
+            <div class="carousel-item">
+                <img src="imagenes/rumania.jpg" alt="Rumania">
+                <h3>Rumania</h3>
+            </div>
+            <div class="carousel-item">
+                <img src="imagenes/reino-unido.jpg" alt="Reino Unido">
+                <h3>Reino Unido</h3>
+            </div>
+        </div>
+        <button class="carousel-btn next">&gt;</button>
+    </div>
+
 </main>
 </body>
 </html>
