@@ -298,3 +298,24 @@ nav a:hover::after {
 .next {
     right: 70px;
 }
+
+.carousel-item {
+    position: relative; /* Necesario para posicionar el ::after */
+    overflow: hidden; /* Evita desbordamientos */
+}
+
+.carousel-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 4px;
+    background: #a86bd5;
+    transform-origin: left;
+    transition: width 0.3s ease-in-out; /* Suaviza la animación */
+}
+
+.carousel-item:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
