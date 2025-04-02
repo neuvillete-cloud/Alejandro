@@ -270,28 +270,28 @@ nav a:hover::after {
 }
 
 .carousel-btn {
-    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro semi-transparente */
-    color: white;
+    background: none; /* Elimina el fondo */
     border: none;
-    font-size: 32px; /* Aumenta el tamaño del ícono */
+    color: #4a1c6f; /* Color de la flecha (ajústalo a tu diseño) */
+    font-size: 24px; /* Tamaño de la flecha */
     cursor: pointer;
-    padding: 15px; /* Hace el botón más grande */
-    border-radius: 50%; /* Redondeado */
+    padding: 10px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: background 0.3s;
-    z-index: 10; /* Asegura que esté sobre el carrusel */
+    transition: color 0.3s;
+    z-index: 10;
 }
 
 .carousel-btn:hover {
-    background: rgba(0, 0, 0, 0.8); /* Hace el botón más visible al pasar el mouse */
+    color: #a86bd5; /* Cambio de color al pasar el mouse */
 }
 
+/* Posiciones específicas */
 .prev {
-    left: 5px; /* Reduce la separación del lado izquierdo */
+    left: -30px; /* Ajusta la posición de la flecha izquierda */
 }
 
 .next {
-    right: 5px; /* Reduce la separación del lado derecho */
+    right: -30px; /* Ajusta la posición de la flecha derecha */
 }
