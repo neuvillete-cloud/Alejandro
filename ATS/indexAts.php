@@ -63,7 +63,7 @@
                     <h3>Rumania</h3>
                 </div>
                 <div class="carousel-item">
-                    <img src="imagenes/Diseño%20sin%20título%20(4)-min.png" alt="Reino Unido">
+                    <img src="imagenes/HyM.png" alt="Reino Unido">
                     <h3>Reino Unido</h3>
                 </div>
             </div>
