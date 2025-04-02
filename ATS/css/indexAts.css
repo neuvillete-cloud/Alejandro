@@ -270,23 +270,28 @@ nav a:hover::after {
 }
 
 .carousel-btn {
-    background: none;
+    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro semi-transparente */
+    color: white;
     border: none;
-    font-size: 24px;
+    font-size: 32px; /* Aumenta el tamaño del ícono */
     cursor: pointer;
-    padding: 10px;
+    padding: 15px; /* Hace el botón más grande */
+    border-radius: 50%; /* Redondeado */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background 0.3s;
+    z-index: 10; /* Asegura que esté sobre el carrusel */
 }
 
 .carousel-btn:hover {
-    color: #6a0dad;
+    background: rgba(0, 0, 0, 0.8); /* Hace el botón más visible al pasar el mouse */
 }
 
 .prev {
-    position: absolute;
-    left: 0;
+    left: 5px; /* Reduce la separación del lado izquierdo */
 }
 
 .next {
-    position: absolute;
-    right: 0;
+    right: 5px; /* Reduce la separación del lado derecho */
 }
