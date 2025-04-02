@@ -247,16 +247,21 @@ nav a:hover::after {
 }
 
 .carousel-item {
-    min-width: 250px;
-    max-width: 300px;
+    flex: 0 0 250px; /* Ancho fijo */
+    width: 250px;
+    height: 375px; /* Alto fijo */
     text-align: center;
     position: relative;
+    overflow: hidden; /* Evita desbordamientos */
+    border-radius: 10px; /* Opcional: Bordes redondeados */
+    background: #f0f0f0; /* Para evitar espacios en blanco */
 }
 
 .carousel-item img {
     width: 100%;
-    height: auto;
-    border-radius: 10px;
+    height: 100%;
+    object-fit: cover; /* Recorta la imagen para que encaje sin deformarse */
+    border-radius: 10px; /* Opcional: Mantiene bordes redondeados */
 }
 
 .carousel-item h3 {
