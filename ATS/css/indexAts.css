@@ -292,9 +292,9 @@ nav a:hover::after {
 
 /* Ajuste de posiciones dentro del carrusel */
 .prev {
-    left: 10px; /* Ajustar más cerca del contenido */
+    left: -5px; /* Más pegado a la imagen */
 }
 
 .next {
-    right: 10px;
+    right: -5px;
 }
