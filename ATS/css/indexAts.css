@@ -273,7 +273,7 @@ nav a:hover::after {
     background: none; /* Sin fondo */
     border: none;
     color: #4a1c6f; /* Color de la flecha */
-    font-size: 40px; /* Tamaño más grande para que sean visibles */
+    font-size: 50px; /* Tamaño más grande para que sean visibles */
     font-weight: bold;
     cursor: pointer;
     padding: 10px;
