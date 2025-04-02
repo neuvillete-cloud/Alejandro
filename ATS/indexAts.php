@@ -59,7 +59,7 @@
                     <h3>Estados Unidos</h3>
                 </div>
                 <div class="carousel-item">
-                    <img src="imagenes/IMG_3226-min.JPG" alt="Rumania">
+                    <img src="imagenes/Sin%20título%20(250%20x%20375%20px).png" alt="Rumania">
                     <h3>Rumania</h3>
                 </div>
                 <div class="carousel-item">
