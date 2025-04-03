@@ -314,14 +314,14 @@ nav a:hover::after {
 .carousel-item::after {
     content: '';
     position: absolute;
-    left: 6px;
+    left: 0;
     bottom: 0;
     width: 0;
     height: 4px;
     background: #a86bd5;
     z-index: 2; /* Para que la barra esté sobre la imagen */
     transition: width 0.3s ease-in-out;
-    max-width: 200%; /* La barra será más corta que la imagen */
+    max-width: 100%; /* La barra será más corta que la imagen */
 }
 
 .carousel-item:hover::after {
