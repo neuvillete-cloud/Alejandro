@@ -315,7 +315,7 @@ nav a:hover::after {
 .carousel-item::after {
     content: '';
     position: absolute;
-    left: 0;
+    left: 5px;
     bottom: 0;
     width: 0;
     height: 4px;
