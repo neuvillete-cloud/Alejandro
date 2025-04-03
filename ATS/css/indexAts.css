@@ -256,7 +256,6 @@ nav a:hover::after {
 .carousel-item img {
     width: 100%;
     height: auto;
-    border-radius: 10px;
 }
 
 .carousel-item h3 {
