@@ -301,14 +301,14 @@ nav a:hover::after {
 
 .carousel-item {
     position: relative; /* Necesario para posicionar el ::after */
-    overflow: hidden; /* Evita desbordamientos */
+    overflow: hidden; /* Evita que la barra sobresalga */
 }
 
 .carousel-item::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: 0;
+    bottom: 0; /* Coloca la barra dentro de la imagen */
     width: 0;
     height: 4px;
     background: #a86bd5;
