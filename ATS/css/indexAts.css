@@ -321,10 +321,11 @@ nav a:hover::after {
     background: #a86bd5;
     z-index: 2; /* Para que la barra esté sobre la imagen */
     transition: width 0.3s ease-in-out;
-    max-width: 95%; /* La barra será más corta que la imagen */
+    max-width: 100%; /* La barra será más corta que la imagen */
 }
 
 .carousel-item:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
+
 
