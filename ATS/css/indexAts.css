@@ -315,12 +315,13 @@ nav a:hover::after {
 .carousel-item::after {
     content: '';
     position: absolute;
-    left: 0;
-    bottom: 0;
+    left: 5px; /* Ajustamos para que no sobresalga */
+    bottom: 5px; /* Lo subimos un poco para alinearlo mejor */
     width: 0;
     height: 4px;
     background: #a86bd5;
-    z-index: 2; /* Para que la barra esté sobre la imagen */
+    border-radius: 50px; /* Hace que las esquinas sean redondeadas */
+    z-index: 2;
     transition: width 0.3s ease-in-out;
 }
 
