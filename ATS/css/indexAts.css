@@ -308,7 +308,7 @@ nav a:not(:hover)::after {
 }
 
 .next {
-    right: 70px;
+    right: 80px;
 }
 
 .carousel-item {
