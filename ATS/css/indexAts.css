@@ -300,20 +300,28 @@ nav a:hover::after {
 }
 
 .carousel-item {
-    position: relative; /* Necesario para posicionar el ::after */
+    position: relative; /* Para que el ::after se posicione dentro */
     overflow: hidden; /* Evita que la barra sobresalga */
+}
+
+.carousel-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 1; /* Asegura que la imagen esté por encima */
 }
 
 .carousel-item::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: 0; /* Coloca la barra dentro de la imagen */
+    bottom: 0;
     width: 0;
     height: 4px;
     background: #a86bd5;
-    transform-origin: left;
-    transition: width 0.3s ease-in-out; /* Suaviza la animación */
+    z-index: 2; /* Para que la barra esté sobre la imagen */
+    transition: width 0.3s ease-in-out;
 }
 
 .carousel-item:hover::after {
