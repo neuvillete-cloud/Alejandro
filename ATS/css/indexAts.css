@@ -328,3 +328,4 @@ nav a:hover::after {
 .carousel-item:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
+
