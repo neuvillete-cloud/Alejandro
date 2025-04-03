@@ -306,7 +306,7 @@ nav a:hover::after {
 
 .carousel-item img {
     display: block;
-    width: 100%;
+    width: 90%;
     height: auto;
     position: relative;
     z-index: 1; /* Asegura que la imagen esté por encima */
