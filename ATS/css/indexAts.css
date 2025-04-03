@@ -240,7 +240,7 @@ nav a:hover::after {
 
 .carousel {
     display: flex;
-    gap: 10px;
+    gap: 30px;
     transition: transform 0.5s ease-in-out;
     overflow: hidden;
     width: 80%;
