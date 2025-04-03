@@ -322,6 +322,7 @@ nav a:hover::after {
     background: #a86bd5;
     z-index: 2; /* Para que la barra esté sobre la imagen */
     transition: width 0.3s ease-in-out;
+    border-radius: 50px; /* Hace que las esquinas sean redondeadas */
 }
 
 .carousel-item:hover::after {
