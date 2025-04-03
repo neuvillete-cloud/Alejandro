@@ -62,17 +62,30 @@ nav a::after {
     height: 4px;
     background: #a86bd5;
     transform-origin: left;
+    transition: width 0.3s ease-in-out; /* Transición para suavizar la animación */
 }
 
 nav a:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
 
+nav a:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards; /* Animación de salida */
+}
+
+/* Animación de crecimiento */
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
     50% { width: 100%; transform: translateX(0); }
     100% { width: 100%; transform: translateX(0); }
 }
+
+/* Animación de decrecimiento */
+@keyframes smooth-infinite-bar-out {
+    0% { width: 100%; transform: translateX(0); }
+    100% { width: 0%; transform: translateX(0); }
+}
+
 
 /* Logo */
 .logo h1 {
