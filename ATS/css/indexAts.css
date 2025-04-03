@@ -319,13 +319,29 @@ nav a:hover::after {
     width: 0;
     height: 4px;
     background: #a86bd5;
-    z-index: 2; /* Para que la barra esté sobre la imagen */
-    transition: width 0.3s ease-in-out;
-    max-width: 100%; /* La barra será más corta que la imagen */
+    z-index: 2;
+    transition: width 0.3s ease-in-out; /* Transición para la animación */
+    max-width: 100%;
 }
 
 .carousel-item:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
+}
+
+.carousel-item:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards; /* Animación de salida */
+}
+
+/* Animación de crecimiento */
+@keyframes smooth-infinite-bar {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+/* Animación de decrecimiento */
+@keyframes smooth-infinite-bar-out {
+    0% { width: 100%; }
+    100% { width: 0%; }
 }
 
 
