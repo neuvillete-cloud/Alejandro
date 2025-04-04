@@ -322,6 +322,11 @@ nav a:not(:hover)::after {
     height: 350px;
     position: relative;
     z-index: 1; /* Asegura que la imagen esté por encima */
+    transition: filter 0.3s ease-in-out; /* Agrega una transición suave */
+}
+
+.carousel-item:hover img {
+    filter: brightness(1.3); /* Aumenta el brillo en un 30% */
 }
 
 .carousel-item::after {
