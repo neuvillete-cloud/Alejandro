@@ -53,18 +53,22 @@
                 <div class="carousel-item">
                     <img src="imagenes/IMG_0076-min.JPG" alt="Alemania">
                     <h3>Alemania</h3>
+                    <div class="carousel-icon">❯</div> <!-- Icono agregado -->
                 </div>
                 <div class="carousel-item">
                     <img src="imagenes/IMG_3238-min.JPG" alt="Estados Unidos">
                     <h3>Estados Unidos</h3>
+                    <div class="carousel-icon">❯</div> <!-- Icono agregado -->
                 </div>
                 <div class="carousel-item">
                     <img src="imagenes/Sin%20título%20(250%20x%20375%20px)%20(250%20x%20380%20px)%20(250%20x%20385%20px).png" alt="Rumania">
                     <h3>Rumania</h3>
+                    <div class="carousel-icon">❯</div> <!-- Icono agregado -->
                 </div>
                 <div class="carousel-item">
                     <img src="imagenes/HyM.png" alt="Reino Unido">
                     <h3>Reino Unido</h3>
+                    <div class="carousel-icon">❯</div> <!-- Icono agregado -->
                 </div>
             </div>
             <button class="carousel-btn next">&gt;</button>

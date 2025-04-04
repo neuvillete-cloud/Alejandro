@@ -357,4 +357,19 @@ nav a:not(:hover)::after {
     100% { width: 0%; }
 }
 
+.carousel-icon {
+    position: absolute;
+    bottom: 15px; /* Ajusta la posición vertical */
+    right: 15px;  /* Ajusta la posición horizontal */
+    color: white;
+    font-size: 24px; /* Tamaño del icono */
+    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out;
+}
 
+/* Animación al pasar el cursor */
+.carousel-item:hover .carousel-icon {
+    transform: translateX(8px); /* Se mueve 8px a la derecha */
+}
