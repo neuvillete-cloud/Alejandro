@@ -362,7 +362,7 @@ nav a:not(:hover)::after {
     bottom: 15px; /* Ajusta la posición vertical */
     right: 15px;  /* Ajusta la posición horizontal */
     color: white;
-    font-size: 24px; /* Tamaño del icono */
+    font-size: 30px; /* Tamaño del icono */
     padding: 5px 10px;
     border-radius: 5px;
     transition: transform 0.3s ease-in-out;
