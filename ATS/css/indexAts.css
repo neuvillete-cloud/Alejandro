@@ -363,7 +363,6 @@ nav a:not(:hover)::after {
     right: 15px;  /* Ajusta la posición horizontal */
     color: white;
     font-size: 24px; /* Tamaño del icono */
-    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
     padding: 5px 10px;
     border-radius: 5px;
     transition: transform 0.3s ease-in-out;
