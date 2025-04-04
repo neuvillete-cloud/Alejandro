@@ -366,7 +366,7 @@ nav a:not(:hover)::after {
     position: absolute;
     bottom: 15px; /* Ajusta la posición vertical */
     right: 15px;  /* Ajusta la posición horizontal */
-    color: white;
+    color: #a86bd5;
     font-size: 30px; /* Tamaño del icono */
     padding: 5px 10px;
     border-radius: 5px;
