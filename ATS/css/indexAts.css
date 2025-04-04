@@ -367,6 +367,7 @@ nav a:not(:hover)::after {
     padding: 5px 10px;
     border-radius: 5px;
     transition: transform 0.3s ease-in-out;
+    z-index: 3; /* Asegura que el icono esté por encima de todo */
 }
 
 /* Animación al pasar el cursor */
