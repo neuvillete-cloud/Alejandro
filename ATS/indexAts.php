@@ -76,5 +76,29 @@
     </div>
 
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const carousel = document.querySelector(".carousel");
+        const prevButton = document.querySelector(".prev");
+        const nextButton = document.querySelector(".next");
+        const itemWidth = document.querySelector(".carousel-item").offsetWidth + 10;
+        let scrollPosition = 0;
+
+        nextButton.addEventListener("click", function() {
+            if (scrollPosition > -(carousel.scrollWidth - itemWidth * 4)) {
+                scrollPosition -= itemWidth;
+                carousel.style.transform = `translateX(${scrollPosition}px)`;
+            }
+        });
+
+        prevButton.addEventListener("click", function() {
+            if (scrollPosition < 0) {
+                scrollPosition += itemWidth;
+                carousel.style.transform = `translateX(${scrollPosition}px)`;
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
