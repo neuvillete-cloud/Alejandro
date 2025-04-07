@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/ventas.jpg" alt="Ventas">
+                    <img src="imagenes/thumb__0_0_0_0_crop.jpg" alt="Ventas">
                     <div class="impact-info">
                         <span>IT</span>
                         <span class="arrow">❯</span>
