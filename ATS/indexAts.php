@@ -85,7 +85,7 @@
             <h2>Donde puede crear un impacto</h2>
             <div class="impact-grid">
                 <div class="impact-card">
-                    <img src="imagenes/ingenieria.jpg" alt="Ingeniería">
+                    <img src="imagenes/diznl1ar.png" alt="Ingeniería">
                     <div class="impact-info">
                         <span>Seguridad e Higiene</span>
                         <span class="arrow">❯</span>
