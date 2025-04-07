@@ -70,6 +70,13 @@
                     <h3>Reino Unido</h3>
                     <div class="carousel-icon">❯</div> <!-- Icono agregado -->
                 </div>
+                <!-- Nuevo país agregado -->
+                <div class="carousel-item">
+                    <img src="imagenes/NUEVA_IMAGEN.jpg" alt="Japón">
+                    <h3>Japón</h3>
+                    <div class="carousel-icon">❯</div>
+                </div>
+
             </div>
             <button class="carousel-btn next">&gt;</button>
         </div>
