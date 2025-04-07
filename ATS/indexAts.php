@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/proyectos.jpg" alt="Gestión de proyectos">
+                    <img src="imagenes/especialidades-ingenieria-industrial.jpg" alt="Gestión de proyectos">
                     <div class="impact-info">
                         <span>GPS</span>
                         <span class="arrow">❯</span>
