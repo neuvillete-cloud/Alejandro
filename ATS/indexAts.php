@@ -84,27 +84,40 @@
 
 </main>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const carousel = document.querySelector(".carousel");
-        const prevButton = document.querySelector(".prev");
-        const nextButton = document.querySelector(".next");
-        const itemWidth = document.querySelector(".carousel-item").offsetWidth + 10;
-        let scrollPosition = 0;
+        const prevBtn = document.querySelector(".carousel-btn.prev");
+        const nextBtn = document.querySelector(".carousel-btn.next");
 
-        nextButton.addEventListener("click", function() {
-            if (scrollPosition > -(carousel.scrollWidth - itemWidth * 4)) {
-                scrollPosition -= itemWidth;
-                carousel.style.transform = `translateX(${scrollPosition}px)`;
+        const itemWidth = document.querySelector(".carousel-item").offsetWidth + 10; // 10 = gap
+        let currentPosition = 0;
+
+        nextBtn.addEventListener("click", () => {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            if (currentPosition + itemWidth <= maxScroll) {
+                currentPosition += itemWidth;
+            } else {
+                currentPosition = maxScroll; // no pasarse
             }
+            carousel.scrollTo({
+                left: currentPosition,
+                behavior: 'smooth'
+            });
         });
 
-        prevButton.addEventListener("click", function() {
-            if (scrollPosition < 0) {
-                scrollPosition += itemWidth;
-                carousel.style.transform = `translateX(${scrollPosition}px)`;
+        prevBtn.addEventListener("click", () => {
+            if (currentPosition - itemWidth >= 0) {
+                currentPosition -= itemWidth;
+            } else {
+                currentPosition = 0; // no ir más atrás del inicio
             }
+            carousel.scrollTo({
+                left: currentPosition,
+                behavior: 'smooth'
+            });
         });
     });
 </script>
+
 </body>
 </html>
