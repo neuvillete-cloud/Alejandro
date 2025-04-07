@@ -175,6 +175,13 @@
                         <span class="arrow">❯</span>
                     </div>
                 </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Practicantes</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
             </div>
         </section>
 
