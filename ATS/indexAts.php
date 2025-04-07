@@ -87,56 +87,91 @@
                 <div class="impact-card">
                     <img src="imagenes/ingenieria.jpg" alt="Ingeniería">
                     <div class="impact-info">
-                        <span>Ingeniería</span>
+                        <span>Seguridad e Higiene</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/proyectos.jpg" alt="Gestión de proyectos">
                     <div class="impact-info">
-                        <span>Gestión de proyectos</span>
+                        <span>GPS</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/ventas.jpg" alt="Ventas">
                     <div class="impact-info">
-                        <span>Ventas</span>
+                        <span>IT</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/finanzas.jpg" alt="Finanzas">
                     <div class="impact-info">
-                        <span>Finanzas</span>
+                        <span>RH</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/fabricacion.jpg" alt="Fabricación">
                     <div class="impact-info">
-                        <span>Fabricación</span>
+                        <span>Calidad</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/servicio.jpg" alt="Servicios de atención al cliente">
                     <div class="impact-info">
-                        <span>Servicios de atención al cliente</span>
+                        <span>Ingenieria</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/it.jpg" alt="Tecnología de la información">
                     <div class="impact-info">
-                        <span>Tecnología de la información</span>
+                        <span>Controlling</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
                 <div class="impact-card">
                     <img src="imagenes/graduados.jpg" alt="Oportunidades para estudiantes y graduados">
                     <div class="impact-info">
-                        <span>Oportunidades para estudiantes y graduados</span>
+                        <span>Logistica</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Mantenimiento</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Produccion</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Finanzas</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Compras</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Regionales</span>
                         <span class="arrow">❯</span>
                     </div>
                 </div>
