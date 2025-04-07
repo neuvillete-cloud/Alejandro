@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/finanzas.jpg" alt="Finanzas">
+                    <img src="imagenes/irs8rgrf.png" alt="Finanzas">
                     <div class="impact-info">
                         <span>RH</span>
                         <span class="arrow">❯</span>
