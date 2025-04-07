@@ -80,6 +80,69 @@
             </div>
             <button class="carousel-btn next">&gt;</button>
         </div>
+
+        <section class="impact-section">
+            <h2>Donde puede crear un impacto</h2>
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <img src="imagenes/ingenieria.jpg" alt="Ingeniería">
+                    <div class="impact-info">
+                        <span>Ingeniería</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/proyectos.jpg" alt="Gestión de proyectos">
+                    <div class="impact-info">
+                        <span>Gestión de proyectos</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/ventas.jpg" alt="Ventas">
+                    <div class="impact-info">
+                        <span>Ventas</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/finanzas.jpg" alt="Finanzas">
+                    <div class="impact-info">
+                        <span>Finanzas</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/fabricacion.jpg" alt="Fabricación">
+                    <div class="impact-info">
+                        <span>Fabricación</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/servicio.jpg" alt="Servicios de atención al cliente">
+                    <div class="impact-info">
+                        <span>Servicios de atención al cliente</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <div class="impact-info">
+                        <span>Tecnología de la información</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+                <div class="impact-card">
+                    <img src="imagenes/graduados.jpg" alt="Oportunidades para estudiantes y graduados">
+                    <div class="impact-info">
+                        <span>Oportunidades para estudiantes y graduados</span>
+                        <span class="arrow">❯</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
 </main>
