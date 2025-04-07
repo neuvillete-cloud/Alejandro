@@ -72,7 +72,7 @@
                 </div>
                 <!-- Nuevo país agregado -->
                 <div class="carousel-item">
-                    <img src="imagenes/aftermarket-min.jpg" alt="Japón">
+                    <img src="imagenes/8.png" alt="Japón">
                     <h3>Japón</h3>
                     <div class="carousel-icon">❯</div>
                 </div>
