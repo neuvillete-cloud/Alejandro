@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/servicio.jpg" alt="Servicios de atención al cliente">
+                    <img src="imagenes/4e41g8rv.png" alt="Servicios de atención al cliente">
                     <div class="impact-info">
                         <span>Ingenieria</span>
                         <span class="arrow">❯</span>
