@@ -162,7 +162,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <img src="imagenes/compras-empresa-300x200.jpg" alt="Tecnología de la información">
                     <div class="impact-info">
                         <span>Compras</span>
                         <span class="arrow">❯</span>
