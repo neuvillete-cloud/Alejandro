@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/ope9bz9s.png" alt="Oportunidades para estudiantes y graduados">
+                    <img src="imagenes/w5b8l5g4.png" alt="Oportunidades para estudiantes y graduados">
                     <div class="impact-info">
                         <span>Logistica</span>
                         <span class="arrow">❯</span>
