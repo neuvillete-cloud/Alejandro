@@ -155,7 +155,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <img src="imagenes/El-departamento-financiero-funciones-e-importancia-en-la-empresa.jpg" alt="Tecnología de la información">
                     <div class="impact-info">
                         <span>Finanzas</span>
                         <span class="arrow">❯</span>
