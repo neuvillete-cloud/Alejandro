@@ -141,7 +141,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <img src="imagenes/iStock-518226928-e1502650932134.jpg" alt="Tecnología de la información">
                     <div class="impact-info">
                         <span>Mantenimiento</span>
                         <span class="arrow">❯</span>
