@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/fabricacion.jpg" alt="Fabricación">
+                    <img src="imagenes/premium_photo-1664475185887-ada9f6f59342.jpg" alt="Fabricación">
                     <div class="impact-info">
                         <span>Calidad</span>
                         <span class="arrow">❯</span>
