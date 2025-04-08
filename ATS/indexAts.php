@@ -176,7 +176,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <img src="imagenes/Como-reclutar-practicantes-en-Mexico.jpg" alt="Tecnología de la información">
                     <div class="impact-info">
                         <span>Practicantes</span>
                         <span class="arrow">❯</span>
