@@ -127,7 +127,7 @@
                     </div>
                 </div>
                 <div class="impact-card">
-                    <img src="imagenes/it.jpg" alt="Tecnología de la información">
+                    <img src="imagenes/que-es-mejor-gestion-empresarial-o-administracion-de-empresas.jpg" alt="Tecnología de la información">
                     <div class="impact-info">
                         <span>Controlling</span>
                         <span class="arrow">❯</span>
