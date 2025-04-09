@@ -16,7 +16,7 @@
         <nav>
             <a href="#">Buscar empleos</a>
             <a href="#">Acerca de nosotros</a>
-            <a href="#">Programa de posgrado</a>
+            <a href="practicantes.php">Programa de posgrado</a>
             <a href="#">Inclusión y diversidad</a>
             <a href="#">Inicio de sesión</a>
             <a href="#">🌐 Español ▾</a>
