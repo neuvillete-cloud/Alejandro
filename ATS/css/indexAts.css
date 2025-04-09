@@ -4,30 +4,18 @@ body {
     background-color: #140c33;
     color: white;
     overflow-x: hidden; /* Asegura que no haya desbordamiento en toda la página */
-    padding-top: 80px; /* misma altura que tu header */
-
 }
 
 header {
     background-color: #140c33;
-    height: 80px; /* 👈 fuerza una altura fija */
-    display: flex;
-    align-items: center; /* 👈 centra verticalmente el contenido */
-    padding: 0; /* 👈 quita el padding para evitar corte visual */
+    padding: 20px 0;
     border-bottom: 3px solid transparent;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-sizing: border-box;
+    position: relative;
 }
-
 
 .header-container {
     width: 80%;
     margin: 0 auto;
-    padding: 20px 0; /* 👈 aquí va el padding en lugar del header */
     display: flex;
     justify-content: space-between;
     align-items: center;
