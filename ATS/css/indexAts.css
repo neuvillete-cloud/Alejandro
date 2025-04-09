@@ -16,8 +16,8 @@ header {
     width: 100%;
     z-index: 1000;
     box-sizing: border-box;
-    transform: translateZ(0); /* <- este es el truco */
 }
+
 
 
 .header-container {
