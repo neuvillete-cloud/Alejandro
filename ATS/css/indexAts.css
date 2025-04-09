@@ -10,8 +10,13 @@ header {
     background-color: #140c33;
     padding: 20px 0;
     border-bottom: 3px solid transparent;
-    position: relative;
+    position: fixed; /* Cambiado de relative a fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Asegura que esté encima del resto del contenido */
 }
+
 
 .header-container {
     width: 80%;
