@@ -4,7 +4,6 @@ body {
     background-color: #140c33;
     color: white;
     overflow-x: hidden; /* Asegura que no haya desbordamiento en toda la página */
-    padding-top: 200px; /* Ajusta este valor según la altura real del header */
 }
 
 header {
