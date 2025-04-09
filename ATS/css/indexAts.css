@@ -8,14 +8,24 @@ body {
 
 header {
     background-color: #140c33;
-    padding: 20px 0;
+    height: 80px; /* 👈 fuerza una altura fija */
+    display: flex;
+    align-items: center; /* 👈 centra verticalmente el contenido */
+    padding: 0; /* 👈 quita el padding para evitar corte visual */
     border-bottom: 3px solid transparent;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
 }
+
 
 .header-container {
     width: 80%;
     margin: 0 auto;
+    padding: 20px 0; /* 👈 aquí va el padding en lugar del header */
     display: flex;
     justify-content: space-between;
     align-items: center;
