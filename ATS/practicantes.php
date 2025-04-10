@@ -21,7 +21,7 @@
     <main class="main-content">
         <header>
             <div class="global">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon-global" fill="white" viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="30" height="30" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 8px;">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
         10-4.48 10-10S17.52 2 12 2zm5.93 6h-2.95a13.48
         13.48 0 00-1.08-3.26A8.027 8.027 0 0117.93
@@ -37,8 +37,9 @@
         3.26zM16.56 14c.09-.65.14-1.32.14-2s-.05-1.35-.14-2h3.22a7.88
         7.88 0 010 4h-3.22z"/>
                 </svg>
-                <span>Global</span>
+                <span style="color: white; font-size: 18px;">Global</span>
             </div>
+
 
 
         </header>
