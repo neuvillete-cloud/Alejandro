@@ -44,8 +44,8 @@ body, html {
 
 header .global {
     position: absolute;
-    top: 20px;
-    right: 30px;
+    top: 30px;
+    right: 60px;
     color: white;
     font-weight: bold;
     z-index: 10;
