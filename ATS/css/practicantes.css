@@ -2,46 +2,52 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
 }
 
 body {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    font-family: sans-serif;
 }
 
 .sidebar {
     width: 80px;
-    background-color: #1c0033;
-    color: white;
+    background-color: #1e0033;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.sidebar-top {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+    gap: 20px;
+}
+
+.sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .logo {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-weight: bold;
-    margin-bottom: 50px;
-}
-
-.sidebar-icons {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    width: 50px;
+    height: auto;
 }
 
 .icon {
     font-size: 20px;
+    color: white;
     cursor: pointer;
 }
 
-.main-content {
+.main {
     flex: 1;
     position: relative;
-    overflow: hidden;
 }
 
 .top-right {
@@ -54,7 +60,8 @@ body {
 }
 
 .hero {
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-image: url('https://images.unsplash.com/photo-1568605114967-8130f3a36994');
     background-size: cover;
     background-position: center;
@@ -63,7 +70,7 @@ body {
 
 .hero-text {
     position: absolute;
-    bottom: 30px;
+    bottom: 80px;
     left: 100px;
     color: white;
     z-index: 2;
@@ -71,4 +78,7 @@ body {
 
 .hero-text h1 {
     font-size: 3rem;
+    max-width: 600px;
+    line-height: 1.2;
 }
+
