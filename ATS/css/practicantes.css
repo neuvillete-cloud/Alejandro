@@ -86,8 +86,8 @@ header .global {
 }
 
 .icon-img {
-    width: 24px; /* Ajusta el tamaño del ícono */
-    height: 24px; /* Ajusta el tamaño del ícono */
+    width: 28px; /* Ajusta el tamaño del ícono */
+    height: 30px; /* Ajusta el tamaño del ícono */
     fill: white;  /* Color del ícono */
     transition: transform 0.3s ease-in-out; /* Animación para hover */
 }
