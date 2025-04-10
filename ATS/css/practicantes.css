@@ -95,3 +95,11 @@ header .global {
 .icon-img:hover {
     transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
 }
+
+.global {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
