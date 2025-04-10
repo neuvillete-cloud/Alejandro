@@ -96,10 +96,16 @@ header .global {
     transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
 }
 
-.global {
-    display: flex;
-    align-items: center;
+.icon-global {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    margin-left: -5px;   /* Mueve hacia la izquierda */
+    margin-top: 5px;     /* Mueve hacia abajo */
+    vertical-align: middle;
+}
+
+.global-text {
     color: white;
-    font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
 }
