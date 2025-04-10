@@ -100,7 +100,7 @@ header .global {
     width: 30px;
     height: 30px;
     margin-right: 8px;
-    margin-left: -5px;   /* Mueve hacia la izquierda */
+    margin-left: -10px;   /* Mueve hacia la izquierda */
     margin-top: 5px;     /* Mueve hacia abajo */
     vertical-align: middle;
 }
