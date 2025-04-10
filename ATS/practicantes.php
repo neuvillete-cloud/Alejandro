@@ -23,7 +23,7 @@
 
         <section class="hero">
             <!-- Logo dentro del hero -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Siemens_Energy_logo.svg" class="logo" alt="Siemens Logo" />
+            <img src="imagenes/depositphotos_18206843-stock-photo-group-of-young-in-training.jpg" class="logo" alt="Siemens Logo" />
 
             <div class="text">
                 <h1>Siemens Energy Graduate<br />Program</h1>
