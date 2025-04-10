@@ -1,30 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Graduate Program</title>
-    <link rel="stylesheet" href="css/practicantes.css" />
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="sidebar">
-    <div class="sidebar-top">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Siemens_Energy_logo.svg" alt="Logo" class="logo" />
-        <div class="icon">🔍</div>
-        <div class="icon">☰</div>
-    </div>
-    <div class="sidebar-bottom">
-        <div class="icon">🎧</div>
-    </div>
-</div>
-
-<div class="main">
-    <div class="top-right">🌐 Global</div>
-    <div class="hero">
-        <div class="hero-text">
-            <h1>Siemens Energy Graduate Program</h1>
+<div class="container">
+    <aside class="sidebar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Siemens_Energy_logo.svg" class="logo" alt="Siemens Logo">
+        <div class="icons">
+            <span>🔍</span>
+            <span>☰</span>
         </div>
-    </div>
+        <div class="bottom-icon">
+            <span>🎧</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div class="global">
+                <span>🌐</span> Global
+            </div>
+        </header>
+        <section class="hero">
+            <div class="text">
+                <h1>Siemens Energy Graduate<br>Program</h1>
+            </div>
+        </section>
+    </main>
 </div>
 </body>
 </html>
