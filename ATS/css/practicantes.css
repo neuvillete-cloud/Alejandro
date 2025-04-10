@@ -84,3 +84,14 @@ header .global {
     font-weight: bold;
     line-height: 1.2;
 }
+
+.icon-img {
+    width: 24px; /* Ajusta el tamaño del ícono */
+    height: 24px; /* Ajusta el tamaño del ícono */
+    fill: white;  /* Color del ícono */
+    transition: transform 0.3s ease-in-out; /* Animación para hover */
+}
+
+.icon-img:hover {
+    transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
+}
