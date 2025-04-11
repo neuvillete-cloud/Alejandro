@@ -15,7 +15,7 @@
             </svg>
         </div>
         <div class="middle-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 100 80" fill="white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 80" fill="white">
                 <rect width="100" height="10" rx="3"></rect>
                 <rect y="30" width="100" height="10" rx="3"></rect>
                 <rect y="60" width="100" height="10" rx="3"></rect>
