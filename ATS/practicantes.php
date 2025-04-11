@@ -22,7 +22,12 @@
             </svg>
         </div>
 
-        <div class="bottom-icon">🎧</div>
+        <div class="bottom-icon">
+            <svg class="icon-img" xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 1C6.48 1 2 5.48 2 11v5a3 3 0 003 3h1v-8H5v-2c0-3.86 3.14-7 7-7s7 3.14 7 7v2h-1v8h1a3 3 0 003-3v-5c0-5.52-4.48-10-10-10zm-7 17a1 1 0 01-1-1v-1h2v2H5zm14-1a1 1 0 01-1 1h-1v-2h2v1z"/>
+            </svg>
+        </div>
+
     </aside>
 
     <main class="main-content">
