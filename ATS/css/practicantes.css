@@ -139,3 +139,23 @@ header .global {
     animation: bounceIn 0.6s ease;
 }
 
+/* Mostrar sidebar */
+.sidebar.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Animación de rebote */
+@keyframes bounceContent {
+    0% { transform: translateX(0); }
+    30% { transform: translateX(10px); }
+    60% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+}
+
+/* Aplicamos solo al contenido interno */
+.sidebar .top-icon,
+.sidebar .middle-icon,
+.sidebar .bottom-icon {
+    animation: bounceContent 0.6s ease;
+}
