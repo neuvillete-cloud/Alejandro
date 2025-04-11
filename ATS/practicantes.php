@@ -9,26 +9,38 @@
 <body>
 <div class="container">
     <aside class="sidebar">
-        <div class="top-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-img" viewBox="0 0 24 24" fill="white" width="24" height="24">
-                <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/>
-            </svg>
-        </div>
-        <div class="middle-icon" id="toggleSidebar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 80" fill="white">
-                <rect width="100" height="10" rx="3"></rect>
-                <rect y="30" width="100" height="10" rx="3"></rect>
-                <rect y="60" width="100" height="10" rx="3"></rect>
-            </svg>
+        <!-- Contenedor de íconos que no se mueve -->
+        <div class="sidebar-icons">
+            <div class="top-icon">
+                <!-- Icono arriba -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-img" viewBox="0 0 24 24" fill="white" width="24" height="24">
+                    <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/>
+                </svg>
+            </div>
+
+            <div class="middle-icon" id="toggleSidebar">
+                <!-- Botón de menú -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 80" fill="white">
+                    <rect width="100" height="10" rx="3"></rect>
+                    <rect y="30" width="100" height="10" rx="3"></rect>
+                    <rect y="60" width="100" height="10" rx="3"></rect>
+                </svg>
+            </div>
+
+            <div class="bottom-icon">
+                <!-- Icono abajo -->
+                <svg class="icon-img" xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 1C6.48 1 2 5.48 2 11v5a3 3 0 003 3h1v-8H5v-2c0-3.86 3.14-7 7-7s7 3.14 7 7v2h-1v8h1a3 3 0 003-3v-5c0-5.52-4.48-10-10-10zm-7 17a1 1 0 01-1-1v-1h2v2H5zm14-1a1 1 0 01-1 1h-1v-2h2v1z"/>
+                </svg>
+            </div>
         </div>
 
-        <div class="bottom-icon">
-            <svg class="icon-img" xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewBox="0 0 24 24">
-                <path d="M12 1C6.48 1 2 5.48 2 11v5a3 3 0 003 3h1v-8H5v-2c0-3.86 3.14-7 7-7s7 3.14 7 7v2h-1v8h1a3 3 0 003-3v-5c0-5.52-4.48-10-10-10zm-7 17a1 1 0 01-1-1v-1h2v2H5zm14-1a1 1 0 01-1 1h-1v-2h2v1z"/>
-            </svg>
+        <!-- Contenido adicional que se muestra solo al expandir -->
+        <div class="sidebar-content">
+            <!-- Aquí puedes meter el contenido que aparece cuando se expande -->
         </div>
-
     </aside>
+
 
     <main class="main-content">
         <header>
