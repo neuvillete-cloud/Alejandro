@@ -58,7 +58,7 @@
 
         <section class="hero">
             <!-- Logo dentro del hero -->
-            <img src="imagenes/Grammer_Logo_Original_White_sRGB_screen_transparent.png" class="logo" alt="Siemens Logo" />
+            <img src="imagenes/2_Grammer_Logo_Original_White_sRGB_screen_transparent.png" class="logo" alt="Siemens Logo" />
 
             <div class="text">
                 <h1>Siemens Energy Graduate<br />Program</h1>
