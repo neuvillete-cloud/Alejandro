@@ -197,14 +197,14 @@ header .global {
 }
 
 .program-description h2 {
-    font-size: 32px;
+    font-size: 40px; /* Aumentado de 32px a 40px */
     font-weight: 600;
     color: #12123d;
     margin-bottom: 30px;
 }
 
 .program-description p {
-    font-size: 18px;
-    line-height: 1.7;
-    margin-bottom: 20px;
+    font-size: 20px; /* Aumentado de 18px a 20px */
+    line-height: 1.8; /* Un poco más de espaciado */
+    margin-bottom: 22px;
 }
