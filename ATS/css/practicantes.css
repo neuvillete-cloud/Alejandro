@@ -22,16 +22,7 @@ body, html {
     justify-content: space-between;
     align-items: center;
     padding: 20px 0;
-    position: fixed; /* <- Clave para que flote */
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-
 
 .top-icon,
 .middle-icon,
@@ -122,22 +113,4 @@ header .global {
 .middle-icon:hover {
     transform: scale(1.2);
     transition: transform 0.2s ease-in-out;
-}
-
-.sidebar.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-@keyframes bounceContent {
-    0% { transform: translateX(0); }
-    30% { transform: translateX(10px); }
-    60% { transform: translateX(-6px); }
-    100% { transform: translateX(0); }
-}
-
-.sidebar .top-icon,
-.sidebar .middle-icon,
-.sidebar .bottom-icon {
-    animation: none;
 }
