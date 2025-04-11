@@ -14,7 +14,7 @@
                 <path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/>
             </svg>
         </div>
-        <div class="middle-icon">
+        <div class="middle-icon" id="toggleSidebar">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 80" fill="white">
                 <rect width="100" height="10" rx="3"></rect>
                 <rect y="30" width="100" height="10" rx="3"></rect>
@@ -66,5 +66,18 @@
         </section>
     </main>
 </div>
+<script>
+    document.getElementById("toggleSidebar").addEventListener("click", function () {
+        const sidebar = document.querySelector(".sidebar");
+
+        // Toggle la clase que expande el sidebar
+        sidebar.classList.toggle("expanded");
+
+        // Reinicia la animación si ya está activa
+        sidebar.classList.remove("bounce-temp");
+        void sidebar.offsetWidth; // fuerza reflow
+        sidebar.classList.add("bounce-temp");
+    });
+</script>
 </body>
 </html>
