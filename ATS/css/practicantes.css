@@ -114,3 +114,25 @@ header .global {
     transform: scale(1.2);
     transition: transform 0.2s ease-in-out;
 }
+
+/* Ocultar sidebar por defecto */
+.sidebar {
+    width: 80px;
+    transition: all 0.5s ease;
+}
+
+/* Sidebar expandido */
+.sidebar.expanded {
+    width: 250px;
+    animation: bounce 0.5s;
+}
+
+/* Efecto bounce */
+@keyframes bounce {
+    0%   { transform: scaleX(1); }
+    30%  { transform: scaleX(1.1); }
+    50%  { transform: scaleX(0.95); }
+    70%  { transform: scaleX(1.05); }
+    100% { transform: scaleX(1); }
+}
+
