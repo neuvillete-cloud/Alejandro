@@ -67,17 +67,22 @@
     </main>
 </div>
 <script>
-    document.getElementById("toggleSidebar").addEventListener("click", function () {
-        const sidebar = document.querySelector(".sidebar");
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.querySelector('.middle-icon');
 
-        // Toggle la clase que expande el sidebar
-        sidebar.classList.toggle("expanded");
+    toggleBtn.addEventListener('click', () => {
+        // Alternamos la clase de colapsado
+        sidebar.classList.toggle('collapsed');
 
-        // Reinicia la animación si ya está activa
-        sidebar.classList.remove("bounce-temp");
-        void sidebar.offsetWidth; // fuerza reflow
-        sidebar.classList.add("bounce-temp");
+        // Si se está mostrando, le aplicamos rebote
+        if (!sidebar.classList.contains('collapsed')) {
+            sidebar.classList.add('bounce');
+            setTimeout(() => {
+                sidebar.classList.remove('bounce');
+            }, 600); // Duración de la animación
+        }
     });
 </script>
+
 </body>
 </html>
