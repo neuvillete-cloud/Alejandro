@@ -22,7 +22,19 @@ body, html {
     justify-content: space-between;
     align-items: center;
     padding: 20px 0;
+    position: absolute; /* Se pone encima del hero */
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 50;
+    transition: width 0.4s ease-in-out;
+    overflow: hidden; /* Para ocultar contenido al contraer */
 }
+
+.sidebar.expanded {
+    width: 280px;
+}
+
 
 .top-icon,
 .middle-icon,
