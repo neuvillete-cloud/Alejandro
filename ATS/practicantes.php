@@ -71,18 +71,15 @@
     const toggleBtn = document.querySelector('.middle-icon');
 
     toggleBtn.addEventListener('click', () => {
-        // Alternamos la clase de colapsado
-        sidebar.classList.toggle('collapsed');
+        sidebar.classList.add('bounce');
 
-        // Si se está mostrando, le aplicamos rebote
-        if (!sidebar.classList.contains('collapsed')) {
-            sidebar.classList.add('bounce');
-            setTimeout(() => {
-                sidebar.classList.remove('bounce');
-            }, 600); // Duración de la animación
-        }
+        // Quitar la clase después de la animación
+        setTimeout(() => {
+            sidebar.classList.remove('bounce');
+        }, 600); // igual que la duración de la animación
     });
 </script>
+
 
 </body>
 </html>
