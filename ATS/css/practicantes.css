@@ -15,22 +15,14 @@ body, html {
 }
 
 .sidebar {
-    position: fixed; /* clave para que se sobreponga */
-    top: 0;
-    left: 0;
     width: 80px;
-    height: 100vh;
-    background-color: #1e1e2f;
-    z-index: 1000;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    opacity: 0;
-    visibility: hidden;
+    background-color: #1e0033;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    padding-top: 20px;
+    padding: 20px 0;
 }
-
 
 .top-icon,
 .middle-icon,
@@ -139,23 +131,3 @@ header .global {
     animation: bounceIn 0.6s ease;
 }
 
-/* Mostrar sidebar */
-.sidebar.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Animación de rebote */
-@keyframes bounceContent {
-    0% { transform: translateX(0); }
-    30% { transform: translateX(10px); }
-    60% { transform: translateX(-6px); }
-    100% { transform: translateX(0); }
-}
-
-/* Aplicamos solo al contenido interno */
-.sidebar .top-icon,
-.sidebar .middle-icon,
-.sidebar .bottom-icon {
-    animation: bounceContent 0.6s ease;
-}
