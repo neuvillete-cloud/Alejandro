@@ -78,9 +78,8 @@
         </section>
         <section class="program-description">
             <div class="content">
-                <p>
-                    Da el siguiente paso y desbloquea tu potencial con Grammer Querétaro.
-                </p>
+                <h2>Da el siguiente paso y desbloquea tu potencial con Grammer Querétaro</h2>
+
                 <p>
                     ¿Estás listo para impulsar tu carrera profesional y formar parte de una empresa que apuesta por el talento joven? Entonces el programa <strong>Escuela de Talentos</strong> de <strong>Grammer Querétaro</strong> es para ti.
                 </p>
@@ -98,6 +97,7 @@
                 </p>
             </div>
         </section>
+
 
     </main>
 </div>
