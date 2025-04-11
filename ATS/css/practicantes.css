@@ -141,3 +141,11 @@ header .global {
 .sidebar.bounce .bottom-icon {
     animation: bounceContent 0.6s ease-in-out;
 }
+
+/* Opcional: que los íconos se alineen a la izquierda cuando se expanda */
+.sidebar.expanded .top-icon,
+.sidebar.expanded .middle-icon,
+.sidebar.expanded .bottom-icon {
+    align-self: flex-start;
+    margin-left: 30px;
+}
