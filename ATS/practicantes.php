@@ -71,14 +71,19 @@
     const toggleBtn = document.querySelector('.middle-icon');
 
     toggleBtn.addEventListener('click', () => {
+        // Alternar clase para expandir
+        sidebar.classList.toggle('expanded');
+
+        // Activar animación de rebote
         sidebar.classList.add('bounce');
 
-        // Quitar la clase después de la animación
+        // Quitar rebote después de la animación
         setTimeout(() => {
             sidebar.classList.remove('bounce');
-        }, 600); // igual que la duración de la animación
+        }, 600);
     });
 </script>
+
 
 
 </body>
