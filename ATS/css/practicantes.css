@@ -183,3 +183,21 @@ header .global {
     align-self: flex-start;
     margin-left: 30px;
 }
+
+.program-description {
+    background-color: #1a1a1a; /* o cualquier otro fondo que combine con tu diseño */
+    padding: 40px 20px;
+    color: white;
+}
+
+.program-description .content {
+    max-width: 900px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.7;
+    text-align: justify;
+}
+
+.program-description p {
+    margin-bottom: 20px;
+}
