@@ -98,7 +98,7 @@
             </div>
         </section>
 
-        <section class="project-highlights">
+        <section class="program-description">
             <div class="content">
                 <h2>Aspectos destacados del proyecto</h2>
                 <p>
@@ -107,16 +107,16 @@
                 <p>
                     El proyecto se alineará estratégicamente con los estándares y objetivos de Grammer Querétaro, asegurando una experiencia de aprendizaje sólida y orientada a resultados. Estas son las principales características que definen la estructura del proyecto:
                 </p>
-                <ul>
-                    <li><strong>Justificación objetiva:</strong> Cada proyecto debe partir de una necesidad clara y estar respaldado por datos verificables.</li>
-                    <li><strong>Impacto sustentable:</strong> Se promueve que las soluciones propuestas generen valor a largo plazo para la organización y el entorno.</li>
-                    <li><strong>Enfoque innovador y tecnológico:</strong> Se valoran las ideas disruptivas, que integren herramientas digitales o procesos de mejora continua.</li>
-                    <li><strong>Estándares de calidad:</strong> Todo debe alinearse con las políticas y lineamientos de calidad de Grammer.</li>
-                    <li><strong>Datos reales y claros:</strong> La medición de avances y resultados será con base en indicadores cuantificables.</li>
-                    <li><strong>Objetivos alcanzables:</strong> Se establecerán metas realistas, considerando los recursos disponibles y el tiempo asignado.</li>
-                    <li><strong>Evaluación continua:</strong> Se realizarán revisiones semanales del progreso junto a tu mentor.</li>
-                    <li><strong>Duración mínima:</strong> Todos los proyectos tendrán una duración no menor a <strong>4 meses</strong>.</li>
-                </ul>
+                <p>
+                    • Justificación objetiva<br>
+                    • Impacto sustentable<br>
+                    • Innovador y tecnológico<br>
+                    • Apegarse a los estándares de Grammer<br>
+                    • Mostrar datos reales y claros<br>
+                    • Alcanzable en los tiempos establecidos<br>
+                    • Evaluado de forma semanal<br>
+                    • Duración mínima de 4 meses
+                </p>
                 <p>
                     Esta estructura busca fomentar el pensamiento estratégico, la autonomía y el crecimiento profesional del estudiante, al mismo tiempo que contribuye al desarrollo continuo de nuestra organización.
                 </p>
