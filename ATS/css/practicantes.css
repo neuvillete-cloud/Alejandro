@@ -211,3 +211,39 @@ header .global {
     margin-bottom: 24px;
     color: #1a1a1a;
 }
+
+.project-highlights {
+    padding: 40px 20px;
+    background-color: #f7f7f7;
+}
+
+.project-highlights .content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.project-highlights h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.project-highlights p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.project-highlights ul {
+    list-style: disc;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.project-highlights ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #444;
+}
+
