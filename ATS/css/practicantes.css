@@ -213,7 +213,7 @@ header .global {
 }
 
 .tabs-container {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 1400px;
     margin: 0 auto;
 }
