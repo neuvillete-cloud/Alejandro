@@ -228,11 +228,12 @@ header .global {
 .tab {
     flex: 1;
     padding: 20px;
-    font-size: 16px;
+    font-size: 18px;
     background-color: #f1f1f1;
     text-align: center;
     cursor: pointer;
-    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
     transition: background-color 0.3s ease;
 }
 
