@@ -123,23 +123,48 @@
             </div>
         </section>
 
-        <div class="tab-section">
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="showTab('info1')">Descripción</button>
-                <button class="tab-btn" onclick="showTab('info2')">Contenido</button>
-                <button class="tab-btn" onclick="showTab('info3')">Requisitos</button>
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <div class="tab active" onclick="showTab(event, 'contenido')">Contenido del programa</div>
+                <div class="tab" onclick="showTab(event, 'requisitos')">Requisitos</div>
+                <div class="tab" onclick="showTab(event, 'areas')">Diferentes áreas</div>
+                <div class="tab" onclick="showTab(event, 'proceso')">Proceso de solicitud</div>
             </div>
 
-            <div class="tab-content" id="info1">
-                <p>Esta es la descripción general del programa o curso.</p>
-            </div>
-            <div class="tab-content hidden" id="info2">
-                <p>Este es el contenido del programa, incluyendo módulos y temas.</p>
-            </div>
-            <div class="tab-content hidden" id="info3">
-                <p>Estos son los requisitos que el usuario debe cumplir para inscribirse.</p>
+            <div class="tabs-content">
+                <div class="tab-panel" id="contenido">
+                    <!-- Aquí va el contenido visible al cargar -->
+                    <div class="tab-body">
+                        <div class="tab-image">
+                            <img src="imagenes/tu-imagen.jpg" alt="Imagen de contenido">
+                        </div>
+                        <div class="tab-text">
+                            <ul>
+                                <li><strong>Desarrollo y aprendizaje:</strong> Obtén el conocimiento y las habilidades necesarias para dar rienda suelta a tu Energía Humana con nuestros Días de Desarrollo y capacitaciones.</li>
+                                <li><strong>Tutoría:</strong> Tener un mentor y seguir un puesto de tu interés.</li>
+                                <li><strong>Ex alumnos de Buddy:</strong> Emparejarse con un ex alumno.</li>
+                                <li><strong>Gestión de redes:</strong> Construir una red global con colegas y líderes empresariales.</li>
+                                <li><strong>Negocio Experiencia:</strong> Obtenga una visión profunda del negocio con proyectos y puestos desafiantes.</li>
+                                <li><strong>Permanente Contrato:</strong> Los graduados serán asignados a un área de negocio específica donde también estarán después del programa.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-panel hidden" id="requisitos">
+                    <p>Aquí va el contenido de requisitos...</p>
+                </div>
+
+                <div class="tab-panel hidden" id="areas">
+                    <p>Aquí va el contenido de diferentes áreas...</p>
+                </div>
+
+                <div class="tab-panel hidden" id="proceso">
+                    <p>Aquí va el contenido del proceso de solicitud...</p>
+                </div>
             </div>
         </div>
+
 
 
 
@@ -165,14 +190,14 @@
 </script>
 
 <script>
-    function showTab(tabId) {
-        // Ocultar todo
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    function showTab(event, tabId) {
+        // Quitar 'active' de todas
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
 
-        // Mostrar seleccionado
+        // Agregar 'active' a la clickeada y mostrar su panel
+        event.currentTarget.classList.add('active');
         document.getElementById(tabId).classList.remove('hidden');
-        event.target.classList.add('active');
     }
 
 </script>

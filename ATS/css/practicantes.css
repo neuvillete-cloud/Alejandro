@@ -212,43 +212,63 @@ header .global {
     color: #1a1a1a;
 }
 
-.tab-section {
-    margin-top: 30px;
+.tabs-container {
+    font-family: 'Segoe UI', sans-serif;
+    margin-top: 40px;
 }
 
-.tab-buttons {
+.tabs-header {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    background-color: #f7f7f7;
+    border-bottom: 2px solid #e0e0e0;
 }
 
-.tab-btn {
-    padding: 10px 20px;
-    background-color: white;
-    border: 2px solid #ccc;
-    border-radius: 6px;
+.tab {
+    flex: 1;
+    padding: 15px;
+    background-color: #f1f1f1;
+    text-align: center;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
-.tab-btn:hover {
-    background-color: #f0f0f0;
+.tab:hover {
+    background-color: #e6e6e6;
 }
 
-.tab-btn.active {
-    border-color: #007BFF;
-    color: #007BFF;
-    background-color: #e9f3ff;
+.tab.active {
+    background-color: white;
+    border-bottom: 4px solid #a238e4; /* línea morada debajo */
+    color: black;
 }
 
-.tab-content {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 6px;
+.tabs-content {
+    padding: 30px 0;
 }
 
-.hidden {
+.tab-panel.hidden {
     display: none;
+}
+
+.tab-body {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.tab-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.tab-text ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+.tab-text li {
+    margin-bottom: 10px;
+    line-height: 1.6;
 }
