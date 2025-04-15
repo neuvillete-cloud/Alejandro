@@ -123,6 +123,25 @@
             </div>
         </section>
 
+        <div class="tab-section">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('info1')">Descripción</button>
+                <button class="tab-btn" onclick="showTab('info2')">Contenido</button>
+                <button class="tab-btn" onclick="showTab('info3')">Requisitos</button>
+            </div>
+
+            <div class="tab-content" id="info1">
+                <p>Esta es la descripción general del programa o curso.</p>
+            </div>
+            <div class="tab-content hidden" id="info2">
+                <p>Este es el contenido del programa, incluyendo módulos y temas.</p>
+            </div>
+            <div class="tab-content hidden" id="info3">
+                <p>Estos son los requisitos que el usuario debe cumplir para inscribirse.</p>
+            </div>
+        </div>
+
+
 
 
     </main>
@@ -143,6 +162,19 @@
             sidebar.classList.remove('bounce');
         }, 600);
     });
+</script>
+
+<script>
+    function showTab(tabId) {
+        // Ocultar todo
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        // Mostrar seleccionado
+        document.getElementById(tabId).classList.remove('hidden');
+        event.target.classList.add('active');
+    }
+
 </script>
 
 
