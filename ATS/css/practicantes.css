@@ -277,7 +277,7 @@ header .global {
 .tab-text {
     flex: 1 1 300px;
     min-width: 300px; /* para que no se haga demasiado estrecho */
-    padding-left: 20px; /* separa del borde o de la imagen */
+    padding-left: 330px; /* separa del borde o de la imagen */
 }
 
 
