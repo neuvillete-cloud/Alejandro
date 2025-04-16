@@ -136,7 +136,7 @@
                     <!-- Aquí va el contenido visible al cargar -->
                     <div class="tab-body">
                         <div class="tab-image">
-                            <img src="imagenes/junta.jpeg" alt="Imagen de contenido">
+                            <img src="imagenes/B20JmLHn1SooTYxnZoalYAtXlgf60IJxmYhMP7fU.jpeg" alt="Imagen de contenido">
                         </div>
                         <div class="tab-text">
                             <ul>
