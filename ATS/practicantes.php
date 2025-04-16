@@ -158,29 +158,30 @@
                 </div>
 
                 <div class="tab-panel hidden" id="requisitos">
-                    <div class="requisitos-contenedor">
-                        <div class="columna izquierda">
+                    <div class="requisitos-flex">
+                        <div class="requisitos-box">
                             <h3>Lo que llevarás</h3>
                             <ul>
-                                <li>La oportunidad de <strong>liberar tus prácticas profesionales</strong> en una empresa global con impacto real.</li>
-                                <li>Participación en <strong>proyectos reales</strong> donde aplicarás los conocimientos adquiridos en tu carrera universitaria.</li>
-                                <li><strong>Acompañamiento y guía</strong> de un asesor o jefe directo durante toda la estancia.</li>
-                                <li>Desarrollo de <strong>habilidades técnicas y profesionales</strong> en un entorno laboral dinámico.</li>
+                                <li>La oportunidad de liberar tus prácticas profesionales en una empresa global con impacto real.</li>
+                                <li>Participación en proyectos reales donde aplicarás los conocimientos adquiridos en tu carrera universitaria.</li>
+                                <li>Acompañamiento y guía de un asesor o jefe directo durante toda la estancia.</li>
+                                <li>Desarrollo de habilidades técnicas y profesionales en un entorno laboral dinámico.</li>
                                 <li>Un espacio para crecer, aprender y comenzar tu camino profesional.</li>
                             </ul>
                         </div>
-                        <div class="columna derecha">
+                        <div class="requisitos-box">
                             <h3>Cómo lograrás un impacto</h3>
                             <ul>
-                                <li>Siendo <strong>proactivo</strong> y tomando responsabilidad en los proyectos asignados.</li>
-                                <li>Demostrando <strong>motivación y apertura</strong> para aprender constantemente.</li>
-                                <li><strong>Colaborando</strong> con diferentes áreas y trabajando en equipo con actitud positiva.</li>
-                                <li>Aplicando tus conocimientos con <strong>curiosidad, compromiso y ética profesional</strong>.</li>
-                                <li>Comunicándote con claridad, incluso en entornos donde se utilice el <strong>inglés de forma práctica</strong>.</li>
+                                <li>Siendo proactivo y tomando responsabilidad en los proyectos asignados.</li>
+                                <li>Demostrando motivación y apertura para aprender constantemente.</li>
+                                <li>Colaborando con diferentes áreas y trabajando en equipo con actitud positiva.</li>
+                                <li>Aplicando tus conocimientos con curiosidad, compromiso y ética profesional.</li>
+                                <li>Comunicándote con claridad, incluso en entornos donde se utilice el inglés de forma práctica.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
+
 
 
                 <div class="tab-panel hidden" id="areas">
