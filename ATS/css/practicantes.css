@@ -267,7 +267,7 @@ header .global {
 }
 
 .tab-image img {
-    max-width: 100%;
+    max-width: 200%;
     height: auto;
     border-radius: 8px;
 }
