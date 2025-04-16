@@ -257,9 +257,11 @@ header .global {
 
 .tab-body {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* permite que baje si no cabe */
     gap: 20px;
+    align-items: flex-start;
 }
+
 
 .tab-image {
     flex: 1 1 200px;
@@ -273,8 +275,11 @@ header .global {
 }
 
 .tab-text {
-    flex: 2 1 300px;
+    flex: 1 1 300px;
+    min-width: 300px; /* para que no se haga demasiado estrecho */
+    padding-left: 20px; /* separa del borde o de la imagen */
 }
+
 
 .tab-text ul {
     list-style: disc;
