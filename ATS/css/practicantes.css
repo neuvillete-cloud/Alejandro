@@ -272,7 +272,9 @@ header .global {
     max-width: 200%;
     height: auto;
     border-radius: 8px;
+    margin-top: 20px; /* Solo baja la imagen */
 }
+
 
 .tab-text {
     flex: 1 1 300px;
