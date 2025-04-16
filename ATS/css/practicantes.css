@@ -276,18 +276,18 @@ header .global {
 
 .tab-text {
     flex: 1 1 300px;
-    min-width: 300px; /* para que no se haga demasiado estrecho */
-    padding-left: 330px; /* separa del borde o de la imagen */
+    min-width: 300px;
+    padding-left: 20px;
+    padding-right: 10px;
+    line-height: 1.6;
+    font-size: 16px;
 }
-
 
 .tab-text ul {
-    list-style: disc;
     padding-left: 20px;
-    font-size: 14px;
+    list-style-type: disc;
 }
 
-.tab-text li {
+.tab-text ul li {
     margin-bottom: 8px;
-    line-height: 1.4;
 }
