@@ -139,15 +139,21 @@
                             <img src="imagenes/B20JmLHn1SooTYxnZoalYAtXlgf60IJxmYhMP7fU.jpeg" alt="Imagen de contenido">
                         </div>
                         <div class="tab-text">
+                            <p>
+                                Durante el desarrollo del proyecto, el estudiante contará con el acompañamiento continuo de su asesor o jefe directo. Esta guía estará enfocada en garantizar que cada iniciativa cumpla con los criterios esenciales establecidos por Grammer.
+                            </p>
+                            <p>Para asegurar un impacto positivo y tangible, el proyecto deberá cumplir con las siguientes características:</p>
                             <ul>
-                                <li><strong>Desarrollo y aprendizaje:</strong> Obtén el conocimiento y las habilidades necesarias para dar rienda suelta a tu Energía Humana con nuestros Días de Desarrollo y capacitaciones.</li>
-                                <li><strong>Tutoría:</strong> Tener un mentor y seguir un puesto de tu interés.</li>
-                                <li><strong>Ex alumnos de Buddy:</strong> Emparejarse con un ex alumno.</li>
-                                <li><strong>Gestión de redes:</strong> Construir una red global con colegas y líderes empresariales.</li>
-                                <li><strong>Negocio Experiencia:</strong> Obtenga una visión profunda del negocio con proyectos y puestos desafiantes.</li>
-                                <li><strong>Permanente Contrato:</strong> Los graduados serán asignados a un área de negocio específica donde también estarán después del programa.</li>
+                                <li>Contar con una <strong>justificación clara y objetiva</strong>.</li>
+                                <li>Generar un <strong>impacto sustentable</strong> dentro del área de aplicación.</li>
+                                <li>Incorporar elementos <strong>innovadores y tecnológicos</strong>.</li>
+                                <li><strong>Alinear con los estándares</strong> y valores de la compañía.</li>
+                                <li>Presentar <strong>datos reales, verificables y concisos</strong>.</li>
+                                <li>Ser <strong>viable en los tiempos establecidos</strong>, con una duración mínima de 4 meses.</li>
+                                <li>Estar <strong>sujeto a evaluación semanal</strong> para monitorear avances y ajustar estrategias.</li>
                             </ul>
                         </div>
+
                     </div>
                 </div>
 
