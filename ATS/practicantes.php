@@ -207,7 +207,7 @@
                 <div class="tab-panel hidden" id="proceso">
                     <div class="proceso-container">
                         <div class="proceso-img">
-                            <img src="imagenes/proceso-seleccion.png" alt="Proceso de solicitud en Grammer">
+                            <img src="imagenes/persona-que-trabaja-oficina_23-2149229009.avif" alt="Proceso de solicitud en Grammer">
                         </div>
                         <div class="proceso-info">
                             <h3>Proceso de Solicitud</h3>
