@@ -139,24 +139,15 @@
                             <img src="imagenes/B20JmLHn1SooTYxnZoalYAtXlgf60IJxmYhMP7fU.jpeg" alt="Imagen de contenido">
                         </div>
                         <div class="tab-text">
-                            <p>
-                                En el programa de la Escuela de Talentos de Grammer, cada practicante cuenta con el acompañamiento cercano de su jefe directo, quien brinda seguimiento continuo a su proceso de formación. Desde el inicio, se asigna un proyecto significativo donde el estudiante puede aplicar los conocimientos adquiridos durante su carrera académica.
-                            </p>
-                            <p>
-                                A lo largo del programa, el practicante forma parte activa de un equipo de trabajo, lo que le permite integrarse a un entorno profesional, aprender sobre los procesos internos de la empresa y desarrollar habilidades clave en un contexto real.
-                            </p>
-                            <p>
-                                El objetivo es que el estudiante adquiera una visión integral del mundo laboral, mientras contribuye con ideas y soluciones que generen valor en su área asignada.
-                            </p>
-                            <p>Durante el desarrollo del proyecto, se busca que cumpla con las siguientes características:</p>
                             <ul>
-                                <li>Estar alineado con los procesos reales de la empresa y las necesidades del área.</li>
-                                <li>Permitir la aplicación práctica de conocimientos técnicos y habilidades blandas.</li>
-                                <li>Fomentar el aprendizaje activo mediante la observación y participación en tareas reales.</li>
-                                <li>Contar con una guía constante por parte del jefe directo y el equipo.</li>
-                                <li>Brindar oportunidades para explorar distintas funciones y roles dentro de la organización.</li>
+                                <li><strong>Seguimiento personalizado:</strong> Cada practicante cuenta con el acompañamiento constante de su jefe directo.</li>
+                                <li><strong>Proyecto asignado:</strong> Se otorga un proyecto real donde se aplican los conocimientos adquiridos.</li>
+                                <li><strong>Trabajo en equipo:</strong> Se recibe apoyo del equipo para facilitar el aprendizaje y la integración.</li>
+                                <li><strong>Conocimiento de procesos:</strong> Se aprende sobre distintas áreas y procedimientos de la empresa.</li>
+                                <li><strong>Experiencia laboral:</strong> El programa brinda una visión completa del entorno profesional y del mundo laboral.</li>
                             </ul>
                         </div>
+
 
                     </div>
                 </div>
