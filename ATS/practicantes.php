@@ -140,17 +140,21 @@
                         </div>
                         <div class="tab-text">
                             <p>
-                                Durante el desarrollo del proyecto, el estudiante contará con el acompañamiento continuo de su asesor o jefe directo. Esta guía estará enfocada en garantizar que cada iniciativa cumpla con los criterios esenciales establecidos por Grammer.
+                                En el programa de la Escuela de Talentos de Grammer, cada practicante cuenta con el acompañamiento cercano de su jefe directo, quien brinda seguimiento continuo a su proceso de formación. Desde el inicio, se asigna un proyecto significativo donde el estudiante puede aplicar los conocimientos adquiridos durante su carrera académica.
                             </p>
-                            <p>Para asegurar un impacto positivo y tangible, el proyecto deberá cumplir con las siguientes características:</p>
+                            <p>
+                                A lo largo del programa, el practicante forma parte activa de un equipo de trabajo, lo que le permite integrarse a un entorno profesional, aprender sobre los procesos internos de la empresa y desarrollar habilidades clave en un contexto real.
+                            </p>
+                            <p>
+                                El objetivo es que el estudiante adquiera una visión integral del mundo laboral, mientras contribuye con ideas y soluciones que generen valor en su área asignada.
+                            </p>
+                            <p>Durante el desarrollo del proyecto, se busca que cumpla con las siguientes características:</p>
                             <ul>
-                                <li>Contar con una <strong>justificación clara y objetiva</strong>.</li>
-                                <li>Generar un <strong>impacto sustentable</strong> dentro del área de aplicación.</li>
-                                <li>Incorporar elementos <strong>innovadores y tecnológicos</strong>.</li>
-                                <li><strong>Alinear con los estándares</strong> y valores de la compañía.</li>
-                                <li>Presentar <strong>datos reales, verificables y concisos</strong>.</li>
-                                <li>Ser <strong>viable en los tiempos establecidos</strong>, con una duración mínima de 4 meses.</li>
-                                <li>Estar <strong>sujeto a evaluación semanal</strong> para monitorear avances y ajustar estrategias.</li>
+                                <li>Estar alineado con los procesos reales de la empresa y las necesidades del área.</li>
+                                <li>Permitir la aplicación práctica de conocimientos técnicos y habilidades blandas.</li>
+                                <li>Fomentar el aprendizaje activo mediante la observación y participación en tareas reales.</li>
+                                <li>Contar con una guía constante por parte del jefe directo y el equipo.</li>
+                                <li>Brindar oportunidades para explorar distintas funciones y roles dentro de la organización.</li>
                             </ul>
                         </div>
 
