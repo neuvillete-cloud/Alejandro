@@ -205,8 +205,21 @@
 
 
                 <div class="tab-panel hidden" id="proceso">
-                    <p>Aquí va el contenido del proceso de solicitud...</p>
+                    <div class="proceso-container">
+                        <div class="proceso-img">
+                            <img src="imagenes/proceso-seleccion.png" alt="Proceso de solicitud en Grammer">
+                        </div>
+                        <div class="proceso-info">
+                            <h3>Proceso de Solicitud</h3>
+                            <ol>
+                                <li><strong>Envío del CV:</strong> Postula enviando tu currículum actualizado.</li>
+                                <li><strong>Entrevista telefónica:</strong> Primer contacto con el equipo de Recursos Humanos.</li>
+                                <li><strong>Entrevista con el jefe de área:</strong> Presencial o por videollamada según disponibilidad.</li>
+                            </ol>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
 
