@@ -376,7 +376,7 @@ header .global {
 
 .proceso-info {
     flex: 2 1 400px;
-    padding-left: 20px; /* Ajusta el valor según lo que necesites */
+    padding-left: 400px; /* Ajusta el valor según lo que necesites */
 }
 
 .proceso-info h3 {
