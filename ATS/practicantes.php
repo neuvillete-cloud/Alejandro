@@ -180,8 +180,29 @@
 
 
                 <div class="tab-panel hidden" id="areas">
-                    <p>Aquí va el contenido de diferentes áreas...</p>
+                    <h3>Áreas disponibles para prácticas profesionales</h3>
+                    <div class="areas-grid">
+                        <ul>
+                            <li>Seguridad e Higiene</li>
+                            <li>GPS</li>
+                            <li>IT</li>
+                            <li>RH</li>
+                        </ul>
+                        <ul>
+                            <li>Calidad</li>
+                            <li>Ingeniería</li>
+                            <li>Controlling</li>
+                            <li>Logística</li>
+                        </ul>
+                        <ul>
+                            <li>Mantenimiento</li>
+                            <li>Finanzas</li>
+                            <li>Compras</li>
+                            <li>Regionales</li>
+                        </ul>
+                    </div>
                 </div>
+
 
                 <div class="tab-panel hidden" id="proceso">
                     <p>Aquí va el contenido del proceso de solicitud...</p>

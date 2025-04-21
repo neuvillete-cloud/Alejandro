@@ -335,3 +335,22 @@ header .global {
     top: 0;
     color: #333;
 }
+
+.areas-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.areas-grid ul {
+    flex: 1;
+    min-width: 200px;
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.areas-grid li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
