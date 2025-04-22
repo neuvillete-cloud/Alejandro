@@ -305,18 +305,33 @@
     const galeria = document.querySelector('.galeria');
 
     imagenes.forEach(imagen => {
+        const btnCerrar = imagen.querySelector('.cerrar');
+        const frase = imagen.querySelector('.frase');
+
         imagen.addEventListener('click', () => {
             const yaActiva = imagen.classList.contains('activa');
-            imagenes.forEach(img => img.classList.remove('activa'));
+            imagenes.forEach(img => {
+                img.classList.remove('activa');
+                img.querySelector('.frase').textContent = '';
+            });
             galeria.classList.remove('activa');
 
             if (!yaActiva) {
                 imagen.classList.add('activa');
+                frase.textContent = imagen.getAttribute('data-frase');
                 galeria.classList.add('activa');
             }
         });
+
+        btnCerrar.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evita que se dispare el evento del padre
+            imagen.classList.remove('activa');
+            frase.textContent = '';
+            galeria.classList.remove('activa');
+        });
     });
 </script>
+
 
 
 
