@@ -416,6 +416,7 @@ header .global {
     grid-column: span 3;
     transform: scale(1.05);
     z-index: 2;
+    margin-left: -20px; /* Ajusta este valor según lo que necesites */
 }
 
 /* Todas las imágenes: pequeñas por defecto */
