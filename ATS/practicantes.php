@@ -226,30 +226,37 @@
         <section class="galeria-testimonios">
             <div class="galeria">
                 <div class="imagen" data-frase="Descubrí una pasión por el desarrollo sostenible.">
+                    <button class="cerrar">&times;</button>
                     <img src="imagenes/IT.jpg" alt="Persona 1">
                     <p class="frase"></p>
                 </div>
                 <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
+                    <button class="cerrar">&times;</button>
                     <img src="imagenes/Calidad.jpg" alt="Persona 2">
                     <p class="frase"></p>
                 </div>
                 <div class="imagen" data-frase="Pude liderar un equipo internacional increíble.">
+                    <button class="cerrar">&times;</button>
                     <img src="imagenes/Comunicacion.jpg" alt="Persona 3">
                     <p class="frase"></p>
                 </div>
                 <div class="imagen" data-frase="Aprendí a combinar tecnología y sostenibilidad.">
+                    <button class="cerrar">&times;</button>
                     <img src="imagenes/Controlling.jpg" alt="Persona 4">
                     <p class="frase"></p>
                 </div>
                 <div class="imagen" data-frase="Fue un reto que cambió mi vida profesional.">
+                    <button class="cerrar">&times;</button>
                     <img src="imagenes/Logistica.jpg" alt="Persona 5">
                     <p class="frase"></p>
                 </div>
                 <div class="imagen" data-frase="Hoy sé que todo es posible con propósito y energía.">
+                    <button class="cerrar">&times;</button>
                     <img src="imagenes/Metrologia.jpg" alt="Persona 6">
                     <p class="frase"></p>
                 </div>
             </div>
+
 
 
             <div class="frase-seleccionada">

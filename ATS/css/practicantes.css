@@ -424,13 +424,13 @@ header .global {
 /* Imagen seleccionada */
 .imagen.activa {
     grid-column: span 3;
-    transform: scale(1.2); /* Tamaño destacado */
+    transform: scale(1.1); /* Tamaño destacado */
     z-index: 2;
 }
 
 .imagen.activa img {
     width: 100%;
-    max-height: 500px; /* Límite visual */
+    max-height: 350px; /* Límite visual */
     object-fit: cover;
 }
 
@@ -454,4 +454,29 @@ header .global {
     opacity: 0.6;
     transition: all 0.4s ease;
     filter: blur(1px);
+}
+
+.cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: none;
+    z-index: 3;
+    transition: background 0.3s ease;
+}
+
+.cerrar:hover {
+    background: #ffdddd;
+}
+
+.imagen.activa .cerrar {
+    display: block;
 }
