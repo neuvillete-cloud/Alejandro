@@ -295,24 +295,22 @@
 
 <script>
     const imagenes = document.querySelectorAll('.imagen');
+    const galeria = document.querySelector('.galeria');
 
     imagenes.forEach(imagen => {
         imagen.addEventListener('click', () => {
-            // Quitar la clase activa de todas las demás
-            imagenes.forEach(i => {
-                i.classList.remove('activa');
-                i.querySelector('.frase').textContent = '';
-            });
+            const yaActiva = imagen.classList.contains('activa');
+            imagenes.forEach(img => img.classList.remove('activa'));
+            galeria.classList.remove('activa');
 
-            // Agregar clase activa a la seleccionada
-            imagen.classList.add('activa');
-
-            // Mostrar frase
-            const frase = imagen.dataset.frase;
-            imagen.querySelector('.frase').textContent = frase;
+            if (!yaActiva) {
+                imagen.classList.add('activa');
+                galeria.classList.add('activa');
+            }
         });
     });
 </script>
+
 
 
 </body>
