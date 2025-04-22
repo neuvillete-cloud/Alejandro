@@ -223,8 +223,33 @@
             </div>
         </div>
 
+        <section class="galeria-testimonios">
+            <div class="contenedor-galeria">
+                <div class="imagen" data-frase="Descubrí una pasión por el desarrollo sostenible.">
+                    <img src="imagenes/foto1.png" alt="Persona 1">
+                </div>
+                <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
+                    <img src="imagenes/foto2.png" alt="Persona 2">
+                </div>
+                <div class="imagen" data-frase="Pude liderar un equipo internacional increíble.">
+                    <img src="imagenes/foto3.png" alt="Persona 3">
+                </div>
+                <div class="imagen" data-frase="Aprendí a combinar tecnología y sostenibilidad.">
+                    <img src="imagenes/foto4.png" alt="Persona 4">
+                </div>
+                <div class="imagen" data-frase="Fue un reto que cambió mi vida profesional.">
+                    <img src="imagenes/foto5.png" alt="Persona 5">
+                </div>
+                <div class="imagen" data-frase="Hoy sé que todo es posible con propósito y energía.">
+                    <img src="imagenes/foto6.png" alt="Persona 6">
+                </div>
+            </div>
 
-
+            <div class="frase-seleccionada">
+                <p class="comillas">“</p>
+                <p id="texto-frase">Selecciona una foto para ver su historia.</p>
+            </div>
+        </section>
 
 
     </main>
@@ -261,6 +286,19 @@
 </script>
 
 
+<script>
+    const imagenes = document.querySelectorAll('.imagen');
+    const fraseTexto = document.getElementById('texto-frase');
+
+    imagenes.forEach(imagen => {
+        imagen.addEventListener('click', () => {
+            imagenes.forEach(img => img.classList.remove('seleccionada'));
+            imagen.classList.add('seleccionada');
+            const frase = imagen.getAttribute('data-frase');
+            fraseTexto.textContent = frase;
+        });
+    });
+</script>
 
 </body>
 </html>
