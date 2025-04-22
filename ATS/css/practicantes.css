@@ -406,43 +406,27 @@ header .global {
 
 /* Imagen normal */
 .imagen {
-    position: relative;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transform: scale(1);
-    z-index: 1;
+    order: 2; /* todas las imágenes por defecto van después */
 }
 
-/* Imagen activa */
 .imagen.activa {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    transform: scale(1.05);
-    z-index: 10;
-    background: #fff;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    order: 1; /* la activa va primero */
+    grid-column: span 3;
+    transform: scale(1.1);
+    z-index: 2;
 }
 
-/* Asegurar que la imagen se vea bien en su nueva posición */
 .imagen.activa img {
-    width: 100%;
     max-height: 350px;
-    object-fit: cover;
 }
 
-/* Reacomodar las demás imágenes */
 .galeria.activa .imagen:not(.activa) {
-    opacity: 0.5;
     transform: scale(0.9);
+    opacity: 0.5;
     filter: blur(1px);
+    transition: all 0.3s ease;
 }
+
 
 
 .cerrar {
