@@ -395,7 +395,7 @@ header .global {
 }
 
 .galeria {
-    position: relative; /* Necesario para posicionar la imagen activa dentro */
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
@@ -406,20 +406,33 @@ header .global {
 
 /* Imagen normal */
 .imagen {
-    order: 2; /* todas las imágenes por defecto van después */
+    order: 2;
+    transition: all 0.3s ease;
 }
 
+/* Imagen activa va al tope y se agranda */
 .imagen.activa {
-    order: 1; /* la activa va primero */
+    order: 1;
     grid-column: span 3;
-    transform: scale(1.1);
+    transform: scale(1.05);
     z-index: 2;
 }
 
-.imagen.activa img {
-    max-height: 350px;
+/* Todas las imágenes: pequeñas por defecto */
+.imagen img {
+    width: 100%;
+    max-height: 180px; /* <-- AQUÍ el tamaño base */
+    border-radius: 10px;
+    transition: all 0.4s ease;
+    object-fit: cover;
 }
 
+/* Imagen agrandada */
+.imagen.activa img {
+    max-height: 350px; /* <-- se hace más grande solo cuando está activa */
+}
+
+/* Efecto para las no activas */
 .galeria.activa .imagen:not(.activa) {
     transform: scale(0.9);
     opacity: 0.5;
@@ -427,8 +440,7 @@ header .global {
     transition: all 0.3s ease;
 }
 
-
-
+/* Botón X para cerrar */
 .cerrar {
     position: absolute;
     top: 10px;
@@ -450,6 +462,7 @@ header .global {
     background: #ffdddd;
 }
 
+/* Mostrar botón solo en imagen activa */
 .imagen.activa .cerrar {
     display: block;
 }
