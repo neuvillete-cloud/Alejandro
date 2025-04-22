@@ -324,13 +324,14 @@
         });
 
         btnCerrar.addEventListener('click', (e) => {
-            e.stopPropagation(); // Evita que se dispare el evento del padre
+            e.stopPropagation(); // Evita el click en imagen
             imagen.classList.remove('activa');
             frase.textContent = '';
             galeria.classList.remove('activa');
         });
     });
 </script>
+
 
 
 

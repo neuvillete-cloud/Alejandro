@@ -395,6 +395,7 @@ header .global {
 }
 
 .galeria {
+    position: relative; /* Necesario para posicionar la imagen activa dentro */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
@@ -403,6 +404,7 @@ header .global {
     transition: all 0.3s ease;
 }
 
+/* Imagen normal */
 .imagen {
     position: relative;
     cursor: pointer;
@@ -414,47 +416,34 @@ header .global {
     z-index: 1;
 }
 
-.imagen img {
-    width: 100%;
-    border-radius: 10px;
-    transition: all 0.4s ease;
-    object-fit: cover;
-}
-
-/* Imagen seleccionada */
+/* Imagen activa */
 .imagen.activa {
-    grid-column: span 3;
-    transform: scale(1.1); /* Tamaño destacado */
-    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: scale(1.05);
+    z-index: 10;
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* Asegurar que la imagen se vea bien en su nueva posición */
 .imagen.activa img {
     width: 100%;
-    max-height: 350px; /* Límite visual */
+    max-height: 350px;
     object-fit: cover;
 }
 
-.imagen.activa .frase {
-    display: block;
-}
-
-/* Frase */
-.imagen .frase {
-    display: none;
-    margin-top: 10px;
-    font-size: 1.1rem;
-    text-align: center;
-    color: #333;
-    max-width: 90%;
-}
-
-/* Otras imágenes cuando una está activa */
+/* Reacomodar las demás imágenes */
 .galeria.activa .imagen:not(.activa) {
-    transform: scale(0.8);
-    opacity: 0.6;
-    transition: all 0.4s ease;
+    opacity: 0.5;
+    transform: scale(0.9);
     filter: blur(1px);
 }
+
 
 .cerrar {
     position: absolute;
