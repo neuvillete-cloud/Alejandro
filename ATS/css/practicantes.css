@@ -394,59 +394,51 @@ header .global {
     margin-bottom: 0.8rem;
 }
 
-.galeria-testimonios {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 60px 20px;
-}
-
-.contenedor-galeria {
+.galeria {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 600px;
-    flex: 1;
+    gap: 15px;
+    max-width: 1000px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
 }
 
 .imagen {
-    cursor: pointer;
-    overflow: hidden;
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
+    cursor: pointer;
+    transition: transform 0.4s ease, grid-column 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .imagen img {
     width: 100%;
-    height: auto;
     border-radius: 10px;
-    display: block;
-    transition: transform 0.3s ease;
+    transition: all 0.4s ease;
+    object-fit: cover;
 }
 
-.imagen.seleccionada {
-    transform: scale(1.1);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+.imagen .frase {
+    display: none;
+    margin-top: 10px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: #333;
+    max-width: 90%;
+}
+
+/* Imagen seleccionada */
+.imagen.activa {
+    grid-column: span 3;
     z-index: 2;
 }
 
-.frase-seleccionada {
-    flex: 1;
-    max-width: 500px;
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-left: 5px solid #6633cc;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    position: relative;
+.imagen.activa img {
+    transform: scale(1.6);
+    z-index: 2;
 }
 
-.comillas {
-    font-size: 60px;
-    color: #ccc;
-    margin-bottom: -30px;
-    line-height: 0;
+.imagen.activa .frase {
+    display: block;
 }
