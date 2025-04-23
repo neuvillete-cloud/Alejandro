@@ -482,14 +482,21 @@ header .global {
     font-size: 48px;
     font-weight: 700;
     color: #12123d;
-    margin-bottom: 100px;
-    line-height: 1.3;;
+    margin-top: 40px;         /* Espacio por arriba */
+    margin-bottom: 30px;      /* Ajusta si quieres menos separación del párrafo */
+    margin-left: 40px;        /* Mover a la izquierda */
+    text-align: left;         /* Asegura que el texto esté alineado a la izquierda */
+    line-height: 1.3;
 }
+
 
 .encabezado-galeria p {
     font-size: 1rem;
     color: #666;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0 0 40px 40px;   /* arriba derecha abajo izquierda */
+    line-height: 1.5;
+    text-align: left;
 }
+
 
