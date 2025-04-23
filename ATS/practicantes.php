@@ -237,7 +237,7 @@
                 </div>
                 <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/Calidad.jpg" alt="Persona 2">
+                    <img src="imagenes/Ingenieria.jpg" alt="Persona 2">
                     <p class="frase"></p>
                 </div>
                 <div class="imagen" data-frase="Pude liderar un equipo internacional increíble.">
