@@ -369,7 +369,7 @@ header .global {
 }
 
 .proceso-img img {
-    width: 100%;
+    width: 200%;
     height: auto;
     border-radius: 10px;
 }
