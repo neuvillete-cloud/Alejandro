@@ -499,17 +499,4 @@ header .global {
     text-align: center;
 }
 
-.imagen .frase {
-    display: none;
-    margin-top: 10px;
-    font-size: 1.1rem;
-    color: #333;
-    max-width: 300px;
-    text-align: left;
-}
-
-.imagen.activa .frase {
-    display: block;
-    margin-top: 0; /* quita el margen superior que ya no necesitas */
-}
 
