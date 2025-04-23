@@ -413,6 +413,7 @@ header .global {
 
 /* Imagen activa va al tope y se agranda */
 .imagen.activa {
+    display: flex;
     order: 1;
     grid-column: span 3;
     transform: scale(1.05);
@@ -498,5 +499,19 @@ header .global {
     color: #1a1a1a;
     text-align: center;
 }
+
+.imagen .frase {
+    display: none;
+    font-size: 1.1rem;
+    color: #333;
+    max-width: 300px;
+    text-align: left;
+}
+
+.imagen.activa .frase {
+    display: block;
+}
+
+
 
 
