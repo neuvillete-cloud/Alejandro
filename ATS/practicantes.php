@@ -224,6 +224,11 @@
         </div>
 
         <section class="galeria-testimonios">
+            <div class="encabezado-galeria">
+                <h2>Casos de éxito</h2>
+                <p>Estos son algunos de nuestros casos de éxito de personas que antes eran practicantes y ahora fueron contratadas.</p>
+            </div>
+
             <div class="galeria">
                 <div class="imagen" data-frase="Descubrí una pasión por el desarrollo sostenible.">
                     <button class="cerrar">&times;</button>
@@ -256,8 +261,6 @@
                     <p class="frase"></p>
                 </div>
             </div>
-
-
 
             <div class="frase-seleccionada">
                 <p class="comillas">“</p>
@@ -331,10 +334,5 @@
         });
     });
 </script>
-
-
-
-
-
 </body>
 </html>
