@@ -502,7 +502,7 @@ header .global {
 
 .imagen .frase {
     display: none;
-    font-size: 1.1rem;
+    font-size: 22px;
     color: #333;
     max-width: 600px;
     text-align: left;
