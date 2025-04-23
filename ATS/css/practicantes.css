@@ -435,6 +435,7 @@ header .global {
     max-width: 500px; /* Nuevo: limita el ancho */
     width: 100%;
     margin: 0 auto; /* Centrar horizontalmente si no ocupa todo el espacio */
+    margin-left: -35px;
 }
 
 
