@@ -10,8 +10,8 @@
 <header>
     <div class="header-container">
         <div class="logo">
-            <h1>SIEMENS</h1>
-            <span>energy</span>
+            <h1>Grammer</h1>
+            <span>Automotive</span>
         </div>
         <nav>
             <a href="#">Buscar empleos</a>
