@@ -1,0 +1,185 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 80px;
+    background-color: #1e0033;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.sidebar.expanded {
+    width: 350px;
+}
+
+.sidebar-icons {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    pointer-events: none;
+}
+
+.top-icon,
+.middle-icon,
+.bottom-icon {
+    pointer-events: all;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.middle-icon:hover {
+    transform: scale(1.2);
+}
+
+.sidebar-content {
+    margin-left: 80px;
+    padding: 20px;
+    color: white;
+    display: none;
+}
+
+/* Mostrar contenido solo si está expandido */
+.sidebar.expanded .sidebar-content {
+    display: block;
+}
+
+
+.top-icon,
+.middle-icon,
+.bottom-icon {
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.middle-icon {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.main-content {
+    flex: 1;
+    position: relative;
+}
+
+header .global {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    color: white;
+    font-weight: bold;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.hero {
+    width: 100%;
+    height: 100%;
+    background-image: url('../imagenes/premium_photo-1661932816149-291a447e3022.jpg'); /* Imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* Logo dentro del hero */
+.hero .logo {
+    position: absolute;
+    top: 20px;
+    left: 130px;
+    width: 130px;
+    z-index: 10;
+}
+
+.hero .text {
+    position: absolute;
+    bottom: 80px;
+    left: 100px;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.icon-img {
+    width: 28px; /* Ajusta el tamaño del ícono */
+    height: 30px; /* Ajusta el tamaño del ícono */
+    fill: white;  /* Color del ícono */
+    transition: transform 0.3s ease-in-out; /* Animación para hover */
+}
+
+.icon-img:hover {
+    transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
+}
+
+.icon-global {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    margin-left: -10px;   /* Mueve hacia la izquierda */
+    margin-top: 5px;     /* Mueve hacia abajo */
+    vertical-align: middle;
+}
+
+.global-text {
+    color: white;
+    font-size: 18px;
+}
+
+.middle-icon:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+@keyframes bounceContent {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(10px); }
+    40% { transform: translateX(-8px); }
+    60% { transform: translateX(6px); }
+    80% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+
+.sidebar.bounce .top-icon,
+.sidebar.bounce .middle-icon,
+.sidebar.bounce .bottom-icon {
+    animation: bounceContent 0.6s ease-in-out;
+}
+
+/* Opcional: que los íconos se alineen a la izquierda cuando se expanda */
+.sidebar.expanded .top-icon,
+.sidebar.expanded .middle-icon,
+.sidebar.expanded .bottom-icon {
+    align-self: flex-start;
+    margin-left: 30px;
+}
