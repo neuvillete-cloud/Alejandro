@@ -73,7 +73,7 @@
             <img src="imagenes/Grammer_Logo_Original_White_sRGB_screen_transparent.png" class="logo" alt="Siemens Logo" />
 
             <div class="text">
-                <h1>Grammer Escuela de Talentos<br />Program</h1>
+                <h1>Acerca de Nosotros<br />Program</h1>
             </div>
         </section>
 
