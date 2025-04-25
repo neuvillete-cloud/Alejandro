@@ -77,6 +77,28 @@
             </div>
         </section>
 
+        <section class="program-description">
+            <div class="content">
+                <h2>Da el siguiente paso y desbloquea tu potencial con Grammer Querétaro</h2>
+
+                <p>
+                    ¿Estás listo para impulsar tu carrera profesional y formar parte de una empresa que apuesta por el talento joven? Entonces el programa <strong>Escuela de Talentos</strong> de <strong>Grammer Querétaro</strong> es para ti.
+                </p>
+                <p>
+                    Este programa estructurado tiene como objetivo <strong>identificar, desarrollar y potenciar</strong> a practicantes con alto potencial, a través de un proceso dividido en tres fases: <em>selección, desarrollo de proyectos y evaluación de desempeño</em>. Más que una práctica profesional, es una experiencia de crecimiento personalizada, respaldada por el acompañamiento constante de tu jefe inmediato y el equipo de Recursos Humanos.
+                </p>
+                <p>
+                    Durante el programa, los participantes trabajan en <strong>proyectos reales y significativos</strong> que impactan directamente en la mejora continua e innovación de nuestras operaciones. Al finalizar, presentan sus resultados en una <strong>exposición de alto impacto</strong> frente a la gerencia de planta y otras áreas clave. El proyecto más destacado recibe una <strong>beca patrocinada por Grammer</strong> para continuar su desarrollo profesional mediante talleres, capacitaciones o diplomados alineados a su perfil.
+                </p>
+                <p>
+                    Desde su implementación en 2022, la <strong>Escuela de Talentos</strong> ha sido un motor clave para el <strong>fortalecimiento del talento interno</strong> y la <strong>transformación organizacional</strong> en Grammer. Buscamos estudiantes comprometidos, con visión y pasión por dejar huella, que estén listos para dar el siguiente paso y construir su futuro junto a un líder global en soluciones para interiores automotrices.
+                </p>
+                <p>
+                    Este es tu momento. Deja que Grammer impulse tu energía, fortalezca tus habilidades y te acompañe en el camino hacia una carrera profesional con propósito.
+                </p>
+            </div>
+        </section>
+
 
     </main>
 </div>
