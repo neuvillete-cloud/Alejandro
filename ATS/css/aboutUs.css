@@ -211,3 +211,13 @@ header .global {
     margin-bottom: 24px;
     color: #1a1a1a;
 }
+
+.program-description h3 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #003366; /* Azul oscuro que combina bien con el #12123d del h2 */
+    margin-top: 60px;
+    margin-bottom: 30px;
+    border-left: 6px solid #12123d;
+    padding-left: 16px;
+}
