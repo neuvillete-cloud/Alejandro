@@ -79,25 +79,36 @@
 
         <section class="program-description">
             <div class="content">
-                <h2>Da el siguiente paso y desbloquea tu potencial con Grammer Querétaro</h2>
+                <h2>Conoce la Misión y Visión de Grammer</h2>
 
-                <p>
-                    ¿Estás listo para impulsar tu carrera profesional y formar parte de una empresa que apuesta por el talento joven? Entonces el programa <strong>Escuela de Talentos</strong> de <strong>Grammer Querétaro</strong> es para ti.
+                <h3>🌐 Grupo Grammer</h3>
+                <p><strong>Misión:</strong><br>
+                    Grammer se dedica a desarrollar y fabricar componentes y sistemas para interiores de automóviles, así como asientos para conductores y pasajeros de vehículos todoterreno, camiones, autobuses y trenes. Su enfoque está en proporcionar soluciones altamente innovadoras, centradas en el ser humano y sostenibles, que establezcan estándares en su clase.
                 </p>
                 <p>
-                    Este programa estructurado tiene como objetivo <strong>identificar, desarrollar y potenciar</strong> a practicantes con alto potencial, a través de un proceso dividido en tres fases: <em>selección, desarrollo de proyectos y evaluación de desempeño</em>. Más que una práctica profesional, es una experiencia de crecimiento personalizada, respaldada por el acompañamiento constante de tu jefe inmediato y el equipo de Recursos Humanos.
+                    Como socio fuerte y confiable para clientes en todo el mundo, ofrecen el mejor soporte global y local posible, y soluciones a medida que satisfacen las necesidades individuales de sus clientes.
+                </p>
+
+                <p><strong>Visión:</strong><br>
+                    "Soluciones para un mundo en movimiento." Grammer aspira a ser el proveedor líder mundial de soluciones de asientos para vehículos comerciales y soluciones interiores para la industria automotriz. Sus productos establecen estándares en ergonomía, confort y sostenibilidad.
+                </p>
+
+                <hr>
+
+                <h3>🇲🇽 Planta Grammer Querétaro</h3>
+                <p><strong>Misión:</strong><br>
+                    Ser un centro de manufactura integral que ofrece soluciones de alta calidad en componentes automotrices, respaldado por un equipo humano altamente calificado y comprometido con la mejora continua, la sostenibilidad y la responsabilidad social.
                 </p>
                 <p>
-                    Durante el programa, los participantes trabajan en <strong>proyectos reales y significativos</strong> que impactan directamente en la mejora continua e innovación de nuestras operaciones. Al finalizar, presentan sus resultados en una <strong>exposición de alto impacto</strong> frente a la gerencia de planta y otras áreas clave. El proyecto más destacado recibe una <strong>beca patrocinada por Grammer</strong> para continuar su desarrollo profesional mediante talleres, capacitaciones o diplomados alineados a su perfil.
+                    La planta de Querétaro se enfoca en satisfacer las necesidades de sus clientes globales mediante procesos eficientes y productos que cumplen con los más altos estándares de seguridad y calidad.
                 </p>
-                <p>
-                    Desde su implementación en 2022, la <strong>Escuela de Talentos</strong> ha sido un motor clave para el <strong>fortalecimiento del talento interno</strong> y la <strong>transformación organizacional</strong> en Grammer. Buscamos estudiantes comprometidos, con visión y pasión por dejar huella, que estén listos para dar el siguiente paso y construir su futuro junto a un líder global en soluciones para interiores automotrices.
-                </p>
-                <p>
-                    Este es tu momento. Deja que Grammer impulse tu energía, fortalezca tus habilidades y te acompañe en el camino hacia una carrera profesional con propósito.
+
+                <p><strong>Visión:</strong><br>
+                    Convertirse en la "planta modelo" del Grupo Grammer a nivel global, destacando por su excelencia operativa, innovación continua y desarrollo del talento humano. La planta busca ser un referente en manufactura esbelta y valor agregado hacia el cliente final.
                 </p>
             </div>
         </section>
+
 
 
     </main>
