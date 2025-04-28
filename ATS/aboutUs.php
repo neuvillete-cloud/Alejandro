@@ -163,7 +163,7 @@
 
         <section class="seccion-destacada">
             <div class="contenido-imagen">
-                <img src="ruta-de-tu-imagen1.jpg" alt="Automotive">
+                <img src="imagenes/vehiculo.jpg" alt="Automotive">
             </div>
             <div class="contenido-texto">
                 <h2>Automotive</h2>
