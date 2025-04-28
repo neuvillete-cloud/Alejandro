@@ -185,7 +185,7 @@
 
         <section class="seccion-destacada">
             <div class="contenido-imagen">
-                <img src="ruta-de-tu-imagen3.jpg" alt="Aftermarket">
+                <img src="imagenes/aftermarket%20(1).jpg" alt="Aftermarket">
             </div>
             <div class="contenido-texto">
                 <h2>Aftermarket</h2>
