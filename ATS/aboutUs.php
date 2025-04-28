@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Graduate Program</title>
     <link rel="stylesheet" href="css/aboutUs.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div class="container">
@@ -162,33 +161,38 @@
             </div>
         </section>
 
-        <section class="cards-section">
-            <div class="card">
-                <div class="icon">
-                    <i class="fas fa-car"></i>
-                </div>
-                <h3>Automotive</h3>
+        <section class="seccion-destacada">
+            <div class="contenido-imagen">
+                <img src="ruta-de-tu-imagen1.jpg" alt="Automotive">
+            </div>
+            <div class="contenido-texto">
+                <h2>Automotive</h2>
                 <p>El aumento de la movilidad junto con velocidades cada vez mayores exige la máxima seguridad y comodidad. Por esta razón, nuestros clientes del sector automotriz valoran a GRAMMER como una fuente de ideas e inspiración para los interiores de vehículos de pasajeros.</p>
-            </div>
-
-            <div class="card">
-                <div class="icon">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <h3>Commercial Vehicles</h3>
-                <p>En todo el mundo, GRAMMER Commercial Vehicles desarrolla y produce asientos para conductores y pasajeros de vehículos agrícolas y de construcción, montacargas, camiones, autobuses y trenes. Siguiendo la filosofía "Diseño para el uso", los productos de GRAMMER Commercial Vehicles están diseñados para ser ergonómicos, fáciles de usar, cómodos y seguros.</p>
-            </div>
-
-            <div class="card">
-                <div class="icon">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <h3>Aftermarket</h3>
-                <p>Nuestros asientos están llenos de innovaciones únicas, detalles bien pensados y tecnología robusta. A esto se suman nuestras décadas de experiencia en el desarrollo y producción de asientos para conductores de vehículos comerciales, combinadas con una excelente calidad OEM, lo que nos ha convertido en líderes del mercado y de la innovación, así como en un proveedor preferido de equipos originales para la industria automotriz.</p>
+                <a href="#" class="boton">Conoce más</a>
             </div>
         </section>
 
+        <section class="seccion-destacada">
+            <div class="contenido-imagen">
+                <img src="ruta-de-tu-imagen2.jpg" alt="Commercial Vehicles">
+            </div>
+            <div class="contenido-texto">
+                <h2>Commercial Vehicles</h2>
+                <p>En todo el mundo, GRAMMER Commercial Vehicles desarrolla y produce asientos para conductores y pasajeros de vehículos agrícolas y de construcción, montacargas, camiones, autobuses y trenes. Siguiendo la filosofía "Diseño para el uso", los productos de GRAMMER Commercial Vehicles están diseñados para ser ergonómicos, fáciles de usar, cómodos y seguros.</p>
+                <a href="#" class="boton">Conoce más</a>
+            </div>
+        </section>
 
+        <section class="seccion-destacada">
+            <div class="contenido-imagen">
+                <img src="ruta-de-tu-imagen3.jpg" alt="Aftermarket">
+            </div>
+            <div class="contenido-texto">
+                <h2>Aftermarket</h2>
+                <p>Nuestros asientos están llenos de innovaciones únicas, detalles bien pensados y tecnología robusta. A esto se suman nuestras décadas de experiencia en el desarrollo y producción de asientos para conductores de vehículos comerciales, combinadas con una excelente calidad OEM, lo que nos ha convertido en líderes del mercado y de la innovación, así como en un proveedor preferido de equipos originales para la industria automotriz.</p>
+                <a href="#" class="boton">Conoce más</a>
+            </div>
+        </section>
 
 
 

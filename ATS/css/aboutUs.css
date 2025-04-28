@@ -276,42 +276,69 @@ header .global {
     line-height: 1.5;
 }
 
-.cards-section {
+.seccion-destacada {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 30px;
-    padding: 50px 20px;
-    flex-wrap: wrap;
+    gap: 40px;
+    padding: 50px 10%;
+    background-color: #f8f8f8;
+    margin-bottom: 50px;
 }
 
-.card {
-    background: #fff;
-    padding: 30px 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 300px;
-    text-align: center;
-    transition: transform 0.3s;
+.contenido-imagen img {
+    width: 600px;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
-.card:hover {
-    transform: translateY(-10px);
+.contenido-texto {
+    max-width: 500px;
 }
 
-.icon {
-    font-size: 50px;
-    color: #005baa; /* Un azul elegante */
+.contenido-texto h2 {
+    font-size: 36px;
+    color: #1a1a1a;
     margin-bottom: 20px;
 }
 
-.card h3 {
-    font-size: 22px;
-    margin-bottom: 15px;
+.contenido-texto p {
+    font-size: 18px;
     color: #333;
+    margin-bottom: 30px;
 }
 
-.card p {
-    font-size: 15px;
-    color: #666;
+.boton {
+    display: inline-block;
+    padding: 12px 24px;
+    border: 2px solid #6200ea;
+    color: #6200ea;
+    font-weight: bold;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.boton:hover {
+    background-color: #6200ea;
+    color: white;
+}
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .seccion-destacada {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .contenido-imagen img {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .contenido-texto {
+        max-width: 90%;
+    }
 }
 
