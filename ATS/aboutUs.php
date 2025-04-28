@@ -109,6 +109,30 @@
             </div>
         </section>
 
+        <section class="grammer-stats">
+            <div class="stat-box">
+                <img src="imagenes/icono1.png" alt="Empleados" class="icon">
+                <h3>14,241</h3>
+                <p>Empleados en 19 países</p>
+            </div>
+            <div class="stat-box">
+                <img src="imagenes/icono2.png" alt="Plantas" class="icon">
+                <h3>48</h3>
+                <p>Plantas de producción y logística en 20 países</p>
+            </div>
+            <div class="stat-box">
+                <img src="imagenes/icono3.png" alt="Producción" class="icon">
+                <h3>2,304.9 M€</h3>
+                <p>Ingresos en 2023</p>
+            </div>
+            <div class="stat-box">
+                <img src="imagenes/icono4.png" alt="Innovación" class="icon">
+                <h3>70 años</h3>
+                <p>De innovación en asientos y componentes interiores</p>
+            </div>
+        </section>
+
+
 
 
     </main>

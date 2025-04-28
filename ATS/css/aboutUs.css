@@ -221,3 +221,40 @@ header .global {
     border-left: 6px solid #12123d;
     padding-left: 16px;
 }
+
+.grammer-stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 40px 20px;
+    background-color: #f4f4f4;
+}
+
+.stat-box {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    padding: 30px;
+    text-align: center;
+    max-width: 250px;
+    flex: 1 1 200px;
+}
+
+.stat-box .icon {
+    height: 40px;
+    margin-bottom: 15px;
+    filter: hue-rotate(260deg); /* Para darle un toque similar al violeta */
+}
+
+.stat-box h3 {
+    font-size: 1.8rem;
+    color: #1c1c2b;
+    margin: 0;
+}
+
+.stat-box p {
+    font-size: 1rem;
+    color: #333;
+    margin-top: 10px;
+}
