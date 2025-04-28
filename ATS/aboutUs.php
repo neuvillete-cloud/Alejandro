@@ -174,7 +174,7 @@
 
         <section class="seccion-destacada">
             <div class="contenido-imagen">
-                <img src="ruta-de-tu-imagen2.jpg" alt="Commercial Vehicles">
+                <img src="imagenes/comerciales.jpg" alt="Commercial Vehicles">
             </div>
             <div class="contenido-texto">
                 <h2>Commercial Vehicles</h2>
