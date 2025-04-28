@@ -110,25 +110,54 @@
         </section>
 
         <section class="grammer-stats">
-            <div class="stat-box">
-                <img src="imagenes/icono1.png" alt="Empleados" class="icon">
-                <h3>14,241</h3>
-                <p>Empleados en 19 países</p>
+            <div class="stat-card">
+                <div class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20M2 12h20" />
+                    </svg>
+                </div>
+                <div class="text">
+                    <h3>150+ años</h3>
+                    <p>de experiencia en soluciones de asientos y sistemas interiores para vehículos</p>
+                </div>
             </div>
-            <div class="stat-box">
-                <img src="imagenes/icono2.png" alt="Plantas" class="icon">
-                <h3>48</h3>
-                <p>Plantas de producción y logística en 20 países</p>
+
+            <div class="stat-card">
+                <div class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 8v6M20 8l2 2m-2-2l-2 2"/>
+                    </svg>
+                </div>
+                <div class="text">
+                    <h3>~15,000</h3>
+                    <p>empleados en todo el mundo trabajando en más de 20 países</p>
+                </div>
             </div>
-            <div class="stat-box">
-                <img src="imagenes/icono3.png" alt="Producción" class="icon">
-                <h3>2,304.9 M€</h3>
-                <p>Ingresos en 2023</p>
+
+            <div class="stat-card">
+                <div class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <path d="M3 9h18M9 21V9" />
+                    </svg>
+                </div>
+                <div class="text">
+                    <h3>> 50</h3>
+                    <p>centros de producción y desarrollo a nivel global</p>
+                </div>
             </div>
-            <div class="stat-box">
-                <img src="imagenes/icono4.png" alt="Innovación" class="icon">
-                <h3>70 años</h3>
-                <p>De innovación en asientos y componentes interiores</p>
+
+            <div class="stat-card">
+                <div class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6a9 9 0 1 1-4-7.5" />
+                        <path d="M20 2v4h-4" />
+                    </svg>
+                </div>
+                <div class="text">
+                    <h3>Innovación</h3>
+                    <p>foco en ergonomía, confort y seguridad para sectores automotrices y comerciales</p>
+                </div>
             </div>
         </section>
 
