@@ -257,7 +257,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/faurecia.png" alt="Faurecia">
+                    <img src="imagenes/Faurecia_logo-RVB.jpg" alt="Faurecia">
                     <h3>Faurecia</h3>
                     <p>Líder en tecnologías de movilidad sustentable y confort automotriz.</p>
                     <a href="#">Conocer más</a>
