@@ -221,7 +221,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/magna.png" alt="Magna">
+                    <img src="imagenes/Magna_logo.svg.png" alt="Magna">
                     <h3>Magna</h3>
                     <p>Innovación en sistemas de movilidad para una nueva era automotriz.</p>
                     <a href="#">Conocer más</a>
