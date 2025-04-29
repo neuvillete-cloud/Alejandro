@@ -415,3 +415,22 @@ header .global {
         grid-template-columns: 1fr; /* 1 columna en pantallas chicas */
     }
 }
+
+.titulo-clientes {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.titulo-clientes h2 {
+    font-size: 2.5rem;
+    color: #002855; /* azul oscuro Grammer */
+    margin-bottom: 10px;
+}
+
+.titulo-clientes p {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+}

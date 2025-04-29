@@ -195,6 +195,10 @@
         </section>
 
         <section class="clientes-section">
+            <div class="titulo-clientes">
+                <h2>Nuestros principales Clientes</h2>
+                <p>En GRAMMER colaboramos con líderes de la industria automotriz y de vehículos comerciales, ofreciendo soluciones innovadoras en asientos y componentes interiores que garantizan la máxima comodidad, seguridad y calidad.</p>
+            </div>
             <div class="clientes-grid">
                 <div class="cliente-card">
                     <img src="imagenes/Tesla_T_symbol.svg.png" alt="Tesla">
