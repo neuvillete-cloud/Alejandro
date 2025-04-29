@@ -209,7 +209,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/gm.png" alt="GM">
+                    <img src="imagenes/General_Motors_logo.svg.png" alt="GM">
                     <h3>GM</h3>
                     <p>Líder mundial en innovación y fabricación de automóviles.</p>
                     <a href="#">Conocer más</a>
