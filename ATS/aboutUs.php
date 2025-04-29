@@ -267,7 +267,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="imagenes/Stellantis-Logo.jpg" alt="Stellantis">
+                    <img src="imagenes/Stellantis-Emblem.png" alt="Stellantis">
                     <h3>Stellantis</h3>
                     <p>Fabricante multinacional con una diversa cartera de marcas icónicas.</p>
                     <a href="#">Conocer más</a>
