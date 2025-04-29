@@ -245,7 +245,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/ford.png" alt="Ford">
+                    <img src="imagenes/Ford_Motor_Company_Logo.svg.png" alt="Ford">
                     <h3>Ford</h3>
                     <p>Pioneros en la industria automotriz y movilidad inteligente.</p>
                     <a href="#">Conocer más</a>
