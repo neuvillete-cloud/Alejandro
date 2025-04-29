@@ -251,7 +251,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/johndeere.png" alt="John Deere">
+                    <img src="imagenes/John-Deere-Logo.png" alt="John Deere">
                     <h3>John Deere</h3>
                     <p>Innovación en maquinaria agrícola y tecnología de construcción.</p>
                     <a href="#">Conocer más</a>
