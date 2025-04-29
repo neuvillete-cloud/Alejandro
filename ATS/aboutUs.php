@@ -227,7 +227,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="imagenes/bae43cf61c897bc6d247659e408d830e.jpg" alt="Mercedes-Benz">
+                    <img src="imagenes/Mercedes-Logo.svg.png" alt="Mercedes-Benz">
                     <h3>Mercedes-Benz</h3>
                     <p>Elegancia, tecnología y líder mundial en automóviles premium.</p>
                     <a href="#">Conocer más</a>
