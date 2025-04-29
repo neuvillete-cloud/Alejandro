@@ -239,7 +239,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/adient.png" alt="Adient">
+                    <img src="imagenes/adient-1.svg" alt="Adient">
                     <h3>Adient</h3>
                     <p>Proveedor global de asientos para automóviles de alta calidad.</p>
                     <a href="#">Conocer más</a>
