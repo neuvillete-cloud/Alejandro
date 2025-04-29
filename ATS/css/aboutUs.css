@@ -342,23 +342,34 @@ header .global {
 }
 
 .clientes-section {
-    padding: 40px;
-    background: #f7f7f7;
+    padding: 50px 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.clientes-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #0d47a1;
 }
 
 .clientes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr); /* Solo 2 columnas */
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .cliente-card {
-    background: white;
+    background: #fff;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    text-align: center;
-    padding: 20px;
-    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
 }
 
 .cliente-card:hover {
@@ -366,29 +377,41 @@ header .global {
 }
 
 .cliente-card img {
-    width: 80px;
-    height: auto;
+    width: 120px;
+    height: 80px;
+    object-fit: contain;
     margin-bottom: 15px;
 }
 
 .cliente-card h3 {
-    font-size: 20px;
-    margin: 10px 0;
-    color: #333;
+    font-size: 1.5rem;
+    color: #0d47a1;
+    margin-bottom: 10px;
 }
 
 .cliente-card p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+    padding: 0 10px;
 }
 
-.cliente-card a {
-    color: #7a00e6;
+.cliente-card .btn {
+    background-color: #0d47a1;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 25px;
     text-decoration: none;
-    font-weight: bold;
+    transition: background 0.3s;
 }
 
-.cliente-card a:hover {
-    text-decoration: underline;
+.cliente-card .btn:hover {
+    background-color: #1565c0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .clientes-grid {
+        grid-template-columns: 1fr; /* 1 columna en pantallas chicas */
+    }
 }
