@@ -269,7 +269,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/mopar.png" alt="Mopar">
+                    <img src="imagenes/Mopar-Symbol.png" alt="Mopar">
                     <h3>Mopar</h3>
                     <p>Proveedor líder de refacciones, accesorios y servicio automotriz.</p>
                     <a href="#">Conocer más</a>
