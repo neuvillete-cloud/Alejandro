@@ -203,7 +203,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/bmw.png" alt="BMW">
+                    <img src="imagenes/9b98fe7973d0cb009e68fee1a586417a.jpg" alt="BMW">
                     <h3>BMW</h3>
                     <p>Excelencia alemana en movilidad de lujo y tecnología automotriz.</p>
                     <a href="#">Conocer más</a>
