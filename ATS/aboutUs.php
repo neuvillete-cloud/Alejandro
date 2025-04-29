@@ -233,7 +233,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/novem.png" alt="Novem">
+                    <img src="imagenes/Novem_Car_Interior_Design_Logo.svg.png" alt="Novem">
                     <h3>Novem</h3>
                     <p>Especialistas en diseño de interiores lujosos para automóviles.</p>
                     <a href="#">Conocer más</a>
