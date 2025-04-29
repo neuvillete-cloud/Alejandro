@@ -197,7 +197,7 @@
         <section class="clientes-section">
             <div class="clientes-grid">
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/tesla.png" alt="Tesla">
+                    <img src="imagenes/Tesla_T_symbol.svg.png" alt="Tesla">
                     <h3>Tesla</h3>
                     <p>Innovador global en vehículos eléctricos y energía renovable.</p>
                     <a href="#">Conocer más</a>
