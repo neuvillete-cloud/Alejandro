@@ -215,7 +215,7 @@
                     <a href="#">Conocer más</a>
                 </div>
                 <div class="cliente-card">
-                    <img src="ruta-del-logo/lear.png" alt="LEAR Corporation">
+                    <img src="imagenes/Lear_Corporation_logo.svg.png" alt="LEAR Corporation">
                     <h3>LEAR Corporation</h3>
                     <p>Proveedor de tecnologías avanzadas para interiores de vehículos.</p>
                     <a href="#">Conocer más</a>
