@@ -341,3 +341,54 @@ header .global {
     }
 }
 
+.clientes-section {
+    padding: 40px;
+    background: #f7f7f7;
+}
+
+.clientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.cliente-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s;
+}
+
+.cliente-card:hover {
+    transform: translateY(-5px);
+}
+
+.cliente-card img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.cliente-card h3 {
+    font-size: 20px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.cliente-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.cliente-card a {
+    color: #7a00e6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.cliente-card a:hover {
+    text-decoration: underline;
+}

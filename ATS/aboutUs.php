@@ -194,6 +194,89 @@
             </div>
         </section>
 
+        <section class="clientes-section">
+            <div class="clientes-grid">
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/tesla.png" alt="Tesla">
+                    <h3>Tesla</h3>
+                    <p>Innovador global en vehículos eléctricos y energía renovable.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/bmw.png" alt="BMW">
+                    <h3>BMW</h3>
+                    <p>Excelencia alemana en movilidad de lujo y tecnología automotriz.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/gm.png" alt="GM">
+                    <h3>GM</h3>
+                    <p>Líder mundial en innovación y fabricación de automóviles.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/lear.png" alt="LEAR Corporation">
+                    <h3>LEAR Corporation</h3>
+                    <p>Proveedor de tecnologías avanzadas para interiores de vehículos.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/magna.png" alt="Magna">
+                    <h3>Magna</h3>
+                    <p>Innovación en sistemas de movilidad para una nueva era automotriz.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/mercedes.png" alt="Mercedes-Benz">
+                    <h3>Mercedes-Benz</h3>
+                    <p>Elegancia, tecnología y líder mundial en automóviles premium.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/novem.png" alt="Novem">
+                    <h3>Novem</h3>
+                    <p>Especialistas en diseño de interiores lujosos para automóviles.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/adient.png" alt="Adient">
+                    <h3>Adient</h3>
+                    <p>Proveedor global de asientos para automóviles de alta calidad.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/ford.png" alt="Ford">
+                    <h3>Ford</h3>
+                    <p>Pioneros en la industria automotriz y movilidad inteligente.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/johndeere.png" alt="John Deere">
+                    <h3>John Deere</h3>
+                    <p>Innovación en maquinaria agrícola y tecnología de construcción.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/faurecia.png" alt="Faurecia">
+                    <h3>Faurecia</h3>
+                    <p>Líder en tecnologías de movilidad sustentable y confort automotriz.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/stellantis.png" alt="Stellantis">
+                    <h3>Stellantis</h3>
+                    <p>Fabricante multinacional con una diversa cartera de marcas icónicas.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+                <div class="cliente-card">
+                    <img src="ruta-del-logo/mopar.png" alt="Mopar">
+                    <h3>Mopar</h3>
+                    <p>Proveedor líder de refacciones, accesorios y servicio automotriz.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+            </div>
+        </section>
+
 
 
 
