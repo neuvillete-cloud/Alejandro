@@ -287,7 +287,7 @@
 
             <div class="contenedor-certificaciones">
                 <div class="tarjeta">
-                    <img src="imagenes/certificaciones/iso45001.png" alt="ISO 45001">
+                    <img src="imagenes/image_2022-08-10_223156335-removebg-preview-1.png" alt="ISO 45001">
                     <h3>ISO 45001</h3>
                     <p>Certificación internacional que garantiza la seguridad y salud ocupacional de nuestros empleados.</p>
                     <a href="#">Conocer más</a>
