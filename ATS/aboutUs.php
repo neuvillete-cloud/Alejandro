@@ -281,6 +281,77 @@
             </div>
         </section>
 
+        <section class="certificaciones">
+            <h2>Nuestras Certificaciones</h2>
+            <p>En GRAMMER nos comprometemos con la calidad, seguridad y responsabilidad social, cumpliendo con los más altos estándares internacionales.</p>
+
+            <div class="contenedor-certificaciones">
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/iso45001.png" alt="ISO 45001">
+                    <h3>ISO 45001</h3>
+                    <p>Certificación internacional que garantiza la seguridad y salud ocupacional de nuestros empleados.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/iso14001.png" alt="ISO 14001">
+                    <h3>ISO 14001</h3>
+                    <p>Norma de gestión ambiental que avala nuestro compromiso con el medio ambiente y sostenibilidad.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/iatf16949.png" alt="IATF 16949">
+                    <h3>IATF 16949</h3>
+                    <p>Certificación de calidad automotriz que respalda nuestros altos estándares en fabricación y diseño.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/q1.png" alt="Q1">
+                    <h3>Q1</h3>
+                    <p>Reconocimiento de Ford a proveedores con desempeño excepcional en calidad y entrega.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/cqc.png" alt="CQC">
+                    <h3>CQC</h3>
+                    <p>Certificación de calidad otorgada por el China Quality Certification Centre, garantizando excelencia.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/supplier_quality_performance.png" alt="Supplier Quality Performance">
+                    <h3>Supplier Quality Performance</h3>
+                    <p>Reconocimiento por desempeño de calidad como proveedores en la industria automotriz global.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/vda.png" alt="VDA">
+                    <h3>VDA</h3>
+                    <p>Certificación alemana que avala procesos de calidad para la industria automotriz.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/empresa_incluyente.png" alt="Distintivo Empresa Incluyente">
+                    <h3>Distintivo Empresa Incluyente</h3>
+                    <p>Reconocimiento nacional por promover la inclusión laboral de personas con discapacidad.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+
+                <div class="tarjeta">
+                    <img src="imagenes/certificaciones/empresa_libre_rezago.png" alt="Empresa Libre de Rezago Educativo">
+                    <h3>Empresa Libre de Rezago Educativo</h3>
+                    <p>Distintivo que acredita el compromiso de GRAMMER en eliminar el rezago educativo de su personal.</p>
+                    <a href="#">Conocer más</a>
+                </div>
+            </div>
+        </section>
+
+
 
 
 
