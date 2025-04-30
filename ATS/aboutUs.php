@@ -343,7 +343,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/certificaciones/empresa_libre_rezago.png" alt="Empresa Libre de Rezago Educativo">
+                    <img src="imagenes/rezago-390x375.jpg" alt="Empresa Libre de Rezago Educativo">
                     <h3>Empresa Libre de Rezago Educativo</h3>
                     <p>Distintivo que acredita el compromiso de GRAMMER en eliminar el rezago educativo de su personal.</p>
                     <a href="#">Conocer más</a>
