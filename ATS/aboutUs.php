@@ -315,7 +315,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/images.jpg" alt="CQC">
+                    <img src="imagenes/certificaciones%20%7B%20text-align%20center;%20padding%2060px%2020px;%20%7D%20.certificaciones%20h2%20%7B%20font-size%202.5rem;%20margin-bottom%2010px;%20color%20%23003366;%20%7D%20.certificaciones%20p%20%7B%20font-size%201rem;%20margin-bottom%2040px;%20colo.jpg" alt="CQC">
                     <h3>CQC</h3>
                     <p>Certificación de calidad otorgada por el China Quality Certification Centre, garantizando excelencia.</p>
                     <a href="#">Conocer más</a>
