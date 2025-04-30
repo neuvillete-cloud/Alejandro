@@ -308,7 +308,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/certificaciones/q1.png" alt="Q1">
+                    <img src="imagenes/Ford-Q1-92120.jpg" alt="Q1">
                     <h3>Q1</h3>
                     <p>Reconocimiento de Ford a proveedores con desempeño excepcional en calidad y entrega.</p>
                     <a href="#">Conocer más</a>
