@@ -329,7 +329,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/VDA-logo.png" alt="VDA">
+                    <img src="imagenes/images.png" alt="VDA">
                     <h3>VDA</h3>
                     <p>Certificación alemana que avala procesos de calidad para la industria automotriz.</p>
                     <a href="#">Conocer más</a>
