@@ -301,7 +301,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/IATF.png" alt="IATF 16949">
+                    <img src="imagenes/IATF-Certificate.png" alt="IATF 16949">
                     <h3>IATF 16949</h3>
                     <p>Certificación de calidad automotriz que respalda nuestros altos estándares en fabricación y diseño.</p>
                     <a href="#">Conocer más</a>
