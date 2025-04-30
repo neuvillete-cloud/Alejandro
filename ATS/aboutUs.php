@@ -336,7 +336,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/certificaciones/empresa_incluyente.png" alt="Distintivo Empresa Incluyente">
+                    <img src="imagenes/image-13.png" alt="Distintivo Empresa Incluyente">
                     <h3>Distintivo Empresa Incluyente</h3>
                     <p>Reconocimiento nacional por promover la inclusión laboral de personas con discapacidad.</p>
                     <a href="#">Conocer más</a>
