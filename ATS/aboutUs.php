@@ -322,7 +322,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/General%20Motors%20supplier%20quality%20excellence%20award.jpg" alt="Supplier Quality Performance">
+                    <img src="imagenes/CERTIFICACION%20GM.jpg" alt="Supplier Quality Performance">
                     <h3>Supplier Quality Performance</h3>
                     <p>Reconocimiento por desempeño de calidad como proveedores en la industria automotriz global.</p>
                     <a href="#">Conocer más</a>
