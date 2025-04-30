@@ -351,6 +351,57 @@
             </div>
         </section>
 
+        <footer style="background-color: #151032; color: white; padding: 50px 20px 20px 20px; font-family: 'Arial', sans-serif;">
+            <div style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
+                <div style="flex: 1 1 200px; margin: 20px;">
+                    <h3>Empresa</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Sobre nosotros</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Historia</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Misión y Visón</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Sustentabilidad</a></li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1 1 200px; margin: 20px;">
+                    <h3>Servicios</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Producción de Asientos</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Innovación Tecnológica</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Calidad y Certificaciones</a></li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1 1 200px; margin: 20px;">
+                    <h3>Contacto</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Contáctanos</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Sucursales</a></li>
+                        <li><a href="#" style="color: #ccc; text-decoration: none;">Bolsa de Trabajo</a></li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1 1 200px; margin: 20px;">
+                    <h3>Redes Sociales</h3>
+                    <div style="margin-top: 10px;">
+                        <a href="#" style="margin-right: 10px; color: white; font-size: 20px;"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" style="margin-right: 10px; color: white; font-size: 20px;"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" style="margin-right: 10px; color: white; font-size: 20px;"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin: 40px 0; border-color: #333;">
+
+            <div style="text-align: center; font-size: 14px; color: #aaa;">
+                <p>© 2025 Grammer Automotive. Todos los derechos reservados. | <a href="#" style="color: #aaa; text-decoration: underline;">Política de Privacidad</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Términos de Uso</a>
+                </p>
+            </div>
+        </footer>
+
+
+
+
 
 
 
@@ -375,5 +426,7 @@
         }, 600);
     });
 </script>
+<!-- Recuerda incluir fontawesome para que salgan los íconos -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
