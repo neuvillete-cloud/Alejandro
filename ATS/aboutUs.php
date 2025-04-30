@@ -294,7 +294,7 @@
                 </div>
 
                 <div class="tarjeta">
-                    <img src="imagenes/iso-14001-certified-vector-flat-certification-label-isolated-white-background-globe-icon_78946-1044.avif" alt="ISO 14001">
+                    <img src="imagenes/IATF-750x465.png" alt="ISO 14001">
                     <h3>ISO 14001</h3>
                     <p>Norma de gestión ambiental que avala nuestro compromiso con el medio ambiente y sostenibilidad.</p>
                     <a href="#">Conocer más</a>
