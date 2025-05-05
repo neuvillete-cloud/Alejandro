@@ -116,7 +116,7 @@ nav a:not(:hover)::after {
 .section-title {
     background-color: #140c33;
     padding: 100px 20px;
-    min-height: 400px; /* ajusta a lo que necesites */
+    min-height: 170px; /* ajusta a lo que necesites */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,6 +131,7 @@ nav a:not(:hover)::after {
     margin: 0;
     font-weight: bold;
     padding-right: 647px;
+    padding-top: 60px;
 }
 
 /* NUEVA sección blanca con distribución sin caja */
