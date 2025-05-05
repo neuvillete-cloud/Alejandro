@@ -119,71 +119,122 @@ nav a:not(:hover)::after {
 }
 
 
-.login-container {
-    background-color: #1d1535;
-    color: white;
-    padding: 60px 20px 40px;
+/* Sección del título de "Inicio de sesión" */
+.section-title {
+    background-color: #140c33;
+    padding: 150px 20px 60px; /* Espacio por el header fijo */
     text-align: center;
 }
 
-.login-container h1 {
+.section-title h1 {
     font-size: 48px;
-    margin-bottom: 40px;
+    color: white;
+    margin: 0;
+    font-weight: bold;
 }
 
-.login-box {
+/* Sección blanca donde va la caja de login */
+.section-login {
     background-color: white;
-    color: #1d1535;
+    padding: 60px 20px;
+    color: #140c33;
+}
+
+/* Caja de login (mitades) */
+.login-box {
     display: flex;
     max-width: 1000px;
     margin: 0 auto;
+    background-color: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    color: #140c33;
 }
 
-.login-left, .login-right {
+/* Lado izquierdo (formulario) */
+.login-left {
     width: 50%;
-    padding: 40px 30px;
+    padding: 50px 40px;
     box-sizing: border-box;
-}
-
-.login-left h2,
-.login-right h2 {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    justify-content: center;
+    border-right: 1px solid #eee;
 }
 
-input[type="email"],
-input[type="password"] {
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+.login-left h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Lado derecho (nuevos usuarios) */
+.login-right {
+    width: 50%;
+    padding: 50px 40px;
+    background-color: white;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-right h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.login-right p {
     font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-button {
+/* Botón morado */
+button, .register-btn {
     background-color: #7d00db;
     color: white;
     border: none;
-    padding: 12px 0;
+    padding: 12px 30px;
     font-size: 16px;
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-button:hover {
+button:hover,
+.register-btn:hover {
     background-color: #5e00a8;
 }
 
-.register-btn {
-    margin-top: 20px;
+/* Inputs */
+input[type="email"],
+input[type="password"] {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
     width: 100%;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .login-box {
+        flex-direction: column;
+    }
+
+    .login-left,
+    .login-right {
+        width: 100%;
+        padding: 30px 20px;
+    }
+
+    .login-left {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
 }
