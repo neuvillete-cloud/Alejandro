@@ -25,11 +25,6 @@
 </header>
 
 <!-- AQUÍ INICIA EL LOGIN -->
-<!-- Header (ya lo tienes fijo arriba) -->
-
-<section class="section-title">
-    <h1>Inicio de sesión</h1>
-</section>
 
 <!-- Header sigue fijo arriba -->
 
