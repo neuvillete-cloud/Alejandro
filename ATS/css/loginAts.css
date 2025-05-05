@@ -130,6 +130,7 @@ nav a:not(:hover)::after {
     color: white;
     margin: 0;
     font-weight: bold;
+    padding-right: 647px;
 }
 
 /* NUEVA sección blanca con distribución sin caja */
