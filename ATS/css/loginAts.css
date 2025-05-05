@@ -3,20 +3,19 @@ body {
     font-family: Arial, sans-serif;
     background-color: #140c33;
     color: white;
-    overflow-x: hidden; /* Asegura que no haya desbordamiento en toda la página */
+    overflow-x: hidden;
 }
 
 header {
     background-color: #140c33;
     padding: 20px 0;
     border-bottom: 3px solid transparent;
-    position: fixed; /* Cambiado de relative a fixed */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000; /* Asegura que esté encima del resto del contenido */
+    z-index: 1000;
 }
-
 
 .header-container {
     width: 80%;
@@ -28,7 +27,7 @@ header {
 
 nav {
     display: flex;
-    justify-content: center; /* Centramos los elementos */
+    justify-content: center;
     align-items: center;
     gap: 30px;
 }
@@ -42,7 +41,7 @@ nav a {
     padding-bottom: 10px;
 }
 
-nav a:last-of-type { /* Inicio de sesión */
+nav a:last-of-type {
     position: relative;
     padding-left: 15px;
 }
@@ -52,11 +51,10 @@ nav a:last-of-type::before {
     position: absolute;
     left: -10px;
     color: white;
-    font-size: 18px; /* Tamaño base */
-    transform: scaleY(2); /* La barra se alarga sin ensancharse */
-    display: inline-block; /* Asegura que la transformación se aplique correctamente */
+    font-size: 18px;
+    transform: scaleY(2);
+    display: inline-block;
 }
-
 
 nav a::after {
     content: '';
@@ -67,7 +65,7 @@ nav a::after {
     height: 4px;
     background: #a86bd5;
     transform-origin: left;
-    transition: width 0.3s ease-in-out; /* Transición para suavizar la animación */
+    transition: width 0.3s ease-in-out;
 }
 
 nav a:hover::after {
@@ -75,23 +73,20 @@ nav a:hover::after {
 }
 
 nav a:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards; /* Animación de salida */
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
-/* Animación de crecimiento */
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
     50% { width: 100%; transform: translateX(0); }
     100% { width: 100%; transform: translateX(0); }
 }
 
-/* Animación de decrecimiento */
 @keyframes smooth-infinite-bar-out {
     0% { width: 100%; transform: translateX(0); }
     100% { width: 0%; transform: translateX(0); }
 }
 
-/* Logo */
 .logo h1 {
     font-size: 28px;
     margin: 0;
@@ -104,7 +99,6 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
-/* Responsividad */
 @media(max-width: 768px) {
     .header-container {
         flex-direction: column;
@@ -118,11 +112,10 @@ nav a:not(:hover)::after {
     }
 }
 
-
-/* Sección del título de "Inicio de sesión" */
+/* Sección del título */
 .section-title {
     background-color: #140c33;
-    padding: 150px 20px 60px; /* Espacio por el header fijo */
+    padding: 150px 20px 60px;
     text-align: center;
 }
 
@@ -133,82 +126,49 @@ nav a:not(:hover)::after {
     font-weight: bold;
 }
 
-/* Sección blanca donde va la caja de login */
+/* NUEVA sección blanca con distribución sin caja */
 .section-login {
     background-color: white;
-    padding: 60px 20px;
+    padding: 60px 5%;
     color: #140c33;
-}
-
-/* Caja de login (mitades) */
-.login-box {
     display: flex;
-    max-width: 1000px;
-    margin: 0 auto;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    color: #140c33;
-}
-
-/* Lado izquierdo (formulario) */
-.login-left {
-    width: 50%;
-    padding: 50px 40px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 40px;
     justify-content: center;
-    border-right: 1px solid #eee;
+    box-sizing: border-box;
 }
 
-.login-left h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-/* Lado derecho (nuevos usuarios) */
+/* Columnas izquierda y derecha */
+.login-left,
 .login-right {
-    width: 50%;
-    padding: 50px 40px;
-    background-color: white;
+    flex: 1 1 45%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 }
 
+/* Títulos */
+.login-left h2,
 .login-right h2 {
-    font-size: 24px;
+    font-size: 28px;
     margin-bottom: 20px;
     font-weight: 600;
     text-align: center;
 }
 
+/* Texto adicional */
 .login-right p {
     font-size: 16px;
     margin-bottom: 20px;
     text-align: center;
 }
 
-/* Botón morado */
-button, .register-btn {
-    background-color: #7d00db;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    font-size: 16px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover,
-.register-btn:hover {
-    background-color: #5e00a8;
+/* Formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* Inputs */
@@ -221,20 +181,37 @@ input[type="password"] {
     width: 100%;
 }
 
+/* Botones */
+button,
+.register-btn {
+    background-color: #7d00db;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+button:hover,
+.register-btn:hover {
+    background-color: #5e00a8;
+}
+
 /* Responsividad */
 @media (max-width: 768px) {
-    .login-box {
+    .section-login {
         flex-direction: column;
+        align-items: center;
     }
 
     .login-left,
     .login-right {
-        width: 100%;
+        flex: 1 1 100%;
         padding: 30px 20px;
-    }
-
-    .login-left {
-        border-right: none;
-        border-bottom: 1px solid #eee;
     }
 }

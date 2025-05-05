@@ -31,27 +31,33 @@
     <h1>Inicio de sesión</h1>
 </section>
 
+<!-- Header sigue fijo arriba -->
+
+<section class="section-title">
+    <h1>Inicio de sesión</h1>
+</section>
+
 <section class="section-login">
-    <div class="login-box">
-        <div class="login-left">
-            <h2>¿Se ha registrado ya?</h2>
-            <form>
-                <label for="email">Correo electrónico</label>
-                <input type="email" id="email" name="email" required>
+    <div class="login-left">
+        <h2>¿Se ha registrado ya?</h2>
+        <form>
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" required>
 
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" required>
 
-                <button type="submit">Inicio de sesión</button>
-            </form>
-        </div>
-        <div class="login-right">
-            <h2>Candidato por primera vez</h2>
-            <p>Si aún no se ha registrado, cree su cuenta aquí.</p>
-            <a href="registro.html" class="register-btn">Crear perfil</a>
-        </div>
+            <button type="submit">Inicio de sesión</button>
+        </form>
+    </div>
+
+    <div class="login-right">
+        <h2>Candidato por primera vez</h2>
+        <p>Si aún no se ha registrado, cree su cuenta aquí.</p>
+        <a href="registro.html" class="register-btn">Crear perfil</a>
     </div>
 </section>
+
 
 <!-- AQUÍ TERMINA EL LOGIN -->
 
