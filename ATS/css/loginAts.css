@@ -95,7 +95,7 @@ nav a:not(:hover)::after {
 
 .logo span {
     display: block;
-    font-size: 20px;
+    font-size: 25px;
     line-height: 1;
 }
 
