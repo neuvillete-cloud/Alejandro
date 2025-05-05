@@ -25,17 +25,22 @@
 </header>
 
 <!-- AQUÍ INICIA EL LOGIN -->
-<div class="login-container">
+<!-- Header (ya lo tienes fijo arriba) -->
+
+<section class="section-title">
     <h1>Inicio de sesión</h1>
+</section>
+
+<section class="section-login">
     <div class="login-box">
         <div class="login-left">
             <h2>¿Se ha registrado ya?</h2>
             <form>
                 <label for="email">Correo electrónico</label>
-                <input type="email" id="email" placeholder="Correo electrónico" required>
+                <input type="email" id="email" name="email" required>
 
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" placeholder="Contraseña" required>
+                <input type="password" id="password" name="password" required>
 
                 <button type="submit">Inicio de sesión</button>
             </form>
@@ -43,10 +48,11 @@
         <div class="login-right">
             <h2>Candidato por primera vez</h2>
             <p>Si aún no se ha registrado, cree su cuenta aquí.</p>
-            <button class="register-btn">Crear perfil</button>
+            <a href="registro.html" class="register-btn">Crear perfil</a>
         </div>
     </div>
-</div>
+</section>
+
 <!-- AQUÍ TERMINA EL LOGIN -->
 
 </body>
