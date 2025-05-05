@@ -165,12 +165,6 @@ nav a:not(:hover)::after {
     text-align: center;
 }
 
-/* Texto adicional */
-.login-right p {
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-align: center;
-}
 
 /* Formulario */
 form {
@@ -179,6 +173,22 @@ form {
     align-items: center; /* Esto centra los hijos horizontalmente */
     gap: 20px;
 }
+
+.login-right h2 {
+    font-size: 26px; /* O el tamaño que prefieras */
+    margin-bottom: 16px;
+    font-weight: 500;
+    text-align: left; /* O center, right según quieras */
+    color: #140c33; /* O el color que desees */
+}
+
+.login-right p {
+    font-size: 15px;
+    margin-bottom: 20px;
+    text-align: left;
+    color: #333; /* Puedes ajustar el color también */
+}
+
 
 
 /* Inputs */
