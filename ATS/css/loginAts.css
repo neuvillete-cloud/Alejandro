@@ -176,8 +176,10 @@ nav a:not(:hover)::after {
 form {
     display: flex;
     flex-direction: column;
+    align-items: center; /* Esto centra los hijos horizontalmente */
     gap: 20px;
 }
+
 
 /* Inputs */
 input[type="email"],
