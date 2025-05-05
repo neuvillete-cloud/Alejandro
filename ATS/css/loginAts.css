@@ -215,3 +215,13 @@ button:hover,
         padding: 30px 20px;
     }
 }
+
+.login-left {
+    flex: 1 1 45%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 40px;
+    border-right: 1px solid #ccc; /* Línea divisoria */
+}
