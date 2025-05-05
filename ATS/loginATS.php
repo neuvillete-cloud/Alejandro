@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siemens Energy Clone Mejorado</title>
     <link rel="stylesheet" href="css/loginAts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
 <header>
@@ -53,8 +55,45 @@
     </div>
 </section>
 
+<footer class="footer-grammer">
+    <div class="footer-container">
+        <div class="footer-left">
+            <button class="contact-btn">
+                ✉ Contáctenos
+            </button>
 
-<!-- AQUÍ TERMINA EL LOGIN -->
+            <ul class="footer-links">
+                <li><strong>Solo en MX:</strong> Revisar las adaptaciones para discapacidades</li>
+                <li><a href="#">Solicitud para condiciones laborales</a></li>
+                <li><a href="#">grammer.com</a> Página web global</li>
+            </ul>
+        </div>
+
+        <div class="footer-right">
+            <div class="footer-nav">
+                <a href="#">Información de la empresa</a>
+                <a href="#">Política de privacidad</a>
+                <a href="#">Aviso sobre cookies</a>
+                <a href="#">Condiciones de uso</a>
+                <a href="#">ID digital</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fas fa-globe"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="footer-bottom">
+        <p>Grammer es una marca registrada de GRAMMER AG.</p>
+        <p>© Grammer, 2020 - 2025</p>
+    </div>
+</footer>
+
 
 </body>
 </html>
