@@ -136,14 +136,14 @@ nav a:not(:hover)::after {
 
 /* Estilo para toda la sección blanca */
 .section-blanca {
-    background-color: #ffffff;
-    padding: 40px;
-    margin: 40px auto;
-    max-width: 800px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', sans-serif;
-    color: #1a1a1a;
+    background-color: white;
+    padding: 60px 5%;
+    color: #140c33;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 /* Títulos dentro de la sección */
