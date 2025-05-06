@@ -229,8 +229,8 @@ button{
     background-color: #7d00db;
     color: white;
     border: none;
-    padding: 16px 40px; /* Aumenta tamaño aquí */
-    font-size: 18px;     /* Aumenta el tamaño de fuente si deseas */
+    padding: 12px 30px; /* Aumenta tamaño aquí */
+    font-size: 16px;     /* Aumenta el tamaño de fuente si deseas */
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s;
