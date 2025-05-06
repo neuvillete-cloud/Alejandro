@@ -237,6 +237,8 @@ button{
     text-align: center;
     display: inline-block;
     text-decoration: none;
+    width: 150px; /* Ajusta a tu gusto */
+
 }
 
 button:hover,
