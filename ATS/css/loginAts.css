@@ -156,6 +156,15 @@ nav a:not(:hover)::after {
     justify-content: center;
 }
 
+.login-right {
+    flex: 1 1 45%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Esto sube el contenido */
+    padding: 20px 40px; /* Puedes reducir el padding superior si quieres más efecto */
+}
+
 /* Títulos */
 .login-left h2,
 .login-right h2 {
