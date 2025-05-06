@@ -211,13 +211,26 @@ input[type="password"] {
 }
 
 /* Botones */
-button,
-.register-btn {
+button{
     background-color: #7d00db;
     color: white;
     border: none;
     padding: 12px 30px;
     font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.register-btn {
+    background-color: #7d00db;
+    color: white;
+    border: none;
+    padding: 16px 40px; /* Aumenta tamaño aquí */
+    font-size: 18px;     /* Aumenta el tamaño de fuente si deseas */
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s;
