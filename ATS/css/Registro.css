@@ -133,3 +133,83 @@ nav a:not(:hover)::after {
     padding-right: 647px;
     padding-top: 60px;
 }
+
+/* Estilo para toda la sección blanca */
+.section-blanca {
+    background-color: #ffffff;
+    padding: 40px;
+    margin: 40px auto;
+    max-width: 800px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    color: #1a1a1a;
+}
+
+/* Títulos dentro de la sección */
+.section-blanca h2,
+.section-blanca h3 {
+    color: #2c2c2c;
+    margin-bottom: 20px;
+}
+
+/* Inputs y selects */
+.section-blanca input[type="text"],
+.section-blanca input[type="email"],
+.section-blanca input[type="password"],
+.section-blanca input[type="tel"],
+.section-blanca select,
+.section-blanca textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border 0.3s ease;
+}
+
+.section-blanca input:focus,
+.section-blanca select:focus,
+.section-blanca textarea:focus {
+    border-color: #6c2bd9; /* Color morado Grammer */
+    outline: none;
+}
+
+/* Etiquetas */
+.section-blanca label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Botones */
+.section-blanca .boton {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.section-blanca .boton.confirmar {
+    background-color: #6c2bd9;
+    color: #fff;
+}
+
+.section-blanca .boton.confirmar:hover {
+    background-color: #501fb1;
+}
+
+.section-blanca .boton.cancelar {
+    background-color: transparent;
+    border: 2px solid #6c2bd9;
+    color: #6c2bd9;
+}
+
+.section-blanca .boton.cancelar:hover {
+    background-color: #f3f0ff;
+}
