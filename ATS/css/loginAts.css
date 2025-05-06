@@ -162,7 +162,7 @@ nav a:not(:hover)::after {
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Esto sube el contenido */
-    padding: 20px 40px; /* Puedes reducir el padding superior si quieres más efecto */
+    padding: 2px 40px; /* Puedes reducir el padding superior si quieres más efecto */
 }
 
 /* Títulos */
