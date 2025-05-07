@@ -144,6 +144,7 @@ nav a:not(:hover)::after {
     gap: 40px;
     justify-content: center;
     box-sizing: border-box;
+    text-align: center;
 }
 
 /* Títulos dentro de la sección */
