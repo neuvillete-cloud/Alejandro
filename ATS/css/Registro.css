@@ -171,6 +171,11 @@ nav a:not(:hover)::after {
     transition: border 0.3s ease;
 }
 
+.section-blanca textarea {
+    text-align: justify;
+}
+
+
 .section-blanca input:focus,
 .section-blanca select:focus,
 .section-blanca textarea:focus {
