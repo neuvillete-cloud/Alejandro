@@ -37,14 +37,6 @@
         <label>Correo electrónico <span class="required">*</span></label>
         <input type="email" name="email" required>
 
-        <label>Título</label>
-        <select name="titulo">
-            <option value="">Seleccionar una abreviatura de tratamiento</option>
-            <option value="Sr.">Sr.</option>
-            <option value="Sra.">Sra.</option>
-            <option value="Srta.">Srta.</option>
-        </select>
-
         <label>Nombre <span class="required">*</span></label>
         <input type="text" name="nombre" required>
 
