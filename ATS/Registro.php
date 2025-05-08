@@ -68,6 +68,6 @@
         </section>
     </form>
 </div>
-
+<script src="js/registroATS.js"></script>
 </body>
 </html>
