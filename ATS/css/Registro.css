@@ -219,3 +219,25 @@ nav a:not(:hover)::after {
 .section-blanca .boton.cancelar:hover {
     background-color: #f3f0ff;
 }
+
+.terminos-condiciones {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 15px;
+    color: #333;
+}
+
+.checkbox-condiciones {
+    margin-bottom: 20px;
+}
+
+.checkbox-condiciones a {
+    color: #6c2bd9;
+    text-decoration: underline;
+}
+
+.checkbox-condiciones input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
