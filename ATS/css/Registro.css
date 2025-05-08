@@ -241,3 +241,42 @@ nav a:not(:hover)::after {
     transform: scale(1.2);
 }
 
+.botones-final {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.btn-confirmar,
+.btn-cancelar {
+    padding: 12px 28px;
+    font-size: 16px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-confirmar {
+    background-color: #a100ff; /* morado fuerte */
+    color: white;
+    border: 2px solid #a100ff;
+}
+
+.btn-confirmar:hover {
+    background-color: #8700d9;
+    border-color: #8700d9;
+}
+
+.btn-cancelar {
+    background-color: white;
+    color: #a100ff;
+    border: 2px solid #a100ff;
+}
+
+.btn-cancelar:hover {
+    background-color: #f3e6ff;
+}
+
+
