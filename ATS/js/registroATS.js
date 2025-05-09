@@ -42,7 +42,7 @@ document.querySelector('.formulario-registro').addEventListener('submit', functi
     formData.append('telefono', telefono);
     formData.append('contrasena', contrasena);
 
-    fetch('daoRegistroATS.php', {
+    fetch('dao/daoRegistroATS.php', {
         method: 'POST',
         body: formData
     })
