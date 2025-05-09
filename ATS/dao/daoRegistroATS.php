@@ -12,6 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $telefono = trim($_POST['telefono']);
         $contrasena = trim($_POST['contrasena']);
 
+        // Generar el folio único usando uniqid()
+        $folio = 'FOL-' . uniqid();
+
+        // IdEstatus por defecto
+        $idEstatus = 6;
+
         // Conectarse a la base de datos
         $con = new LocalConector();
         $conex = $con->conectar();
@@ -25,13 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($resultCheck->num_rows > 0) {
             $response = array('status' => 'error', 'message' => 'Este correo ya está registrado.');
         } else {
-            // IdEstatus por defecto
-            $idEstatus = 6;
-
-            // Insertar el nuevo candidato con IdEstatus = 6
-            $stmt = $conex->prepare("INSERT INTO Candidatos (Correo, Nombre, Apellidos, Telefono, Contrasena, IdEstatus) 
-                                     VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssi", $email, $nombre, $apellidos, $telefono, $contrasena, $idEstatus);
+            // Insertar el nuevo candidato con IdEstatus = 6 y FolioSolCand generado
+            $stmt = $conex->prepare("INSERT INTO Candidatos (Correo, Nombre, Apellidos, Telefono, Contrasena, IdEstatus, FolioSolCand) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssis", $email, $nombre, $apellidos, $telefono, $contrasena, $idEstatus, $folio);
 
             if ($stmt->execute()) {
                 $response = array('status' => 'success', 'message' => 'Candidato registrado exitosamente');
