@@ -55,7 +55,7 @@ document.querySelector('.formulario-registro').addEventListener('submit', functi
                     text: 'Tu cuenta ha sido creada.',
                     confirmButtonText: 'Iniciar sesión'
                 }).then(() => {
-                    window.location.href = 'login.php';
+                    window.location.href = 'loginATS.php';
                 });
             } else {
                 Swal.fire({
