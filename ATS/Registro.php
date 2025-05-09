@@ -32,7 +32,7 @@
 
 <div class="section-blanca">
     <form class="formulario-registro" method="post" action="procesar_registro.php">
-        <p>Si ya está registrado, <a href="login.php" class="link-inicio">inicie sesión en su cuenta</a> para presentar su solicitud.</p>
+        <p>Si ya está registrado, <a href="loginATS.php" class="link-inicio">inicie sesión en su cuenta</a> para presentar su solicitud.</p>
 
         <label>Correo electrónico <span class="required">*</span></label>
         <input type="email" name="email" required>
