@@ -25,10 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($resultCheck->num_rows > 0) {
             $response = array('status' => 'error', 'message' => 'Este correo ya está registrado.');
         } else {
-            // Insertar el nuevo candidato
-            $stmt = $conex->prepare("INSERT INTO Candidatos (Correo, Nombre, Apellidos, Telefono, Contrasena) 
-                                     VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $email, $nombre, $apellidos, $telefono, $contrasena);
+            // IdEstatus por defecto
+            $idEstatus = 6;
+
+            // Insertar el nuevo candidato con IdEstatus = 6
+            $stmt = $conex->prepare("INSERT INTO Candidatos (Correo, Nombre, Apellidos, Telefono, Contrasena, IdEstatus) 
+                                     VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssi", $email, $nombre, $apellidos, $telefono, $contrasena, $idEstatus);
 
             if ($stmt->execute()) {
                 $response = array('status' => 'success', 'message' => 'Candidato registrado exitosamente');
@@ -51,4 +54,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 echo json_encode($response);
 exit();
 ?>
+
 
