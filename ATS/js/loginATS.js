@@ -28,7 +28,7 @@ document.querySelector('.section-login form').addEventListener('submit', functio
     formData.append('email', email);
     formData.append('password', password);
 
-    fetch('dao/loginCandidato.php', {
+    fetch('dao/daoLoginATS.php', {
         method: 'POST',
         body: formData
     })
