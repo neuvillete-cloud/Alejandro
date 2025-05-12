@@ -51,7 +51,7 @@
     <div class="login-right">
         <h2>Candidato por primera vez</h2>
         <p>Si aún no se ha registrado, cree su cuenta aquí.</p>
-        <a href="registro.html" class="register-btn">Crear perfil</a>
+        <a href="Registro.php" class="register-btn">Crear perfil</a>
     </div>
 </section>
 
