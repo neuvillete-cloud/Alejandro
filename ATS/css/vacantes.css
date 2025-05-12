@@ -146,10 +146,17 @@ nav a:not(:hover)::after {
     align-items: center;
     gap: 8px;
     font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.user-info:hover + .dropdown-menu,
+.user-menu:hover .dropdown-menu {
+    display: block;
 }
 
 .user-info i.fas.fa-user-circle {
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .user-info i.fas.fa-chevron-down {
@@ -159,23 +166,25 @@ nav a:not(:hover)::after {
 .dropdown-menu {
     display: none;
     position: absolute;
+    top: 100%; /* Justo debajo del user-info */
     right: 0;
     background-color: #1a1131;
     border: 1px solid #432b7f;
     min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
     z-index: 1000;
-    border-radius: 4px;
-    padding: 10px 0;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .dropdown-menu a {
     color: #fff;
-    padding: 10px 20px;
+    padding: 12px 20px;
     display: block;
     text-decoration: none;
     font-size: 14px;
     border-bottom: 1px solid #432b7f;
+    transition: background-color 0.2s ease;
 }
 
 .dropdown-menu a:last-child {
@@ -183,5 +192,5 @@ nav a:not(:hover)::after {
 }
 
 .dropdown-menu a:hover {
-    background-color: #2a1a4a;
+    background-color: #9900ff;
 }

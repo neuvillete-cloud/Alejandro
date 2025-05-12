@@ -27,12 +27,12 @@ session_start();
 
             <?php if (isset($_SESSION['NombreCandidato'])): ?>
                 <div class="user-menu">
-                    <div class="user-info" onclick="toggleDropdown()">
+                    <div class="user-info">
                         <i class="fas fa-user-circle"></i>
                         <span><?= htmlspecialchars($_SESSION['NombreCandidato']) ?></span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
-                    <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-menu">
                         <a href="#">Perfil</a>
                         <a href="#">Alertas de empleo</a>
                         <a href="#">Historial de solicitudes</a>
@@ -52,21 +52,6 @@ session_start();
     <h1>Vacantes en Grammer Automotive</h1>
 </section>
 
-<!-- Aquí sigue el contenido -->
-
-<script>
-    function toggleDropdown() {
-        const menu = document.getElementById('dropdownMenu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-    window.addEventListener('click', function(e) {
-        const menu = document.getElementById('dropdownMenu');
-        const user = document.querySelector('.user-info');
-        if (menu && user && !user.contains(e.target)) {
-            menu.style.display = 'none';
-        }
-    });
-</script>
 
 </body>
 </html>
