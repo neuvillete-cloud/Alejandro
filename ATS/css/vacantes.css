@@ -133,3 +133,55 @@ nav a:not(:hover)::after {
     padding-right: 647px;
     padding-top: 60px;
 }
+
+.user-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.user-info {
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.user-info i.fas.fa-user-circle {
+    font-size: 22px;
+}
+
+.user-info i.fas.fa-chevron-down {
+    font-size: 12px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #1a1131;
+    border: 1px solid #432b7f;
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 4px;
+    padding: 10px 0;
+}
+
+.dropdown-menu a {
+    color: #fff;
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid #432b7f;
+}
+
+.dropdown-menu a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: #2a1a4a;
+}
