@@ -33,7 +33,7 @@ function validarCredencialesCandidato($email, $password) {
         $_SESSION['CorreoCandidato'] = $candidato['Correo'];
 
         // Redirección general para todos los candidatos
-        return ['status' => 'success', 'redirect' => 'bienvenidaCandidato.php'];
+        return ['status' => 'success', 'redirect' => 'vacantes.php'];
     } else {
         return ['status' => 'error', 'message' => 'Correo o contraseña incorrectos.'];
     }
