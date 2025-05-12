@@ -37,7 +37,7 @@ session_start(); // Importante para poder leer las variables de sesión
 </header>
 
 <section class="section-title">
-    <h1>Vacantes en Grammer Automotive MX</h1>
+    <h1>Vacantes en Grammer Automotive</h1>
 </section>
 
 <!-- Aquí puedes seguir con el resto del contenido de la página -->
