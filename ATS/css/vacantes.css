@@ -61,7 +61,7 @@ nav > a::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -35px;
+    bottom: -34px;
     width: 0;
     height: 4px;
     background: #a86bd5;
