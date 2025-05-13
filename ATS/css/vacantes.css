@@ -56,7 +56,8 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
-nav a::after {
+/* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
+nav > a::after {
     content: '';
     position: absolute;
     left: 0;
@@ -68,13 +69,14 @@ nav a::after {
     transition: width 0.3s ease-in-out;
 }
 
-nav a:hover::after {
+nav > a:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
 
-nav a:not(:hover)::after {
+nav > a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
+
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
