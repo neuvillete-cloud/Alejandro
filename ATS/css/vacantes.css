@@ -207,7 +207,7 @@ nav > a:not(:hover)::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -23px; /* distancia desde el texto */
+    bottom: -25px; /* distancia desde el texto */
     width: 0;
     height: 4px;
     background: #a86bd5;
