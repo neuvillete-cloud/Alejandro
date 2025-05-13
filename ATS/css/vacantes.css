@@ -197,3 +197,28 @@ nav > a:not(:hover)::after {
 .dropdown-menu a:hover {
     background-color: #9900ff;
 }
+
+.user-info {
+    position: relative;
+}
+
+/* Agrega la animación como la de nav > a */
+.user-info::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -10px; /* distancia desde el texto */
+    width: 0;
+    height: 4px;
+    background: #a86bd5;
+    transform-origin: left;
+    transition: width 0.3s ease-in-out;
+}
+
+.user-info:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+
+.user-info:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
