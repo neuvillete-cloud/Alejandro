@@ -146,12 +146,11 @@ nav a:not(:hover)::after {
     align-items: center;
     gap: 8px;
     font-weight: bold;
+    padding: 8px 12px;
     border-radius: 6px;
-    font-size: 18px;
-    padding-bottom: 10px;
+    background-color: transparent;
 }
 
-.user-info:hover + .dropdown-menu,
 .user-menu:hover .dropdown-menu {
     display: block;
 }
@@ -167,11 +166,11 @@ nav a:not(:hover)::after {
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%; /* Justo debajo del user-info */
-    right: 0;
+    top: calc(100% + 4px); /* Justo debajo del user-info */
+    left: 0; /* Alineado al inicio del contenedor */
     background-color: #1a1131;
     border: 1px solid #432b7f;
-    min-width: 200px;
+    min-width: 220px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.3);
     z-index: 1000;
     border-radius: 6px;
