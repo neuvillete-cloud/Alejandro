@@ -146,9 +146,10 @@ nav a:not(:hover)::after {
     align-items: center;
     gap: 8px;
     font-weight: bold;
-    padding: 8px 12px;
     border-radius: 6px;
     background-color: transparent;
+    font-size: 18px;
+    padding-bottom: 10px;
 }
 
 .user-menu:hover .dropdown-menu {
