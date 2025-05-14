@@ -180,7 +180,7 @@ nav > a:not(:hover)::after {
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: calc(100% + 35px); /* Justo debajo del user-info */
+    top: calc(100% + 34px); /* Justo debajo del user-info */
     left: 0; /* Alineado al inicio del contenedor */
     background-color: #140c33;
     /* Quitar el borde de caja */
