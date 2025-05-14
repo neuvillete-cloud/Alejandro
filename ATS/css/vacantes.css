@@ -154,6 +154,17 @@ nav > a:not(:hover)::after {
     padding-bottom: 10px;
 }
 
+/* NUEVO: área invisible expandida para hover */
+.user-menu::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 30px; /* área invisible para mantener hover */
+    z-index: 1;
+}
+
 .user-menu:hover .dropdown-menu {
     display: block;
 }
