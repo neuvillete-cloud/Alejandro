@@ -218,31 +218,32 @@ nav > a:not(:hover)::after {
 
 .section-title {
     background-color: #1f183c;
-    padding: 100px 20px;
+    padding: 100px 60px;
     min-height: 170px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    text-align: left;
 }
 
 .section-title .perfil-icono {
     font-size: 110px;
     color: #c9c9c9;
-    margin-right: 20px;
+    margin-right: 25px;
 }
 
 .section-title .perfil-texto {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .section-title .perfil-texto span {
     font-size: 14px;
     font-weight: bold;
     color: #c9c9c9;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    line-height: 1;
 }
 
 .section-title .perfil-texto h1 {
@@ -250,7 +251,6 @@ nav > a:not(:hover)::after {
     color: white;
     margin: 0;
     font-weight: bold;
+    line-height: 1.2;
 }
-
-
 
