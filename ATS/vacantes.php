@@ -33,7 +33,7 @@ session_start();
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a href="#">Perfil</a>
+                        <a href="perfil.php">Perfil</a>
                         <a href="#">Alertas de empleo</a>
                         <a href="#">Historial de solicitudes</a>
                         <a href="cerrarSesion.php">Cerrar sesión</a>
