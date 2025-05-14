@@ -127,14 +127,7 @@ nav > a:not(:hover)::after {
 }
 
 
-.section-title h1 {
-    font-size: 60px;
-    color: white;
-    margin: 0;
-    font-weight: bold;
-    padding-right: 647px;
-    padding-top: 60px;
-}
+
 
 .user-menu {
     position: relative;
