@@ -248,16 +248,24 @@ nav > a:not(:hover)::after {
     margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: 25px;
+}
+
+.perfil-icono {
+    margin-right: 25px;
 }
 
 .perfil-icono i {
-    font-size: 90px;
+    font-size: 120px; /* más grande como en la imagen */
     color: #c9c9c9;
 }
 
+.perfil-texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .perfil-texto span {
-    display: block;
     font-size: 14px;
     font-weight: bold;
     color: #c9c9c9;
