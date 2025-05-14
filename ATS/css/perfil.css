@@ -237,19 +237,7 @@ nav > a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
-.perfil-header {
-    background-color: #1a1131;
-    padding: 60px 0;
-    color: white;
-}
 
-.perfil-container {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    align-items: flex-start; /* Alinea arriba para que el span esté alineado con la parte superior del icono */
-    gap: 20px;
-}
 
 .perfil-icono i {
     font-size: 110px;
