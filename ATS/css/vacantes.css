@@ -161,7 +161,7 @@ nav > a:not(:hover)::after {
     top: 100%;
     left: 0;
     width: 100%;
-    height: 30px; /* área invisible para mantener hover */
+    height: 40px; /* área invisible para mantener hover */
     z-index: 1;
 }
 
