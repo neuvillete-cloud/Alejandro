@@ -220,8 +220,7 @@ nav > a:not(:hover)::after {
     background-color: #1f183c;
     padding: 100px 60px;
     min-height: 170px;
-    display: flex
-;
+    display: flex;
     justify-content: flex-start;
     align-items: flex-end;
     padding-left: 180px;
