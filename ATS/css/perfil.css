@@ -247,22 +247,19 @@ nav > a:not(:hover)::after {
     width: 80%;
     margin: 0 auto;
     display: flex;
-    align-items: center;
-}
-
-.perfil-icono {
-    margin-right: 25px;
+    align-items: flex-start; /* Alinea arriba para que el span esté alineado con la parte superior del icono */
+    gap: 20px;
 }
 
 .perfil-icono i {
-    font-size: 120px; /* más grande como en la imagen */
+    font-size: 110px;
     color: #c9c9c9;
 }
 
 .perfil-texto {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .perfil-texto span {
