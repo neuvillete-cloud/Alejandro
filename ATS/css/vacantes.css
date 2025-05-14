@@ -183,11 +183,13 @@ nav > a:not(:hover)::after {
     top: calc(100% + 35px); /* Justo debajo del user-info */
     left: 0; /* Alineado al inicio del contenedor */
     background-color: #1a1131;
-    border: 1px solid #432b7f;
+    /* Quitar el borde de caja */
+    border: none;
+    /* Quitar el borde redondeado */
+    border-radius: 0;
     min-width: 220px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.3);
     z-index: 1000;
-    border-radius: 6px;
     overflow: hidden;
 }
 
@@ -197,7 +199,7 @@ nav > a:not(:hover)::after {
     display: block;
     text-decoration: none;
     font-size: 14px;
-    border-bottom: 1px solid #432b7f;
+    border-bottom: 1px solid #432b7f; /* Conserva líneas internas */
     transition: background-color 0.2s ease;
 }
 
@@ -208,6 +210,7 @@ nav > a:not(:hover)::after {
 .dropdown-menu a:hover {
     background-color: #9900ff;
 }
+
 
 .user-info {
     position: relative;
