@@ -218,14 +218,12 @@ nav > a:not(:hover)::after {
 
 .section-title {
     background-color: #1f183c;
-    padding: 100px 20px;
+    padding: 100px 60px;
     min-height: 170px;
     display: flex;
-    align-items: center;         /* Centra verticalmente */
-    justify-content: center;     /* Centra horizontalmente */
-    text-align: left;
+    align-items: center;
+    justify-content: flex-start;
 }
-
 
 .section-title .perfil-icono {
     font-size: 110px;
