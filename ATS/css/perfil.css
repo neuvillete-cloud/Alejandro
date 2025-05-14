@@ -236,3 +236,36 @@ nav > a:not(:hover)::after {
 .user-info:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
+
+.perfil-header {
+    background-color: #1a1131;
+    padding: 60px 0;
+    color: white;
+}
+
+.perfil-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.perfil-icono i {
+    font-size: 90px;
+    color: #c9c9c9;
+}
+
+.perfil-texto span {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #c9c9c9;
+    margin-bottom: 5px;
+}
+
+.perfil-texto h1 {
+    margin: 0;
+    font-size: 48px;
+    font-weight: bold;
+}
