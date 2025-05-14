@@ -139,7 +139,6 @@ nav > a:not(:hover)::after {
 .user-menu {
     position: relative;
     display: inline-block;
-    padding-bottom: 30px;
 }
 
 .user-info {
