@@ -48,17 +48,16 @@ session_start();
     </div>
 </header>
 
-<section class="section-title perfil-header">
-    <div class="perfil-container">
-        <div class="perfil-icono">
-            <i class="fas fa-user-circle"></i>
-        </div>
-        <div class="perfil-texto">
-            <span>MI PERFIL</span>
-            <h1><?= htmlspecialchars($_SESSION['NombreCandidato']) . ' ' . htmlspecialchars($_SESSION['ApellidosCandidato']) ?></h1>
-        </div>
+<section class="section-title">
+    <div class="perfil-icono">
+        <i class="fas fa-user-circle"></i>
+    </div>
+    <div class="perfil-texto">
+        <span>MI PERFIL</span>
+        <h1><?= htmlspecialchars($_SESSION['NombreCandidato'] . ' ' . $_SESSION['ApellidosCandidato']) ?></h1>
     </div>
 </section>
+
 
 
 
