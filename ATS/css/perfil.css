@@ -114,27 +114,6 @@ nav > a:not(:hover)::after {
     }
 }
 
-/* Sección del título */
-.section-title {
-    background-color:	#1f183c;
-    padding: 100px 20px;
-    min-height: 170px; /* ajusta a lo que necesites */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex-direction: column;
-}
-
-
-.section-title h1 {
-    font-size: 60px;
-    color: white;
-    margin: 0;
-    font-weight: bold;
-    padding-right: 647px;
-    padding-top: 60px;
-}
 
 .user-menu {
     position: relative;
@@ -237,28 +216,41 @@ nav > a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
-
-
-.perfil-icono i {
-    font-size: 110px;
-    color: #c9c9c9;
+.section-title {
+    background-color: #1f183c;
+    padding: 100px 20px;
+    min-height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
 }
 
-.perfil-texto {
+.section-title .perfil-icono {
+    font-size: 110px;
+    color: #c9c9c9;
+    margin-right: 20px;
+}
+
+.section-title .perfil-texto {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
-.perfil-texto span {
+.section-title .perfil-texto span {
     font-size: 14px;
     font-weight: bold;
     color: #c9c9c9;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
-.perfil-texto h1 {
-    margin: 0;
+.section-title .perfil-texto h1 {
     font-size: 48px;
+    color: white;
+    margin: 0;
     font-weight: bold;
 }
+
+
+
