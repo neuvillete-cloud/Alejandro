@@ -182,7 +182,7 @@ nav > a:not(:hover)::after {
     position: absolute;
     top: calc(100% + 35px); /* Justo debajo del user-info */
     left: 0; /* Alineado al inicio del contenedor */
-    background-color: #1a1131;
+    background-color: #140c33;
     /* Quitar el borde de caja */
     border: none;
     /* Quitar el borde redondeado */
