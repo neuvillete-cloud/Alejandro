@@ -115,7 +115,26 @@ nav > a:not(:hover)::after {
 }
 
 /* Sección del título */
+.section-title {
+    background-color:	#1f183c;
+    padding: 100px 20px;
+    min-height: 170px; /* ajusta a lo que necesites */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
 
+
+.section-title h1 {
+    font-size: 60px;
+    color: white;
+    margin: 0;
+    font-weight: bold;
+    padding-right: 647px;
+    padding-top: 60px;
+}
 
 .user-menu {
     position: relative;
