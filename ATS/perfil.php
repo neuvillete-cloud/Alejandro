@@ -58,6 +58,29 @@ session_start();
     </div>
 </section>
 
+<section class="perfil-contenido">
+    <div class="info-izquierda">
+        <h2><i class="fas fa-user"></i> Información básica</h2>
+
+        <p><strong>Nombre</strong><br><?= htmlspecialchars($_SESSION['NombreCandidato']) ?></p>
+        <p><strong>Apellidos</strong><br><?= htmlspecialchars($_SESSION['ApellidosCandidato']) ?></p>
+
+        <p><strong>Tal como se describe en los Avisos de privacidad de datos, se pueden utilizar mis datos personales:</strong><br>
+            Hacer que mis datos sean accesibles a todas las empresas relevantes del grupo Siemens Energy en todo el mundo para que me consideren para puestos vacantes que se ajusten a mi perfil.</p>
+
+        <hr>
+
+        <h2><i class="fas fa-comment-dots"></i> Información de contacto</h2>
+        <p><strong>Correo electrónico</strong><br><?= htmlspecialchars($_SESSION['CorreoCandidato']) ?></p>
+        <p><strong>Móvil</strong><br><?= htmlspecialchars($_SESSION['TelefonoCandidato']) ?></p>
+    </div>
+
+    <div class="acciones-derecha">
+        <button class="btn-editar">Editar perfil</button>
+        <button class="btn-reset">Restablecer contraseña</button>
+    </div>
+</section>
+
 
 
 
