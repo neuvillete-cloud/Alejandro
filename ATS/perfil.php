@@ -65,8 +65,8 @@ session_start();
         <p><strong>Nombre</strong><br><?= htmlspecialchars($_SESSION['NombreCandidato']) ?></p>
         <p><strong>Apellidos</strong><br><?= htmlspecialchars($_SESSION['ApellidosCandidato']) ?></p>
 
-        <p><strong>Tal como se describe en los Avisos de privacidad de datos, se pueden utilizar mis datos personales:</strong><br>
-            Hacer que mis datos sean accesibles a todas las empresas relevantes del grupo Siemens Energy en todo el mundo para que me consideren para puestos vacantes que se ajusten a mi perfil.</p>
+        <p><strong>De acuerdo con lo establecido en los Avisos de privacidad, autorizo el uso de mis datos personales para procesos de selección:</strong><br>
+            Mis datos podrán ser compartidos con los departamentos de recursos humanos de Grammer Automotive a nivel global, con el fin de ser considerado(a) en oportunidades laborales que coincidan con mi perfil profesional.</p>
 
         <hr>
 
