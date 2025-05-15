@@ -82,14 +82,17 @@ session_start();
 </section>
 <footer class="footer-grammer">
     <div class="footer-top">
-        <button class="contact-button">
-            <i class="fa-solid fa-envelope"></i> Contáctanos
-        </button>
-        <div class="footer-links">
-            <a href="#">Oportunidades laborales</a>
-            <a href="#">Adaptaciones para personas con discapacidad</a>
-            <a href="#">grammer.com</a>
+        <div class="footer-contact-section">
+            <button class="contact-button">
+                <i class="fa-solid fa-envelope"></i> Contáctanos
+            </button>
+            <div class="footer-links">
+                <a href="#">Oportunidades laborales</a>
+                <a href="#">Adaptaciones para personas con discapacidad</a>
+                <a href="#">grammer.com</a>
+            </div>
         </div>
+
         <div class="footer-social">
             <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
             <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
@@ -109,10 +112,5 @@ session_start();
         <p>© Grammer, 2020 - 2025</p>
     </div>
 </footer>
-
-
-
-
-
 </body>
 </html>

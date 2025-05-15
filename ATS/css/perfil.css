@@ -357,6 +357,13 @@ hr {
     padding-bottom: 30px;
 }
 
+.footer-contact-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}
+
 .contact-button {
     background-color: white;
     color: #1f183c;
@@ -369,6 +376,7 @@ hr {
     cursor: pointer;
     border: none;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    width: fit-content;
 }
 
 .contact-button:hover {
@@ -377,22 +385,20 @@ hr {
     transform: translateY(-2px);
 }
 
-.footer-links,
-.footer-social {
+.footer-links {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-left: 10px;
 }
 
-.footer-links a,
-.footer-info a {
+.footer-links a {
     color: white;
     text-decoration: none;
     transition: color 0.3s;
 }
 
-.footer-links a:hover,
-.footer-info a:hover {
+.footer-links a:hover {
     color: #9900ff;
 }
 
@@ -401,6 +407,7 @@ hr {
     flex-direction: row;
     gap: 15px;
     margin-top: 10px;
+    align-items: center;
 }
 
 .footer-social a i {
@@ -425,6 +432,16 @@ hr {
     gap: 25px;
     margin-bottom: 15px;
     flex-wrap: wrap;
+}
+
+.footer-info a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-info a:hover {
+    color: #9900ff;
 }
 
 .footer-bottom p {
