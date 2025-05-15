@@ -340,71 +340,95 @@ hr {
     transition: all 0.2s ease-in-out;
 }
 
-.footer {
+.footer-grammer {
     background-color: #1f183c;
     color: white;
-    padding: 40px 20px 20px;
+    padding: 40px 60px;
     font-family: Arial, sans-serif;
+    font-size: 14px;
 }
 
-.footer-container {
+.footer-top {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 30px;
-}
-
-.footer-contact,
-.footer-links,
-.footer-social {
-    flex: 1 1 250px;
+    align-items: flex-start;
+    border-bottom: 1px solid #444;
+    padding-bottom: 30px;
 }
 
 .contact-button {
     background-color: white;
     color: #1f183c;
-    border-radius: 25px;
-    padding: 10px 20px;
+    padding: 10px 25px;
+    border-radius: 30px;
     font-weight: bold;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    border: none;
+    gap: 10px;
     cursor: pointer;
-    margin-bottom: 10px;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.footer-contact p,
-.footer-links a {
-    margin: 8px 0;
-    color: #ccc;
-    font-size: 14px;
-    text-decoration: none;
+.contact-button:hover {
+    background-color: #9900ff;
+    color: white;
+    transform: translateY(-2px);
 }
 
-.footer-links {
+.footer-links,
+.footer-social {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 8px;
 }
 
-.footer-links a:hover {
-    text-decoration: underline;
-}
-
-.footer-social a {
-    margin-right: 15px;
+.footer-links a,
+.footer-info a {
     color: white;
-    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.3s;
 }
 
-.footer-divider {
-    border: 0.5px solid #444;
-    margin: 30px 0 10px;
+.footer-links a:hover,
+.footer-info a:hover {
+    color: #9900ff;
+}
+
+.footer-social {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.footer-social a i {
+    font-size: 20px;
+    color: white;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.footer-social a:hover i {
+    color: #9900ff;
+    transform: scale(1.2);
 }
 
 .footer-bottom {
+    margin-top: 30px;
     text-align: center;
+}
+
+.footer-info {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.footer-bottom p {
+    margin: 5px 0;
     font-size: 13px;
-    color: #ccc;
+    color: #bbb;
 }

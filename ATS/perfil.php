@@ -80,37 +80,39 @@ session_start();
         <button class="btn-reset">Restablecer contraseña</button>
     </div>
 </section>
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-contact">
-            <button class="contact-button"><i class="fas fa-envelope"></i> Contáctenos</button>
-            <p><strong>Solo en MX:</strong> Consulta las adaptaciones disponibles para personas con discapacidad</p>
-            <p><a href="#">Solicitud para condiciones laborales</a></p>
-            <p><a href="https://grammer.com">grammer.com</a> Página web global</p>
-        </div>
-
+<footer class="footer-grammer">
+    <div class="footer-top">
+        <button class="contact-button">
+            <i class="fa-solid fa-envelope"></i> Contáctanos
+        </button>
         <div class="footer-links">
+            <a href="#">Oportunidades laborales</a>
+            <a href="#">Adaptaciones para personas con discapacidad</a>
+            <a href="#">grammer.com</a>
+        </div>
+        <div class="footer-social">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-info">
             <a href="#">Información de la empresa</a>
             <a href="#">Política de privacidad</a>
             <a href="#">Aviso sobre cookies</a>
             <a href="#">Condiciones de uso</a>
-            <a href="#">ID digital</a>
         </div>
-
-        <div class="footer-social">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-x-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-        </div>
-    </div>
-
-    <hr class="footer-divider">
-
-    <div class="footer-bottom">
-        <p>Grammer Automotive es una marca comercial registrada de Grammer AG.</p>
-        <p>© Grammer Automotive, 2020 - 2025</p>
+        <p>Grammer es una marca registrada y sus derechos están reservados.</p>
+        <p>© Grammer, 2020 - 2025</p>
     </div>
 </footer>
+
+
+
+
+
 </body>
 </html>
