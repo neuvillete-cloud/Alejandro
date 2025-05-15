@@ -327,3 +327,84 @@ hr {
     font-weight: bold;
 }
 
+.btn-editar:hover {
+    background-color: #7a00cc; /* un morado más oscuro */
+    transform: scale(1.03);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-reset:hover {
+    background-color: #9900ff;
+    color: white;
+    transform: scale(1.03);
+    transition: all 0.2s ease-in-out;
+}
+
+.footer {
+    background-color: #1f183c;
+    color: white;
+    padding: 40px 20px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.footer-contact,
+.footer-links,
+.footer-social {
+    flex: 1 1 250px;
+}
+
+.contact-button {
+    background-color: white;
+    color: #1f183c;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.footer-contact p,
+.footer-links a {
+    margin: 8px 0;
+    color: #ccc;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-social a {
+    margin-right: 15px;
+    color: white;
+    font-size: 18px;
+}
+
+.footer-divider {
+    border: 0.5px solid #444;
+    margin: 30px 0 10px;
+}
+
+.footer-bottom {
+    text-align: center;
+    font-size: 13px;
+    color: #ccc;
+}
