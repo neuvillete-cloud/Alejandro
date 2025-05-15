@@ -266,6 +266,7 @@ nav > a:not(:hover)::after {
 .info-izquierda {
     max-width: 60%;
     color: #1f183c;
+    padding-left: 90px;
 }
 
 .info-izquierda h2 {
@@ -325,3 +326,4 @@ hr {
     cursor: pointer;
     font-weight: bold;
 }
+
