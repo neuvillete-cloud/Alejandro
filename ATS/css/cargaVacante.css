@@ -12,6 +12,8 @@ body {
     min-height: 120vh; /* ✅ asegura altura mínima, pero permite crecer */
     overflow-y: auto;
     position: relative;
+    justify-content: center;
+    align-items: center;
 }
 
 
