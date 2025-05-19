@@ -349,7 +349,7 @@ body::after {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
     position: relative; /* <-- Necesario para que z-index funcione */
-    z-index: 50;       /* <-- Asegura que esté por encima de la mayoría de elementos */
+    z-index: 9;       /* <-- Asegura que esté por encima de la mayoría de elementos */
 }
 
 
