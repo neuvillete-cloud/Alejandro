@@ -9,13 +9,11 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
-    height: 100vh;
-    overflow-y: auto; /* ← habilita scroll vertical */
+    min-height: 100vh; /* ✅ asegura altura mínima, pero permite crecer */
+    overflow-y: auto;
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
+
 
 /* Efectos de círculos en el fondo */
 body::before, body::after {
