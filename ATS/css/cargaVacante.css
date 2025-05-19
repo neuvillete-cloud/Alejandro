@@ -10,7 +10,7 @@ body {
     background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
     color: white;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto; /* ← habilita scroll vertical */
     position: relative;
     display: flex;
     justify-content: center;
@@ -362,6 +362,7 @@ body::after {
     padding: 120px 20px 20px 220px; /* Aumentamos el top de 80px a 120px */
     gap: 40px;
     flex-wrap: wrap;
+    overflow-y: visible; /* ← se asegura de no bloquearlo */
 }
 
 /* Formulario */
