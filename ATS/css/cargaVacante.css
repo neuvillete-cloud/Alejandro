@@ -338,6 +338,14 @@ body::after {
     transition: opacity 0.3s ease;
 }
 
+.vacante-container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 16px;
+    max-width: 900px;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
 .file-upload {
     display: inline-block;
     width: 200px;
