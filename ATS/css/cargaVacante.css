@@ -366,7 +366,6 @@ body::after {
     gap: 40px;
     flex-wrap: wrap;
     overflow-y: visible; /* ← se asegura de no bloquearlo */
-    position: relative;
 }
 
 /* Formulario */
@@ -376,7 +375,6 @@ body::after {
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    position: relative;
 }
 
 .formulario-vacante h2 {
