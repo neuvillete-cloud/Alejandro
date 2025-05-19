@@ -435,7 +435,7 @@ body {
 /* Contenedor principal */
 .vacante-container {
     display: flex;
-    padding: 80px 20px 20px 220px; /* espacio para el sidebar */
+    padding: 120px 20px 20px 220px; /* Aumentamos el top de 80px a 120px */
     gap: 40px;
     flex-wrap: wrap;
 }
