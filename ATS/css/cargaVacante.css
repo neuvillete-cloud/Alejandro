@@ -45,7 +45,7 @@ body::after {
 
 /* Barra superior */
 .header {
-    position: absolute;
+    position: fixed; /* ✅ Esto la deja fija en la parte superior */
     top: 0;
     width: 100%;
     padding: 15px 40px;
