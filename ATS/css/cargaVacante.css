@@ -338,6 +338,7 @@ body::after {
     transition: opacity 0.3s ease;
 }
 
+/* CONTENEDOR PRINCIPAL */
 .vacante-container {
     background: #fff;
     padding: 30px 40px;
@@ -346,6 +347,8 @@ body::after {
     width: 100%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
+
+/* BOTÓN DE SUBIR ARCHIVO */
 .file-upload {
     display: inline-block;
     width: 200px;
@@ -361,6 +364,7 @@ body::after {
     background-color: #e9ecef;
 }
 
+/* FORMULARIO CON ESTILO DE CV */
 .form-cv-layout {
     display: flex;
     flex-wrap: wrap;
@@ -369,6 +373,7 @@ body::after {
     margin-top: 20px;
 }
 
+/* BLOQUE DE FOTO */
 .foto-cv {
     width: 160px;
     display: flex;
@@ -381,12 +386,28 @@ body::after {
     margin-top: 10px;
 }
 
+/* INPUTS */
 .input-group {
     flex: 1 1 250px;
     display: flex;
     flex-direction: column;
 }
 
+.input-group label {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+/* TEXTAREAS GRANDES */
 .textarea-group textarea {
     resize: vertical;
     min-height: 80px;
@@ -396,14 +417,24 @@ body::after {
     flex: 1 1 100%;
 }
 
+/* BOTÓN */
 button[type="submit"] {
     margin-top: 20px;
     padding: 10px 20px;
     font-weight: bold;
     cursor: pointer;
+    background-color: #0057b7;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
 }
 
-/* Responsive para pantallas chicas */
+button[type="submit"]:hover {
+    background-color: #0044a3;
+}
+
+/* RESPONSIVE PARA PANTALLAS CHICAS */
 @media screen and (max-width: 768px) {
     .form-cv-layout {
         flex-direction: column;
