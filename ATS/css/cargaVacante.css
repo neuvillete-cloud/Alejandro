@@ -353,126 +353,56 @@ body::after {
     background-color: #e9ecef;
 }
 
-/* Reset básico */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Contenedor principal */
-.vacante-container {
+.form-cv-layout {
     display: flex;
-    padding: 120px 20px 20px 220px; /* Aumentamos el top de 80px a 120px */
-    gap: 40px;
     flex-wrap: wrap;
-    overflow-y: visible; /* ← se asegura de no bloquearlo */
-}
-
-/* Formulario */
-.formulario-vacante {
-    flex: 1 1 400px;
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
-.formulario-vacante h2 {
-    margin-bottom: 20px;
-    color: #0a2e50;
-}
-
-.formulario-vacante label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-.formulario-vacante input,
-.formulario-vacante select,
-.formulario-vacante textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    resize: vertical;
-}
-
-.formulario-vacante button {
+    gap: 20px;
+    align-items: flex-start;
     margin-top: 20px;
-    padding: 12px;
-    width: 100%;
-    background-color: #0a2e50;
-    color: white;
-    border: none;
-    border-radius: 6px;
+}
+
+.foto-cv {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.foto-cv input[type="file"] {
+    margin-top: 10px;
+}
+
+.input-group {
+    flex: 1 1 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.textarea-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.full-width {
+    flex: 1 1 100%;
+}
+
+button[type="submit"] {
+    margin-top: 20px;
+    padding: 10px 20px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
-.formulario-vacante button:hover {
-    background-color: #133c66;
-}
-
-/* Vista previa */
-.preview-vacante {
-    flex: 1 1 400px;
-}
-
-.preview-vacante h2 {
-    margin-bottom: 15px;
-    color: #0a2e50;
-}
-
-.preview-card {
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
-}
-
-.preview-card img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 15px;
-    border-radius: 6px;
-}
-
-.preview-card h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #0a2e50;
-}
-
-.preview-card p {
-    margin: 8px 0;
-}
-
-.preview-card strong {
-    color: #333;
-}
-
-/* Responsive */
+/* Responsive para pantallas chicas */
 @media screen and (max-width: 768px) {
-    .vacante-container {
+    .form-cv-layout {
         flex-direction: column;
-        padding: 80px 20px;
+        align-items: stretch;
     }
 
-    .sidebar {
-        position: static;
-        width: 100%;
-        min-height: auto;
-    }
-
-    .menu-toggle {
-        display: block;
+    .foto-cv {
+        align-self: center;
     }
 }
-
-

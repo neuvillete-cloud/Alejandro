@@ -49,70 +49,84 @@ if (!isset($_SESSION['NumNomina'])) {
 <main class="vacante-container">
     <section class="formulario-vacante">
         <h2>Cargar Nueva Vacante</h2>
-        <form id="vacanteForm">
-            <label for="titulo">Título del puesto:</label>
-            <input type="text" id="titulo" name="titulo" required>
+        <form id="vacanteForm" class="form-cv-layout">
 
-            <label for="area">Área / Departamento:</label>
-            <input type="text" id="area" name="area" required>
+            <!-- Foto (imagen/logo) -->
+            <div class="foto-cv">
+                <label for="imagen">Imagen / Logo:</label>
+                <input type="file" id="imagen" name="imagen" accept="image/*" />
+            </div>
 
-            <label for="tipo">Tipo de contrato:</label>
-            <select id="tipo" name="tipo">
-                <option value="Tiempo completo">Tiempo completo</option>
-                <option value="Medio tiempo">Medio tiempo</option>
-                <option value="Temporal">Temporal</option>
-            </select>
+            <!-- Primeros campos al lado de la imagen -->
+            <div class="input-group">
+                <label for="titulo">Título del puesto:</label>
+                <input type="text" id="titulo" name="titulo" required />
+            </div>
 
-            <label for="horario">Horario:</label>
-            <input type="text" id="horario" name="horario">
+            <div class="input-group">
+                <label for="area">Área / Departamento:</label>
+                <input type="text" id="area" name="area" required />
+            </div>
 
-            <label for="sueldo">Sueldo:</label>
-            <input type="text" id="sueldo" name="sueldo">
+            <!-- Fila 1 -->
+            <div class="input-group">
+                <label for="tipo">Tipo de contrato:</label>
+                <select id="tipo" name="tipo">
+                    <option value="Tiempo completo">Tiempo completo</option>
+                    <option value="Medio tiempo">Medio tiempo</option>
+                    <option value="Temporal">Temporal</option>
+                </select>
+            </div>
 
-            <label for="pais">País / Región:</label>
-            <input type="text" id="pais" name="pais" required>
+            <div class="input-group">
+                <label for="horario">Horario:</label>
+                <input type="text" id="horario" name="horario" />
+            </div>
 
-            <label for="estado">Estado / Provincia:</label>
-            <input type="text" id="estado" name="estado" required>
+            <!-- Fila 2 -->
+            <div class="input-group">
+                <label for="sueldo">Sueldo:</label>
+                <input type="text" id="sueldo" name="sueldo" />
+            </div>
 
-            <label for="ciudad">Ciudad:</label>
-            <input type="text" id="ciudad" name="ciudad" required>
+            <div class="input-group">
+                <label for="pais">País / Región:</label>
+                <input type="text" id="pais" name="pais" required />
+            </div>
 
-            <label for="requisitos">Requisitos:</label>
-            <textarea id="requisitos" name="requisitos"></textarea>
+            <!-- Fila 3 -->
+            <div class="input-group">
+                <label for="estado">Estado / Provincia:</label>
+                <input type="text" id="estado" name="estado" required />
+            </div>
 
-            <label for="beneficios">Beneficios:</label>
-            <textarea id="beneficios" name="beneficios"></textarea>
+            <div class="input-group">
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" name="ciudad" required />
+            </div>
 
-            <label for="descripcion">Descripción del puesto:</label>
-            <textarea id="descripcion" name="descripcion" required></textarea>
+            <!-- Fila 4 -->
+            <div class="input-group textarea-group">
+                <label for="requisitos">Requisitos:</label>
+                <textarea id="requisitos" name="requisitos"></textarea>
+            </div>
 
-            <label for="imagen">Imagen / Logo:</label>
-            <input type="file" id="imagen" name="imagen" accept="image/*">
+            <div class="input-group textarea-group">
+                <label for="beneficios">Beneficios:</label>
+                <textarea id="beneficios" name="beneficios"></textarea>
+            </div>
+
+            <!-- Descripción -->
+            <div class="input-group textarea-group full-width">
+                <label for="descripcion">Descripción del puesto:</label>
+                <textarea id="descripcion" name="descripcion" required></textarea>
+            </div>
 
             <button type="submit">Guardar Vacante</button>
         </form>
     </section>
-
-    <section class="preview-vacante">
-        <h2>Vista Previa</h2>
-        <div class="preview-card">
-            <img id="previewImg" src="" alt="Imagen Vacante" style="display:none; max-width: 100%; height: auto;" />
-            <h3 id="prevTitulo">[Título del puesto]</h3>
-            <p><strong>Área:</strong> <span id="prevArea">[Área]</span></p>
-            <p><strong>Tipo de contrato:</strong> <span id="prevTipo">[Tipo]</span></p>
-            <p><strong>Horario:</strong> <span id="prevHorario">[Horario]</span></p>
-            <p><strong>Sueldo:</strong> <span id="prevSueldo">[Sueldo]</span></p>
-            <p><strong>Ubicación:</strong> <span id="prevUbicacion">[Ubicación]</span></p>
-            <p><strong>Requisitos:</strong></p>
-            <p id="prevRequisitos">[Requisitos]</p>
-            <p><strong>Beneficios:</strong></p>
-            <p id="prevBeneficios">[Beneficios]</p>
-            <p><strong>Descripción:</strong></p>
-            <p id="prevDescripcion">[Descripción]</p>
-        </div>
-    </section>
 </main>
+
 
 
 <!-- Modal Perfil -->
