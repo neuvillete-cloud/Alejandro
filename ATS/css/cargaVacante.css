@@ -366,6 +366,7 @@ body::after {
     gap: 40px;
     flex-wrap: wrap;
     overflow-y: visible; /* ← se asegura de no bloquearlo */
+    position: relative;
 }
 
 /* Formulario */
