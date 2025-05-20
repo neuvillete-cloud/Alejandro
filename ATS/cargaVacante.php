@@ -58,7 +58,7 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
 
             <!-- Fila 1 -->
-            <div class="input-group">
+            <div class="input-group textarea-group">
                 <label for="titulo">Título del puesto:</label>
                 <input type="text" id="titulo" name="titulo" required />
             </div>
