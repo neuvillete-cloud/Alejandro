@@ -412,7 +412,7 @@ body::after {
 
 /* INPUTS */
 .input-group {
-    flex: 1 1 250px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     color: #000000;
@@ -438,10 +438,6 @@ body::after {
     min-height: 80px;
 }
 
-.full-width {
-    flex: 1 1 100%;
-}
-
 /* BOTÓN */
 button[type="submit"] {
     margin-top: 20px;
@@ -459,40 +455,52 @@ button[type="submit"]:hover {
     background-color: #0044a3;
 }
 
-/* ============ NUEVO: ESTILO PARA ACOMODAR IMAGEN A LA IZQUIERDA ============ */
-
-.fila-principal {
-    display: flex;
-    flex-wrap: wrap;
+/* ============ NUEVA ESTRUCTURA EN GRID ============ */
+.form-cv-layout.grid-cv {
+    display: grid;
+    grid-template-columns: 250px 1fr 1fr;
     gap: 20px;
-    width: 100%;
+    align-items: start;
 }
 
-.inputs-wrapper {
-    flex: 1 1 500px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+/* Foto a la izquierda */
+.foto-cv {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+}
+
+/* Inputs de texto normales */
+.input-group {
+    flex: 1 1 250px;
+}
+
+/* Textareas y campos grandes que ocupan todo el ancho */
+.full-width,
+.textarea-group {
+    grid-column: 1 / -1;
+}
+
+/* Botón ocupa todo el ancho */
+button[type="submit"] {
+    grid-column: 1 / -1;
+    justify-self: start;
 }
 
 /* ============ RESPONSIVE ============ */
 @media screen and (max-width: 768px) {
-    .form-cv-layout {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .fila-principal {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .inputs-wrapper {
-        width: 100%;
+    .form-cv-layout.grid-cv {
+        grid-template-columns: 1fr;
     }
 
     .foto-cv {
-        align-self: center;
+        grid-column: 1 / -1;
         margin-bottom: 20px;
+    }
+
+    .full-width,
+    .textarea-group,
+    .input-group,
+    button[type="submit"] {
+        grid-column: 1 / -1;
     }
 }

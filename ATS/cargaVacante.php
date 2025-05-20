@@ -49,9 +49,9 @@ if (!isset($_SESSION['NumNomina'])) {
 <main class="vacante-container">
     <section class="formulario-vacante">
         <h2>Cargar Nueva Vacante</h2>
-        <form id="vacanteForm" class="form-cv-layout">
+        <form id="vacanteForm" class="form-cv-layout grid-cv">
 
-            <!-- Contenedor imagen + inputs principales -->
+        <!-- Contenedor imagen + inputs principales -->
             <div class="fila-principal">
                 <!-- Foto (imagen/logo) -->
                 <div class="foto-cv" id="drop-area">
