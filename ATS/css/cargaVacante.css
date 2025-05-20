@@ -396,6 +396,7 @@ body::after {
     flex: 1 1 250px;
     display: flex;
     flex-direction: column;
+    background-color: #0057b7;
 }
 
 .input-group label {
