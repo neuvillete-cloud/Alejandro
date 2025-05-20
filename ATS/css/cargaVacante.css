@@ -351,6 +351,14 @@ body::after {
     z-index: 9;
 }
 
+.vacante-container h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0057b7; /* azul fuerte que ya estás usando */
+    margin-bottom: 25px;
+    text-align: center;
+}
+
 /* BOTÓN DE SUBIR ARCHIVO */
 .file-upload {
     display: inline-block;
