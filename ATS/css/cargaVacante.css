@@ -528,4 +528,12 @@ button[type="submit"] {
     border-color: #a3cfff;     /* borde ligeramente más azul */
 }
 
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    background-color: #e6f0ff; /* mismo azul claro pastel */
+    border-color: #a3cfff;     /* azul un poco más fuerte para el borde */
+    outline: none;             /* elimina el borde negro por defecto */
+    box-shadow: 0 0 0 2px rgba(163, 207, 255, 0.4); /* resalta suavemente */
+}
 
