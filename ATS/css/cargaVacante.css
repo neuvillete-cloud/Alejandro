@@ -347,11 +347,9 @@ body::after {
     max-width: 900px;
     width: 100%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-
-    position: relative; /* <-- Necesario para que z-index funcione */
-    z-index: 9;       /* <-- Asegura que esté por encima de la mayoría de elementos */
+    position: relative;
+    z-index: 9;
 }
-
 
 /* BOTÓN DE SUBIR ARCHIVO */
 .file-upload {
@@ -369,6 +367,7 @@ body::after {
     background-color: #e9ecef;
 }
 
+/* FOTO (imagen/logo) */
 .foto-cv {
     width: 100%;
     max-width: 300px;
@@ -460,14 +459,40 @@ button[type="submit"]:hover {
     background-color: #0044a3;
 }
 
-/* RESPONSIVE PARA PANTALLAS CHICAS */
+/* ============ NUEVO: ESTILO PARA ACOMODAR IMAGEN A LA IZQUIERDA ============ */
+
+.fila-principal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.inputs-wrapper {
+    flex: 1 1 500px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* ============ RESPONSIVE ============ */
 @media screen and (max-width: 768px) {
     .form-cv-layout {
         flex-direction: column;
         align-items: stretch;
     }
 
+    .fila-principal {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .inputs-wrapper {
+        width: 100%;
+    }
+
     .foto-cv {
         align-self: center;
+        margin-bottom: 20px;
     }
 }

@@ -51,25 +51,30 @@ if (!isset($_SESSION['NumNomina'])) {
         <h2>Cargar Nueva Vacante</h2>
         <form id="vacanteForm" class="form-cv-layout">
 
-            <!-- Foto (imagen/logo) -->
-            <div class="foto-cv" id="drop-area">
-                <img id="preview" class="preview-img" src="#" alt="Preview" />
-                <span class="placeholder-text">Haz clic o arrastra tu imagen aquí</span>
-                <input type="file" id="imagen" name="imagen" accept="image/*" />
+            <!-- Contenedor imagen + inputs principales -->
+            <div class="fila-principal">
+                <!-- Foto (imagen/logo) -->
+                <div class="foto-cv" id="drop-area">
+                    <img id="preview" class="preview-img" src="#" alt="Preview" />
+                    <span class="placeholder-text">Haz clic o arrastra tu imagen aquí</span>
+                    <input type="file" id="imagen" name="imagen" accept="image/*" />
+                </div>
+
+                <!-- Inputs al lado derecho de la imagen -->
+                <div class="inputs-wrapper">
+                    <div class="input-group">
+                        <label for="titulo">Título del puesto:</label>
+                        <input type="text" id="titulo" name="titulo" required />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="area">Área / Departamento:</label>
+                        <input type="text" id="area" name="area" required />
+                    </div>
+                </div>
             </div>
 
-            <!-- Primeros campos al lado de la imagen -->
-            <div class="input-group">
-                <label for="titulo">Título del puesto:</label>
-                <input type="text" id="titulo" name="titulo" required />
-            </div>
-
-            <div class="input-group">
-                <label for="area">Área / Departamento:</label>
-                <input type="text" id="area" name="area" required />
-            </div>
-
-            <!-- Fila 1 -->
+            <!-- Resto de inputs -->
             <div class="input-group">
                 <label for="tipo">Tipo de contrato:</label>
                 <select id="tipo" name="tipo">
@@ -84,7 +89,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <input type="text" id="horario" name="horario" />
             </div>
 
-            <!-- Fila 2 -->
             <div class="input-group">
                 <label for="sueldo">Sueldo:</label>
                 <input type="text" id="sueldo" name="sueldo" />
@@ -95,7 +99,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <input type="text" id="pais" name="pais" required />
             </div>
 
-            <!-- Fila 3 -->
             <div class="input-group">
                 <label for="estado">Estado / Provincia:</label>
                 <input type="text" id="estado" name="estado" required />
@@ -106,7 +109,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <input type="text" id="ciudad" name="ciudad" required />
             </div>
 
-            <!-- Fila 4 -->
             <div class="input-group textarea-group">
                 <label for="requisitos">Requisitos:</label>
                 <textarea id="requisitos" name="requisitos"></textarea>
@@ -117,7 +119,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <textarea id="beneficios" name="beneficios"></textarea>
             </div>
 
-            <!-- Descripción -->
             <div class="input-group textarea-group full-width">
                 <label for="descripcion">Descripción del puesto:</label>
                 <textarea id="descripcion" name="descripcion" required></textarea>
@@ -127,6 +128,7 @@ if (!isset($_SESSION['NumNomina'])) {
         </form>
     </section>
 </main>
+
 
 
 
