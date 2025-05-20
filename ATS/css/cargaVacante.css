@@ -369,26 +369,46 @@ body::after {
     background-color: #e9ecef;
 }
 
-/* FORMULARIO CON ESTILO DE CV */
-.form-cv-layout {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: flex-start;
-    margin-top: 20px;
-}
-
-/* BLOQUE DE FOTO */
 .foto-cv {
-    width: 160px;
+    width: 100%;
+    max-width: 300px;
+    min-height: 200px;
+    border: 2px dashed #1E90FF;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.foto-cv:hover {
+    background-color: rgba(30, 144, 255, 0.1);
 }
 
 .foto-cv input[type="file"] {
-    margin-top: 10px;
+    display: none;
+}
+
+.foto-cv .preview-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #1E90FF;
+    margin-bottom: 12px;
+    display: none;
+}
+
+.foto-cv .placeholder-text {
+    color: #1E90FF;
+    font-weight: bold;
+    font-size: 15px;
 }
 
 /* INPUTS */

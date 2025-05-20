@@ -52,8 +52,9 @@ if (!isset($_SESSION['NumNomina'])) {
         <form id="vacanteForm" class="form-cv-layout">
 
             <!-- Foto (imagen/logo) -->
-            <div class="foto-cv">
-                <label for="imagen">Imagen / Logo:</label>
+            <div class="foto-cv" id="drop-area">
+                <img id="preview" class="preview-img" src="#" alt="Preview" />
+                <span class="placeholder-text">Haz clic o arrastra tu imagen aquí</span>
                 <input type="file" id="imagen" name="imagen" accept="image/*" />
             </div>
 
@@ -234,6 +235,47 @@ if (!isset($_SESSION['NumNomina'])) {
         });
     });
 </script>
+<script>
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('imagen');
+    const previewImg = document.getElementById('preview');
+    const placeholder = dropArea.querySelector('.placeholder-text');
+
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', handleFile);
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.style.backgroundColor = 'rgba(30, 144, 255, 0.2)';
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.style.backgroundColor = '';
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.style.backgroundColor = '';
+        const file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files;
+        handleFile();
+    });
+
+    function handleFile() {
+        const file = fileInput.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
 <script src="js/funcionamientoModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
