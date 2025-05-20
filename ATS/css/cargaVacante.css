@@ -471,7 +471,7 @@ button[type="submit"]:hover {
 
 #titulo {
     grid-column: 2 / 3;
-    width: 50%;
+    width: 40%;
 }
 
 /* Inputs de texto normales */
