@@ -341,7 +341,7 @@ body::after {
 
 /* CONTENEDOR PRINCIPAL */
 .vacante-container {
-    background: #E6F4F9; /* Azul pastel */;
+    background: #fff;
     padding: 30px 40px;
     border-radius: 16px;
     max-width: 900px;
