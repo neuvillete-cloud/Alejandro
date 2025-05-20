@@ -482,7 +482,7 @@ button[type="submit"]:hover {
 
 #titulo {
     grid-column: 2 / 3;
-    width: 100%;
+    width: 50%;
 }
 
 /* Botón ocupa todo el ancho */
