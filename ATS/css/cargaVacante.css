@@ -407,7 +407,7 @@ body::after {
 .input-group select,
 .input-group textarea {
     padding: 8px 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #00bbff;
     border-radius: 6px;
     font-size: 15px;
 }
