@@ -480,6 +480,11 @@ button[type="submit"]:hover {
     grid-column: 1 / -1;
 }
 
+#titulo {
+    grid-column: 2 / 3;
+    width: 100%;
+}
+
 /* Botón ocupa todo el ancho */
 button[type="submit"] {
     grid-column: 1 / -1;
@@ -505,9 +510,4 @@ button[type="submit"] {
     }
 }
 
-/* Ajuste para que el título quede al lado de la foto y ocupe las columnas 2 y 3 */
-#titulo {
-    grid-column: 2 / 4;
-    grid-row: 1;
-    width: 100%;
-}
+
