@@ -466,7 +466,7 @@ button[type="submit"]:hover {
 /* Foto a la izquierda */
 .foto-cv {
     grid-column: 1 / 2;
-    grid-row: 1 / 3;
+    grid-row: 1 / 2;
 }
 
 /* Inputs de texto normales */
