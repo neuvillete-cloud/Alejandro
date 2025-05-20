@@ -469,6 +469,11 @@ button[type="submit"]:hover {
     grid-row: 1 / 3;
 }
 
+/* El campo de Título ocupa las dos columnas al lado de la foto */
+.titulo-full {
+    grid-column: 2 / 4;
+}
+
 /* Inputs de texto normales */
 .input-group {
     flex: 1 1 250px;
