@@ -521,4 +521,11 @@ button[type="submit"] {
     }
 }
 
+.input-group input:hover,
+.input-group select:hover,
+.input-group textarea:hover {
+    background-color: #e6f0ff; /* azul claro pastel */
+    border-color: #a3cfff;     /* borde ligeramente más azul */
+}
+
 
