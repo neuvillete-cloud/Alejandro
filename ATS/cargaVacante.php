@@ -145,6 +145,103 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
+<!-- MODAL DE VISTA PREVIA DE VACANTE -->
+<div class="modal-vista-previa-vacante" id="modalVistaPreviaVacante">
+    <div class="modal-contenido-vacante">
+        <span class="cerrar-modal-vacante" id="cerrarModalVacante">&times;</span>
+        <h2>Vista Previa de la Vacante</h2>
+
+        <div class="preview-body-vacante">
+            <div class="preview-imagen-vacante">
+                <img id="previewImagenVacante" src="#" alt="Imagen de Vacante">
+            </div>
+
+            <div class="preview-info-vacante">
+                <p><strong>Título:</strong> <span id="previewTitulo"></span></p>
+                <p><strong>Área / Departamento:</strong> <span id="previewArea"></span></p>
+                <p><strong>Tipo de contrato:</strong> <span id="previewTipo"></span></p>
+                <p><strong>Horario:</strong> <span id="previewHorario"></span></p>
+                <p><strong>Sueldo:</strong> <span id="previewSueldo"></span></p>
+                <p><strong>País / Región:</strong> <span id="previewPais"></span></p>
+                <p><strong>Estado / Provincia:</strong> <span id="previewEstado"></span></p>
+                <p><strong>Ciudad:</strong> <span id="previewCiudad"></span></p>
+                <p><strong>Requisitos:</strong> <span id="previewRequisitos"></span></p>
+                <p><strong>Beneficios:</strong> <span id="previewBeneficios"></span></p>
+                <p><strong>Descripción del puesto:</strong> <span id="previewDescripcion"></span></p>
+            </div>
+
+            <div class="botones-modal-vacante">
+                <button id="cancelarVistaPreviaVacante">Cancelar</button>
+                <button id="confirmarGuardarVacante">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("vacanteForm");
+        const modal = document.getElementById("modalVistaPreviaVacante");
+
+        const cerrarBtn = document.getElementById("cerrarModalVacante");
+        const cancelarBtn = document.getElementById("cancelarVistaPreviaVacante");
+        const confirmarBtn = document.getElementById("confirmarGuardarVacante");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Llenar los datos en el modal
+            document.getElementById("previewTitulo").textContent = form.titulo.value;
+            document.getElementById("previewArea").textContent = form.area.value;
+            document.getElementById("previewTipo").textContent = form.tipo.value;
+            document.getElementById("previewHorario").textContent = form.horario.value;
+            document.getElementById("previewSueldo").textContent = form.sueldo.value;
+            document.getElementById("previewPais").textContent = form.pais.value;
+            document.getElementById("previewEstado").textContent = form.estado.value;
+            document.getElementById("previewCiudad").textContent = form.ciudad.value;
+            document.getElementById("previewRequisitos").textContent = form.requisitos.value;
+            document.getElementById("previewBeneficios").textContent = form.beneficios.value;
+            document.getElementById("previewDescripcion").textContent = form.descripcion.value;
+
+            const file = form.imagen.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById("previewImagenVacante").src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById("previewImagenVacante").src = "#";
+            }
+
+            modal.style.display = "flex";
+        });
+
+        cerrarBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        cancelarBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        confirmarBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+            form.submit(); // Aquí se envía realmente el formulario
+        });
+
+        window.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+
+</script>
+
 <!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {

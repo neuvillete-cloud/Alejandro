@@ -542,3 +542,83 @@ button[type="submit"] {
     box-shadow: 0 0 0 2px rgba(163, 207, 255, 0.4); /* resalta suavemente */
 }
 
+.modal-vista-previa-vacante {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(20, 20, 20, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido-vacante {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.cerrar-modal-vacante {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #333;
+}
+
+.preview-body-vacante {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.preview-imagen-vacante img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.preview-info-vacante p {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+    color: #444;
+}
+
+.botones-modal-vacante {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.botones-modal-vacante button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#cancelarVistaPreviaVacante {
+    background-color: #ccc;
+    color: #000;
+}
+
+#confirmarGuardarVacante {
+    background-color: #007bff;
+    color: #fff;
+}
