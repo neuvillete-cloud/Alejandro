@@ -7,15 +7,14 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6);
     color: white;
-    min-height: 100vh; /* ✅ asegura altura mínima, pero permite crecer */
+    min-height: 100vh;
+    overflow-x: hidden; /* evita scroll lateral */
     overflow-y: auto;
     position: relative;
-    justify-content: center;
-    align-items: center;
-    display: flex;                 /* <- ESTO FALTABA */
 }
+
 
 
 /* Efectos de círculos en el fondo */
