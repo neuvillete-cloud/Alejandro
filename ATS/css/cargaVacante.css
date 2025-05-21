@@ -462,7 +462,7 @@ button[type="submit"] {
     border-radius: 6px;
     transition: background-color 0.2s ease;
     width: 100%;
-    max-width: 300px;
+    max-width: 1000px;
 }
 
 
