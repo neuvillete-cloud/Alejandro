@@ -91,6 +91,11 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
 
             <div class="input-group">
+                <label for="escolaridad">Escolaridad Minima:</label>
+                <input type="text" id="escolaridad" name="escolaridad" required />
+            </div>
+
+            <div class="input-group">
                 <label for="pais">País / Región:</label>
                 <input type="text" id="pais" name="pais" required />
             </div>
@@ -186,6 +191,11 @@ if (!isset($_SESSION['NumNomina'])) {
             <div class="preview-seccion-vacante">
                 <h3>Área / Departamento</h3>
                 <p id="previewArea"></p>
+            </div>
+
+            <div class="preview-seccion-vacante">
+                <h3>Escolaridad Minima</h3>
+                <p id="previewescolaridad"></p>
             </div>
 
             <div class="preview-seccion-vacante">
