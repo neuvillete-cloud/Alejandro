@@ -158,7 +158,9 @@ if (!isset($_SESSION['NumNomina'])) {
                 <div class="preview-subinfo-vacante">
                     <span class="empresa-fija-vacante">Grammer Automotive Puebla S.A. de C.V.</span> ·
                     <span id="previewCiudad">Ciudad</span>,
-                    <span id="previewEstado">Estado</span>
+                    <span id="previewEstado">Estado</span>,
+                    <span id="previewPais">Pais</span>
+
                 </div>
                 <div class="preview-sueldo-tipo-vacante">
                     <span id="previewSueldo">$XX,XXX</span> ·
