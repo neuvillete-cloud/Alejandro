@@ -162,10 +162,12 @@ if (!isset($_SESSION['NumNomina'])) {
                 <div class="preview-header-vacante">
                     <h2 id="previewTitulo">Título de la Vacante</h2>
                     <div class="preview-subinfo-vacante">
-                        <span class="empresa-fija-vacante">Grammer Automotive Puebla S.A. de C.V.</span> ·
-                        <span id="previewCiudad">Ciudad</span>,
-                        <span id="previewEstado">Estado</span>,
-                        <span id="previewPais">Pais</span>
+                        <div class="empresa-fija-vacante">Grammer Automotive Puebla S.A. de C.V.</div>
+                        <div>
+                            <span id="previewCiudad">Ciudad</span>,
+                            <span id="previewEstado">Estado</span>,
+                            <span id="previewPais">Pais</span>
+                        </div>
                     </div>
                     <div class="preview-sueldo-tipo-vacante">
                         <span id="previewSueldo">$XX,XXX</span> ·
