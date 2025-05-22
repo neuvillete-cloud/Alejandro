@@ -146,37 +146,38 @@ if (!isset($_SESSION['NumNomina'])) {
 </div>
 
 <!-- MODAL DE VISTA PREVIA DE VACANTE -->
-<!-- MODAL DE VISTA PREVIA DE VACANTE -->
 <div class="modal-vista-previa-vacante" id="modalVistaPreviaVacante">
     <div class="modal-contenido-vacante">
         <span class="cerrar-modal-vacante" id="cerrarModalVacante">&times;</span>
 
         <div class="preview-body-vacante">
-            <!-- Encabezado de la vacante -->
-            <div class="preview-header-vacante">
-                <h2 id="previewTitulo">Título de la Vacante</h2>
-                <div class="preview-subinfo-vacante">
-                    <span class="empresa-fija-vacante">Grammer Automotive Puebla S.A. de C.V.</span> ·
-                    <span id="previewCiudad">Ciudad</span>,
-                    <span id="previewEstado">Estado</span>,
-                    <span id="previewPais">Pais</span>
+            <!-- NUEVO Encabezado con imagen e info al lado -->
+            <div class="encabezado-vacante-flex">
+                <!-- Imagen -->
+                <div class="preview-imagen-vacante">
+                    <img id="previewImagenVacante" src="#" alt="Imagen de Vacante">
+                </div>
 
+                <!-- Encabezado de la vacante al lado de la imagen -->
+                <div class="preview-header-vacante">
+                    <h2 id="previewTitulo">Título de la Vacante</h2>
+                    <div class="preview-subinfo-vacante">
+                        <span class="empresa-fija-vacante">Grammer Automotive Puebla S.A. de C.V.</span> ·
+                        <span id="previewCiudad">Ciudad</span>,
+                        <span id="previewEstado">Estado</span>,
+                        <span id="previewPais">Pais</span>
+                    </div>
+                    <div class="preview-sueldo-tipo-vacante">
+                        <span id="previewSueldo">$XX,XXX</span> ·
+                        <span id="previewTipo">Tipo de Contrato</span>
+                    </div>
+                    <div class="preview-actions-vacante">
+                        <button class="boton-postular-vacante">Postularse ahora</button>
+                        <button class="boton-icono-vacante">🔖</button>
+                        <button class="boton-icono-vacante">🚫</button>
+                        <button class="boton-icono-vacante">🔗</button>
+                    </div>
                 </div>
-                <div class="preview-sueldo-tipo-vacante">
-                    <span id="previewSueldo">$XX,XXX</span> ·
-                    <span id="previewTipo">Tipo de Contrato</span>
-                </div>
-                <div class="preview-actions-vacante">
-                    <button class="boton-postular-vacante">Postularse ahora</button>
-                    <button class="boton-icono-vacante">🔖</button>
-                    <button class="boton-icono-vacante">🚫</button>
-                    <button class="boton-icono-vacante">🔗</button>
-                </div>
-            </div>
-
-            <!-- Imagen -->
-            <div class="preview-imagen-vacante">
-                <img id="previewImagenVacante" src="#" alt="Imagen de Vacante">
             </div>
 
             <!-- Secciones de información -->
@@ -222,6 +223,7 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </div>
+
 
 
 
