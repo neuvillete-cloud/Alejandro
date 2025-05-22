@@ -582,11 +582,6 @@ button[type="submit"] {
     padding: 1.5rem;
 }
 
-.preview-header-vacante {
-    border-bottom: 1px solid #e0e0e0;
-    margin-bottom: 1rem;
-}
-
 .preview-header-vacante h2 {
     font-size: 22px;
     margin-bottom: 0.2rem;
@@ -652,10 +647,11 @@ button[type="submit"] {
 }
 
 .preview-imagen-vacante img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 1rem;
-    border-radius: 6px;
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0;
 }
 
 .preview-info-vacante p {
@@ -694,4 +690,22 @@ button[type="submit"] {
 #confirmarGuardarVacante {
     background-color: #174ea6;
     color: #fff;
+}
+
+/* === NUEVO: Encabezado con imagen + contenido en fila === */
+.encabezado-vacante-flex {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.preview-imagen-vacante {
+    flex-shrink: 0;
+}
+
+.preview-header-vacante {
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
 }
