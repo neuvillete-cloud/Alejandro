@@ -258,6 +258,7 @@ if (!isset($_SESSION['NumNomina'])) {
             document.getElementById("previewArea").textContent = form.area.value;
             document.getElementById("previewTipo").textContent = form.tipo.value;
             document.getElementById("previewHorario").textContent = form.horario.value;
+            document.getElementById("previewescolaridad").textContent = form.escolaridad.value;
             document.getElementById("previewSueldo").textContent = form.sueldo.value;
             document.getElementById("previewPais").textContent = form.pais.value;
             document.getElementById("previewEstado").textContent = form.estado.value;
