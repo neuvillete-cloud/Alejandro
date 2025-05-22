@@ -406,8 +406,8 @@ body::after {
 }
 
 .foto-cv .preview-img {
-    width: 200px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #1E90FF;
@@ -648,8 +648,8 @@ button[type="submit"] {
 }
 
 .preview-imagen-vacante img {
-    width: 90px;
-    height: 90px;
+    width: 200px;
+    height: 150px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 0;
