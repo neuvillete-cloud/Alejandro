@@ -542,14 +542,14 @@ button[type="submit"] {
     box-shadow: 0 0 0 2px rgba(163, 207, 255, 0.4); /* resalta suavemente */
 }
 
-/* === MODAL DE VISTA PREVIA PERSONALIZADO === */
-.modal-vista-previa {
+/* === MODAL DE VISTA PREVIA DE VACANTE PERSONALIZADO === */
+.modal-vista-previa-vacante {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -557,19 +557,19 @@ button[type="submit"] {
     padding: 1rem;
 }
 
-.modal-contenido {
+.modal-contenido-vacante {
     background-color: #fff;
     max-width: 750px;
     width: 100%;
     max-height: 90vh;
     border-radius: 8px;
     overflow-y: auto;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     font-family: "Segoe UI", sans-serif;
     position: relative;
 }
 
-.cerrar-modal {
+.cerrar-modal-vacante {
     position: absolute;
     top: 10px;
     right: 15px;
@@ -578,39 +578,39 @@ button[type="submit"] {
     cursor: pointer;
 }
 
-.preview-body {
+.preview-body-vacante {
     padding: 1.5rem;
 }
 
-.preview-header {
+.preview-header-vacante {
     border-bottom: 1px solid #e0e0e0;
     margin-bottom: 1rem;
 }
 
-.preview-header h2 {
+.preview-header-vacante h2 {
     font-size: 22px;
     margin-bottom: 0.2rem;
 }
 
-.preview-subinfo {
+.preview-subinfo-vacante {
     font-size: 14px;
     color: #555;
     margin-bottom: 0.4rem;
 }
 
-.preview-sueldo-tipo {
+.preview-sueldo-tipo-vacante {
     font-weight: 500;
     color: #222;
     margin-bottom: 1rem;
 }
 
-.preview-actions {
+.preview-actions-vacante {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
 
-.preview-actions button {
+.preview-actions-vacante button {
     padding: 8px 12px;
     border: none;
     border-radius: 6px;
@@ -619,39 +619,56 @@ button[type="submit"] {
     font-size: 14px;
 }
 
-.boton-postular {
+.boton-postular-vacante {
     background-color: #174ea6;
     color: #fff;
 }
 
-.boton-icono {
+.boton-icono-vacante {
     background-color: #f1f1f1;
     color: #333;
 }
 
-.preview-seccion {
+.preview-seccion-vacante {
     margin-bottom: 1.5rem;
 }
 
-.preview-seccion h3 {
+.preview-seccion-vacante h3 {
     font-size: 16px;
     color: #222;
     margin-bottom: 0.5rem;
 }
 
-.preview-seccion p,
-.preview-seccion li {
+.preview-seccion-vacante p,
+.preview-seccion-vacante li {
     font-size: 14px;
     color: #444;
     line-height: 1.5;
 }
 
-.preview-seccion ul {
+.preview-seccion-vacante ul {
     padding-left: 1.2rem;
     list-style: disc;
 }
 
-.botones-modal {
+.preview-imagen-vacante img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+}
+
+.preview-info-vacante p {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 0.5rem;
+}
+
+.preview-info-vacante p strong {
+    color: #222;
+}
+
+.botones-modal-vacante {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
@@ -660,7 +677,7 @@ button[type="submit"] {
     background-color: #fafafa;
 }
 
-.botones-modal button {
+.botones-modal-vacante button {
     padding: 8px 14px;
     border-radius: 5px;
     border: none;
@@ -669,12 +686,12 @@ button[type="submit"] {
     cursor: pointer;
 }
 
-#cancelarVistaPrevia {
+#cancelarVistaPreviaVacante {
     background-color: #e0e0e0;
     color: #333;
 }
 
-#confirmarGuardar {
+#confirmarGuardarVacante {
     background-color: #174ea6;
     color: #fff;
 }
