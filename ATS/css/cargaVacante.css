@@ -585,6 +585,7 @@ button[type="submit"] {
 .preview-header-vacante h2 {
     font-size: 22px;
     margin-bottom: 0.2rem;
+    color:black;
 }
 
 .preview-subinfo-vacante {
