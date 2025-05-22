@@ -542,83 +542,139 @@ button[type="submit"] {
     box-shadow: 0 0 0 2px rgba(163, 207, 255, 0.4); /* resalta suavemente */
 }
 
-.modal-vista-previa-vacante {
+/* === MODAL DE VISTA PREVIA PERSONALIZADO === */
+.modal-vista-previa {
     position: fixed;
-    z-index: 9999;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(20, 20, 20, 0.85);
-    display: none;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
+    padding: 1rem;
 }
 
-.modal-contenido-vacante {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 800px;
+.modal-contenido {
+    background-color: #fff;
+    max-width: 750px;
+    width: 100%;
     max-height: 90vh;
+    border-radius: 8px;
     overflow-y: auto;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    font-family: "Segoe UI", sans-serif;
     position: relative;
 }
 
-.cerrar-modal-vacante {
+.cerrar-modal {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 1.8rem;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: #444;
     cursor: pointer;
+}
+
+.preview-body {
+    padding: 1.5rem;
+}
+
+.preview-header {
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+}
+
+.preview-header h2 {
+    font-size: 22px;
+    margin-bottom: 0.2rem;
+}
+
+.preview-subinfo {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 0.4rem;
+}
+
+.preview-sueldo-tipo {
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 1rem;
+}
+
+.preview-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.preview-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.boton-postular {
+    background-color: #174ea6;
+    color: #fff;
+}
+
+.boton-icono {
+    background-color: #f1f1f1;
     color: #333;
 }
 
-.preview-body-vacante {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.preview-seccion {
+    margin-bottom: 1.5rem;
 }
 
-.preview-imagen-vacante img {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    border-radius: 10px;
-    object-fit: cover;
+.preview-seccion h3 {
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 0.5rem;
 }
 
-.preview-info-vacante p {
-    margin: 0.3rem 0;
-    font-size: 1rem;
+.preview-seccion p,
+.preview-seccion li {
+    font-size: 14px;
     color: #444;
+    line-height: 1.5;
 }
 
-.botones-modal-vacante {
+.preview-seccion ul {
+    padding-left: 1.2rem;
+    list-style: disc;
+}
+
+.botones-modal {
     display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    background-color: #fafafa;
 }
 
-.botones-modal-vacante button {
-    padding: 10px 20px;
+.botones-modal button {
+    padding: 8px 14px;
+    border-radius: 5px;
     border: none;
-    border-radius: 6px;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 1rem;
 }
 
-#cancelarVistaPreviaVacante {
-    background-color: #ccc;
-    color: #000;
+#cancelarVistaPrevia {
+    background-color: #e0e0e0;
+    color: #333;
 }
 
-#confirmarGuardarVacante {
-    background-color: #007bff;
+#confirmarGuardar {
+    background-color: #174ea6;
     color: #fff;
 }

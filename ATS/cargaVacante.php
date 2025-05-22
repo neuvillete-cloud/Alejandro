@@ -146,30 +146,73 @@ if (!isset($_SESSION['NumNomina'])) {
 </div>
 
 <!-- MODAL DE VISTA PREVIA DE VACANTE -->
+<!-- MODAL DE VISTA PREVIA DE VACANTE -->
 <div class="modal-vista-previa-vacante" id="modalVistaPreviaVacante">
     <div class="modal-contenido-vacante">
         <span class="cerrar-modal-vacante" id="cerrarModalVacante">&times;</span>
-        <h2>Vista Previa de la Vacante</h2>
 
         <div class="preview-body-vacante">
+            <!-- Encabezado de la vacante -->
+            <div class="preview-header-vacante">
+                <h2 id="previewTitulo">Título de la Vacante</h2>
+                <div class="preview-subinfo-vacante">
+                    <span class="empresa-fija-vacante">Grammer Automotive Puebla S.A. de C.V.</span> ·
+                    <span id="previewCiudad">Ciudad</span>,
+                    <span id="previewEstado">Estado</span>
+                </div>
+                <div class="preview-sueldo-tipo-vacante">
+                    <span id="previewSueldo">$XX,XXX</span> ·
+                    <span id="previewTipo">Tipo de Contrato</span>
+                </div>
+                <div class="preview-actions-vacante">
+                    <button class="boton-postular-vacante">Postularse ahora</button>
+                    <button class="boton-icono-vacante">🔖</button>
+                    <button class="boton-icono-vacante">🚫</button>
+                    <button class="boton-icono-vacante">🔗</button>
+                </div>
+            </div>
+
+            <!-- Imagen -->
             <div class="preview-imagen-vacante">
                 <img id="previewImagenVacante" src="#" alt="Imagen de Vacante">
             </div>
 
-            <div class="preview-info-vacante">
-                <p><strong>Título:</strong> <span id="previewTitulo"></span></p>
-                <p><strong>Área / Departamento:</strong> <span id="previewArea"></span></p>
-                <p><strong>Tipo de contrato:</strong> <span id="previewTipo"></span></p>
-                <p><strong>Horario:</strong> <span id="previewHorario"></span></p>
-                <p><strong>Sueldo:</strong> <span id="previewSueldo"></span></p>
-                <p><strong>País / Región:</strong> <span id="previewPais"></span></p>
-                <p><strong>Estado / Provincia:</strong> <span id="previewEstado"></span></p>
-                <p><strong>Ciudad:</strong> <span id="previewCiudad"></span></p>
-                <p><strong>Requisitos:</strong> <span id="previewRequisitos"></span></p>
-                <p><strong>Beneficios:</strong> <span id="previewBeneficios"></span></p>
-                <p><strong>Descripción del puesto:</strong> <span id="previewDescripcion"></span></p>
+            <!-- Secciones de información -->
+            <div class="preview-seccion-vacante">
+                <h3>Área / Departamento</h3>
+                <p id="previewArea"></p>
             </div>
 
+            <div class="preview-seccion-vacante">
+                <h3>Horario</h3>
+                <p id="previewHorario"></p>
+            </div>
+
+            <div class="preview-seccion-vacante">
+                <h3>Ubicación</h3>
+                <p>
+                    <span id="previewPais"></span>,
+                    <span id="previewEstado"></span>,
+                    <span id="previewCiudad"></span>
+                </p>
+            </div>
+
+            <div class="preview-seccion-vacante">
+                <h3>Requisitos</h3>
+                <p id="previewRequisitos"></p>
+            </div>
+
+            <div class="preview-seccion-vacante">
+                <h3>Beneficios</h3>
+                <p id="previewBeneficios"></p>
+            </div>
+
+            <div class="preview-seccion-vacante">
+                <h3>Descripción del puesto</h3>
+                <p id="previewDescripcion"></p>
+            </div>
+
+            <!-- Botones -->
             <div class="botones-modal-vacante">
                 <button id="cancelarVistaPreviaVacante">Cancelar</button>
                 <button id="confirmarGuardarVacante">Confirmar</button>
@@ -177,6 +220,7 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </div>
+
 
 
 
