@@ -640,6 +640,7 @@ button[type="submit"] {
     font-size: 14px;
     color: #444;
     line-height: 1.5;
+    white-space: pre-line; /* Para que los saltos de línea del contenido se respeten */
 }
 
 .preview-seccion-vacante ul {
