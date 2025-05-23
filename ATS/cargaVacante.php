@@ -111,6 +111,11 @@ if (!isset($_SESSION['NumNomina'])) {
                 <input type="text" id="ciudad" name="ciudad" required />
             </div>
 
+            <div class="input-group">
+                <label for="espacio">Espacio de trabajo:</label>
+                <input type="text" id="espacio" name="espacio" required />
+            </div>
+
             <!-- Requisitos y Beneficios -->
             <div class="input-group textarea-group">
                 <label for="requisitos">Requisitos:</label>
@@ -208,17 +213,13 @@ if (!isset($_SESSION['NumNomina'])) {
 
 
             <div class="preview-seccion-vacante">
-                <h3>Horario</h3>
+                <h3>Horario:</h3>
                 <p id="previewHorario"></p>
             </div>
 
             <div class="preview-seccion-vacante">
-                <h3>Ubicación</h3>
-                <p>
-                    <span id="previewPais"></span>,
-                    <span id="previewEstado"></span>,
-                    <span id="previewCiudad"></span>
-                </p>
+                <h3>Espacio de trabajo:</h3>
+                <p id="previewEspacio"></p>
             </div>
 
             <div class="preview-seccion-vacante">
@@ -268,6 +269,7 @@ if (!isset($_SESSION['NumNomina'])) {
             document.getElementById("previewTipo").textContent = form.tipo.value;
             document.getElementById("previewHorario").textContent = form.horario.value;
             document.getElementById("previewescolaridad").textContent = form.escolaridad.value;
+            document.getElementById("previewEspacio").textContent = form.espacio.value;
             document.getElementById("previewSueldo").textContent = form.sueldo.value;
             document.getElementById("previewPais").textContent = form.pais.value;
             document.getElementById("previewEstado").textContent = form.estado.value;
