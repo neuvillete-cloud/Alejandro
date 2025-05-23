@@ -717,32 +717,32 @@ button[type="submit"] {
 }
 
 .titulo-seccion-vacante {
-    font-size: 16px;
-    color: #222;
+    font-size: 17px;
+    font-weight: bold;
+    color: #0a0a45;
     margin-bottom: 0.8rem;
 }
 
 .info-empleo-fila {
     display: flex;
-    gap: 2rem;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+    gap: 2rem;
+    margin-bottom: 0.8rem;
 }
 
 .info-item-vacante {
-    font-size: 14px;
-    color: #444;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
+    font-size: 15px;
+    color: #222;
 }
 
 .info-item-vacante strong {
-    color: #222;
+    font-weight: 600;
+    color: #0a0a45;
 }
 
 .linea-divisoria-vacante {
     border: none;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #dcdcdc;
     margin-top: 1rem;
 }
+
