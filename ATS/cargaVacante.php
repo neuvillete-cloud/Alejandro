@@ -216,17 +216,16 @@ if (!isset($_SESSION['NumNomina'])) {
             <div class="seccion-empleo-vacante">
                 <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
 
-                <div class="info-empleo-fila">
-                    <div class="info-item-vacante">
-                        <strong>Horario:</strong> <span id="previewHorario"></span>
-                    </div>
-                    <div class="info-item-vacante">
-                        <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
-                    </div>
+                <div class="info-item-vacante">
+                    <strong>Horario:</strong> <span id="previewHorario"></span>
+                </div>
+                <div class="info-item-vacante">
+                    <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
                 </div>
 
                 <hr class="linea-divisoria-vacante">
             </div>
+
 
 
             <div class="preview-seccion-vacante">
