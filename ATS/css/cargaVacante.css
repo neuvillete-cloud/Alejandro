@@ -746,3 +746,16 @@ button[type="submit"] {
     margin-top: 1rem;
 }
 
+.info-item-vacante {
+    margin-bottom: 1rem; /* antes 0.5rem */
+    font-size: 14px;
+    color: #444;
+}
+
+.info-item-vacante strong {
+    color: #222;
+}
+
+.seccion-empleo-vacante {
+    margin-bottom: 2rem;
+}
