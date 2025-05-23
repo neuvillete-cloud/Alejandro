@@ -585,7 +585,7 @@ button[type="submit"] {
 .preview-header-vacante h2 {
     font-size: 22px;
     margin-bottom: 0.2rem;
-    color:black;
+    color: black;
 }
 
 .preview-subinfo-vacante {
@@ -693,7 +693,7 @@ button[type="submit"] {
     color: #fff;
 }
 
-/* === NUEVO: Encabezado con imagen + contenido en fila === */
+/* === Encabezado con imagen + contenido en fila === */
 .encabezado-vacante-flex {
     display: flex;
     gap: 1.5rem;
@@ -709,4 +709,40 @@ button[type="submit"] {
 .preview-header-vacante {
     flex: 1;
     border-bottom: 1px solid #e0e0e0;
+}
+
+/* === NUEVO: Sección "Sobre el empleo" con información alineada === */
+.seccion-empleo-vacante {
+    margin-bottom: 1.5rem;
+}
+
+.titulo-seccion-vacante {
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 0.8rem;
+}
+
+.info-empleo-fila {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.info-item-vacante {
+    font-size: 14px;
+    color: #444;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.info-item-vacante strong {
+    color: #222;
+}
+
+.linea-divisoria-vacante {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 1rem;
 }

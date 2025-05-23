@@ -187,16 +187,25 @@ if (!isset($_SESSION['NumNomina'])) {
                 </div>
             </div>
 
-            <!-- Secciones de información -->
-            <div class="preview-seccion-vacante">
-                <h3>Área / Departamento</h3>
-                <p id="previewArea"></p>
+            <!-- Sección: Sobre el empleo -->
+            <div class="seccion-empleo-vacante">
+                <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
+
+                <div class="info-empleo-fila">
+                    <div class="info-item-vacante">
+                        <strong>Área / Departamento:</strong>
+                        <span id="previewArea"></span>
+                    </div>
+
+                    <div class="info-item-vacante">
+                        <strong>Escolaridad mínima:</strong>
+                        <span id="previewescolaridad"></span>
+                    </div>
+                </div>
+
+                <hr class="linea-divisoria-vacante">
             </div>
 
-            <div class="preview-seccion-vacante">
-                <h3>Escolaridad Minima</h3>
-                <p id="previewescolaridad"></p>
-            </div>
 
             <div class="preview-seccion-vacante">
                 <h3>Horario</h3>
