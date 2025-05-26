@@ -232,16 +232,20 @@ if (!isset($_SESSION['NumNomina'])) {
                 <h3>Requisitos</h3>
                 <p id="previewRequisitos"></p>
             </div>
+            <hr class="linea-divisoria-vacante">
 
             <div class="preview-seccion-vacante">
                 <h3>Beneficios</h3>
                 <p id="previewBeneficios"></p>
             </div>
+            <hr class="linea-divisoria-vacante">
 
             <div class="preview-seccion-vacante">
                 <h3>Descripción del puesto</h3>
                 <p id="previewDescripcion"></p>
             </div>
+            <hr class="linea-divisoria-vacante">
+
 
             <!-- Botones -->
             <div class="botones-modal-vacante">
