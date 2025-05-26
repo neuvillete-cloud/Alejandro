@@ -371,19 +371,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     .catch(error => console.error('Error al cerrar sesión:', error));
             });
         }
-        // Vista previa de imagen
-        document.getElementById('imagen').addEventListener('change', function () {
-            const file = this.files[0];
-            const previewImg = document.getElementById('previewImg');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImg.src = e.target.result;
-                    previewImg.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
     });
 </script>
 <script>
