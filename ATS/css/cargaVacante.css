@@ -633,6 +633,7 @@ button[type="submit"] {
     font-size: 16px;
     color: #222;
     margin-bottom: 0.5rem;
+    margin-top: 30px;
 }
 
 .preview-seccion-vacante p,
