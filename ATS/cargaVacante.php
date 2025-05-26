@@ -371,23 +371,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     .catch(error => console.error('Error al cerrar sesión:', error));
             });
         }
-        // Vista previa en tiempo real
-        const campos = [
-            { id: 'titulo', prev: 'prevTitulo' },
-            { id: 'area', prev: 'prevArea' },
-            { id: 'tipo', prev: 'prevTipo' },
-            { id: 'horario', prev: 'prevHorario' },
-            { id: 'sueldo', prev: 'prevSueldo' },
-            { id: 'requisitos', prev: 'prevRequisitos' },
-            { id: 'beneficios', prev: 'prevBeneficios' },
-            { id: 'descripcion', prev: 'prevDescripcion' }
-        ];
-        campos.forEach(campo => {
-            document.getElementById(campo.id).addEventListener('input', function () {
-                document.getElementById(campo.prev).textContent = this.value;
-            });
-        });
-
         // Vista previa de imagen
         document.getElementById('imagen').addEventListener('change', function () {
             const file = this.files[0];
