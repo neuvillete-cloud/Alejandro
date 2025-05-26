@@ -567,7 +567,13 @@ button[type="submit"] {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     font-family: "Segoe UI", sans-serif;
     position: relative;
+
+    /* Agrega esto 👇 */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    mask-image: radial-gradient(white 99%, transparent 100%); /* ayuda en Firefox */
 }
+
 
 .cerrar-modal-vacante {
     position: absolute;
