@@ -694,12 +694,25 @@ button[type="submit"] {
 #cancelarVistaPreviaVacante {
     background-color: #e0e0e0;
     color: #333;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#cancelarVistaPreviaVacante:hover {
+    background-color: #d5d5d5;
+    color: #000;
 }
 
 #confirmarGuardarVacante {
     background-color: #174ea6;
     color: #fff;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
+#confirmarGuardarVacante:hover {
+    background-color: #0f3c87;
+    transform: translateY(-1px); /* efecto de “elevación” al pasar el mouse */
+}
+
 
 /* === Encabezado con imagen + contenido en fila === */
 .encabezado-vacante-flex {
