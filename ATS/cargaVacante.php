@@ -388,18 +388,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         });
 
-        // Vista previa ubicación combinada
-        function actualizarUbicacion() {
-            const pais = document.getElementById('pais').value;
-            const estado = document.getElementById('estado').value;
-            const ciudad = document.getElementById('ciudad').value;
-            const ubicacionFinal = `${ciudad}, ${estado}, ${pais}`;
-            document.getElementById('prevUbicacion').textContent = ubicacionFinal;
-        }
-        ['pais', 'estado', 'ciudad'].forEach(id => {
-            document.getElementById(id).addEventListener('input', actualizarUbicacion);
-        });
-
         // Vista previa de imagen
         document.getElementById('imagen').addEventListener('change', function () {
             const file = this.files[0];
