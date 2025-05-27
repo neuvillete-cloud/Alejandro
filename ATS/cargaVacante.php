@@ -66,8 +66,24 @@ if (!isset($_SESSION['NumNomina'])) {
 
             <div class="input-group">
                 <label for="area">Área / Departamento:</label>
-                <input type="text" id="area" name="area" required />
+                <select id="area" name="area" required>
+                    <option value="">Selecciona un área</option>
+                    <option value="Seguridad e Higiene">Seguridad e Higiene</option>
+                    <option value="GPS">GPS</option>
+                    <option value="IT">IT</option>
+                    <option value="RH">RH</option>
+                    <option value="Calidad">Calidad</option>
+                    <option value="Ingenieria">Ingenieria</option>
+                    <option value="Controlling">Controlling</option>
+                    <option value="Logistica">Logistica</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Producción (APU)">Producción (APU)</option>
+                    <option value="Finanzas">Finanzas</option>
+                    <option value="Compras">Compras</option>
+                    <option value="Regionales">Regionales</option>
+                </select>
             </div>
+
 
             <!-- Fila 2 -->
             <div class="input-group">
