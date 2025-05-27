@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Enviar datos
-        fetch("guardarVacante.php", {
+        fetch("dao/daoVacante.php", {
             method: "POST",
             body: formData
         })
