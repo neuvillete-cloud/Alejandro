@@ -2,7 +2,6 @@
 session_start();
 include_once("ConexionBD.php");
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar campos requeridos
     $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'descripcion'];
@@ -15,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Obtener valores del formulario
     $titulo = $_POST['titulo'];
-    $area = $_POST['area'];
+    $nombreArea = $_POST['area']; // Este es el nombre del área que llega desde el input
     $tipo = $_POST['tipo'];
     $horario = $_POST['horario'] ?? '';
     $sueldo = $_POST['sueldo'] ?? '';
@@ -31,6 +30,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $con = new LocalConector();
     $conex = $con->conectar();
 
+    // Buscar el IdArea por el nombre del área
+    $stmtArea = $conex->prepare("SELECT IdArea FROM Area WHERE NombreArea = ?");
+    $stmtArea->bind_param("s", $nombreArea);
+    $stmtArea->execute();
+    $resultArea = $stmtArea->get_result();
+
+    if ($resultArea->num_rows === 0) {
+        echo json_encode(['status' => 'error', 'message' => 'El área ingresada no existe en la base de datos.']);
+        $stmtArea->close();
+        $conex->close();
+        exit;
+    }
+
+    $rowArea = $resultArea->fetch_assoc();
+    $idArea = $rowArea['IdArea'];
+    $stmtArea->close();
+
+    // Manejo de la imagen
     $baseUrl = "https://grammermx.com/AleTest/ATS/imagenes/imagenesVacantes/";
     $nombreArchivo = null;
 
@@ -39,12 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
         if (!in_array($imagen['type'], $allowedTypes)) {
-            echo json_encode(['status' => 'error', 'message' => 'El archivo debe ser una imagen JPEG, PNG o GIF']);
+            echo json_encode(['status' => 'error', 'message' => 'La imagen debe ser JPEG, PNG o GIF']);
             exit;
         }
 
         if ($imagen['size'] > 5000000) {
-            echo json_encode(['status' => 'error', 'message' => 'El archivo excede el tamaño máximo permitido (5MB)']);
+            echo json_encode(['status' => 'error', 'message' => 'La imagen excede el tamaño máximo permitido (5MB)']);
             exit;
         }
 
@@ -57,12 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['status' => 'error', 'message' => 'Error al subir la imagen']);
             exit;
         }
+
         $nombreArchivo = $rutaPublica;
     }
 
+    // Insertar la vacante
     $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Requisitos, Beneficios, Descripcion, Imagen)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sissssssssssss", $titulo, $area, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad, $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo);
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sisssssssssssss", $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad, $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo);
 
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Vacante guardada exitosamente']);
@@ -76,4 +95,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Se requiere método POST']);
 }
 ?>
-
