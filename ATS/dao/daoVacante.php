@@ -2,6 +2,8 @@
 session_start();
 include_once("ConexionBD.php");
 
+header('Content-Type: application/json');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar campos requeridos
     $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'descripcion'];
@@ -14,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Obtener valores del formulario
     $titulo = $_POST['titulo'];
-    $nombreArea = $_POST['area']; // Este es el nombre del área que llega desde el input
+    $nombreArea = $_POST['area'];
     $tipo = $_POST['tipo'];
     $horario = $_POST['horario'] ?? '';
     $sueldo = $_POST['sueldo'] ?? '';
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Buscar el IdArea por el nombre del área
+    // Obtener ID del área
     $stmtArea = $conex->prepare("SELECT IdArea FROM Area WHERE NombreArea = ?");
     $stmtArea->bind_param("s", $nombreArea);
     $stmtArea->execute();
@@ -66,7 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $extension = pathinfo($imagen['name'], PATHINFO_EXTENSION);
-        $nombreUnico = "vacante_" . $_SESSION['NumNomina'] . "_" . date("Ymd_His") . "." . $extension;
+        $numNomina = $_SESSION['NumNomina'] ?? 'desconocido';
+        $nombreUnico = "vacante_" . $numNomina . "_" . date("Ymd_His") . "." . $extension;
         $rutaLocal = "../imagenes/imagenesVacantes/" . $nombreUnico;
         $rutaPublica = $baseUrl . $nombreUnico;
 
@@ -78,10 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombreArchivo = $rutaPublica;
     }
 
-    // Insertar la vacante
+    // Insertar vacante
     $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Requisitos, Beneficios, Descripcion, Imagen)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sisssssssssssss", $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad, $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo);
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sissssssssssss",
+        $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
+        $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo
+    );
 
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Vacante guardada exitosamente']);
