@@ -328,8 +328,9 @@ if (!isset($_SESSION['NumNomina'])) {
 
         confirmarBtn.addEventListener("click", () => {
             modal.style.display = "none";
-            form.submit(); // Aquí se envía realmente el formulario
+            // No se hace submit tradicional aquí porque vacante.js ya lo maneja con fetch
         });
+
 
         window.addEventListener("click", (e) => {
             if (e.target === modal) {
