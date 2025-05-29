@@ -251,3 +251,81 @@ nav > a:not(:hover)::after {
     font-size: 16px;
     color: #333;
 }
+
+.buscador-vacantes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.fila-superior {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.campo-busqueda,
+.campo-ubicacion {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    flex: 1;
+    min-width: 250px;
+}
+
+.campo-busqueda input,
+.campo-ubicacion input {
+    border: none;
+    outline: none;
+    margin: 0 10px;
+    flex: 1;
+    font-size: 16px;
+}
+
+.cerrar-busqueda,
+.cerrar-ubicacion {
+    color: #888;
+    cursor: pointer;
+}
+
+.btn-buscar {
+    background-color: #dc3b5a;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    min-width: 180px;
+    transition: background 0.3s;
+}
+
+.btn-buscar:hover {
+    background-color: #b73049;
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filtro {
+    background-color: #1146b0;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filtro.limpiar {
+    background-color: transparent;
+    color: #1146b0;
+    font-weight: bold;
+}

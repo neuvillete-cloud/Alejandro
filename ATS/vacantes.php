@@ -54,8 +54,33 @@ session_start();
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-        <!-- Aquí irá el contenido que tú quieras más adelante -->
-        <p>Aquí va el contenido de la sección blanca.</p>
+        <div class="buscador-vacantes">
+            <div class="fila-superior">
+                <div class="campo-busqueda">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="practicante de ingeniería">
+                    <i class="fas fa-times cerrar-busqueda"></i>
+                </div>
+
+                <div class="campo-ubicacion">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" placeholder="Querétaro">
+                    <i class="fas fa-times cerrar-ubicacion"></i>
+                </div>
+
+                <button class="btn-buscar">Buscar empleo</button>
+            </div>
+
+            <div class="filtros">
+                <button class="filtro">\$5,000 - \$10,000 <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro">Fecha <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro">Presencial/Desde casa <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro">Tipo de Contratación <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro">Educación <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro limpiar">Limpiar filtros</button>
+            </div>
+        </div>
+
     </div>
 </section>
 
