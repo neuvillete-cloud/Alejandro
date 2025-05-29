@@ -52,6 +52,14 @@ session_start();
     <h1>Vacantes en Grammer Automotive</h1>
 </section>
 
+<section class="area-blanca">
+    <div class="contenido-blanco">
+        <!-- Aquí irá el contenido que tú quieras más adelante -->
+        <p>Aquí va el contenido de la sección blanca.</p>
+    </div>
+</section>
+
+
 
 </body>
 </html>

@@ -236,3 +236,16 @@ nav > a:not(:hover)::after {
 .user-info:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
+
+.area-blanca {
+    background-color: #fff;
+    padding: 40px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.contenido-blanco {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 16px;
+    color: #333;
+}
