@@ -81,6 +81,59 @@ session_start();
             </div>
         </div>
 
+        <div class="contenedor-vacantes">
+            <!-- Lista de vacantes -->
+            <div class="lista-vacantes">
+                <div class="vacante-item activa">
+                    <p class="fecha">Hace 3 días • <span class="reciente">Vista recientemente.</span></p>
+                    <h3>Practicante</h3>
+                    <p>Sueldo no mostrado por la empresa</p>
+                    <ul>
+                        <li>Capacitación pagada</li>
+                        <li>Apoyo económico</li>
+                    </ul>
+                    <p class="empresa">Crown Industrias Montacargas</p>
+                    <p class="ubicacion">Querétaro, Qro.</p>
+                </div>
+
+                <div class="vacante-item">
+                    <p class="fecha">Hace 1 día</p>
+                    <h3>PRACTICANTE O RESIDENTE</h3>
+                    <p>Sueldo no mostrado por la empresa</p>
+                    <ul>
+                        <li>Plan de crecimiento personal y laboral</li>
+                        <li>Oportunidad de contratación</li>
+                    </ul>
+                    <p class="empresa">Otra Empresa S.A.</p>
+                    <p class="ubicacion">Querétaro, Qro.</p>
+                </div>
+            </div>
+
+            <!-- Detalle de la vacante seleccionada -->
+            <div class="detalle-vacante">
+                <p class="fecha">Hace 3 días</p>
+                <h2>Practicante</h2>
+                <p class="descripcion">
+                    Si el reclutador te contacta podrás conocer el sueldo<br>
+                    <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
+                </p>
+                <a href="#" class="verificada">Empresa verificada <i class="fas fa-badge-check"></i></a>
+
+                <button class="btn-postularme">Postularme</button>
+
+                <hr>
+
+                <h4>Conoce tu compatibilidad con la vacante</h4>
+                <div class="compatibilidad">
+                    <div><i class="fas fa-check-circle"></i> Sueldo <span>Entras en el rango</span></div>
+                    <div><i class="fas fa-check-circle"></i> Ubicación <span>Estás en el lugar correcto</span></div>
+                    <div><i class="fas fa-check-circle"></i> Educación <span>Cumples con lo necesario</span></div>
+                    <div><i class="fas fa-check-circle"></i> Área <span>Compatible con el puesto</span></div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </section>
 
