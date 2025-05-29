@@ -239,9 +239,11 @@ nav > a:not(:hover)::after {
 
 .area-blanca {
     background-color: #fff;
-    padding: 40px 20px;
+    padding: 80px 20px; /* más espacio interno arriba y abajo */
+    min-height: 500px; /* puedes ajustar el valor: 600px, 700px, etc. */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
+
 
 .contenido-blanco {
     max-width: 1200px;
