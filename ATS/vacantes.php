@@ -72,7 +72,7 @@ session_start();
             </div>
 
             <div class="filtros">
-                <button class="filtro">\$5,000 - \$10,000 <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro">$5,000 - $10,000 <i class="fas fa-chevron-down"></i></button>
                 <button class="filtro">Fecha <i class="fas fa-chevron-down"></i></button>
                 <button class="filtro">Presencial/Desde casa <i class="fas fa-chevron-down"></i></button>
                 <button class="filtro">Tipo de Contratación <i class="fas fa-chevron-down"></i></button>
