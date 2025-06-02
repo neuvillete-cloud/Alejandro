@@ -9,7 +9,7 @@ date_default_timezone_set('America/Mexico_City');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar campos requeridos
-    $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'descripcion'];
+    $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'idioma', 'descripcion'];
     foreach ($camposRequeridos as $campo) {
         if (empty($_POST[$campo])) {
             echo json_encode(['status' => 'error', 'message' => "Campo obligatorio faltante: $campo"]);
@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $estado = $_POST['estado'];
     $ciudad = $_POST['ciudad'];
     $espacio = $_POST['espacio'];
+    $idioma = $_POST['idioma'];
     $requisitos = $_POST['requisitos'] ?? '';
     $beneficios = $_POST['beneficios'] ?? '';
     $descripcion = $_POST['descripcion'];
@@ -88,11 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insertar vacante
-    $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Requisitos, Beneficios, Descripcion, Imagen, Fecha)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sissssssssssssss",
+    $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Requisitos, Beneficios, Descripcion, Imagen, Fecha)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sisssssssssssssss",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
-        $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual
+        $espacio, $idioma, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual
     );
 
     if ($stmt->execute()) {

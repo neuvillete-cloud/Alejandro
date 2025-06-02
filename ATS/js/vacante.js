@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
             { campo: form.area, nombre: "Área / Departamento" },
             { campo: form.tipo, nombre: "Tipo de contrato" },
             { campo: form.escolaridad, nombre: "Escolaridad mínima" },
+            { campo: form.idioma, nombre: "Idioma" },
             { campo: form.pais, nombre: "País / Región" },
             { campo: form.estado, nombre: "Estado / Provincia" },
             { campo: form.ciudad, nombre: "Ciudad" },
@@ -42,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("estado", form.estado.value);
         formData.append("ciudad", form.ciudad.value);
         formData.append("espacio", form.espacio.value);
+        formData.append("idioma", form.idioma.value);
         formData.append("requisitos", form.requisitos.value);
         formData.append("beneficios", form.beneficios.value);
         formData.append("descripcion", form.descripcion.value);

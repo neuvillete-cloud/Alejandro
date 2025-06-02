@@ -132,6 +132,11 @@ if (!isset($_SESSION['NumNomina'])) {
                 <input type="text" id="espacio" name="espacio" required />
             </div>
 
+            <div class="input-group">
+                <label for="idioma">Idioma:</label>
+                <input type="text" id="idioma" name="idioma" required />
+            </div>
+
             <!-- Requisitos y Beneficios -->
             <div class="input-group textarea-group">
                 <label for="requisitos">Requisitos:</label>
@@ -224,6 +229,10 @@ if (!isset($_SESSION['NumNomina'])) {
                     </div>
                 </div>
 
+                <div class="info-item-vacante">
+                    <strong>Idioma:</strong> <span id="previewIdioma"></span>
+                </div>
+
                 <hr class="linea-divisoria-vacante">
             </div>
 
@@ -295,6 +304,7 @@ if (!isset($_SESSION['NumNomina'])) {
             document.getElementById("previewTipo").textContent = form.tipo.value;
             document.getElementById("previewHorario").textContent = form.horario.value;
             document.getElementById("previewescolaridad").textContent = form.escolaridad.value;
+            document.getElementById("previewIdioma").textContent = form.idioma.value;
             document.getElementById("previewEspacio").textContent = form.espacio.value;
             document.getElementById("previewSueldo").textContent = form.sueldo.value;
             document.getElementById("previewPais").textContent = form.pais.value;
