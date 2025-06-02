@@ -130,6 +130,66 @@ session_start();
                     <div><i class="fas fa-check-circle"></i> Educación <span>Cumples con lo necesario</span></div>
                     <div><i class="fas fa-check-circle"></i> Área <span>Compatible con el puesto</span></div>
                 </div>
+
+                <!-- Sección: Sobre el empleo -->
+                <div class="seccion-empleo-vacante">
+                    <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
+
+                    <div class="info-empleo-fila">
+                        <div class="info-item-vacante">
+                            <strong>Área / Departamento:</strong>
+                            <span id="previewArea"></span>
+                        </div>
+
+                        <div class="info-item-vacante">
+                            <strong>Escolaridad mínima:</strong>
+                            <span id="previewescolaridad"></span>
+                        </div>
+                    </div>
+
+                    <div class="info-item-vacante">
+                        <strong>Idioma:</strong> <span id="previewIdioma"></span>
+                    </div>
+
+                    <hr class="linea-divisoria-vacante">
+                </div>
+
+
+                <!-- DETALLES DEL EMPLEO -->
+                <div class="seccion-empleo-vacante">
+                    <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
+
+                    <div class="info-item-vacante">
+                        <strong>Horario:</strong> <span id="previewHorario"></span>
+                    </div>
+                    <div class="info-item-vacante">
+                        <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
+                    </div>
+
+                    <hr class="linea-divisoria-vacante">
+                </div>
+
+
+
+                <div class="preview-seccion-vacante">
+                    <h3>Requisitos</h3>
+                    <p id="previewRequisitos"></p>
+                </div>
+                <hr class="linea-divisoria-vacante">
+
+                <div class="preview-seccion-vacante">
+                    <h3>Beneficios</h3>
+                    <p id="previewBeneficios"></p>
+                </div>
+                <hr class="linea-divisoria-vacante">
+
+                <div class="preview-seccion-vacante">
+                    <h3>Descripción del puesto</h3>
+                    <p id="previewDescripcion"></p>
+                </div>
+                <hr class="linea-divisoria-vacante">
+
+
             </div>
         </div>
 
