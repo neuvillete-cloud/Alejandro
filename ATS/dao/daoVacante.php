@@ -91,7 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insertar vacante
     $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Requisitos, Beneficios, Descripcion, Imagen, Fecha)
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sisssssssssssssss",
+    $stmt->bind_param("sissssssssssssss",
+
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
         $espacio, $idioma, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual
     );
