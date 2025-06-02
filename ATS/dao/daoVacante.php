@@ -4,6 +4,9 @@ include_once("ConexionBD.php");
 
 header('Content-Type: application/json');
 
+// Establecer la zona horaria
+date_default_timezone_set('America/Mexico_City');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar campos requeridos
     $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'descripcion'];
@@ -28,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $requisitos = $_POST['requisitos'] ?? '';
     $beneficios = $_POST['beneficios'] ?? '';
     $descripcion = $_POST['descripcion'];
+
+    // Obtener fecha y hora actual
+    $fechaHoraActual = date('Y-m-d H:i:s');
 
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -82,11 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insertar vacante
-    $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Requisitos, Beneficios, Descripcion, Imagen)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sissssssssssss",
+    $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Requisitos, Beneficios, Descripcion, Imagen, Fecha)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sissssssssssssss",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
-        $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo
+        $espacio, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual
     );
 
     if ($stmt->execute()) {
