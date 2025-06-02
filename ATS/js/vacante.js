@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
             { campo: form.area, nombre: "Área / Departamento" },
             { campo: form.tipo, nombre: "Tipo de contrato" },
             { campo: form.escolaridad, nombre: "Escolaridad mínima" },
-            { campo: form.idioma, nombre: "Idioma" },
             { campo: form.pais, nombre: "País / Región" },
             { campo: form.estado, nombre: "Estado / Provincia" },
             { campo: form.ciudad, nombre: "Ciudad" },
             { campo: form.espacio, nombre: "Espacio de trabajo" },
+            { campo: form.idioma, nombre: "Idioma" },
             { campo: form.descripcion, nombre: "Descripción del puesto" },
         ];
 
