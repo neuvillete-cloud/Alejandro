@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = $_POST['descripcion'];
 
     // Obtener fecha y hora actual
-    $fechaHoraActual = date('Y-m-d H:i:s');
+    $fechaHoraActual = date('Y-m-d');
 
     $con = new LocalConector();
     $conex = $con->conectar();
