@@ -37,6 +37,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
+// Función para convertir saltos de línea en <br>
+function formatTextWithLineBreaks(text) {
+    if (!text) return "No hay información disponible";
+    return text.replace(/\n/g, "<br>");
+}
+
 function mostrarDetalle(vacante) {
     document.querySelector(".detalle-vacante .fecha").textContent = vacante.FechaPublicacion;
     document.querySelector(".detalle-vacante h2").textContent = vacante.Titulo;
@@ -52,7 +58,9 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewIdioma").textContent = vacante.Idioma;
     document.getElementById("previewHorario").textContent = vacante.Horario;
     document.getElementById("previewEspacio").textContent = vacante.EspacioTrabajo;
-    document.getElementById("previewRequisitos").innerHTML = vacante.Requisitos;
-    document.getElementById("previewBeneficios").innerHTML = vacante.Beneficios;
-    document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion;
+
+    // Aquí convierto saltos de línea en <br> para mostrar correctamente
+    document.getElementById("previewRequisitos").innerHTML = formatTextWithLineBreaks(vacante.Requisitos);
+    document.getElementById("previewBeneficios").innerHTML = formatTextWithLineBreaks(vacante.Beneficios);
+    document.getElementById("previewDescripcion").innerHTML = formatTextWithLineBreaks(vacante.Descripcion);
 }

@@ -16,21 +16,16 @@ $resultado = $conn->query($sql);
 $vacantes = [];
 
 while ($row = $resultado->fetch_assoc()) {
-    // Aplicamos nl2br para que los saltos de línea se conviertan en <br> para HTML
-    $requisitos = nl2br($row['Requisitos']);
-    $beneficios = nl2br($row['Beneficios']);
-    $descripcion = nl2br($row['Descripcion']);
-
-    // Renombramos campos para que coincidan con el JS
+    // Enviar texto original, sin nl2br
     $vacantes[] = [
         'IdVacante' => $row['IdVacante'],
         'Titulo' => $row['TituloVacante'],
         'Ciudad' => $row['Ciudad'],
         'Estado' => $row['Estado'],
         'Sueldo' => $row['Sueldo'],
-        'Requisitos' => $requisitos,
-        'Beneficios' => $beneficios,
-        'Descripcion' => $descripcion,
+        'Requisitos' => $row['Requisitos'],   // texto crudo con saltos
+        'Beneficios' => $row['Beneficios'],   // texto crudo con saltos
+        'Descripcion' => $row['Descripcion'], // texto crudo con saltos
         'Area' => $row['IdArea'],
         'Escolaridad' => $row['EscolaridadMinima'],
         'Idioma' => $row['Idioma'],
@@ -44,7 +39,6 @@ echo json_encode($vacantes, JSON_UNESCAPED_UNICODE);
 
 $conn->close();
 
-// Función para calcular "Hace X días"
 function calcularTiempoTranscurrido($fechaPublicacion) {
     $fecha = new DateTime($fechaPublicacion);
     $hoy = new DateTime();
