@@ -52,7 +52,7 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewIdioma").textContent = vacante.Idioma;
     document.getElementById("previewHorario").textContent = vacante.Horario;
     document.getElementById("previewEspacio").textContent = vacante.EspacioTrabajo;
-    document.getElementById("previewRequisitos").textContent = vacante.Requisitos;
-    document.getElementById("previewBeneficios").textContent = vacante.Beneficios;
-    document.getElementById("previewDescripcion").textContent = vacante.Descripcion;
+    document.getElementById("previewRequisitos").innerHTML = vacante.Requisitos;
+    document.getElementById("previewBeneficios").innerHTML = vacante.Beneficios;
+    document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion;
 }
