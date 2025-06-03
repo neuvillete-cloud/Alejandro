@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const lista = document.querySelector(".lista-vacantes");
             const detalle = document.querySelector(".detalle-vacante");
 
-            lista.innerHTML = ""; // Limpiar lista
+            lista.innerHTML = "";
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
@@ -37,10 +37,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 });
 
-// Función para convertir saltos de línea en <br>
-function formatTextWithLineBreaks(text) {
-    if (!text) return "No hay información disponible";
-    return text.replace(/\n/g, "<br>");
+function textoAListasHTML(texto) {
+    if (!texto) return "<p>No hay información disponible</p>";
+    const lineas = texto.split('\n').filter(linea => linea.trim() !== '');
+    const listaItems = lineas.map(linea => `<li>${linea.trim()}</li>`).join('');
+    return `<ul>${listaItems}</ul>`;
 }
 
 function mostrarDetalle(vacante) {
@@ -59,8 +60,7 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewHorario").textContent = vacante.Horario;
     document.getElementById("previewEspacio").textContent = vacante.EspacioTrabajo;
 
-    // Aquí convierto saltos de línea en <br> para mostrar correctamente
-    document.getElementById("previewRequisitos").innerHTML = formatTextWithLineBreaks(vacante.Requisitos);
-    document.getElementById("previewBeneficios").innerHTML = formatTextWithLineBreaks(vacante.Beneficios);
-    document.getElementById("previewDescripcion").innerHTML = formatTextWithLineBreaks(vacante.Descripcion);
+    document.getElementById("previewRequisitos").innerHTML = textoAListasHTML(vacante.Requisitos);
+    document.getElementById("previewBeneficios").innerHTML = textoAListasHTML(vacante.Beneficios);
+    document.getElementById("previewDescripcion").innerHTML = textoAListasHTML(vacante.Descripcion);
 }
