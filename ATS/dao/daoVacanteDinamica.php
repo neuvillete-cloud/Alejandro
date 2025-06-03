@@ -1,32 +1,28 @@
 <?php
-require_once("ConexionBD.php");
+require_once "ConexionBD.php";
 
 header('Content-Type: application/json');
 date_default_timezone_set('America/Mexico_City');
 
-$con = new LocalConector();
-$conn = $con->conectar();
+$conn = (new LocalConector())->conectar();
 
-$sql = "SELECT IdVacante, TituloVacante, Ciudad, Estado, Fecha, Sueldo FROM Vacantes ORDER BY Fecha DESC";
-$result = $conn->query($sql);
+$sql = "SELECT IdVacante, Titulo, Ciudad, Estado, Sueldo, Requisitos, Beneficios, Descripcion, Area, Escolaridad, Idioma, Horario, EspacioTrabajo, FechaPublicacion
+        FROM Vacantes 
+        WHERE IdEstatus = 1
+        ORDER BY FechaPublicacion DESC";
+
+$resultado = $conn->query($sql);
 
 $vacantes = [];
 
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $vacantes[] = [
-            'id' => $row['IdVacante'],
-            'titulo' => $row['TituloVacante'],
-            'ubicacion' => $row['Ciudad'] . ', ' . $row['Estado'],
-            'fecha' => calcularTiempoTranscurrido($row['Fecha']),
-            'sueldo' => $row['Sueldo'] !== '' ? $row['Sueldo'] : 'Sueldo no mostrado por la empresa'
-        ];
-    }
+while ($row = $resultado->fetch_assoc()) {
+    $row['FechaPublicacion'] = calcularTiempoTranscurrido($row['FechaPublicacion']); // Reemplazamos la fecha por "Hace X días"
+    $vacantes[] = $row;
 }
 
 echo json_encode($vacantes, JSON_UNESCAPED_UNICODE);
-$conn->close();
 
+$conn->close();
 
 // Función para calcular "Hace X días"
 function calcularTiempoTranscurrido($fechaPublicacion) {
@@ -42,4 +38,3 @@ function calcularTiempoTranscurrido($fechaPublicacion) {
         return 'Hace ' . $diferencia->days . ' días';
     }
 }
-
