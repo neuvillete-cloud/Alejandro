@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h3>${vacante.Titulo}</h3>
                     <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
                     <ul>
-                        <li>${vacante.Requisitos.split(',')[0]}</li>
                         <li>${vacante.Beneficios.split(',')[0]}</li>
                     </ul>
                     <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
