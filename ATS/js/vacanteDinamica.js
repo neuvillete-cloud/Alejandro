@@ -62,5 +62,5 @@ function mostrarDetalle(vacante) {
 
     document.getElementById("previewRequisitos").innerHTML = textoAListasHTML(vacante.Requisitos);
     document.getElementById("previewBeneficios").innerHTML = textoAListasHTML(vacante.Beneficios);
-    document.getElementById("previewDescripcion").innerHTML = textoAListasHTML(vacante.Descripcion);
+    document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion.replace(/\n/g, '<br>');
 }
