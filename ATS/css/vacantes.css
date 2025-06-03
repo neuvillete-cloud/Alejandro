@@ -398,6 +398,11 @@ nav > a:not(:hover)::after {
     border-radius: 8px;
     padding: 25px;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
+
+    position: sticky;
+    top: 120px; /* ajusta según el alto del header */
+    max-height: calc(100vh - 140px); /* altura total disponible */
+    overflow-y: auto;
 }
 
 .detalle-vacante .fecha {
