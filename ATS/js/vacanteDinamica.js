@@ -1,58 +1,58 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const listaVacantes = document.querySelector('.lista-vacantes');
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("obtenerVacantes.php")
+        .then(response => response.json())
+        .then(vacantes => {
+            const lista = document.querySelector(".lista-vacantes");
+            const detalle = document.querySelector(".detalle-vacante");
 
-    // 1. Cargar todas las vacantes automáticamente
-    fetch('cargarVacantes.php')
-        .then(response => response.text())
-        .then(html => {
-            listaVacantes.innerHTML = html;
-            activarClicks(); // Para que funcionen los clicks después de insertar
-        });
+            lista.innerHTML = ""; // Limpiar lista
 
-    // 2. Activar los clics en vacantes cargadas
-    function activarClicks() {
-        const tarjetas = document.querySelectorAll('.vacante-item');
-        const panelDetalle = document.getElementById('vacante-detalle');
+            vacantes.forEach((vacante, index) => {
+                const item = document.createElement("div");
+                item.classList.add("vacante-item");
+                if (index === 0) item.classList.add("activa");
 
-        tarjetas.forEach(tarjeta => {
-            tarjeta.addEventListener('click', function () {
-                const idVacante = this.dataset.id;
+                item.innerHTML = `
+                    <p class="fecha">${vacante.FechaPublicacion}</p>
+                    <h3>${vacante.Titulo}</h3>
+                    <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
+                    <ul>
+                        <li>${vacante.Requisitos.split(',')[0]}</li>
+                        <li>${vacante.Beneficios.split(',')[0]}</li>
+                    </ul>
+                    <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
+                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+                `;
 
-                panelDetalle.innerHTML = '<p>Cargando información de la vacante...</p>';
+                item.addEventListener("click", () => {
+                    document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
+                    item.classList.add("activa");
+                    mostrarDetalle(vacante);
+                });
 
-                fetch(`obtenerVacante.php?id=${idVacante}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            panelDetalle.innerHTML = `<p>${data.error}</p>`;
-                        } else {
-                            panelDetalle.innerHTML = `
-                                <div class="detalle-header">
-                                    <span>Hace ${data.fecha}</span>
-                                    <h2>${data.titulo}</h2>
-                                    <p>${data.descripcion}</p>
-                                    <p><strong>${data.empresa}</strong> en ${data.ubicacion}</p>
-                                    ${data.verificada ? '<p class="verificada">Empresa verificada</p>' : ''}
-                                    <button class="btn-postular">Postularme</button>
-                                </div>
-                                <hr>
-                                <div class="detalle-compatibilidad">
-                                    <h3>Conoce tu compatibilidad con la vacante</h3>
-                                    <ul>
-                                        <li><strong>Sueldo:</strong> ${data.sueldo}</li>
-                                        <li><strong>Ubicación:</strong> ${data.ubicacion_match}</li>
-                                        <li><strong>Educación:</strong> ${data.educacion}</li>
-                                        <li><strong>Área:</strong> ${data.area}</li>
-                                    </ul>
-                                </div>
-                            `;
-                        }
-                    })
-                    .catch(error => {
-                        panelDetalle.innerHTML = `<p>Error al obtener la vacante.</p>`;
-                        console.error('Error:', error);
-                    });
+                lista.appendChild(item);
+
+                if (index === 0) mostrarDetalle(vacante);
             });
         });
-    }
 });
+
+function mostrarDetalle(vacante) {
+    document.querySelector(".detalle-vacante .fecha").textContent = vacante.FechaPublicacion;
+    document.querySelector(".detalle-vacante h2").textContent = vacante.Titulo;
+    let textoSueldo = vacante.Sueldo && vacante.Sueldo.trim() !== ""
+        ? `<strong>${vacante.Sueldo}</strong><br>`
+        : "Si el reclutador te contacta podrás conocer el sueldo<br>";
+
+    document.querySelector(".detalle-vacante .descripcion").innerHTML =
+        `${textoSueldo}<strong>Grammer Automotive, S.A. de C.V.</strong> en ${vacante.Ciudad}, ${vacante.Estado}`;
+
+    document.getElementById("previewArea").textContent = vacante.Area;
+    document.getElementById("previewescolaridad").textContent = vacante.Escolaridad;
+    document.getElementById("previewIdioma").textContent = vacante.Idioma;
+    document.getElementById("previewHorario").textContent = vacante.Horario;
+    document.getElementById("previewEspacio").textContent = vacante.EspacioTrabajo;
+    document.getElementById("previewRequisitos").textContent = vacante.Requisitos;
+    document.getElementById("previewBeneficios").textContent = vacante.Beneficios;
+    document.getElementById("previewDescripcion").textContent = vacante.Descripcion;
+}
