@@ -16,12 +16,11 @@ $resultado = $conn->query($sql);
 $vacantes = [];
 
 while ($row = $resultado->fetch_assoc()) {
-    // Aplicamos nl2br para que los saltos de línea se conviertan en <br> para HTML
-    $requisitos = nl2br($row['Requisitos']);
-    $beneficios = nl2br($row['Beneficios']);
-    $descripcion = nl2br($row['Descripcion']);
+    // Convertir los textos con saltos de línea en arreglos
+    $requisitos = array_filter(array_map('trim', explode("\n", $row['Requisitos'])));
+    $beneficios = array_filter(array_map('trim', explode("\n", $row['Beneficios'])));
+    $descripcion = array_filter(array_map('trim', explode("\n", $row['Descripcion'])));
 
-    // Renombramos campos para que coincidan con el JS
     $vacantes[] = [
         'IdVacante' => $row['IdVacante'],
         'Titulo' => $row['TituloVacante'],
