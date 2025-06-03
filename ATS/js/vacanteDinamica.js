@@ -12,16 +12,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 item.classList.add("vacante-item");
                 if (index === 0) item.classList.add("activa");
 
+                // Convertir beneficios a viñetas a partir de saltos de línea
+                const beneficiosList = vacante.Beneficios
+                    .split(/\n+/)
+                    .filter(b => b.trim() !== "")
+                    .map(b => `<li>${b.trim()}</li>`)
+                    .join("");
+
                 item.innerHTML = `
-                    <p class="fecha">${vacante.FechaPublicacion}</p>
-                    <h3>${vacante.Titulo}</h3>
-                    <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
-                    <ul>
-                        <li>${vacante.Beneficios.split(',')[0]}</li>
-                    </ul>
-                    <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
-                `;
+        <p class="fecha">${vacante.FechaPublicacion}</p>
+        <h3>${vacante.Titulo}</h3>
+        <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
+        <ul>${beneficiosList}</ul>
+        <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
+        <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+    `;
 
                 item.addEventListener("click", () => {
                     document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
@@ -33,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (index === 0) mostrarDetalle(vacante);
             });
+
         });
 });
 
