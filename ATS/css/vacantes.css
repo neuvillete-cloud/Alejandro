@@ -444,3 +444,82 @@ nav > a:not(:hover)::after {
     color: green;
     margin-right: 5px;
 }
+
+/* Sección general de bloques como "Sobre el empleo", "Detalles", etc. */
+.seccion-empleo-vacante {
+    margin-bottom: 30px;
+}
+
+/* Título de sección */
+.titulo-seccion-vacante {
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 15px;
+}
+
+/* Línea divisoria sutil */
+.linea-divisoria-vacante {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Bloque individual de ítem (como Horario, Idioma, etc.) */
+.info-item-vacante {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Texto en negrita como “Horario:” */
+.info-item-vacante strong {
+    margin-right: 5px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* Grupo de dos columnas (como Área + Escolaridad) */
+.info-empleo-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Asegura que los items ocupen 48% del ancho en pantallas grandes */
+.info-empleo-fila .info-item-vacante {
+    flex: 1 1 48%;
+}
+
+/* Contenedor general para secciones tipo "Requisitos", "Beneficios", etc. */
+.preview-seccion-vacante {
+    margin-bottom: 20px;
+}
+
+/* Títulos dentro de .preview-seccion-vacante */
+.preview-seccion-vacante h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+/* Contenido de texto (Requisitos, Beneficios, etc.) */
+.preview-seccion-vacante p {
+    font-size: 16px;
+    color: #444;
+    line-height: 1.5;
+}
+
+/* Responsive (ajusta el layout de columnas a 100% en móviles) */
+@media (max-width: 768px) {
+    .info-empleo-fila {
+        flex-direction: column;
+    }
+
+    .info-empleo-fila .info-item-vacante {
+        flex: 1 1 100%;
+    }
+}
