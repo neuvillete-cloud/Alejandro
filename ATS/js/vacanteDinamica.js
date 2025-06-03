@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("obtenerVacantes.php")
+    fetch("dao/daoVacanteDinamica.php")
         .then(response => response.json())
         .then(vacantes => {
             const lista = document.querySelector(".lista-vacantes");
