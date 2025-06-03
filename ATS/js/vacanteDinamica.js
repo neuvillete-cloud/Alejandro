@@ -12,14 +12,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 item.classList.add("vacante-item");
                 if (index === 0) item.classList.add("activa");
 
-                // Mostrar solo el primer requisito y beneficio en la lista resumida
                 item.innerHTML = `
                     <p class="fecha">${vacante.FechaPublicacion}</p>
                     <h3>${vacante.Titulo}</h3>
                     <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
                     <ul>
-                        <li>${vacante.Requisitos.length > 0 ? vacante.Requisitos[0] : ""}</li>
-                        <li>${vacante.Beneficios.length > 0 ? vacante.Beneficios[0] : ""}</li>
+                        <li>${vacante.Requisitos.split(',')[0]}</li>
+                        <li>${vacante.Beneficios.split(',')[0]}</li>
                     </ul>
                     <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
                     <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
@@ -53,16 +52,7 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewIdioma").textContent = vacante.Idioma;
     document.getElementById("previewHorario").textContent = vacante.Horario;
     document.getElementById("previewEspacio").textContent = vacante.EspacioTrabajo;
-
-    // Convertir arrays en listas <ul>
-    document.getElementById("previewRequisitos").innerHTML = arrayToHtmlList(vacante.Requisitos);
-    document.getElementById("previewBeneficios").innerHTML = arrayToHtmlList(vacante.Beneficios);
-    document.getElementById("previewDescripcion").innerHTML = arrayToHtmlList(vacante.Descripcion);
+    document.getElementById("previewRequisitos").innerHTML = vacante.Requisitos;
+    document.getElementById("previewBeneficios").innerHTML = vacante.Beneficios;
+    document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion;
 }
-
-// Función para convertir array en lista HTML
-function arrayToHtmlList(arr) {
-    if (!Array.isArray(arr) || arr.length === 0) return "";
-    return "<ul>" + arr.map(item => `<li>${item}</li>`).join("") + "</ul>";
-}
-
