@@ -132,6 +132,7 @@ session_start();
                 </div>
 
                 <!-- Sección: Sobre el empleo -->
+                <hr class="linea-divisoria-vacante">
                 <div class="seccion-empleo-vacante">
                     <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
 
