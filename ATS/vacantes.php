@@ -188,7 +188,6 @@ session_start();
                     <h3>Descripción del puesto</h3>
                     <p id="previewDescripcion"></p>
                 </div>
-                <hr class="linea-divisoria-vacante">
 
 
             </div>
