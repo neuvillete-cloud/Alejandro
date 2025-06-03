@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Obtener fecha y hora actual
     $fechaHoraActual = date('Y-m-d');
+    $idEstatus = 1; // Estatus inicial
 
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -88,13 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombreArchivo = $rutaPublica;
     }
 
-    // Insertar vacante
-    $stmt = $conex->prepare("INSERT INTO Vacantes (TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima, Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Requisitos, Beneficios, Descripcion, Imagen, Fecha)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sissssssssssssss",
+    // Insertar vacante con IdEstatus = 1
+    $stmt = $conex->prepare("INSERT INTO Vacantes (
+        TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
+        Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Requisitos,
+        Beneficios, Descripcion, Imagen, Fecha, IdEstatus
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+    $stmt->bind_param("sissssssssssssssi",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
-        $espacio, $idioma, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual
+        $espacio, $idioma, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual, $idEstatus
     );
 
     if ($stmt->execute()) {
