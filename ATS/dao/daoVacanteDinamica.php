@@ -16,6 +16,11 @@ $resultado = $conn->query($sql);
 $vacantes = [];
 
 while ($row = $resultado->fetch_assoc()) {
+    // Aplicamos nl2br para que los saltos de línea se conviertan en <br> para HTML
+    $requisitos = nl2br($row['Requisitos']);
+    $beneficios = nl2br($row['Beneficios']);
+    $descripcion = nl2br($row['Descripcion']);
+
     // Renombramos campos para que coincidan con el JS
     $vacantes[] = [
         'IdVacante' => $row['IdVacante'],
@@ -23,15 +28,15 @@ while ($row = $resultado->fetch_assoc()) {
         'Ciudad' => $row['Ciudad'],
         'Estado' => $row['Estado'],
         'Sueldo' => $row['Sueldo'],
-        'Requisitos' => $row['Requisitos'],
-        'Beneficios' => $row['Beneficios'],
-        'Descripcion' => $row['Descripcion'],
+        'Requisitos' => $requisitos,
+        'Beneficios' => $beneficios,
+        'Descripcion' => $descripcion,
         'Area' => $row['IdArea'],
         'Escolaridad' => $row['EscolaridadMinima'],
         'Idioma' => $row['Idioma'],
         'Horario' => $row['Horario'],
         'EspacioTrabajo' => $row['EspacioTrabajo'],
-        'FechaPublicacion' => calcularTiempoTranscurrido($row['Fecha']) // ← ahora sí usamos el nombre correcto
+        'FechaPublicacion' => calcularTiempoTranscurrido($row['Fecha'])
     ];
 }
 
