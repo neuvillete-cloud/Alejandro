@@ -27,7 +27,7 @@
 </header>
 
 <section class="section-title">
-    <h1>Inscripción</h1>
+    <h1>Registro Usuario</h1>
 </section>
 
 <div class="section-blanca">
