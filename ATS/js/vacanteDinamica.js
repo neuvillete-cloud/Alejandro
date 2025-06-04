@@ -76,6 +76,7 @@ function textoAListasHTML(texto) {
 }
 
 function mostrarDetalle(vacante) {
+    document.getElementById("imagenVacante").src = vacante.Imagen || "imagenes/default.jpg";
     document.querySelector(".detalle-vacante .fecha").textContent = vacante.FechaPublicacion;
     document.querySelector(".detalle-vacante h2").textContent = vacante.Titulo;
 

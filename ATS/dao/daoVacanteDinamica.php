@@ -6,7 +6,7 @@ date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
-$sql = "SELECT IdVacante, TituloVacante, Ciudad, Estado, Sueldo, Requisitos, Beneficios, Descripcion, IdArea, EscolaridadMinima, Idioma, Horario, EspacioTrabajo, Fecha
+$sql = "SELECT IdVacante, TituloVacante, Ciudad, Estado, Sueldo, Requisitos, Beneficios, Descripcion, IdArea, EscolaridadMinima, Idioma, Horario, EspacioTrabajo, Fecha, Imagen
         FROM Vacantes 
         WHERE IdEstatus = 1
         ORDER BY Fecha DESC";
@@ -16,22 +16,23 @@ $resultado = $conn->query($sql);
 $vacantes = [];
 
 while ($row = $resultado->fetch_assoc()) {
-    // Enviar texto original, sin nl2br
     $vacantes[] = [
         'IdVacante' => $row['IdVacante'],
         'Titulo' => $row['TituloVacante'],
         'Ciudad' => $row['Ciudad'],
         'Estado' => $row['Estado'],
         'Sueldo' => $row['Sueldo'],
-        'Requisitos' => $row['Requisitos'],   // texto crudo con saltos
-        'Beneficios' => $row['Beneficios'],   // texto crudo con saltos
-        'Descripcion' => $row['Descripcion'], // texto crudo con saltos
+        'Requisitos' => $row['Requisitos'],
+        'Beneficios' => $row['Beneficios'],
+        'Descripcion' => $row['Descripcion'],
         'Area' => $row['IdArea'],
         'Escolaridad' => $row['EscolaridadMinima'],
         'Idioma' => $row['Idioma'],
         'Horario' => $row['Horario'],
         'EspacioTrabajo' => $row['EspacioTrabajo'],
-        'FechaPublicacion' => calcularTiempoTranscurrido($row['Fecha'])
+        'FechaPublicacion' => calcularTiempoTranscurrido($row['Fecha']),
+        // ✅ Aquí agregas la imagen
+        'Imagen' => $row['Imagen']
     ];
 }
 
