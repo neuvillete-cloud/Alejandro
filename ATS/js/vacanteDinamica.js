@@ -7,31 +7,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
             lista.innerHTML = "";
 
+            // Obtener vacantes vistas desde localStorage
+            const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
+
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
+                item.setAttribute("data-id", vacante.IdVacante); // ID único
+
                 if (index === 0) item.classList.add("activa");
 
-                // Convertir beneficios a viñetas a partir de saltos de línea
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
                     .filter(b => b.trim() !== "")
                     .map(b => `<li>${b.trim()}</li>`)
                     .join("");
 
+                // Etiqueta "Visto recientemente" si aplica
+                let vistoHTML = '';
+                if (vacantesVistas.includes(vacante.IdVacante)) {
+                    vistoHTML = `<span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
+                }
+
                 item.innerHTML = `
-        <p class="fecha">${vacante.FechaPublicacion}</p>
-        <h3>${vacante.Titulo}</h3>
-        <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
-        <ul>${beneficiosList}</ul>
-        <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-        <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
-    `;
+                    <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
+                    <h3>${vacante.Titulo}</h3>
+                    <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
+                    <ul>${beneficiosList}</ul>
+                    <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
+                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+                `;
 
                 item.addEventListener("click", () => {
                     document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
                     item.classList.add("activa");
                     mostrarDetalle(vacante);
+
+                    // Marcar como vista
+                    if (!vacantesVistas.includes(vacante.IdVacante)) {
+                        vacantesVistas.push(vacante.IdVacante);
+                        localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistas));
+                    }
+
+                    // Añadir texto "Visto recientemente" si no lo tiene
+                    const fechaP = item.querySelector(".fecha");
+                    if (!fechaP.querySelector(".reciente")) {
+                        const span = document.createElement("span");
+                        span.classList.add("reciente");
+                        span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
+                        fechaP.appendChild(document.createTextNode(" • "));
+                        fechaP.appendChild(span);
+                    }
                 });
 
                 lista.appendChild(item);
@@ -52,6 +78,7 @@ function textoAListasHTML(texto) {
 function mostrarDetalle(vacante) {
     document.querySelector(".detalle-vacante .fecha").textContent = vacante.FechaPublicacion;
     document.querySelector(".detalle-vacante h2").textContent = vacante.Titulo;
+
     let textoSueldo = vacante.Sueldo && vacante.Sueldo.trim() !== ""
         ? `<strong>${vacante.Sueldo}</strong><br>`
         : "Si el reclutador te contacta podrás conocer el sueldo<br>";
