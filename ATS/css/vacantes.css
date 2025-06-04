@@ -528,3 +528,19 @@ nav > a:not(:hover)::after {
         flex: 1 1 100%;
     }
 }
+
+.reciente {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85em;
+    color: #5e35b1; /* Morado suave */
+    background-color: #e8eaf6;
+    padding: 4px 8px;
+    border-radius: 20px;
+    margin-left: 5px;
+    gap: 5px;
+}
+
+.reciente i {
+    color: #5e35b1;
+}
