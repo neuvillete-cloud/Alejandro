@@ -544,7 +544,7 @@ nav > a:not(:hover)::after {
 }
 
 .imagen-vacante-detalle img {
-    width: 200px;
+    width: 250px;
     height: 200px;
     object-fit: cover;
     border-radius: 10px;
