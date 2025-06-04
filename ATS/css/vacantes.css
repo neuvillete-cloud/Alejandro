@@ -536,17 +536,3 @@ nav > a:not(:hover)::after {
     color: #4CAF50;
 }
 
-.detalle-vacante-contenedor {
-    display: flex;
-    align-items: flex-start;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.imagen-vacante img {
-    width: 200px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
