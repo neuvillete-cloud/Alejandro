@@ -84,96 +84,112 @@ session_start();
         <div class="contenedor-vacantes">
             <!-- Lista de vacantes -->
             <div class="lista-vacantes">
-                <!-- Estos elementos se cargan dinámicamente desde JS -->
-            </div>
-
-            <!-- Detalle de la vacante seleccionada con imagen -->
-            <div class="detalle-vacante-contenedor">
-                <!-- Imagen dinámica desde BD -->
-                <div class="imagen-vacante">
-                    <img id="imagenVacante" src="" alt="Imagen de la vacante">
+                <div class="vacante-item activa">
+                    <p class="fecha">Hace 3 días • <span class="reciente">Vista recientemente.</span></p>
+                    <h3>Practicante</h3>
+                    <p>Sueldo no mostrado por la empresa</p>
+                    <ul>
+                        <li>Capacitación pagada</li>
+                        <li>Apoyo económico</li>
+                    </ul>
+                    <p class="empresa">Crown Industrias Montacargas</p>
+                    <p class="ubicacion">Querétaro, Qro.</p>
                 </div>
 
-                <!-- Detalles de la vacante -->
-                <div class="detalle-vacante">
-                    <p class="fecha">Hace 3 días</p>
-                    <h2>Practicante</h2>
-                    <p class="descripcion">
-                        Si el reclutador te contacta podrás conocer el sueldo<br>
-                        <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
-                    </p>
-                    <a href="#" class="verificada">Empresa verificada <i class="fas fa-badge-check"></i></a>
+                <div class="vacante-item">
+                    <p class="fecha">Hace 1 día</p>
+                    <h3>PRACTICANTE O RESIDENTE</h3>
+                    <p>Sueldo no mostrado por la empresa</p>
+                    <ul>
+                        <li>Plan de crecimiento personal y laboral</li>
+                        <li>Oportunidad de contratación</li>
+                    </ul>
+                    <p class="empresa">Otra Empresa S.A.</p>
+                    <p class="ubicacion">Querétaro, Qro.</p>
+                </div>
+            </div>
 
-                    <button class="btn-postularme">Postularme</button>
+            <!-- Detalle de la vacante seleccionada -->
+            <div class="detalle-vacante">
+                <p class="fecha">Hace 3 días</p>
+                <h2>Practicante</h2>
+                <p class="descripcion">
+                    Si el reclutador te contacta podrás conocer el sueldo<br>
+                    <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
+                </p>
+                <a href="#" class="verificada">Empresa verificada <i class="fas fa-badge-check"></i></a>
 
-                    <hr>
+                <button class="btn-postularme">Postularme</button>
 
-                    <h4>Conoce tu compatibilidad con la vacante</h4>
-                    <div class="compatibilidad">
-                        <div><i class="fas fa-check-circle"></i> Sueldo <span>Entras en el rango</span></div>
-                        <div><i class="fas fa-check-circle"></i> Ubicación <span>Estás en el lugar correcto</span></div>
-                        <div><i class="fas fa-check-circle"></i> Educación <span>Cumples con lo necesario</span></div>
-                        <div><i class="fas fa-check-circle"></i> Área <span>Compatible con el puesto</span></div>
-                    </div>
+                <hr>
 
-                    <!-- Sección: Sobre el empleo -->
-                    <hr class="linea-divisoria-vacante">
-                    <div class="seccion-empleo-vacante">
-                        <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
+                <h4>Conoce tu compatibilidad con la vacante</h4>
+                <div class="compatibilidad">
+                    <div><i class="fas fa-check-circle"></i> Sueldo <span>Entras en el rango</span></div>
+                    <div><i class="fas fa-check-circle"></i> Ubicación <span>Estás en el lugar correcto</span></div>
+                    <div><i class="fas fa-check-circle"></i> Educación <span>Cumples con lo necesario</span></div>
+                    <div><i class="fas fa-check-circle"></i> Área <span>Compatible con el puesto</span></div>
+                </div>
 
-                        <div class="info-empleo-fila">
-                            <div class="info-item-vacante">
-                                <strong>Área / Departamento:</strong>
-                                <span id="previewArea"></span>
-                            </div>
+                <!-- Sección: Sobre el empleo -->
+                <hr class="linea-divisoria-vacante">
+                <div class="seccion-empleo-vacante">
+                    <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
 
-                            <div class="info-item-vacante">
-                                <strong>Escolaridad mínima:</strong>
-                                <span id="previewescolaridad"></span>
-                            </div>
+                    <div class="info-empleo-fila">
+                        <div class="info-item-vacante">
+                            <strong>Área / Departamento:</strong>
+                            <span id="previewArea"></span>
                         </div>
 
                         <div class="info-item-vacante">
-                            <strong>Idioma:</strong> <span id="previewIdioma"></span>
+                            <strong>Escolaridad mínima:</strong>
+                            <span id="previewescolaridad"></span>
                         </div>
-
-                        <hr class="linea-divisoria-vacante">
                     </div>
 
-                    <!-- DETALLES DEL EMPLEO -->
-                    <div class="seccion-empleo-vacante">
-                        <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
-
-                        <div class="info-item-vacante">
-                            <strong>Horario:</strong> <span id="previewHorario"></span>
-                        </div>
-                        <div class="info-item-vacante">
-                            <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
-                        </div>
-
-                        <hr class="linea-divisoria-vacante">
+                    <div class="info-item-vacante">
+                        <strong>Idioma:</strong> <span id="previewIdioma"></span>
                     </div>
 
-                    <div class="preview-seccion-vacante">
-                        <h3>Requisitos</h3>
-                        <p id="previewRequisitos"></p>
-                    </div>
                     <hr class="linea-divisoria-vacante">
+                </div>
 
-                    <div class="preview-seccion-vacante">
-                        <h3>Beneficios</h3>
-                        <p id="previewBeneficios"></p>
+
+                <!-- DETALLES DEL EMPLEO -->
+                <div class="seccion-empleo-vacante">
+                    <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
+
+                    <div class="info-item-vacante">
+                        <strong>Horario:</strong> <span id="previewHorario"></span>
                     </div>
+                    <div class="info-item-vacante">
+                        <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
+                    </div>
+
                     <hr class="linea-divisoria-vacante">
+                </div>
 
-                    <div class="preview-seccion-vacante">
-                        <h3>Descripción del puesto</h3>
-                        <p id="previewDescripcion"></p>
-                    </div>
+
+
+                <div class="preview-seccion-vacante">
+                    <h3>Requisitos</h3>
+                    <p id="previewRequisitos"></p>
+                </div>
+                <hr class="linea-divisoria-vacante">
+
+                <div class="preview-seccion-vacante">
+                    <h3>Beneficios</h3>
+                    <p id="previewBeneficios"></p>
+                </div>
+                <hr class="linea-divisoria-vacante">
+
+                <div class="preview-seccion-vacante">
+                    <h3>Descripción del puesto</h3>
+                    <p id="previewDescripcion"></p>
                 </div>
             </div>
         </div>
-
 
 
     </div>
