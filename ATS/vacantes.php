@@ -81,7 +81,7 @@ session_start();
             </div>
         </div>
 
-        <<div class="contenedor-vacantes">
+        <div class="contenedor-vacantes">
             <!-- Lista de vacantes -->
             <div class="lista-vacantes">
                 <div class="vacante-item activa">
@@ -111,22 +111,15 @@ session_start();
 
             <!-- Detalle de la vacante seleccionada -->
             <div class="detalle-vacante">
-                <!-- ENCABEZADO CON IMAGEN -->
-                <div class="encabezado-vacante">
-                    <div class="imagen-vacante-detalle">
-                        <img id="imagenVacante" src="imagenes/default.jpg" alt="Logo empresa">
-                    </div>
-                    <div class="info-principal-vacante">
-                        <p class="fecha">Hace 3 días</p>
-                        <h2>Practicante</h2>
-                        <p class="descripcion">
-                            $8000 <br>
-                            <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
-                        </p>
-                        <a href="#" class="verificada">Empresa verificada <i class="fas fa-badge-check"></i></a>
-                        <button class="btn-postularme">Postularme</button>
-                    </div>
-                </div>
+                <p class="fecha">Hace 3 días</p>
+                <h2>Practicante</h2>
+                <p class="descripcion">
+                    Si el reclutador te contacta podrás conocer el sueldo<br>
+                    <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
+                </p>
+                <a href="#" class="verificada">Empresa verificada <i class="fas fa-badge-check"></i></a>
+
+                <button class="btn-postularme">Postularme</button>
 
                 <hr>
 
@@ -162,7 +155,8 @@ session_start();
                     <hr class="linea-divisoria-vacante">
                 </div>
 
-                <!-- Detalles del empleo -->
+
+                <!-- DETALLES DEL EMPLEO -->
                 <div class="seccion-empleo-vacante">
                     <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
 
@@ -175,6 +169,8 @@ session_start();
 
                     <hr class="linea-divisoria-vacante">
                 </div>
+
+
 
                 <div class="preview-seccion-vacante">
                     <h3>Requisitos</h3>
@@ -194,7 +190,6 @@ session_start();
                 </div>
             </div>
         </div>
-
 
 
     </div>
