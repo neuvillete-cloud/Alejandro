@@ -530,12 +530,12 @@ nav > a:not(:hover)::after {
 }
 
 .reciente {
-    color: #6a1b9a;
+    color: #2196F3;
     font-weight: 500;
     margin-left: 6px;
     font-size: 0.9em;
 }
 .reciente i {
     margin-right: 4px;
-    color: #6a1b9a;
+    color: #4CAF50;
 }
