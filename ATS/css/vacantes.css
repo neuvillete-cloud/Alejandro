@@ -414,13 +414,6 @@ nav > a:not(:hover)::after {
     margin-bottom: 10px;
 }
 
-.verificada {
-    color: #2a55c7;
-    font-weight: bold;
-    text-decoration: none;
-    display: inline-block;
-    margin-bottom: 20px;
-}
 
 .btn-postularme {
     background-color: #dc3b5a;

@@ -123,7 +123,6 @@ session_start();
                             $8000 <br>
                             <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
                         </p>
-                        <a href="#" class="verificada">Empresa verificada <i class="fas fa-badge-check"></i></a>
                         <button class="btn-postularme">Postularme</button>
                     </div>
                 </div>
