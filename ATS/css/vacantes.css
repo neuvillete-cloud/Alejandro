@@ -367,10 +367,6 @@ nav > a:not(:hover)::after {
     margin-bottom: 5px;
 }
 
-.vacante-item .reciente {
-    color: #5c58cc;
-    font-weight: bold;
-}
 
 .vacante-item h3 {
     margin: 0;
