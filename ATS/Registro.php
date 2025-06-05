@@ -52,6 +52,33 @@
         <label>Confirmación de contraseña <span class="required">*</span></label>
         <input type="password" name="confirmar_contrasena" required>
 
+        <label>Sueldo deseado (MXN mensual) <span class="required">*</span></label>
+        <input type="number" name="sueldo" required>
+
+        <label>Nivel de estudios <span class="required">*</span></label>
+        <select name="nivel_estudios" required>
+            <option value="">Seleccione una opción</option>
+            <option value="secundaria">Secundaria</option>
+            <option value="preparatoria">Preparatoria</option>
+            <option value="tecnico">Técnico</option>
+            <option value="licenciatura">Licenciatura</option>
+            <option value="maestria">Maestría</option>
+            <option value="doctorado">Doctorado</option>
+        </select>
+
+        <label>Ubicación <span class="required">*</span></label>
+        <input type="text" name="ubicacion" required placeholder="Ej. Querétaro, Qro.">
+
+        <label>Área de interés <span class="required">*</span></label>
+        <input type="text" name="area" required placeholder="Ej. Ingeniería, Recursos Humanos">
+
+        <label>Especialidad <span class="required">*</span></label>
+        <input type="text" name="especialidad" required placeholder="Ej. Mecatrónica, Psicología Organizacional">
+
+        <label>Fecha de nacimiento <span class="required">*</span></label>
+        <input type="date" name="fecha_nacimiento" required>
+
+
         <!-- Nueva sección de aceptación de términos -->
         <section class="terminos-condiciones">
             <div class="checkbox-condiciones">
