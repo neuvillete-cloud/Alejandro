@@ -310,10 +310,10 @@ nav a:not(:hover)::after {
 
 .imagen-banner {
     position: absolute;
-    top: 50%;
+    top: 60%;
     right: 2rem;
     transform: translateY(-50%);
-    max-height: 100px;
+    max-height: 200px;
     width: auto;
     padding-right: 265px;
 }
