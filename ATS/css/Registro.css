@@ -172,13 +172,13 @@ nav a:not(:hover)::after {
     font-size: 16px;
     box-sizing: border-box;
     transition: border 0.3s ease;
-    appearance: none; /* elimina los estilos nativos del navegador en select y date */
+    appearance: none;
 }
 
 /* Estilo para el select para que parezca un input */
 .section-blanca select {
     background-color: white;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%236c2bd9" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%232a7fb8" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 12px;
@@ -190,10 +190,9 @@ nav a:not(:hover)::after {
 .section-blanca input:focus,
 .section-blanca select:focus,
 .section-blanca textarea:focus {
-    border-color: #6c2bd9;
+    border-color: #2a7fb8;
     outline: none;
 }
-
 
 /* Etiquetas */
 .section-blanca label {
@@ -214,24 +213,25 @@ nav a:not(:hover)::after {
 }
 
 .section-blanca .boton.confirmar {
-    background-color: #6c2bd9;
+    background-color: #2a7fb8;
     color: #fff;
 }
 
 .section-blanca .boton.confirmar:hover {
-    background-color: #501fb1;
+    background-color: #1e5e96;
 }
 
 .section-blanca .boton.cancelar {
     background-color: transparent;
-    border: 2px solid #6c2bd9;
-    color: #6c2bd9;
+    border: 2px solid #2a7fb8;
+    color: #2a7fb8;
 }
 
 .section-blanca .boton.cancelar:hover {
-    background-color: #f3f0ff;
+    background-color: #e0f0ff;
 }
 
+/* Términos y condiciones */
 .terminos-condiciones {
     margin-top: 40px;
     text-align: center;
@@ -244,7 +244,7 @@ nav a:not(:hover)::after {
 }
 
 .checkbox-condiciones a {
-    color: #6c2bd9;
+    color: #2a7fb8;
     text-decoration: underline;
 }
 
@@ -253,6 +253,7 @@ nav a:not(:hover)::after {
     transform: scale(1.2);
 }
 
+/* Botones finales */
 .botones-final {
     display: flex;
     justify-content: center;
@@ -271,24 +272,22 @@ nav a:not(:hover)::after {
 }
 
 .btn-confirmar {
-    background-color: #a100ff; /* morado fuerte */
+    background-color: #0077cc;
     color: white;
-    border: 2px solid #a100ff;
+    border: 2px solid #0077cc;
 }
 
 .btn-confirmar:hover {
-    background-color: #8700d9;
-    border-color: #8700d9;
+    background-color: #005fa3;
+    border-color: #005fa3;
 }
 
 .btn-cancelar {
     background-color: white;
-    color: #a100ff;
-    border: 2px solid #a100ff;
+    color: #0077cc;
+    border: 2px solid #0077cc;
 }
 
 .btn-cancelar:hover {
-    background-color: #f3e6ff;
+    background-color: #d6ecff;
 }
-
-
