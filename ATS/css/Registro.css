@@ -63,7 +63,7 @@ nav a::after {
     bottom: -34px;
     width: 0;
     height: 4px;
-    background: #a86bd5;
+    background: #99d0e9;
     transform-origin: left;
     transition: width 0.3s ease-in-out;
 }
