@@ -90,6 +90,7 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewArea").textContent = vacante.Area;
     document.getElementById("previewescolaridad").textContent = vacante.Escolaridad;
     document.getElementById("previewIdioma").textContent = vacante.Idioma;
+    document.getElementById("previewEspecialidad").textContent = vacante.Especialidad;
     document.getElementById("previewHorario").textContent = vacante.Horario;
     document.getElementById("previewEspacio").textContent = vacante.EspacioTrabajo;
 

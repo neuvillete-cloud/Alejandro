@@ -6,7 +6,7 @@ date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
-$sql = "SELECT IdVacante, TituloVacante, Ciudad, Estado, Sueldo, Requisitos, Beneficios, Descripcion, IdArea, EscolaridadMinima, Idioma, Horario, EspacioTrabajo, Fecha, Imagen
+$sql = "SELECT IdVacante, TituloVacante, Ciudad, Estado, Sueldo, Requisitos, Beneficios, Descripcion, IdArea, EscolaridadMinima, Idioma, Especialidad, Horario, EspacioTrabajo, Fecha, Imagen
         FROM Vacantes 
         WHERE IdEstatus = 1
         ORDER BY Fecha DESC";
@@ -28,6 +28,7 @@ while ($row = $resultado->fetch_assoc()) {
         'Area' => $row['IdArea'],
         'Escolaridad' => $row['EscolaridadMinima'],
         'Idioma' => $row['Idioma'],
+        'Especialidad' => $row['Especialidad'],
         'Horario' => $row['Horario'],
         'EspacioTrabajo' => $row['EspacioTrabajo'],
         'FechaPublicacion' => calcularTiempoTranscurrido($row['Fecha']),

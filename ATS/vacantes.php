@@ -158,6 +158,10 @@ session_start();
                         <strong>Idioma:</strong> <span id="previewIdioma"></span>
                     </div>
 
+                    <div class="info-item-vacante">
+                        <strong>Area de Especialidad:</strong> <span id="previewEspecialidad"></span>
+                    </div>
+
                     <hr class="linea-divisoria-vacante">
                 </div>
 
