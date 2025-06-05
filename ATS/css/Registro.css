@@ -154,11 +154,13 @@ nav a:not(:hover)::after {
     margin-bottom: 20px;
 }
 
-/* Inputs y selects */
+/* Inputs, selects y date uniformes */
 .section-blanca input[type="text"],
 .section-blanca input[type="email"],
 .section-blanca input[type="password"],
 .section-blanca input[type="tel"],
+.section-blanca input[type="number"],
+.section-blanca input[type="date"],
 .section-blanca select,
 .section-blanca textarea {
     width: 45%;
@@ -168,20 +170,30 @@ nav a:not(:hover)::after {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
+    box-sizing: border-box;
     transition: border 0.3s ease;
+    appearance: none; /* elimina los estilos nativos del navegador en select y date */
 }
 
-.section-blanca textarea {
-    text-align: justify;
+/* Estilo para el select para que parezca un input */
+.section-blanca select {
+    background-color: white;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%236c2bd9" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+    cursor: pointer;
 }
 
-
+/* Focus */
 .section-blanca input:focus,
 .section-blanca select:focus,
 .section-blanca textarea:focus {
-    border-color: #6c2bd9; /* Color morado Grammer */
+    border-color: #6c2bd9;
     outline: none;
 }
+
 
 /* Etiquetas */
 .section-blanca label {
