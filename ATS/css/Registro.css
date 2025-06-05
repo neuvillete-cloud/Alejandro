@@ -304,20 +304,15 @@ nav a:not(:hover)::after {
     text-decoration: none;
 }
 
-.contenedor-titulo-imagen {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-
-.contenedor-titulo-imagen h1 {
-    font-size: 2.5rem;
-    color: white;
-    margin: 0;
+.section-title {
+    position: relative;
 }
 
 .imagen-banner {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
     max-height: 100px;
     width: auto;
 }

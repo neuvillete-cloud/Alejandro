@@ -27,11 +27,10 @@
 </header>
 
 <section class="section-title">
-    <div class="contenedor-titulo-imagen">
-        <h1>Registro Usuario</h1>
-        <img src="imagenes/1153377.png" alt="Imagen decorativa" class="imagen-banner">
-    </div>
+    <h1>Registro Usuario</h1>
+    <img src="imagenes/1153377.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
+
 
 
 <div class="section-blanca">
