@@ -291,3 +291,15 @@ nav a:not(:hover)::after {
 .btn-cancelar:hover {
     background-color: #d6ecff;
 }
+
+.link-inicio {
+    color: #2a7fb8;
+    font-weight: bold;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.link-inicio:hover {
+    color: #1e5e96;
+    text-decoration: none;
+}
