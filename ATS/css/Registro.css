@@ -163,7 +163,7 @@ nav a:not(:hover)::after {
 .section-blanca input[type="date"],
 .section-blanca select,
 .section-blanca textarea {
-    width: 45%;
+    width: 50%;
     padding: 12px 14px;
     margin-top: 8px;
     margin-bottom: 20px;
