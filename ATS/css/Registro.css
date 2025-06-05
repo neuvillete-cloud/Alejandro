@@ -315,4 +315,5 @@ nav a:not(:hover)::after {
     transform: translateY(-50%);
     max-height: 100px;
     width: auto;
+    padding-right: 265px;
 }
