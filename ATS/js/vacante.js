@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
             { campo: form.ciudad, nombre: "Ciudad" },
             { campo: form.espacio, nombre: "Espacio de trabajo" },
             { campo: form.idioma, nombre: "Idioma" },
+            { campo: form.especialidad, nombre: "Especialidad" },
             { campo: form.descripcion, nombre: "Descripción del puesto" },
         ];
 
@@ -44,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("ciudad", form.ciudad.value);
         formData.append("espacio", form.espacio.value);
         formData.append("idioma", form.idioma.value);
+        formData.append("especialidad", form.especialidad.value);
         formData.append("requisitos", form.requisitos.value);
         formData.append("beneficios", form.beneficios.value);
         formData.append("descripcion", form.descripcion.value);

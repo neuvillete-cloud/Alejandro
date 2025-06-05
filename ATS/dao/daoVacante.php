@@ -9,7 +9,7 @@ date_default_timezone_set('America/Mexico_City');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar campos requeridos
-    $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'idioma', 'descripcion'];
+    $camposRequeridos = ['titulo', 'area', 'tipo', 'escolaridad', 'pais', 'estado', 'ciudad', 'espacio', 'idioma', 'especialidad', 'descripcion'];
     foreach ($camposRequeridos as $campo) {
         if (empty($_POST[$campo])) {
             echo json_encode(['status' => 'error', 'message' => "Campo obligatorio faltante: $campo"]);
@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ciudad = $_POST['ciudad'];
     $espacio = $_POST['espacio'];
     $idioma = $_POST['idioma'];
+    $especialidad = $_POST['especialidad'];
     $requisitos = $_POST['requisitos'] ?? '';
     $beneficios = $_POST['beneficios'] ?? '';
     $descripcion = $_POST['descripcion'];
@@ -91,14 +92,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insertar vacante con IdEstatus = 1
     $stmt = $conex->prepare("INSERT INTO Vacantes (
-        TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
-        Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Requisitos,
-        Beneficios, Descripcion, Imagen, Fecha, IdEstatus
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
+    Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
+    Beneficios, Descripcion, Imagen, Fecha, IdEstatus
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $stmt->bind_param("sissssssssssssssi",
+
+    $stmt->bind_param("sisssssssssssssssi",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
-        $espacio, $idioma, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual, $idEstatus
+        $espacio, $idioma, $especialidad, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual, $idEstatus
     );
 
     if ($stmt->execute()) {
