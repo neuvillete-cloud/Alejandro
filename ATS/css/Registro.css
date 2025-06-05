@@ -138,7 +138,6 @@ nav a:not(:hover)::after {
 .section-blanca {
     background-color: white;
     padding: 60px 5%;
-    color: #140c33;
     display: flex;
     flex-wrap: wrap;
     gap: 40px;
