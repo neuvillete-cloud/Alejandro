@@ -303,3 +303,21 @@ nav a:not(:hover)::after {
     color: #1e5e96;
     text-decoration: none;
 }
+
+.contenedor-titulo-imagen {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.contenedor-titulo-imagen h1 {
+    font-size: 2.5rem;
+    color: white;
+    margin: 0;
+}
+
+.imagen-banner {
+    max-height: 100px;
+    width: auto;
+}

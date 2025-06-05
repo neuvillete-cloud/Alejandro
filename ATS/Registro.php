@@ -27,8 +27,12 @@
 </header>
 
 <section class="section-title">
-    <h1>Registro Usuario</h1>
+    <div class="contenedor-titulo-imagen">
+        <h1>Registro Usuario</h1>
+        <img src="imagenes/1153377.png" alt="Imagen decorativa" class="imagen-banner">
+    </div>
 </section>
+
 
 <div class="section-blanca">
     <form class="formulario-registro" method="post" action="procesar_registro.php">
