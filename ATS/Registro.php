@@ -28,7 +28,7 @@
 
 <section class="section-title">
     <h1>Registro Usuario</h1>
-    <img src="imagenes/img.png" alt="Imagen decorativa" class="imagen-banner">
+    <img src="imagenes/portafolio.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 
