@@ -12,8 +12,11 @@
 <header>
     <div class="header-container">
         <div class="logo">
-            <h1>Grammer</h1>
-            <span>Automotive</span>
+            <img src="imagenes/logo.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
         </div>
         <nav>
             <a href="#">Buscar empleos</a>
@@ -21,7 +24,6 @@
             <a href="practicantes.php">Programa de posgrado</a>
             <a href="#">Inclusión y diversidad</a>
             <a href="loginATS.php">Inicio de sesión</a>
-            <a href="#">🌐 Español ▾</a>
         </nav>
     </div>
 </header>
@@ -31,12 +33,11 @@
     <img src="imagenes/portafolio.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
-
-
 <div class="section-blanca">
     <form class="formulario-registro" method="post" action="procesar_registro.php">
         <p>Si ya está registrado, <a href="loginATS.php" class="link-inicio">inicie sesión en su cuenta</a> para presentar su solicitud.</p>
 
+        <!-- Campos del formulario -->
         <label>Correo electrónico <span class="required">*</span></label>
         <input type="email" name="email" required>
 
@@ -81,8 +82,7 @@
         <label>Fecha de nacimiento <span class="required">*</span></label>
         <input type="date" name="fecha_nacimiento" required>
 
-
-        <!-- Nueva sección de aceptación de términos -->
+        <!-- Aceptación de términos -->
         <section class="terminos-condiciones">
             <div class="checkbox-condiciones">
                 <label>
@@ -98,7 +98,9 @@
         </section>
     </form>
 </div>
+
 <script src="js/registroATS.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
+
