@@ -21,7 +21,7 @@
         <nav>
             <a href="#">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
-            <a href="practicantes.php">Programa de posgrado</a>
+            <a href="practicantes.php">Escuela de Talentos</a>
             <a href="#">Inclusión y diversidad</a>
             <a href="loginATS.php">Inicio de sesión</a>
         </nav>
