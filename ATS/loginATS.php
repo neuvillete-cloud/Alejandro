@@ -33,7 +33,8 @@
 <!-- Header sigue fijo arriba -->
 
 <section class="section-title">
-    <h1>Inicio de sesión</h1>
+    <h1>Inicio de Sesion</h1>
+    <img src="imagenes/iniciar-sesion.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="section-login">
