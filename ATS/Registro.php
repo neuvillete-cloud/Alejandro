@@ -12,7 +12,7 @@
 <header>
     <div class="header-container">
         <div class="logo">
-            <img src="imagenes/logo.png" alt="Logo Grammer" class="logo-img">
+            <img src="imagenes/Grammer_Logo_Original_White_sRGB_screen_transparent.png" alt="Logo Grammer" class="logo-img">
             <div class="logo-texto">
                 <h1>Grammer</h1>
                 <span>Automotive</span>
