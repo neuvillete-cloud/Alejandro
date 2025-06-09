@@ -19,7 +19,7 @@
             </div>
         </div>
         <nav>
-            <a href="#">Buscar empleos</a>
+            <a href="indexAts.php">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
             <a href="practicantes.php">Escuela de Talentos</a>
             <a href="#">Inclusión y diversidad</a>
