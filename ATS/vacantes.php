@@ -46,7 +46,6 @@ session_start();
                 <a href="loginATS.php">Inicio de sesión</a>
             <?php endif; ?>
 
-            <a href="#">🌐 Español ▾</a>
         </nav>
     </div>
 </header>
