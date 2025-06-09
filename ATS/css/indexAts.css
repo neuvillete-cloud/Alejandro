@@ -172,7 +172,7 @@ nav a:not(:hover)::after {
 }
 
 .search-box button {
-    background: #8000c8;
+    background: #0077cc;
     border: none;
     color: white;
     padding: 14px 30px; /* Más grande */
@@ -184,7 +184,7 @@ nav a:not(:hover)::after {
 }
 
 .search-box button:hover {
-    background: #9900e6;
+    background: #d6ecff;
 }
 
 
