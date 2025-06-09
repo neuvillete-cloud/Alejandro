@@ -3,20 +3,19 @@ body {
     font-family: Arial, sans-serif;
     background-color: #140c33;
     color: white;
-    overflow-x: hidden; /* Asegura que no haya desbordamiento en toda la página */
+    overflow-x: hidden;
 }
 
 header {
-    background-color: #140c33;
+    background-color: #063962;
     padding: 20px 0;
     border-bottom: 3px solid transparent;
-    position: fixed; /* Cambiado de relative a fixed */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000; /* Asegura que esté encima del resto del contenido */
+    z-index: 1000;
 }
-
 
 .header-container {
     width: 80%;
@@ -28,9 +27,10 @@ header {
 
 nav {
     display: flex;
-    justify-content: center; /* Centramos los elementos */
+    justify-content: center;
     align-items: center;
     gap: 30px;
+    padding-right: 60px;
 }
 
 nav a {
@@ -42,7 +42,7 @@ nav a {
     padding-bottom: 10px;
 }
 
-nav a:last-of-type { /* Inicio de sesión */
+nav a:last-of-type {
     position: relative;
     padding-left: 15px;
 }
@@ -52,22 +52,21 @@ nav a:last-of-type::before {
     position: absolute;
     left: -10px;
     color: white;
-    font-size: 18px; /* Tamaño base */
-    transform: scaleY(2); /* La barra se alarga sin ensancharse */
-    display: inline-block; /* Asegura que la transformación se aplique correctamente */
+    font-size: 18px;
+    transform: scaleY(2);
+    display: inline-block;
 }
-
 
 nav a::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -23px;
+    bottom: -34px;
     width: 0;
     height: 4px;
-    background: #a86bd5;
+    background: #99d0e9;
     transform-origin: left;
-    transition: width 0.3s ease-in-out; /* Transición para suavizar la animación */
+    transition: width 0.3s ease-in-out;
 }
 
 nav a:hover::after {
@@ -75,24 +74,20 @@ nav a:hover::after {
 }
 
 nav a:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards; /* Animación de salida */
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
-/* Animación de crecimiento */
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
     50% { width: 100%; transform: translateX(0); }
     100% { width: 100%; transform: translateX(0); }
 }
 
-/* Animación de decrecimiento */
 @keyframes smooth-infinite-bar-out {
     0% { width: 100%; transform: translateX(0); }
     100% { width: 0%; transform: translateX(0); }
 }
 
-
-/* Logo */
 .logo h1 {
     font-size: 28px;
     margin: 0;
@@ -101,7 +96,7 @@ nav a:not(:hover)::after {
 
 .logo span {
     display: block;
-    font-size: 20px;
+    font-size: 25px;
     line-height: 1;
 }
 
