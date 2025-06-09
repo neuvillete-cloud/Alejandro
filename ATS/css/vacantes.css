@@ -7,7 +7,7 @@ body {
 }
 
 header {
-    background-color: #140c33;
+    background-color: #063962;
     padding: 20px 0;
     border-bottom: 3px solid transparent;
     position: fixed;
@@ -30,6 +30,7 @@ nav {
     justify-content: center;
     align-items: center;
     gap: 30px;
+    padding-right: 60px;
 }
 
 nav a {
@@ -56,27 +57,25 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
-/* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
-nav > a::after {
+nav a::after {
     content: '';
     position: absolute;
     left: 0;
     bottom: -34px;
     width: 0;
     height: 4px;
-    background: #a86bd5;
+    background: #99d0e9;
     transform-origin: left;
     transition: width 0.3s ease-in-out;
 }
 
-nav > a:hover::after {
+nav a:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
 
-nav > a:not(:hover)::after {
+nav a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
-
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
@@ -116,7 +115,7 @@ nav > a:not(:hover)::after {
 
 /* Sección del título */
 .section-title {
-    background-color:	#1f183c;
+    background-color:	#3b8ac9a3;
     padding: 100px 20px;
     min-height: 170px; /* ajusta a lo que necesites */
     display: flex;
