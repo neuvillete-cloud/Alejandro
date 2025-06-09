@@ -550,3 +550,30 @@ nav a:not(:hover)::after {
 .btn-postularme {
     margin-top: 10px;
 }
+
+.imagen-banner {
+    position: absolute;
+    top: 60%;
+    right: 2rem;
+    transform: translateY(-50%);
+    max-height: 200px;
+    width: auto;
+    padding-right: 265px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.logo-texto h1, .logo-texto span {
+    margin: 0;
+    line-height: 1;
+    color: white;
+}
