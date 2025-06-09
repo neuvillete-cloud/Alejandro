@@ -213,7 +213,7 @@ input[type="password"] {
 
 /* Botones */
 button{
-    background-color: #7d00db;
+    background-color: #0077cc;
     color: white;
     border: none;
     padding: 12px 30px;
@@ -227,7 +227,7 @@ button{
 }
 
 .register-btn {
-    background-color: #7d00db;
+    background-color: #0077cc;
     color: white;
     border: none;
     padding: 12px 30px; /* Aumenta tamaño aquí */
@@ -244,7 +244,8 @@ button{
 
 button:hover,
 .register-btn:hover {
-    background-color: #5e00a8;
+    background-color: #005fa3;
+    border-color: #005fa3;
 }
 
 /* Responsividad */
@@ -272,7 +273,7 @@ button:hover,
 }
 
 .footer-grammer {
-    background-color: #140c33;
+    background-color: #3b8ac9a3;
     color: white;
     padding: 40px 5%;
     font-family: Arial, sans-serif;
