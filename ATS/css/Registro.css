@@ -347,10 +347,3 @@ nav a:not(:hover)::after {
     box-sizing: border-box;
 }
 
-.label-especialidad-otra {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 5px;
-    text-align: left;
-    width: 50%;
-}
