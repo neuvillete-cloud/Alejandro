@@ -335,3 +335,23 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+.input-especialidad-otra {
+    width: 50%;
+    padding: 12px 14px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.label-especialidad-otra {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+    width: 50%;
+    margin: 0 auto 8px auto;
+}
