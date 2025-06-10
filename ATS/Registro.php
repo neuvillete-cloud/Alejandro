@@ -74,10 +74,28 @@
         <input type="text" name="ubicacion" required placeholder="Ej. Querétaro, Qro.">
 
         <label>Área de interés <span class="required">*</span></label>
-        <input type="text" name="area" required placeholder="Ej. Ingeniería, Recursos Humanos">
+        <select name="area" id="area" required>
+            <option value="">Seleccione un área</option>
+            <option value="Seguridad e Higiene">Seguridad e Higiene</option>
+            <option value="GPS">GPS</option>
+            <option value="IT">IT</option>
+            <option value="RH">RH</option>
+            <option value="Calidad">Calidad</option>
+            <option value="Ingenieria">Ingenieria</option>
+            <option value="Controlling">Controlling</option>
+            <option value="Logistica">Logistica</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Producción (APU)">Producción (APU)</option>
+            <option value="Finanzas">Finanzas</option>
+            <option value="Compras">Compras</option>
+            <option value="Regionales">Regionales</option>
+        </select>
 
         <label>Especialidad <span class="required">*</span></label>
-        <input type="text" name="especialidad" required placeholder="Ej. Mecatrónica, Psicología Organizacional">
+        <select name="especialidad" id="especialidad" required>
+            <option value="">Seleccione una especialidad</option>
+        </select>
+        <input type="text" id="otra_especialidad" name="otra_especialidad" placeholder="Especifique su carrera" style="display:none; margin-top: 10px;">
 
         <label>Fecha de nacimiento <span class="required">*</span></label>
         <input type="date" name="fecha_nacimiento" required>
@@ -99,8 +117,55 @@
     </form>
 </div>
 
-<script src="js/registroATS.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const areaSelect = document.getElementById('area');
+    const especialidadSelect = document.getElementById('especialidad');
+    const otraEspecialidad = document.getElementById('otra_especialidad');
+
+    const opcionesEspecialidades = {
+        'Calidad': ['Ingeniería Industrial', 'Mecánica', 'Química'],
+        'Controlling': ['Contaduría de Costos', 'Administración', 'Ingeniería Industrial'],
+        'GPS': ['Ingeniería Industrial', 'Ingeniería de Producción', 'Ingeniero Logística'],
+        'IT': ['Ingeniería en Sistemas Computacionales'],
+        'RH': ['Administración', 'Licenciatura en Recursos Humanos', 'Psicología'],
+        'Ingenieria': ['Ingeniería Industrial', 'Administración', 'Ingeniería Mecánica'],
+        'Logistica': ['Administración', 'Negocios Internacionales', 'Ingeniería Industrial', 'Ingeniería Mecánica'],
+        'Producción (APU)': ['Mecánica', 'Ingeniería Industrial', 'Administración'],
+        'Mantenimiento': ['Ingeniería Mecánica', 'Ingeniería Eléctrica', 'Ingeniería Industrial'],
+        'Compras': ['Ingeniería Industrial', 'Administración', 'Negocios Internacionales'],
+        'Seguridad e Higiene': ['Ingeniería Industrial', 'Ingeniería Ambiental', 'Ingeniería Química', 'Ingeniería Bioquímica'],
+        'Finanzas': ['Contaduría Pública', 'Ingeniería Industrial', 'Administración', 'Negocios Internacionales'],
+        'Regionales': []
+    };
+
+    areaSelect.addEventListener('change', function () {
+        const area = this.value;
+        especialidadSelect.innerHTML = '<option value="">Seleccione una especialidad</option>';
+        otraEspecialidad.style.display = 'none';
+
+        if (opcionesEspecialidades[area]) {
+            opcionesEspecialidades[area].forEach(function (especialidad) {
+                const option = document.createElement('option');
+                option.value = especialidad;
+                option.textContent = especialidad;
+                especialidadSelect.appendChild(option);
+            });
+
+            const otra = document.createElement('option');
+            otra.value = 'otra';
+            otra.textContent = 'Otra';
+            especialidadSelect.appendChild(otra);
+        }
+    });
+
+    especialidadSelect.addEventListener('change', function () {
+        if (this.value === 'otra') {
+            otraEspecialidad.style.display = 'block';
+        } else {
+            otraEspecialidad.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>
-
