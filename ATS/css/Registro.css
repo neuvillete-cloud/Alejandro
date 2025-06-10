@@ -155,6 +155,16 @@ nav a:not(:hover)::after {
     margin-bottom: 20px;
 }
 
+.input-especialidad-otra {
+    width: 50%;
+    padding: 12px 14px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
 /* Inputs, selects y date uniformes */
 .section-blanca input[type="text"],
 .section-blanca input[type="email"],
@@ -336,14 +346,5 @@ nav a:not(:hover)::after {
     color: white;
 }
 
-.input-especialidad-otra {
-    width: 50%;
-    padding: 12px 14px;
-    margin-top: 8px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
-}
+
 
