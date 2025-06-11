@@ -95,7 +95,7 @@
         <select name="especialidad" id="especialidad" required>
             <option value="">Seleccione una especialidad</option>
         </select>
-        <input type="text" id="otra_especialidad" name="otra_especialidad" placeholder="Especifique su carrera" style="display:none; margin-top: 10px;">
+        <input type="text" id="otra_especialidad" name="otra_especialidad" class="input-otro" placeholder="Especifique su carrera" style="display: none;">
 
         <label>Fecha de nacimiento <span class="required">*</span></label>
         <input type="date" name="fecha_nacimiento" required>
