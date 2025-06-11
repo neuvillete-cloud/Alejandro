@@ -1,3 +1,24 @@
+// Al cargar la página, establecer fecha máxima para ser mayor de 18 años
+window.addEventListener('DOMContentLoaded', () => {
+    const inputFechaNacimiento = document.querySelector('input[name="fecha_nacimiento"]');
+    const hoy = new Date();
+    const anio18Atras = new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate());
+    inputFechaNacimiento.max = anio18Atras.toISOString().split('T')[0];
+
+    // Validar fecha al cambiar input
+    inputFechaNacimiento.addEventListener('change', function () {
+        const fechaSeleccionada = new Date(this.value);
+        if (fechaSeleccionada > anio18Atras) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Fecha inválida',
+                text: 'Debes tener al menos 18 años para poder registrarte.',
+            });
+            this.value = '';
+        }
+    });
+});
+
 document.querySelector('.formulario-registro').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -18,7 +39,7 @@ document.querySelector('.formulario-registro').addEventListener('submit', functi
     const fechaNacimiento = document.querySelector('input[name="fecha_nacimiento"]').value;
     const aceptaTerminos = document.querySelector('input[name="acepta_terminos"]').checked;
 
-    // Validaciones
+    // Validaciones básicas
     if (!email || !nombre || !apellidos || !telefono || !contrasena || !confirmarContrasena ||
         !sueldo || !nivelEstudios || !ubicacion || !area || !especialidad || !fechaNacimiento) {
         Swal.fire({
@@ -61,6 +82,17 @@ document.querySelector('.formulario-registro').addEventListener('submit', functi
             icon: 'error',
             title: 'Acepta los términos',
             text: 'Debes aceptar los términos y condiciones para continuar.',
+        });
+        return;
+    }
+
+    // Validar que sea mayor o igual a 18 años
+    const edad = calcularEdad(fechaNacimiento);
+    if (edad < 18) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Edad inválida',
+            text: 'Debes tener al menos 18 años para poder registrarte.',
         });
         return;
     }
@@ -115,4 +147,15 @@ document.querySelector('.formulario-registro').addEventListener('submit', functi
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
+}
+
+function calcularEdad(fecha) {
+    const fechaNacimiento = new Date(fecha);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const m = hoy.getMonth() - fechaNacimiento.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+        edad--;
+    }
+    return edad;
 }
