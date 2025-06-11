@@ -121,8 +121,6 @@
         </section>
     </form>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const areaSelect = document.getElementById('area');
     const especialidadSelect = document.getElementById('especialidad');
@@ -172,5 +170,7 @@
         }
     });
 </script>
+<script src="js/registroATS.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
