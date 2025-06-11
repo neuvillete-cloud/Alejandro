@@ -336,17 +336,18 @@ nav a:not(:hover)::after {
     color: white;
 }
 
-#otra_especialidad {
+.input-centro {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.input-otro {
     width: 50%;
     padding: 12px 14px;
-    margin-top: 8px;
-    margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
     box-sizing: border-box;
-    transition: border 0.3s ease;
-    appearance: none;
 }
-
-
