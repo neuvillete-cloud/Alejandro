@@ -34,7 +34,7 @@
 </section>
 
 <div class="section-blanca">
-    <form class="formulario-registro" method="post" action="procesar_registro.php">
+    <form class="formulario-registro">
         <p>Si ya está registrado, <a href="loginATS.php" class="link-inicio">inicie sesión en su cuenta</a> para presentar su solicitud.</p>
 
         <!-- Campos del formulario -->
