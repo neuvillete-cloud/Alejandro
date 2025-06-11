@@ -95,7 +95,7 @@
         <select name="especialidad" id="especialidad" required>
             <option value="">Seleccione una especialidad</option>
         </select>
-        <div id="contenedor-otra-especialidad" class="input-centro" style="display: none;">
+        <div class="input-centro" style="display: none;" id="wrapper-otra_especialidad">
             <input type="text" id="otra_especialidad" name="otra_especialidad"
                    class="input-otro"
                    placeholder="Especifique su carrera">
