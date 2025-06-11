@@ -95,7 +95,12 @@
         <select name="especialidad" id="especialidad" required>
             <option value="">Seleccione una especialidad</option>
         </select>
-        <input type="text" id="otra_especialidad" name="otra_especialidad" class="input-otro" placeholder="Especifique su carrera" style="display: none;">
+
+        <!-- Campo "otra especialidad" con label -->
+        <div id="campo-otra-especialidad" style="display: none;">
+            <label for="otra_especialidad">Especifique su carrera <span class="required">*</span></label>
+            <input type="text" id="otra_especialidad" name="otra_especialidad" class="input-otro" placeholder="Especifique su carrera">
+        </div>
 
         <label>Fecha de nacimiento <span class="required">*</span></label>
         <input type="date" name="fecha_nacimiento" required>
@@ -121,7 +126,7 @@
 <script>
     const areaSelect = document.getElementById('area');
     const especialidadSelect = document.getElementById('especialidad');
-    const otraEspecialidad = document.getElementById('otra_especialidad');
+    const campoOtraEspecialidad = document.getElementById('campo-otra-especialidad');
 
     const opcionesEspecialidades = {
         'Calidad': ['Ingeniería Industrial', 'Mecánica', 'Química'],
@@ -142,7 +147,7 @@
     areaSelect.addEventListener('change', function () {
         const area = this.value;
         especialidadSelect.innerHTML = '<option value="">Seleccione una especialidad</option>';
-        otraEspecialidad.style.display = 'none';
+        campoOtraEspecialidad.style.display = 'none';
 
         if (opcionesEspecialidades[area]) {
             opcionesEspecialidades[area].forEach(function (especialidad) {
@@ -161,9 +166,9 @@
 
     especialidadSelect.addEventListener('change', function () {
         if (this.value === 'otra') {
-            otraEspecialidad.style.display = 'block';
+            campoOtraEspecialidad.style.display = 'block';
         } else {
-            otraEspecialidad.style.display = 'none';
+            campoOtraEspecialidad.style.display = 'none';
         }
     });
 </script>
