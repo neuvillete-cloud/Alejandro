@@ -161,7 +161,7 @@ nav > a:not(:hover)::after {
     top: calc(100% + 34px);
     left: 0;
     background-color: #063962; /* azul oscuro ya usado en el header */
-    border: none;
+    border: 2px solid #0077cc;
     border-radius: 6px;
     min-width: 220px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.3);
