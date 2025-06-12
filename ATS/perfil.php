@@ -52,7 +52,7 @@ session_start();
 
 <section class="section-title">
     <div class="perfil-icono">
-        <img src="imagenes/perfil-del-usuario.png" alt="Imagen decorativa" class="imagen-banner">
+        <img src="imagenes/perfil.png" alt="Imagen decorativa" class="imagen-banner">
     </div>
     <div class="perfil-texto">
         <span>MI PERFIL</span>
