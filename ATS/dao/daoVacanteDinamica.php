@@ -6,10 +6,28 @@ date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
-$sql = "SELECT IdVacante, TituloVacante, Ciudad, Estado, Sueldo, Requisitos, Beneficios, Descripcion, IdArea, EscolaridadMinima, Idioma, Especialidad, Horario, EspacioTrabajo, Fecha, Imagen
-        FROM Vacantes 
-        WHERE IdEstatus = 1
-        ORDER BY Fecha DESC";
+// Hacemos un JOIN con la tabla Area para obtener el NombreArea
+$sql = "SELECT 
+            V.IdVacante, 
+            V.TituloVacante, 
+            V.Ciudad, 
+            V.Estado, 
+            V.Sueldo, 
+            V.Requisitos, 
+            V.Beneficios, 
+            V.Descripcion, 
+            A.NombreArea, 
+            V.EscolaridadMinima, 
+            V.Idioma, 
+            V.Especialidad, 
+            V.Horario, 
+            V.EspacioTrabajo, 
+            V.Fecha, 
+            V.Imagen
+        FROM Vacantes V
+        INNER JOIN Area A ON V.IdArea = A.IdArea
+        WHERE V.IdEstatus = 1
+        ORDER BY V.Fecha DESC";
 
 $resultado = $conn->query($sql);
 
@@ -25,14 +43,13 @@ while ($row = $resultado->fetch_assoc()) {
         'Requisitos' => $row['Requisitos'],
         'Beneficios' => $row['Beneficios'],
         'Descripcion' => $row['Descripcion'],
-        'Area' => $row['IdArea'],
+        'Area' => $row['NombreArea'], // ✅ Ahora se muestra el nombre del área
         'Escolaridad' => $row['EscolaridadMinima'],
         'Idioma' => $row['Idioma'],
         'Especialidad' => $row['Especialidad'],
         'Horario' => $row['Horario'],
         'EspacioTrabajo' => $row['EspacioTrabajo'],
         'FechaPublicacion' => calcularTiempoTranscurrido($row['Fecha']),
-        // ✅ Aquí agregas la imagen
         'Imagen' => $row['Imagen']
     ];
 }
@@ -54,3 +71,4 @@ function calcularTiempoTranscurrido($fechaPublicacion) {
         return 'Hace ' . $diferencia->days . ' días';
     }
 }
+?>
