@@ -16,8 +16,11 @@ session_start();
 <header>
     <div class="header-container">
         <div class="logo">
-            <h1>Grammer</h1>
-            <span>Automotive</span>
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
         </div>
         <nav>
             <a href="#">Buscar empleos</a>
