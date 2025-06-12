@@ -33,6 +33,12 @@ function validarCredencialesCandidato($email, $password) {
         $_SESSION['CorreoCandidato'] = $candidato['Correo'];
         $_SESSION['ApellidosCandidato'] = $candidato['Apellidos'];
         $_SESSION['TelefonoCandidato'] = $candidato['Telefono'];
+        $_SESSION['SueldoEsperado'] = $candidato['Sueldo'];
+        $_SESSION['UbicacionCandidato'] = $candidato['Ubicacion'];
+        $_SESSION['Escolaridad'] = $candidato['Educacion'];
+        $_SESSION['AreaInteres'] = $candidato['Area'];
+
+
 
         // Redirección general para todos los candidatos
         return ['status' => 'success', 'redirect' => 'vacantes.php'];
