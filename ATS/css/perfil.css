@@ -57,7 +57,6 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
-
 /* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
 nav > a::after {
     content: '';
@@ -78,7 +77,6 @@ nav > a:hover::after {
 nav > a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
-
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
@@ -116,7 +114,6 @@ nav > a:not(:hover)::after {
     }
 }
 
-
 .user-menu {
     position: relative;
     display: inline-block;
@@ -142,7 +139,7 @@ nav > a:not(:hover)::after {
     top: 100%;
     left: 0;
     width: 100%;
-    height: 40px; /* área invisible para mantener hover */
+    height: 40px;
     z-index: 1;
 }
 
@@ -161,12 +158,10 @@ nav > a:not(:hover)::after {
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: calc(100% + 34px); /* Justo debajo del user-info */
-    left: 0; /* Alineado al inicio del contenedor */
+    top: calc(100% + 34px);
+    left: 0;
     background-color: #140c33;
-    /* Quitar el borde de caja */
     border: none;
-    /* Quitar el borde redondeado */
     border-radius: 0;
     min-width: 220px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.3);
@@ -180,7 +175,7 @@ nav > a:not(:hover)::after {
     display: block;
     text-decoration: none;
     font-size: 14px;
-    border-bottom: 1px solid #432b7f; /* Conserva líneas internas */
+    border-bottom: 1px solid #1f3b77;
     transition: background-color 0.2s ease;
 }
 
@@ -189,20 +184,18 @@ nav > a:not(:hover)::after {
 }
 
 .dropdown-menu a:hover {
-    background-color: #9900ff;
+    background-color: #007BFF;
 }
-
 
 .user-info {
     position: relative;
 }
 
-/* Agrega la animación como la de nav > a */
 .user-info::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -34px; /* distancia desde el texto */
+    bottom: -34px;
     width: 0;
     height: 4px;
     background: #99d0e9;
@@ -330,7 +323,7 @@ hr {
 }
 
 .btn-editar:hover {
-    background-color: #d6ecff; /* un morado más oscuro */
+    background-color: #d6ecff;
     transform: scale(1.03);
     transition: all 0.2s ease-in-out;
 }
@@ -382,7 +375,7 @@ hr {
 }
 
 .contact-button:hover {
-    background-color: #9900ff;
+    background-color: #007BFF;
     color: white;
     transform: translateY(-2px);
 }
@@ -401,7 +394,7 @@ hr {
 }
 
 .footer-links a:hover {
-    color: #9900ff;
+    color: #007BFF;
 }
 
 .footer-social {
@@ -419,7 +412,7 @@ hr {
 }
 
 .footer-social a:hover i {
-    color: #9900ff;
+    color: #007BFF;
     transform: scale(1.2);
 }
 
@@ -443,7 +436,7 @@ hr {
 }
 
 .footer-info a:hover {
-    color: #9900ff;
+    color: #007BFF;
 }
 
 .footer-bottom p {
