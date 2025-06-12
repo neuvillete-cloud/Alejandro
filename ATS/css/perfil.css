@@ -238,7 +238,7 @@ nav > a:not(:hover)::after {
 .section-title .perfil-texto span {
     font-size: 14px;
     font-weight: bold;
-    color: #c9c9c9;
+    color: white;
     margin-bottom: 4px;
     line-height: 1;
 }
