@@ -205,7 +205,7 @@ nav > a:not(:hover)::after {
     bottom: -34px; /* distancia desde el texto */
     width: 0;
     height: 4px;
-    background: #a86bd5;
+    background: #99d0e9;
     transform-origin: left;
     transition: width 0.3s ease-in-out;
 }
@@ -219,7 +219,7 @@ nav > a:not(:hover)::after {
 }
 
 .section-title {
-    background-color: #1f183c;
+    background-color: #3b8ac9a3;
     padding: 100px 60px;
     min-height: 170px;
     display: flex;
