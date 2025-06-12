@@ -52,7 +52,7 @@ session_start();
 
 <section class="section-title">
     <div class="perfil-icono">
-        <i class="fas fa-user-circle"></i>
+        <img src="imagenes/portafolio.png" alt="Imagen decorativa" class="imagen-banner">
     </div>
     <div class="perfil-texto">
         <span>MI PERFIL</span>
