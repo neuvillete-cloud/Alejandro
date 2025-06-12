@@ -7,7 +7,7 @@ body {
 }
 
 header {
-    background-color: #140c33;
+    background-color: #063962;
     padding: 20px 0;
     border-bottom: 3px solid transparent;
     position: fixed;
@@ -30,6 +30,7 @@ nav {
     justify-content: center;
     align-items: center;
     gap: 30px;
+    padding-right: 60px;
 }
 
 nav a {
@@ -56,6 +57,7 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
+
 /* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
 nav > a::after {
     content: '';
@@ -64,7 +66,7 @@ nav > a::after {
     bottom: -34px;
     width: 0;
     height: 4px;
-    background: #a86bd5;
+    background: #99d0e9;
     transform-origin: left;
     transition: width 0.3s ease-in-out;
 }
@@ -306,7 +308,7 @@ hr {
 }
 
 .btn-editar {
-    background-color: #9900ff;
+    background-color: #0077cc;
     color: white;
     padding: 15px 30px;
     border: none;
@@ -318,9 +320,9 @@ hr {
 
 .btn-reset {
     background-color: transparent;
-    color: #9900ff;
+    color: #0077cc;
     padding: 15px 30px;
-    border: 2px solid #9900ff;
+    border: 2px solid #0077cc;
     border-radius: 30px;
     font-size: 16px;
     cursor: pointer;
@@ -328,13 +330,13 @@ hr {
 }
 
 .btn-editar:hover {
-    background-color: #7a00cc; /* un morado más oscuro */
+    background-color: #d6ecff; /* un morado más oscuro */
     transform: scale(1.03);
     transition: all 0.2s ease-in-out;
 }
 
 .btn-reset:hover {
-    background-color: #9900ff;
+    background-color: #d6ecff;
     color: white;
     transform: scale(1.03);
     transition: all 0.2s ease-in-out;
