@@ -242,6 +242,20 @@ session_start();
 </script>
 <script src="js/vacanteDinamica.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if (isset($_SESSION['IdCandidato'])): ?>
+    <script>
+        const usuario = {
+            sueldoEsperado: <?= intval($_SESSION['SueldoEsperado']) ?>,
+            ubicacion: "<?= addslashes($_SESSION['UbicacionCandidato']) ?>",
+            escolaridad: "<?= addslashes($_SESSION['Escolaridad']) ?>",
+            area: "<?= addslashes($_SESSION['AreaInteres']) ?>"
+        };
+    </script>
+<?php else: ?>
+    <script>
+        const usuario = null;
+    </script>
+<?php endif; ?>
 
 </body>
 </html>

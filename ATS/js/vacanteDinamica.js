@@ -7,13 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             lista.innerHTML = "";
 
-            // Obtener vacantes vistas desde localStorage
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
-                item.setAttribute("data-id", vacante.IdVacante); // ID único
+                item.setAttribute("data-id", vacante.IdVacante);
 
                 if (index === 0) item.classList.add("activa");
 
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     .map(b => `<li>${b.trim()}</li>`)
                     .join("");
 
-                // Etiqueta "Visto recientemente" si aplica
                 let vistoHTML = '';
                 if (vacantesVistas.includes(vacante.IdVacante)) {
                     vistoHTML = `<span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
@@ -43,13 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     item.classList.add("activa");
                     mostrarDetalle(vacante);
 
-                    // Marcar como vista
                     if (!vacantesVistas.includes(vacante.IdVacante)) {
                         vacantesVistas.push(vacante.IdVacante);
                         localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistas));
                     }
 
-                    // Añadir texto "Visto recientemente" si no lo tiene
                     const fechaP = item.querySelector(".fecha");
                     if (!fechaP.querySelector(".reciente")) {
                         const span = document.createElement("span");
@@ -97,4 +93,58 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewRequisitos").innerHTML = textoAListasHTML(vacante.Requisitos);
     document.getElementById("previewBeneficios").innerHTML = textoAListasHTML(vacante.Beneficios);
     document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion.replace(/\n/g, '<br>');
+
+    // ✅ MOSTRAR COMPATIBILIDAD
+    if (typeof usuario !== "undefined") {
+        mostrarCompatibilidad(vacante, usuario);
+    }
+}
+
+function mostrarCompatibilidad(vacante, usuario) {
+    const compatDiv = document.querySelector(".compatibilidad");
+    if (!usuario) {
+        compatDiv.innerHTML = `<p>Inicia sesión para ver tu compatibilidad con esta vacante.</p>`;
+        return;
+    }
+
+    const checks = [];
+
+    let sueldoOk = false;
+    if (vacante.Sueldo && !isNaN(usuario.sueldoEsperado)) {
+        const sueldoVacante = parseInt(vacante.Sueldo.replace(/\D/g, '')) || 0;
+        sueldoOk = usuario.sueldoEsperado <= sueldoVacante;
+    }
+    checks.push({
+        label: "Sueldo",
+        compatible: sueldoOk,
+        mensaje: sueldoOk ? "Entras en el rango" : "Fuera de tu expectativa"
+    });
+
+    const ubicacionOk = vacante.Ciudad.toLowerCase().includes(usuario.ubicacion.toLowerCase());
+    checks.push({
+        label: "Ubicación",
+        compatible: ubicacionOk,
+        mensaje: ubicacionOk ? "Estás en el lugar correcto" : "Fuera de tu zona"
+    });
+
+    const escOk = vacante.Escolaridad.toLowerCase().includes(usuario.escolaridad.toLowerCase());
+    checks.push({
+        label: "Educación",
+        compatible: escOk,
+        mensaje: escOk ? "Cumples con lo necesario" : "Nivel diferente al requerido"
+    });
+
+    const areaOk = vacante.Area.toLowerCase().includes(usuario.area.toLowerCase());
+    checks.push({
+        label: "Área",
+        compatible: areaOk,
+        mensaje: areaOk ? "Compatible con el puesto" : "No coincide tu área"
+    });
+
+    compatDiv.innerHTML = checks.map(check => `
+        <div>
+            <i class="fas fa-${check.compatible ? 'check-circle' : 'times-circle'}"></i>
+            ${check.label} <span>${check.mensaje}</span>
+        </div>
+    `).join('');
 }
