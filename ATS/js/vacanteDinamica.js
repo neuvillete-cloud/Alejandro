@@ -122,12 +122,12 @@ function mostrarCompatibilidad(vacante, usuario) {
     });
 
     // Ubicación
-    const ciudad = vacante.Ciudad.toLowerCase();
-    const estado = vacante.Estado.toLowerCase();
-    const ubicacionUsuario = usuario.ubicacion.toLowerCase();
-
-    const ubicacionOk = ciudad.includes(ubicacionUsuario) || estado.includes(ubicacionUsuario);
-
+    const ubicacionOk = vacante.Ciudad.toLowerCase().includes(usuario.ubicacion.toLowerCase());
+    checks.push({
+        label: "Ubicación",
+        compatible: ubicacionOk,
+        mensaje: ubicacionOk ? "Estás en el lugar correcto" : "Fuera de tu zona"
+    });
 
     // Escolaridad
     const escOk = vacante.Escolaridad.toLowerCase().includes(usuario.escolaridad.toLowerCase());
