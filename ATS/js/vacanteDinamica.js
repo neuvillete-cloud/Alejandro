@@ -122,7 +122,12 @@ function mostrarCompatibilidad(vacante, usuario) {
     });
 
     // Ubicación
-    const ubicacionOk = vacante.Ciudad.toLowerCase().includes(usuario.ubicacion.toLowerCase());
+    const ciudad = vacante.Ciudad.toLowerCase();
+    const estado = vacante.Estado.toLowerCase();
+    const ubicacionUsuario = usuario.ubicacion.toLowerCase();
+
+    const ubicacionOk = ciudad.includes(ubicacionUsuario) || estado.includes(ubicacionUsuario);
+
     checks.push({
         label: "Ubicación",
         compatible: ubicacionOk,
