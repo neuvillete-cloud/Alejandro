@@ -109,6 +109,7 @@ function mostrarCompatibilidad(vacante, usuario) {
 
     const checks = [];
 
+    // Sueldo
     let sueldoOk = false;
     if (vacante.Sueldo && !isNaN(usuario.sueldoEsperado)) {
         const sueldoVacante = parseInt(vacante.Sueldo.replace(/\D/g, '')) || 0;
@@ -120,6 +121,7 @@ function mostrarCompatibilidad(vacante, usuario) {
         mensaje: sueldoOk ? "Entras en el rango" : "Fuera de tu expectativa"
     });
 
+    // Ubicación
     const ubicacionOk = vacante.Ciudad.toLowerCase().includes(usuario.ubicacion.toLowerCase());
     checks.push({
         label: "Ubicación",
@@ -127,6 +129,7 @@ function mostrarCompatibilidad(vacante, usuario) {
         mensaje: ubicacionOk ? "Estás en el lugar correcto" : "Fuera de tu zona"
     });
 
+    // Escolaridad
     const escOk = vacante.Escolaridad.toLowerCase().includes(usuario.escolaridad.toLowerCase());
     checks.push({
         label: "Educación",
@@ -134,6 +137,7 @@ function mostrarCompatibilidad(vacante, usuario) {
         mensaje: escOk ? "Cumples con lo necesario" : "Nivel diferente al requerido"
     });
 
+    // Área
     const areaOk = vacante.Area.toLowerCase().includes(usuario.area.toLowerCase());
     checks.push({
         label: "Área",
@@ -141,9 +145,10 @@ function mostrarCompatibilidad(vacante, usuario) {
         mensaje: areaOk ? "Compatible con el puesto" : "No coincide tu área"
     });
 
+    // Mostrar resultados
     compatDiv.innerHTML = checks.map(check => `
-        <div>
-            <i class="fas fa-${check.compatible ? 'check-circle' : 'times-circle'}"></i>
+        <div class="${check.compatible ? '' : 'no-compatible'}">
+            <i class="fas ${check.compatible ? 'fa-check-circle' : 'fa-sad-tear'}"></i>
             ${check.label} <span>${check.mensaje}</span>
         </div>
     `).join('');

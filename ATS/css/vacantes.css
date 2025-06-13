@@ -577,3 +577,12 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+.no-compatible i {
+    color: red;
+}
+
+.no-compatible span {
+    color: red;
+    font-weight: 500;
+}
