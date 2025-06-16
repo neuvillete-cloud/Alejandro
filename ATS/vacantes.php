@@ -109,17 +109,17 @@ session_start();
                     <p class="empresa">Otra Empresa S.A.</p>
                     <p class="ubicacion">Querétaro, Qro.</p>
                 </div>
+
+
+                <div class="paginacion-vacantes">
+                    <button class="btn-pagina" disabled>&lt;</button>
+                    <button class="btn-pagina activa">1</button>
+                    <button class="btn-pagina">2</button>
+                    <button class="btn-pagina">3</button>
+                    <button class="btn-pagina">&gt;</button>
+                </div>
+
             </div>
-
-
-            <div class="paginacion-vacantes">
-                <button class="btn-pagina" disabled>&lt;</button>
-                <button class="btn-pagina activa">1</button>
-                <button class="btn-pagina">2</button>
-                <button class="btn-pagina">3</button>
-                <button class="btn-pagina">&gt;</button>
-            </div>
-
             <!-- Detalle de la vacante seleccionada -->
             <div class="detalle-vacante">
                 <!-- ENCABEZADO CON IMAGEN -->
