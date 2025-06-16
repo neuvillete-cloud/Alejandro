@@ -587,36 +587,32 @@ nav a:not(:hover)::after {
     font-weight: 500;
 }
 
+.contenedor-paginacion {
+    margin-top: 30px;
+    text-align: center;
+}
+
 .paginacion-vacantes {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-    padding-bottom: 20px;
+    display: inline-block;
 }
 
 .btn-pagina {
-    background-color: #fff;
-    border: 1px solid #ccc;
     padding: 6px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+    margin: 0 4px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     color: #333;
-    transition: all 0.2s ease;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .btn-pagina:hover {
-    background-color: #e6e6e6;
+    background-color: #e0e0e0;
 }
 
 .btn-pagina.activa {
-    background-color: #140c33;
+    background-color: #1d3557;
     color: white;
-    border-color: #140c33;
-}
-
-.btn-pagina:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+    border-color: #1d3557;
 }
