@@ -157,58 +157,13 @@ function mostrarCompatibilidad(vacante, usuario) {
         </div>
     `).join('');
 }
-const abreviacionesEstados = {
-    "aguascalientes": "ags",
-    "baja california": "bc",
-    "baja california sur": "bcs",
-    "campeche": "camp",
-    "chiapas": "chis",
-    "chihuahua": "chih",
-    "cdmx": "cdmx",
-    "ciudad de mexico": "cdmx",
-    "coahuila": "coah",
-    "colima": "col",
-    "durango": "dgo",
-    "estado de mexico": "edomex",
-    "guanajuato": "gto",
-    "guerrero": "gro",
-    "hidalgo": "hgo",
-    "jalisco": "jal",
-    "michoacan": "mich",
-    "morelos": "mor",
-    "nayarit": "nay",
-    "nuevo leon": "nl",
-    "oaxaca": "oax",
-    "puebla": "pue",
-    "queretaro": "qro",
-    "quintana roo": "qroo",
-    "san luis potosi": "slp",
-    "sinaloa": "sin",
-    "sonora": "son",
-    "tabasco": "tab",
-    "tamaulipas": "tamps",
-    "tlaxcala": "tlax",
-    "veracruz": "ver",
-    "yucatan": "yuc",
-    "zacatecas": "zac"
-};
 
 function normalizarTexto(texto) {
-    let t = texto
+    return texto
         .toLowerCase()
         .normalize("NFD") // Quita tildes
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/,/g, "") // Quita comas
         .replace(/\s+/g, " ") // Colapsa múltiples espacios
         .trim();
-
-    // Si el texto coincide con un estado, añade su abreviatura como extra
-    Object.keys(abreviacionesEstados).forEach(estado => {
-        if (t.includes(estado)) {
-            const abrev = abreviacionesEstados[estado];
-            t += " " + abrev; // agrega la abreviatura para aumentar las coincidencias
-        }
-    });
-
-    return t;
 }
