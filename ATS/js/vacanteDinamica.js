@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <button class="btn-pagina">3</button>
                 <button class="btn-pagina">&gt;</button>
             `;
-            lista.appendChild(paginacion);
+            document.querySelector(".contenedor-paginacion").appendChild(paginacion);
+
 
 
         });
