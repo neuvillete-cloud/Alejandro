@@ -61,6 +61,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (index === 0) mostrarDetalle(vacante);
             });
 
+            // Agregar paginación estática visual al final
+            const paginacion = document.createElement("div");
+            paginacion.classList.add("paginacion-vacantes");
+            paginacion.innerHTML = `
+                <button class="btn-pagina" disabled>&lt;</button>
+                <button class="btn-pagina activa">1</button>
+                <button class="btn-pagina">2</button>
+                <button class="btn-pagina">3</button>
+                <button class="btn-pagina">&gt;</button>
+            `;
+            lista.appendChild(paginacion);
+
+
         });
 });
 
