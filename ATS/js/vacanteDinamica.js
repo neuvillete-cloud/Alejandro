@@ -122,11 +122,10 @@ function mostrarCompatibilidad(vacante, usuario) {
     });
 
     // Ubicación
-    const ciudad = vacante.Ciudad.toLowerCase();
-    const estado = vacante.Estado.toLowerCase();
-    const ubicacionUsuario = usuario.ubicacion.toLowerCase();
+    const ubicacionVacante = normalizarTexto(`${vacante.Ciudad} ${vacante.Estado}`);
+    const ubicacionUsuario = normalizarTexto(usuario.ubicacion);
 
-    const ubicacionOk = ciudad.includes(ubicacionUsuario) || estado.includes(ubicacionUsuario);
+    const ubicacionOk = ubicacionVacante.includes(ubicacionUsuario);
 
     checks.push({
         label: "Ubicación",
@@ -157,4 +156,14 @@ function mostrarCompatibilidad(vacante, usuario) {
             ${check.label} <span>${check.mensaje}</span>
         </div>
     `).join('');
+}
+
+function normalizarTexto(texto) {
+    return texto
+        .toLowerCase()
+        .normalize("NFD") // Quita tildes
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/,/g, "") // Quita comas
+        .replace(/\s+/g, " ") // Colapsa múltiples espacios
+        .trim();
 }
