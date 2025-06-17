@@ -74,13 +74,15 @@ session_start();
             </div>
 
             <div class="filtros">
-                <button class="filtro">$5,000 - $10,000 <i class="fas fa-chevron-down"></i></button>
-                <button class="filtro">Fecha <i class="fas fa-chevron-down"></i></button>
-                <button class="filtro">Presencial/Desde casa <i class="fas fa-chevron-down"></i></button>
-                <button class="filtro">Tipo de Contratación <i class="fas fa-chevron-down"></i></button>
-                <button class="filtro">Educación <i class="fas fa-chevron-down"></i></button>
+                <button class="filtro" data-salario="5000-10000">$5,000 - $10,000</button>
+                <button class="filtro" data-fecha="recientes">Fecha</button>
+                <button class="filtro" data-modalidad="presencial">Presencial</button>
+                <button class="filtro" data-modalidad="remoto">Desde casa</button>
+                <button class="filtro" data-contrato="temporal">Tipo de Contratación</button>
+                <button class="filtro" data-educacion="licenciatura">Educación</button>
                 <button class="filtro limpiar">Limpiar filtros</button>
             </div>
+
         </div>
 
         <div class="contenedor-vacantes">

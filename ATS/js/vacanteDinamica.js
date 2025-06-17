@@ -1,10 +1,32 @@
+const filtrosSeleccionados = {};
+
 document.addEventListener("DOMContentLoaded", function () {
-    cargarVacantes(1); // Comenzar en la página 1
+    cargarVacantes(1);
+
+    document.querySelectorAll(".filtro").forEach(boton => {
+        boton.addEventListener("click", () => {
+            if (boton.classList.contains("limpiar")) {
+                Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
+            } else {
+                const dataset = boton.dataset;
+                for (let key in dataset) {
+                    filtrosSeleccionados[key] = dataset[key];
+                }
+            }
+            cargarVacantes(1);
+        });
+    });
 });
 
 function cargarVacantes(pagina) {
-    const limite = 5; // Cambia este valor si quieres mostrar más o menos por página
-    fetch(`dao/daoVacanteDinamica.php?pagina=${pagina}&limite=${limite}`)
+    const limite = 5;
+    const params = new URLSearchParams({ pagina, limite });
+
+    for (let key in filtrosSeleccionados) {
+        params.append(key, filtrosSeleccionados[key]);
+    }
+
+    fetch(`dao/daoVacanteDinamica.php?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             const vacantes = data.vacantes;
@@ -71,7 +93,6 @@ function cargarVacantes(pagina) {
                 if (index === 0) mostrarDetalle(vacante);
             });
 
-            // Paginación dinámica
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
 
@@ -132,7 +153,6 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewBeneficios").innerHTML = textoAListasHTML(vacante.Beneficios);
     document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion.replace(/\n/g, '<br>');
 
-    // Mostrar compatibilidad
     if (typeof usuario !== "undefined") {
         mostrarCompatibilidad(vacante, usuario);
     }
