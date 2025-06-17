@@ -589,8 +589,10 @@ nav a:not(:hover)::after {
 
 .contenedor-paginacion {
     margin-top: 30px;
-    text-align: center;
+    text-align: left; /* cambia center por left */
+    padding-left: 20px; /* opcional: ajusta qué tan a la izquierda quieres */
 }
+
 
 .paginacion-vacantes {
     display: inline-block;
