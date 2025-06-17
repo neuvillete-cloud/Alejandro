@@ -347,6 +347,13 @@ nav a:not(:hover)::after {
     padding-right: 15px;
 }
 
+.filtro:not([value=""]) {
+    background-color: #063962;
+    color: white;
+    font-weight: bold;
+    border: 2px solid #f39c12;
+}
+
 
 .contenedor-vacantes {
     display: flex;
