@@ -76,23 +76,23 @@ session_start();
             <div class="filtros">
                 <!-- Salario -->
                 <select id="filtro-salario" class="filtro">
-                    <option disabled selected>Salario</option>
+                    <option value="" disabled selected>Salario</option>
                     <option value="0-4999">Menos de $5,000</option>
                     <option value="5000-10000">$5,000 - $10,000</option>
                     <option value="10001-15000">$10,001 - $15,000</option>
                     <option value="15001-99999">Más de $15,000</option>
                 </select>
 
-                <!-- Fecha (orden) -->
+                <!-- Fecha -->
                 <select id="filtro-fecha" class="filtro">
-                    <option disabled selected>Fecha</option>
+                    <option value="" disabled selected>Ordenar por</option>
                     <option value="recientes">Más recientes</option>
                     <option value="antiguas">Más antiguas</option>
                 </select>
 
                 <!-- Modalidad -->
                 <select id="filtro-modalidad" class="filtro">
-                    <option disabled selected>Presencial/Desde casa</option>
+                    <option value="" disabled selected>Modalidad</option>
                     <option value="presencial">Presencial</option>
                     <option value="remoto">Desde casa</option>
                     <option value="hibrido">Híbrido</option>
@@ -100,15 +100,15 @@ session_start();
 
                 <!-- Tipo de contratación -->
                 <select id="filtro-contrato" class="filtro">
-                    <option disabled selected>Tipo de Contratación</option>
-                    <option value="becario">Becario/ Practicas</option>
+                    <option value="" disabled selected>Tipo de contratación</option>
+                    <option value="becario">Becario/Prácticas</option>
                     <option value="temporal">Temporal</option>
-                    <option value="completo">Tiempo Completo</option>
+                    <option value="completo">Tiempo completo</option>
                 </select>
 
-                <!-- Nivel educativo -->
+                <!-- Educación -->
                 <select id="filtro-educacion" class="filtro">
-                    <option disabled selected>Educación</option>
+                    <option value="" disabled selected>Educación</option>
                     <option value="secundaria">Secundaria</option>
                     <option value="preparatoria">Preparatoria</option>
                     <option value="tecnico">Técnico</option>
@@ -116,7 +116,7 @@ session_start();
                     <option value="maestria">Maestría</option>
                 </select>
 
-                <!-- Botón para limpiar -->
+                <!-- Botón limpiar -->
                 <button id="limpiar-filtros" class="filtro limpiar">Limpiar filtros</button>
             </div>
 
