@@ -313,7 +313,7 @@ nav a:not(:hover)::after {
     gap: 10px;
 }
 
-.filtro {
+.filtro-select {
     background-color: #1146b0;
     color: white;
     border: none;
@@ -321,6 +321,19 @@ nav a:not(:hover)::after {
     border-radius: 6px;
     font-size: 14px;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http://www.w3.org/2000/svg%22%20width%3D%2210%22%20height%3D%225%22%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M0%200l5%205%205-5z%22/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+    padding-right: 30px;
+}
+
+/* Para Firefox (corrige el estilo del desplegable por defecto) */
+.filtro-select::-ms-expand {
+    display: none;
 }
 
 .filtro.limpiar {
@@ -328,6 +341,7 @@ nav a:not(:hover)::after {
     color: #1146b0;
     font-weight: bold;
 }
+
 
 .contenedor-vacantes {
     display: flex;
