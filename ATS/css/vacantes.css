@@ -313,6 +313,7 @@ nav a:not(:hover)::after {
     gap: 10px;
 }
 
+/* Estilo para selects como botones */
 .filtro {
     background-color: #1146b0;
     color: white;
@@ -321,13 +322,31 @@ nav a:not(:hover)::after {
     border-radius: 6px;
     font-size: 14px;
     cursor: pointer;
+    font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg%20fill%3D%22white%22%20height%3D%2218%22%20viewBox%3D%220%200%2024%2024%22%20width%3D%2218%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 35px;
 }
 
+/* Oculta flecha por defecto en IE */
+.filtro::-ms-expand {
+    display: none;
+}
+
+/* Botón limpiar */
 .filtro.limpiar {
     background-color: transparent;
     color: #1146b0;
     font-weight: bold;
+    background-image: none;
+    padding-right: 15px;
 }
+
 
 .contenedor-vacantes {
     display: flex;
