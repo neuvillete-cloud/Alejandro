@@ -74,14 +74,57 @@ session_start();
             </div>
 
             <div class="filtros">
-                <button class="filtro" data-salario="5000-10000">$5,000 - $10,000</button>
-                <button class="filtro" data-fecha="recientes">Fecha</button>
-                <button class="filtro" data-modalidad="presencial">Presencial</button>
-                <button class="filtro" data-modalidad="remoto">Desde casa</button>
-                <button class="filtro" data-contrato="temporal">Tipo de Contratación</button>
-                <button class="filtro" data-educacion="licenciatura">Educación</button>
-                <button class="filtro limpiar">Limpiar filtros</button>
+                <!-- Salario -->
+                <label for="filtro-salario">Salario:</label>
+                <select id="filtro-salario" class="filtro">
+                    <option value="">Todos</option>
+                    <option value="0-4999">Menos de $5,000</option>
+                    <option value="5000-10000">$5,000 - $10,000</option>
+                    <option value="10001-15000">$10,001 - $15,000</option>
+                    <option value="15001-99999">Más de $15,000</option>
+                </select>
+
+                <!-- Fecha (orden) -->
+                <label for="filtro-fecha">Ordenar por:</label>
+                <select id="filtro-fecha" class="filtro">
+                    <option value="">Por defecto</option>
+                    <option value="recientes">Más recientes</option>
+                    <option value="antiguas">Más antiguas</option>
+                </select>
+
+                <!-- Modalidad -->
+                <label for="filtro-modalidad">Modalidad:</label>
+                <select id="filtro-modalidad" class="filtro">
+                    <option value="">Todas</option>
+                    <option value="presencial">Presencial</option>
+                    <option value="remoto">Desde casa</option>
+                    <option value="hibrido">Híbrido</option>
+                </select>
+
+                <!-- Tipo de contratación -->
+                <label for="filtro-contrato">Tipo de Contratación:</label>
+                <select id="filtro-contrato" class="filtro">
+                    <option value="">Todas</option>
+                    <option value="becario">Becario/ Practicas</option>
+                    <option value="temporal">Temporal</option>
+                    <option value="completo">Tiempo Completo</option>
+                </select>
+
+                <!-- Nivel educativo -->
+                <label for="filtro-educacion">Educación:</label>
+                <select id="filtro-educacion" class="filtro">
+                    <option value="">Todas</option>
+                    <option value="secundaria">Secundaria</option>
+                    <option value="preparatoria">Preparatoria</option>
+                    <option value="tecnico">Técnico</option>
+                    <option value="licenciatura">Licenciatura</option>
+                    <option value="maestria">Maestría</option>
+                </select>
+
+                <!-- Botón para limpiar -->
+                <button id="limpiar-filtros" class="filtro limpiar">Limpiar filtros</button>
             </div>
+
 
         </div>
 

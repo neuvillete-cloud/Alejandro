@@ -1,21 +1,34 @@
 const filtrosSeleccionados = {};
 
 document.addEventListener("DOMContentLoaded", function () {
-    cargarVacantes(1);
+    const salario = document.getElementById('filtro-salario');
+    const fecha = document.getElementById('filtro-fecha');
+    const modalidad = document.getElementById('filtro-modalidad');
+    const contrato = document.getElementById('filtro-contrato');
+    const educacion = document.getElementById('filtro-educacion');
+    const limpiar = document.getElementById('limpiar-filtros');
 
-    document.querySelectorAll(".filtro").forEach(boton => {
-        boton.addEventListener("click", () => {
-            if (boton.classList.contains("limpiar")) {
-                Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
+    const selects = [salario, fecha, modalidad, contrato, educacion];
+
+    selects.forEach(select => {
+        select.addEventListener("change", () => {
+            const key = select.id.replace('filtro-', '');
+            if (select.value === "") {
+                delete filtrosSeleccionados[key];
             } else {
-                const dataset = boton.dataset;
-                for (let key in dataset) {
-                    filtrosSeleccionados[key] = dataset[key];
-                }
+                filtrosSeleccionados[key] = select.value;
             }
             cargarVacantes(1);
         });
     });
+
+    limpiar.addEventListener("click", () => {
+        selects.forEach(select => select.value = "");
+        Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
+        cargarVacantes(1);
+    });
+
+    cargarVacantes(1);
 });
 
 function cargarVacantes(pagina) {
