@@ -110,10 +110,6 @@ session_start();
                     <p class="ubicacion">Querétaro, Qro.</p>
                 </div>
             </div>
-
-            <!-- Contenedor para la paginación fuera del bloque de vacantes -->
-            <div class="contenedor-paginacion"></div>
-
             <!-- Detalle de la vacante seleccionada -->
             <div class="detalle-vacante">
                 <!-- ENCABEZADO CON IMAGEN -->
@@ -202,6 +198,8 @@ session_start();
                 </div>
             </div>
         </div>
+
+        <div class="contenedor-paginacion"></div>
 
 
 
