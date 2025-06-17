@@ -11,7 +11,48 @@ $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
 $limite = isset($_GET['limite']) ? intval($_GET['limite']) : 5;
 $offset = ($pagina - 1) * $limite;
 
-// Consulta con paginación y JOIN
+// Filtros recibidos
+$filtros = [];
+if (!empty($_GET['salario'])) {
+    $rango = explode("-", $_GET['salario']);
+    if (count($rango) === 2) {
+        $min = intval($rango[0]);
+        $max = intval($rango[1]);
+        $filtros[] = "(CAST(REPLACE(REPLACE(V.Sueldo, '$', ''), ',', '') AS UNSIGNED) BETWEEN $min AND $max)";
+    }
+}
+
+if (!empty($_GET['modalidad'])) {
+    $modalidad = $conn->real_escape_string($_GET['modalidad']);
+    $filtros[] = "V.EspacioTrabajo = '$modalidad'";
+}
+
+if (!empty($_GET['contrato'])) {
+    $contrato = $conn->real_escape_string($_GET['contrato']);
+    $filtros[] = "V.TipoContrato = '$contrato'"; // Asegúrate de que exista este campo
+}
+
+if (!empty($_GET['educacion'])) {
+    $educacion = $conn->real_escape_string($_GET['educacion']);
+    $filtros[] = "V.EscolaridadMinima LIKE '%$educacion%'";
+}
+
+if (!empty($_GET['fecha']) && $_GET['fecha'] === 'recientes') {
+    $ordenFecha = "V.Fecha DESC";
+} else {
+    $ordenFecha = "V.Fecha DESC"; // Puedes cambiar a otro criterio si gustas
+}
+
+// Condición base
+$condiciones = ["V.IdEstatus = 1"];
+
+// Agrega los filtros
+$condiciones = array_merge($condiciones, $filtros);
+
+// Armar cláusula WHERE
+$whereSQL = "WHERE " . implode(" AND ", $condiciones);
+
+// Consulta principal con filtros y paginación
 $sql = "SELECT SQL_CALC_FOUND_ROWS 
             V.IdVacante, 
             V.TituloVacante, 
@@ -31,15 +72,14 @@ $sql = "SELECT SQL_CALC_FOUND_ROWS
             V.Imagen
         FROM Vacantes V
         INNER JOIN Area A ON V.IdArea = A.IdArea
-        WHERE V.IdEstatus = 1
-        ORDER BY V.Fecha DESC
+        $whereSQL
+        ORDER BY $ordenFecha
         LIMIT $limite OFFSET $offset";
 
 $resultado = $conn->query($sql);
 
-// Obtener las vacantes
+// Obtener resultados
 $vacantes = [];
-
 while ($row = $resultado->fetch_assoc()) {
     $vacantes[] = [
         'IdVacante' => $row['IdVacante'],
@@ -61,13 +101,13 @@ while ($row = $resultado->fetch_assoc()) {
     ];
 }
 
-// Obtener el total de resultados sin paginación
+// Total de resultados
 $totalResult = $conn->query("SELECT FOUND_ROWS() AS total")->fetch_assoc();
 $totalVacantes = $totalResult['total'];
 
 $conn->close();
 
-// Responder en formato JSON
+// Respuesta JSON
 echo json_encode([
     'vacantes' => $vacantes,
     'total' => $totalVacantes,
@@ -90,3 +130,4 @@ function calcularTiempoTranscurrido($fechaPublicacion) {
     }
 }
 ?>
+
