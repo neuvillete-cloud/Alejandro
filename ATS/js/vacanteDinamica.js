@@ -59,10 +59,6 @@ function cargarVacantes(pagina) {
                 return;
             }
 
-// ✅ Solución: limpiar el detalle antes de cargar uno nuevo
-            detalle.innerHTML = "";
-
-
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
 
