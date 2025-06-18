@@ -103,7 +103,7 @@ session_start();
                     <option value="" disabled selected>Tipo de contratación</option>
                     <option value="becario">Becario/Prácticas</option>
                     <option value="temporal">Temporal</option>
-                    <option value="completo">Tiempo completo</option>
+                    <option value="Tiempo completo">Tiempo completo</option>
                 </select>
 
                 <!-- Educación -->
