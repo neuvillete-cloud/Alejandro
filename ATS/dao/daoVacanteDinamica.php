@@ -37,11 +37,18 @@ if (!empty($_GET['educacion'])) {
     $filtros[] = "V.EscolaridadMinima LIKE '%$educacion%'";
 }
 
-if (!empty($_GET['fecha']) && $_GET['fecha'] === 'recientes') {
-    $ordenFecha = "V.Fecha DESC";
+if (!empty($_GET['fecha'])) {
+    if ($_GET['fecha'] === 'recientes') {
+        $ordenFecha = "V.Fecha DESC";
+    } elseif ($_GET['fecha'] === 'antiguas') {
+        $ordenFecha = "V.Fecha ASC";
+    } else {
+        $ordenFecha = "V.Fecha DESC"; // valor por defecto
+    }
 } else {
-    $ordenFecha = "V.Fecha DESC"; // Puedes cambiar a otro criterio si gustas
+    $ordenFecha = "V.Fecha DESC"; // valor por defecto
 }
+
 
 // Condición base
 $condiciones = ["V.IdEstatus = 1"];
