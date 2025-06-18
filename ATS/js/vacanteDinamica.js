@@ -24,9 +24,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
-        Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
+        for (let key in filtrosSeleccionados) delete filtrosSeleccionados[key];
+        console.log("Filtros después de limpiar:", filtrosSeleccionados); // ✅
         cargarVacantes(1);
     });
+
 
     cargarVacantes(1);
 });
