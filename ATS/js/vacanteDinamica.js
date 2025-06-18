@@ -55,9 +55,16 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.innerHTML = "";
 
             if (vacantes.length === 0) {
+                lista.innerHTML = ""; // limpiamos por si quedó algo
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
+            } else {
+                // Asegura limpiar el mensaje si había uno
+                if (detalle.querySelector(".sin-resultados")) {
+                    detalle.innerHTML = "";
+                }
             }
+
 
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
