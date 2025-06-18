@@ -55,62 +55,62 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.innerHTML = "";
 
             if (vacantes.length === 0) {
+                lista.innerHTML = "";
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
-                return;
+            } else {
+                lista.innerHTML = "";
+                vacantes.forEach((vacante, index) => {
+                    const item = document.createElement("div");
+                    item.classList.add("vacante-item");
+                    item.setAttribute("data-id", vacante.IdVacante);
+                    if (index === 0) item.classList.add("activa");
+
+                    const beneficiosList = vacante.Beneficios
+                        .split(/\n+/)
+                        .filter(b => b.trim() !== "")
+                        .map(b => `<li>${b.trim()}</li>`)
+                        .join("");
+
+                    let vistoHTML = '';
+                    const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
+                    if (vacantesVistas.includes(vacante.IdVacante)) {
+                        vistoHTML = `<span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
+                    }
+
+                    item.innerHTML = `
+            <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
+            <h3>${vacante.Titulo}</h3>
+            <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
+            <ul>${beneficiosList}</ul>
+            <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
+            <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+        `;
+
+                    item.addEventListener("click", () => {
+                        document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
+                        item.classList.add("activa");
+                        mostrarDetalle(vacante);
+
+                        if (!vacantesVistas.includes(vacante.IdVacante)) {
+                            vacantesVistas.push(vacante.IdVacante);
+                            localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistas));
+                        }
+
+                        const fechaP = item.querySelector(".fecha");
+                        if (!fechaP.querySelector(".reciente")) {
+                            const span = document.createElement("span");
+                            span.classList.add("reciente");
+                            span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
+                            fechaP.appendChild(document.createTextNode(" • "));
+                            fechaP.appendChild(span);
+                        }
+                    });
+
+                    lista.appendChild(item);
+                    if (index === 0) mostrarDetalle(vacante);
+                });
             }
 
-
-            const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
-
-            vacantes.forEach((vacante, index) => {
-                const item = document.createElement("div");
-                item.classList.add("vacante-item");
-                item.setAttribute("data-id", vacante.IdVacante);
-                if (index === 0) item.classList.add("activa");
-
-                const beneficiosList = vacante.Beneficios
-                    .split(/\n+/)
-                    .filter(b => b.trim() !== "")
-                    .map(b => `<li>${b.trim()}</li>`)
-                    .join("");
-
-                let vistoHTML = '';
-                if (vacantesVistas.includes(vacante.IdVacante)) {
-                    vistoHTML = `<span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
-                }
-
-                item.innerHTML = `
-                    <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
-                    <h3>${vacante.Titulo}</h3>
-                    <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
-                    <ul>${beneficiosList}</ul>
-                    <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
-                `;
-
-                item.addEventListener("click", () => {
-                    document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
-                    item.classList.add("activa");
-                    mostrarDetalle(vacante);
-
-                    if (!vacantesVistas.includes(vacante.IdVacante)) {
-                        vacantesVistas.push(vacante.IdVacante);
-                        localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistas));
-                    }
-
-                    const fechaP = item.querySelector(".fecha");
-                    if (!fechaP.querySelector(".reciente")) {
-                        const span = document.createElement("span");
-                        span.classList.add("reciente");
-                        span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
-                        fechaP.appendChild(document.createTextNode(" • "));
-                        fechaP.appendChild(span);
-                    }
-                });
-
-                lista.appendChild(item);
-                if (index === 0) mostrarDetalle(vacante);
-            });
 
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
