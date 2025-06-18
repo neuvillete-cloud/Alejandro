@@ -25,14 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
         Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
-
-        // ✅ Esta línea es la nueva: limpia el detalle al restablecer filtros
-        const detalle = document.querySelector(".detalle-vacante");
-        detalle.innerHTML = "";
-
         cargarVacantes(1);
     });
-
 
     cargarVacantes(1);
 });
@@ -60,22 +54,6 @@ function cargarVacantes(pagina) {
             lista.innerHTML = "";
             contenedorPaginacion.innerHTML = "";
 
-            if (vacantes.length === 0) {
-                const detalle = document.querySelector(".detalle-vacante");
-
-                // ✅ Evita duplicar el mensaje si ya está
-                if (!detalle.querySelector(".sin-resultados")) {
-                    detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
-                }
-
-                return;
-            } else {
-                // ✅ Limpia el mensaje si antes sí hubo uno
-                const detalle = document.querySelector(".detalle-vacante");
-                if (detalle.querySelector(".sin-resultados")) {
-                    detalle.innerHTML = "";
-                }
-            }
             if (vacantes.length === 0) {
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
