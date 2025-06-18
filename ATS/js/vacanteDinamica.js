@@ -57,8 +57,6 @@ function cargarVacantes(pagina) {
             if (vacantes.length === 0) {
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
-            } else {
-                detalle.innerHTML = ""; // 💡 Muy importante limpiar el detalle
             }
 
 
