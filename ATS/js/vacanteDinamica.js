@@ -52,7 +52,6 @@ function cargarVacantes(pagina) {
             const contenedorPaginacion = document.querySelector(".contenedor-paginacion");
 
             lista.innerHTML = "";
-            detalle.innerHTML = "";
             contenedorPaginacion.innerHTML = "";
 
             if (vacantes.length === 0) {
@@ -60,12 +59,14 @@ function cargarVacantes(pagina) {
                 return;
             }
 
+
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
                 item.setAttribute("data-id", vacante.IdVacante);
+                if (index === 0) item.classList.add("activa");
 
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
@@ -108,13 +109,9 @@ function cargarVacantes(pagina) {
                 });
 
                 lista.appendChild(item);
+                if (index === 0) mostrarDetalle(vacante);
             });
 
-            // ✅ Simular click en la primera vacante
-            const primera = document.querySelector(".vacante-item");
-            if (primera) primera.click();
-
-            // Paginación
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
 
@@ -144,7 +141,6 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.appendChild(paginacion);
         });
 }
-
 
 function textoAListasHTML(texto) {
     if (!texto) return "<p>No hay información disponible</p>";
