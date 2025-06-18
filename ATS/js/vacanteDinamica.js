@@ -55,7 +55,7 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.innerHTML = "";
 
             if (vacantes.length === 0) {
-                detalle.innerHTML = "<p class='sin-resultados'>No se encontraron vacantes con los filtros seleccionados.</p>";
+                detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
             }
 
