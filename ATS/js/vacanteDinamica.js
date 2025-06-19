@@ -25,13 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
         Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
-        cargarVacantes(1, true); // <-- indicador para forzar mostrar detalle
+        cargarVacantes(1);
     });
 
-    cargarVacantes(1, true); // primer carga
+    cargarVacantes(1);
 });
 
-function cargarVacantes(pagina, forzarMostrarPrimera = false) {
+function cargarVacantes(pagina) {
     const limite = 5;
     const params = new URLSearchParams({ pagina, limite });
 
@@ -53,7 +53,6 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
 
             lista.innerHTML = "";
             contenedorPaginacion.innerHTML = "";
-            detalle.innerHTML = ""; // ✅ limpiar siempre ANTES de mostrar cualquier cosa
 
             if (vacantes.length === 0) {
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
@@ -62,12 +61,12 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
 
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
-            let primeraVacante = null;
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
                 item.setAttribute("data-id", vacante.IdVacante);
+                if (index === 0) item.classList.add("activa");
 
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
@@ -110,19 +109,9 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
                 });
 
                 lista.appendChild(item);
-                if (index === 0) primeraVacante = vacante;
+                if (index === 0) mostrarDetalle(vacante);
             });
 
-            if (forzarMostrarPrimera && primeraVacante) {
-                // Marcar como activa
-                const primerElemento = document.querySelector(".vacante-item");
-                if (primerElemento) {
-                    primerElemento.classList.add("activa");
-                    mostrarDetalle(primeraVacante);
-                }
-            }
-
-            // PAGINACIÓN
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
 
@@ -130,7 +119,7 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
             btnPrev.textContent = "<";
             btnPrev.className = "btn-pagina";
             btnPrev.disabled = paginaActual === 1;
-            btnPrev.addEventListener("click", () => cargarVacantes(paginaActual - 1, true));
+            btnPrev.addEventListener("click", () => cargarVacantes(paginaActual - 1));
             paginacion.appendChild(btnPrev);
 
             for (let i = 1; i <= totalPaginas; i++) {
@@ -138,7 +127,7 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
                 btn.textContent = i;
                 btn.className = "btn-pagina";
                 if (i === paginaActual) btn.classList.add("activa");
-                btn.addEventListener("click", () => cargarVacantes(i, true));
+                btn.addEventListener("click", () => cargarVacantes(i));
                 paginacion.appendChild(btn);
             }
 
@@ -146,13 +135,12 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
             btnNext.textContent = ">";
             btnNext.className = "btn-pagina";
             btnNext.disabled = paginaActual === totalPaginas;
-            btnNext.addEventListener("click", () => cargarVacantes(paginaActual + 1, true));
+            btnNext.addEventListener("click", () => cargarVacantes(paginaActual + 1));
             paginacion.appendChild(btnNext);
 
             contenedorPaginacion.appendChild(paginacion);
         });
 }
-
 
 function textoAListasHTML(texto) {
     if (!texto) return "<p>No hay información disponible</p>";
