@@ -25,13 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
         Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
-        cargarVacantes(1);
+        cargarVacantes(1, true); // Indicamos que es limpieza
     });
 
     cargarVacantes(1);
 });
 
-function cargarVacantes(pagina) {
+function cargarVacantes(pagina, limpiarDetalle = false) {
     const limite = 5;
     const params = new URLSearchParams({ pagina, limite });
 
@@ -57,8 +57,9 @@ function cargarVacantes(pagina) {
             if (vacantes.length === 0) {
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
+            } else if (limpiarDetalle) {
+                detalle.innerHTML = ""; // Quitamos mensaje anterior si hay resultados nuevos
             }
-
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
 
@@ -109,7 +110,7 @@ function cargarVacantes(pagina) {
                 });
 
                 lista.appendChild(item);
-                if (index === 0) mostrarDetalle(vacante);
+                if (index === 0) mostrarDetalle(vacante); // Mostrar detalle del primero
             });
 
             const paginacion = document.createElement("div");
@@ -141,6 +142,7 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.appendChild(paginacion);
         });
 }
+
 
 function textoAListasHTML(texto) {
     if (!texto) return "<p>No hay información disponible</p>";
