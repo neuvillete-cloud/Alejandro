@@ -66,12 +66,13 @@ function cargarVacantes(pagina) {
             }
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
+            let primerItem = null;
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
                 item.setAttribute("data-id", vacante.IdVacante);
-                if (index === 0) item.classList.add("activa");
+                if (index === 0) primerItem = item;
 
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
@@ -116,6 +117,11 @@ function cargarVacantes(pagina) {
                 lista.appendChild(item);
             });
 
+            // Forzar mostrar la primera vacante
+            if (primerItem) {
+                primerItem.click();
+            }
+
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
 
@@ -143,15 +149,6 @@ function cargarVacantes(pagina) {
             paginacion.appendChild(btnNext);
 
             contenedorPaginacion.appendChild(paginacion);
-
-            // ✅ Mostrar detalle de la primera vacante al recargar o limpiar filtros
-            if (vacantes.length > 0) {
-                const primera = document.querySelector(".vacante-item");
-                if (primera) {
-                    primera.click(); // El .click() ya ejecuta mostrarDetalle y activa la vacante
-                }
-            }
-
         });
 }
 
