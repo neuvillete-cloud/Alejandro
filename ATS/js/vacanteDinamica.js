@@ -66,13 +66,17 @@ function cargarVacantes(pagina) {
             }
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
-            let primerItem = null;
+            let primeraVacante = null;
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
                 item.setAttribute("data-id", vacante.IdVacante);
-                if (index === 0) primerItem = item;
+
+                if (index === 0) {
+                    item.classList.add("activa");
+                    primeraVacante = vacante;
+                }
 
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
@@ -86,13 +90,13 @@ function cargarVacantes(pagina) {
                 }
 
                 item.innerHTML = `
-                    <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
-                    <h3>${vacante.Titulo}</h3>
-                    <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
-                    <ul>${beneficiosList}</ul>
-                    <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
-                `;
+        <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
+        <h3>${vacante.Titulo}</h3>
+        <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
+        <ul>${beneficiosList}</ul>
+        <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
+        <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+    `;
 
                 item.addEventListener("click", () => {
                     document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
@@ -117,10 +121,11 @@ function cargarVacantes(pagina) {
                 lista.appendChild(item);
             });
 
-            // Forzar mostrar la primera vacante
-            if (primerItem) {
-                primerItem.click();
+// Mostrar el detalle manualmente
+            if (primeraVacante) {
+                mostrarDetalle(primeraVacante);
             }
+
 
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
