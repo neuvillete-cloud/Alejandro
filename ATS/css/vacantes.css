@@ -638,22 +638,4 @@ nav a:not(:hover)::after {
     border-color: #1d3557;
 }
 
-.sin-resultados {
-    padding: 40px;
-    text-align: center;
-    color: #ccc;
-    font-size: 1.2rem;
-    font-style: italic;
-    background-color: #1e1e2f;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
 
-.sin-resultados i {
-    font-size: 1.5rem;
-    color: #ff6b6b;
-}
