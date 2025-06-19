@@ -53,11 +53,13 @@ function cargarVacantes(pagina, forzarMostrarPrimera = false) {
 
             lista.innerHTML = "";
             contenedorPaginacion.innerHTML = "";
+            detalle.innerHTML = ""; // ✅ limpiar siempre ANTES de mostrar cualquier cosa
 
             if (vacantes.length === 0) {
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
             }
+
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
             let primeraVacante = null;
