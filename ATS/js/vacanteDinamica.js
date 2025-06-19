@@ -55,10 +55,15 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.innerHTML = "";
 
             if (vacantes.length === 0) {
+                lista.innerHTML = "";
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
+            } else {
+                const sinResultados = document.querySelector('.detalle-vacante .sin-resultados');
+                if (sinResultados) {
+                    sinResultados.remove();
+                }
             }
-
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
 
@@ -109,7 +114,6 @@ function cargarVacantes(pagina) {
                 });
 
                 lista.appendChild(item);
-                if (index === 0) mostrarDetalle(vacante);
             });
 
             const paginacion = document.createElement("div");
@@ -139,6 +143,17 @@ function cargarVacantes(pagina) {
             paginacion.appendChild(btnNext);
 
             contenedorPaginacion.appendChild(paginacion);
+
+            // ✅ Mostrar detalle de la primera vacante al recargar o limpiar filtros
+            if (vacantes.length > 0) {
+                setTimeout(() => {
+                    const primera = document.querySelector(".vacante-item");
+                    if (primera) {
+                        primera.classList.add("activa");
+                        primera.click();
+                    }
+                }, 0);
+            }
         });
 }
 
