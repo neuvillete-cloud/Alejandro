@@ -146,14 +146,12 @@ function cargarVacantes(pagina) {
 
             // ✅ Mostrar detalle de la primera vacante al recargar o limpiar filtros
             if (vacantes.length > 0) {
-                setTimeout(() => {
-                    const primera = document.querySelector(".vacante-item");
-                    if (primera) {
-                        primera.classList.add("activa");
-                        primera.click();
-                    }
-                }, 0);
+                const primera = document.querySelector(".vacante-item");
+                if (primera) {
+                    primera.click(); // El .click() ya ejecuta mostrarDetalle y activa la vacante
+                }
             }
+
         });
 }
 
