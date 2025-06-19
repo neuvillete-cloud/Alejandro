@@ -55,28 +55,18 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.innerHTML = "";
 
             if (vacantes.length === 0) {
-                lista.innerHTML = "";
                 detalle.innerHTML = "<div class='sin-resultados'><i class='fas fa-frown'></i> No se encontraron vacantes con los filtros seleccionados.</div>";
                 return;
-            } else {
-                const sinResultados = document.querySelector('.detalle-vacante .sin-resultados');
-                if (sinResultados) {
-                    sinResultados.remove();
-                }
             }
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
-            let primeraVacante = null;
+            let primerItem = null;
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
                 item.setAttribute("data-id", vacante.IdVacante);
-
-                if (index === 0) {
-                    item.classList.add("activa");
-                    primeraVacante = vacante;
-                }
+                if (index === 0) primerItem = item;
 
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
@@ -90,17 +80,18 @@ function cargarVacantes(pagina) {
                 }
 
                 item.innerHTML = `
-        <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
-        <h3>${vacante.Titulo}</h3>
-        <p>${vacante.Sueldo ? vacante.Sueldo : "Sueldo no mostrado"}</p>
-        <ul>${beneficiosList}</ul>
-        <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-        <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
-    `;
+                    <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
+                    <h3>${vacante.Titulo}</h3>
+                    <p>${vacante.Sueldo || "Sueldo no mostrado"}</p>
+                    <ul>${beneficiosList}</ul>
+                    <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
+                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+                `;
 
                 item.addEventListener("click", () => {
                     document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
                     item.classList.add("activa");
+
                     mostrarDetalle(vacante);
 
                     if (!vacantesVistas.includes(vacante.IdVacante)) {
@@ -121,11 +112,7 @@ function cargarVacantes(pagina) {
                 lista.appendChild(item);
             });
 
-// Mostrar el detalle manualmente
-            if (primeraVacante) {
-                mostrarDetalle(primeraVacante);
-            }
-
+            if (primerItem) primerItem.click(); // Auto click para mostrar detalles
 
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
@@ -156,6 +143,7 @@ function cargarVacantes(pagina) {
             contenedorPaginacion.appendChild(paginacion);
         });
 }
+
 
 function textoAListasHTML(texto) {
     if (!texto) return "<p>No hay información disponible</p>";
