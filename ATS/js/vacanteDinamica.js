@@ -110,7 +110,13 @@ function cargarVacantes(pagina, limpiarDetalle = false) {
                 });
 
                 lista.appendChild(item);
-                if (index === 0) mostrarDetalle(vacante); // Mostrar detalle del primero
+                if (index === 0) {
+                    mostrarDetalle(vacante);
+                    item.classList.add("activa");
+                    // Disparar el click manualmente para asegurar funcionalidad
+                    setTimeout(() => item.click(), 0);
+                }
+                // Mostrar detalle del primero
             });
 
             const paginacion = document.createElement("div");
