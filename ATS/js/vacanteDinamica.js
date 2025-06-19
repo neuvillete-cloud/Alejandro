@@ -25,13 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
         Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
-        cargarVacantes(1);
+        cargarVacantes(1, true); // <-- indicador para forzar mostrar detalle
     });
 
-    cargarVacantes(1);
+    cargarVacantes(1, true); // primer carga
 });
 
-function cargarVacantes(pagina) {
+function cargarVacantes(pagina, forzarMostrarPrimera = false) {
     const limite = 5;
     const params = new URLSearchParams({ pagina, limite });
 
@@ -59,14 +59,13 @@ function cargarVacantes(pagina) {
                 return;
             }
 
-
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
+            let primeraVacante = null;
 
             vacantes.forEach((vacante, index) => {
                 const item = document.createElement("div");
                 item.classList.add("vacante-item");
                 item.setAttribute("data-id", vacante.IdVacante);
-                if (index === 0) item.classList.add("activa");
 
                 const beneficiosList = vacante.Beneficios
                     .split(/\n+/)
@@ -109,9 +108,19 @@ function cargarVacantes(pagina) {
                 });
 
                 lista.appendChild(item);
-                if (index === 0) mostrarDetalle(vacante);
+                if (index === 0) primeraVacante = vacante;
             });
 
+            if (forzarMostrarPrimera && primeraVacante) {
+                // Marcar como activa
+                const primerElemento = document.querySelector(".vacante-item");
+                if (primerElemento) {
+                    primerElemento.classList.add("activa");
+                    mostrarDetalle(primeraVacante);
+                }
+            }
+
+            // PAGINACIÓN
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
 
@@ -119,7 +128,7 @@ function cargarVacantes(pagina) {
             btnPrev.textContent = "<";
             btnPrev.className = "btn-pagina";
             btnPrev.disabled = paginaActual === 1;
-            btnPrev.addEventListener("click", () => cargarVacantes(paginaActual - 1));
+            btnPrev.addEventListener("click", () => cargarVacantes(paginaActual - 1, true));
             paginacion.appendChild(btnPrev);
 
             for (let i = 1; i <= totalPaginas; i++) {
@@ -127,7 +136,7 @@ function cargarVacantes(pagina) {
                 btn.textContent = i;
                 btn.className = "btn-pagina";
                 if (i === paginaActual) btn.classList.add("activa");
-                btn.addEventListener("click", () => cargarVacantes(i));
+                btn.addEventListener("click", () => cargarVacantes(i, true));
                 paginacion.appendChild(btn);
             }
 
@@ -135,12 +144,13 @@ function cargarVacantes(pagina) {
             btnNext.textContent = ">";
             btnNext.className = "btn-pagina";
             btnNext.disabled = paginaActual === totalPaginas;
-            btnNext.addEventListener("click", () => cargarVacantes(paginaActual + 1));
+            btnNext.addEventListener("click", () => cargarVacantes(paginaActual + 1, true));
             paginacion.appendChild(btnNext);
 
             contenedorPaginacion.appendChild(paginacion);
         });
 }
+
 
 function textoAListasHTML(texto) {
     if (!texto) return "<p>No hay información disponible</p>";
