@@ -54,18 +54,16 @@ function cargarVacantes(pagina) {
             lista.innerHTML = "";
             contenedorPaginacion.innerHTML = "";
 
+            const mensaje = document.querySelector(".mensaje-sin-vacantes");
+            const detalleContenido = document.querySelector(".contenido-detalle-vacante");
+
             if (vacantes.length === 0) {
-                lista.innerHTML = "";
-                const mensaje = document.querySelector(".mensaje-sin-vacantes");
-                if (mensaje) {
-                    mensaje.style.display = "block";
-                }
+                mensaje.style.display = "block";
+                detalleContenido.style.display = "none";
                 return;
             } else {
-                const mensaje = document.querySelector(".mensaje-sin-vacantes");
-                if (mensaje) {
-                    mensaje.style.display = "none";
-                }
+                mensaje.style.display = "none";
+                detalleContenido.style.display = "block";
             }
 
 
