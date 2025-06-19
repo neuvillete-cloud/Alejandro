@@ -59,10 +59,6 @@ function cargarVacantes(pagina) {
                 return;
             }
 
-            // ✅ Eliminar mensaje anterior si existía
-            if (detalle.querySelector('.sin-resultados')) {
-                detalle.innerHTML = "";
-            }
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
 
