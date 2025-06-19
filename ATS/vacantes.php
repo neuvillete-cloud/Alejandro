@@ -237,6 +237,11 @@ session_start();
                     <h3>Descripción del puesto</h3>
                     <p id="previewDescripcion"></p>
                 </div>
+
+                <div class="mensaje-sin-vacantes" style="display: none; padding: 20px; font-size: 1.2em; color: #888;">
+                    <i class="fas fa-frown"></i> No se encontraron vacantes con los filtros seleccionados.
+                </div>
+
             </div>
         </div>
 
