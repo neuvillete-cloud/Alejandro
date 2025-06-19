@@ -246,42 +246,6 @@ session_start();
 
     </div>
 </section>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const vacantes = document.querySelectorAll('.vacante-item');
-
-        vacantes.forEach((vacante, index) => {
-            vacante.addEventListener('click', () => {
-                // Guardar como vista
-                const titulo = vacante.querySelector('h3').textContent;
-                let vistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
-
-                if (!vistas.includes(titulo)) {
-                    vistas.push(titulo);
-                    localStorage.setItem('vacantesVistas', JSON.stringify(vistas));
-                }
-
-                // Mostrar detalles (si tienes esa función)
-                mostrarDetalleVacante(index);
-            });
-        });
-
-        // Al cargar, marcar las vistas
-        const vistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
-        vacantes.forEach((vacante) => {
-            const titulo = vacante.querySelector('h3').textContent;
-            if (vistas.includes(titulo)) {
-                const fecha = vacante.querySelector('.fecha');
-                const span = document.createElement('span');
-                span.classList.add('reciente');
-                span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
-                fecha.appendChild(document.createTextNode(' • '));
-                fecha.appendChild(span);
-            }
-        });
-    });
-
-</script>
 <script src="js/vacanteDinamica.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php if (isset($_SESSION['IdCandidato'])): ?>
