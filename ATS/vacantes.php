@@ -153,96 +153,102 @@ session_start();
             </div>
             <!-- Detalle de la vacante seleccionada -->
             <div class="detalle-vacante">
-                <!-- ENCABEZADO CON IMAGEN -->
-                <div class="encabezado-vacante">
-                    <div class="imagen-vacante-detalle">
-                        <img id="imagenVacante" src="imagenes/default.jpg" alt="Logo empresa">
-                    </div>
-                    <div class="info-principal-vacante">
-                        <p class="fecha">Hace 3 días</p>
-                        <h2>Practicante</h2>
-                        <p class="descripcion">
-                            $8000 <br>
-                            <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
-                        </p>
-                        <button class="btn-postularme">Postularme</button>
-                    </div>
-                </div>
 
-                <hr>
-
-                <h4>Conoce tu compatibilidad con la vacante</h4>
-                <div class="compatibilidad">
-                    <div><i class="fas fa-check-circle"></i> Sueldo <span>Entras en el rango</span></div>
-                    <div><i class="fas fa-check-circle"></i> Ubicación <span>Estás en el lugar correcto</span></div>
-                    <div><i class="fas fa-check-circle"></i> Educación <span>Cumples con lo necesario</span></div>
-                    <div><i class="fas fa-check-circle"></i> Área <span>Compatible con el puesto</span></div>
-                </div>
-
-                <!-- Sección: Sobre el empleo -->
-                <hr class="linea-divisoria-vacante">
-                <div class="seccion-empleo-vacante">
-                    <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
-
-                    <div class="info-empleo-fila">
-                        <div class="info-item-vacante">
-                            <strong>Área / Departamento:</strong>
-                            <span id="previewArea"></span>
+                <!-- 🔁 Contenido completo visible solo si hay vacantes -->
+                <div class="contenido-detalle-vacante">
+                    <!-- ENCABEZADO CON IMAGEN -->
+                    <div class="encabezado-vacante">
+                        <div class="imagen-vacante-detalle">
+                            <img id="imagenVacante" src="imagenes/default.jpg" alt="Logo empresa">
                         </div>
-
-                        <div class="info-item-vacante">
-                            <strong>Escolaridad mínima:</strong>
-                            <span id="previewescolaridad"></span>
+                        <div class="info-principal-vacante">
+                            <p class="fecha">Hace 3 días</p>
+                            <h2>Practicante</h2>
+                            <p class="descripcion">
+                                $8000 <br>
+                                <strong>Crown Industrias Montacargas, S.A. de C.V.</strong> en Querétaro, Qro.
+                            </p>
+                            <button class="btn-postularme">Postularme</button>
                         </div>
                     </div>
 
-                    <div class="info-item-vacante">
-                        <strong>Idioma:</strong> <span id="previewIdioma"></span>
+                    <hr>
+
+                    <h4>Conoce tu compatibilidad con la vacante</h4>
+                    <div class="compatibilidad">
+                        <div><i class="fas fa-check-circle"></i> Sueldo <span>Entras en el rango</span></div>
+                        <div><i class="fas fa-check-circle"></i> Ubicación <span>Estás en el lugar correcto</span></div>
+                        <div><i class="fas fa-check-circle"></i> Educación <span>Cumples con lo necesario</span></div>
+                        <div><i class="fas fa-check-circle"></i> Área <span>Compatible con el puesto</span></div>
                     </div>
 
-                    <div class="info-item-vacante">
-                        <strong>Area de Especialidad:</strong> <span id="previewEspecialidad"></span>
-                    </div>
-
+                    <!-- Sección: Sobre el empleo -->
                     <hr class="linea-divisoria-vacante">
-                </div>
+                    <div class="seccion-empleo-vacante">
+                        <h3 class="titulo-seccion-vacante">Sobre el empleo</h3>
 
-                <!-- Detalles del empleo -->
-                <div class="seccion-empleo-vacante">
-                    <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
+                        <div class="info-empleo-fila">
+                            <div class="info-item-vacante">
+                                <strong>Área / Departamento:</strong>
+                                <span id="previewArea"></span>
+                            </div>
 
-                    <div class="info-item-vacante">
-                        <strong>Horario:</strong> <span id="previewHorario"></span>
+                            <div class="info-item-vacante">
+                                <strong>Escolaridad mínima:</strong>
+                                <span id="previewescolaridad"></span>
+                            </div>
+                        </div>
+
+                        <div class="info-item-vacante">
+                            <strong>Idioma:</strong> <span id="previewIdioma"></span>
+                        </div>
+
+                        <div class="info-item-vacante">
+                            <strong>Área de Especialidad:</strong> <span id="previewEspecialidad"></span>
+                        </div>
+
+                        <hr class="linea-divisoria-vacante">
                     </div>
-                    <div class="info-item-vacante">
-                        <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
+
+                    <!-- Detalles del empleo -->
+                    <div class="seccion-empleo-vacante">
+                        <h3 class="titulo-seccion-vacante">Detalles del empleo</h3>
+
+                        <div class="info-item-vacante">
+                            <strong>Horario:</strong> <span id="previewHorario"></span>
+                        </div>
+                        <div class="info-item-vacante">
+                            <strong>Espacio de trabajo:</strong> <span id="previewEspacio"></span>
+                        </div>
+
+                        <hr class="linea-divisoria-vacante">
                     </div>
 
+                    <div class="preview-seccion-vacante">
+                        <h3>Requisitos</h3>
+                        <p id="previewRequisitos"></p>
+                    </div>
                     <hr class="linea-divisoria-vacante">
+
+                    <div class="preview-seccion-vacante">
+                        <h3>Beneficios</h3>
+                        <p id="previewBeneficios"></p>
+                    </div>
+                    <hr class="linea-divisoria-vacante">
+
+                    <div class="preview-seccion-vacante">
+                        <h3>Descripción del puesto</h3>
+                        <p id="previewDescripcion"></p>
+                    </div>
                 </div>
 
-                <div class="preview-seccion-vacante">
-                    <h3>Requisitos</h3>
-                    <p id="previewRequisitos"></p>
-                </div>
-                <hr class="linea-divisoria-vacante">
-
-                <div class="preview-seccion-vacante">
-                    <h3>Beneficios</h3>
-                    <p id="previewBeneficios"></p>
-                </div>
-                <hr class="linea-divisoria-vacante">
-
-                <div class="preview-seccion-vacante">
-                    <h3>Descripción del puesto</h3>
-                    <p id="previewDescripcion"></p>
-                </div>
-
+                <!-- 🧊 Solo visible cuando no hay vacantes -->
                 <div class="mensaje-sin-vacantes" style="display: none; padding: 20px; font-size: 1.2em; color: #888;">
                     <i class="fas fa-frown"></i> No se encontraron vacantes con los filtros seleccionados.
                 </div>
 
             </div>
+
         </div>
 
         <div class="contenedor-paginacion"></div>
