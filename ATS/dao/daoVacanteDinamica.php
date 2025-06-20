@@ -13,6 +13,8 @@ $offset = ($pagina - 1) * $limite;
 
 // Filtros recibidos
 $filtros = [];
+
+// Salario
 if (!empty($_GET['salario'])) {
     $rango = explode("-", $_GET['salario']);
     if (count($rango) === 2) {
@@ -22,44 +24,57 @@ if (!empty($_GET['salario'])) {
     }
 }
 
+// Modalidad
 if (!empty($_GET['modalidad'])) {
     $modalidad = $conn->real_escape_string($_GET['modalidad']);
     $filtros[] = "V.EspacioTrabajo = '$modalidad'";
 }
 
+// Tipo de contrato
 if (!empty($_GET['contrato'])) {
     $contrato = $conn->real_escape_string($_GET['contrato']);
-    $filtros[] = "V.TipoContrato = '$contrato'"; // Asegúrate de que exista este campo
+    $filtros[] = "V.TipoContrato = '$contrato'";
 }
 
+// Escolaridad
 if (!empty($_GET['educacion'])) {
     $educacion = $conn->real_escape_string($_GET['educacion']);
     $filtros[] = "V.EscolaridadMinima LIKE '%$educacion%'";
 }
 
+// Orden por fecha
 if (!empty($_GET['fecha'])) {
-    if ($_GET['fecha'] === 'recientes') {
-        $ordenFecha = "V.Fecha DESC";
-    } elseif ($_GET['fecha'] === 'antiguas') {
-        $ordenFecha = "V.Fecha ASC";
-    } else {
-        $ordenFecha = "V.Fecha DESC"; // valor por defecto
-    }
+    $ordenFecha = $_GET['fecha'] === 'antiguas' ? "V.Fecha ASC" : "V.Fecha DESC";
 } else {
-    $ordenFecha = "V.Fecha DESC"; // valor por defecto
+    $ordenFecha = "V.Fecha DESC";
 }
 
+// Búsqueda por título o área
+if (!empty($_GET['busqueda'])) {
+    $busqueda = $conn->real_escape_string($_GET['busqueda']);
+    $filtros[] = "(
+        CONVERT(V.TituloVacante USING utf8) COLLATE utf8_general_ci LIKE '%$busqueda%' 
+        OR CONVERT(A.NombreArea USING utf8) COLLATE utf8_general_ci LIKE '%$busqueda%'
+    )";
+}
+
+// Búsqueda por ubicación
+if (!empty($_GET['ubicacion'])) {
+    $ubicacion = $conn->real_escape_string($_GET['ubicacion']);
+    $filtros[] = "(
+        CONVERT(V.Ciudad USING utf8) COLLATE utf8_general_ci LIKE '%$ubicacion%' 
+        OR CONVERT(V.Estado USING utf8) COLLATE utf8_general_ci LIKE '%$ubicacion%'
+    )";
+}
 
 // Condición base
 $condiciones = ["V.IdEstatus = 1"];
 
-// Agrega los filtros
+// Agregar filtros a la cláusula WHERE
 $condiciones = array_merge($condiciones, $filtros);
-
-// Armar cláusula WHERE
 $whereSQL = "WHERE " . implode(" AND ", $condiciones);
 
-// Consulta principal con filtros y paginación
+// Consulta principal
 $sql = "SELECT SQL_CALC_FOUND_ROWS 
             V.IdVacante, 
             V.TituloVacante, 
@@ -85,7 +100,7 @@ $sql = "SELECT SQL_CALC_FOUND_ROWS
 
 $resultado = $conn->query($sql);
 
-// Obtener resultados
+// Resultado de vacantes
 $vacantes = [];
 while ($row = $resultado->fetch_assoc()) {
     $vacantes[] = [
@@ -114,7 +129,7 @@ $totalVacantes = $totalResult['total'];
 
 $conn->close();
 
-// Respuesta JSON
+// Enviar JSON al cliente
 echo json_encode([
     'vacantes' => $vacantes,
     'total' => $totalVacantes,
@@ -137,4 +152,3 @@ function calcularTiempoTranscurrido($fechaPublicacion) {
     }
 }
 ?>
-

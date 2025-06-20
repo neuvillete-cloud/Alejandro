@@ -1,4 +1,7 @@
 const filtrosSeleccionados = {};
+let filtroBusqueda = "";
+let filtroUbicacion = "";
+let historialBusquedas = JSON.parse(localStorage.getItem('historialBusquedas')) || [];
 
 document.addEventListener("DOMContentLoaded", function () {
     const salario = document.getElementById('filtro-salario');
@@ -7,6 +10,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const contrato = document.getElementById('filtro-contrato');
     const educacion = document.getElementById('filtro-educacion');
     const limpiar = document.getElementById('limpiar-filtros');
+
+    const campoBusqueda = document.querySelector(".campo-busqueda input");
+    const campoUbicacion = document.querySelector(".campo-ubicacion input");
+    const btnBuscar = document.querySelector(".btn-buscar");
+
+    // Contenedor para historial
+    const historialContainer = document.createElement("ul");
+    historialContainer.classList.add("historial-busquedas");
+    document.querySelector(".campo-busqueda").appendChild(historialContainer);
+
+    renderizarHistorial();
 
     const selects = [salario, fecha, modalidad, contrato, educacion];
 
@@ -24,9 +38,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
+        campoBusqueda.value = "";
+        campoUbicacion.value = "";
+        filtroBusqueda = "";
+        filtroUbicacion = "";
         Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
         cargarVacantes(1);
     });
+
+    function dispararBusqueda() {
+        filtroBusqueda = campoBusqueda.value.trim();
+        filtroUbicacion = campoUbicacion.value.trim();
+
+        if (filtroBusqueda && !historialBusquedas.includes(filtroBusqueda)) {
+            historialBusquedas.unshift(filtroBusqueda);
+            if (historialBusquedas.length > 10) historialBusquedas.pop();
+            localStorage.setItem('historialBusquedas', JSON.stringify(historialBusquedas));
+            renderizarHistorial();
+        }
+
+        cargarVacantes(1);
+    }
+
+    btnBuscar.addEventListener("click", dispararBusqueda);
+    [campoBusqueda, campoUbicacion].forEach(input => {
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                dispararBusqueda();
+            }
+        });
+    });
+
+    document.querySelector(".cerrar-busqueda").addEventListener("click", () => {
+        campoBusqueda.value = "";
+        filtroBusqueda = "";
+        cargarVacantes(1);
+    });
+
+    document.querySelector(".cerrar-ubicacion").addEventListener("click", () => {
+        campoUbicacion.value = "";
+        filtroUbicacion = "";
+        cargarVacantes(1);
+    });
+
+    campoBusqueda.addEventListener("focus", () => {
+        historialContainer.style.display = historialBusquedas.length > 0 ? "block" : "none";
+    });
+
+    campoBusqueda.addEventListener("blur", () => {
+        setTimeout(() => historialContainer.style.display = "none", 200);
+    });
+
+    function renderizarHistorial() {
+        historialContainer.innerHTML = "";
+        historialBusquedas.forEach(busqueda => {
+            const li = document.createElement("li");
+            li.textContent = busqueda;
+            li.addEventListener("click", () => {
+                campoBusqueda.value = busqueda;
+                filtroBusqueda = busqueda;
+                cargarVacantes(1);
+            });
+            historialContainer.appendChild(li);
+        });
+    }
 
     cargarVacantes(1);
 });
@@ -38,6 +114,9 @@ function cargarVacantes(pagina) {
     for (let key in filtrosSeleccionados) {
         params.append(key, filtrosSeleccionados[key]);
     }
+
+    if (filtroBusqueda) params.append('busqueda', filtroBusqueda);
+    if (filtroUbicacion) params.append('ubicacion', filtroUbicacion);
 
     fetch(`dao/daoVacanteDinamica.php?${params.toString()}`)
         .then(response => response.json())
