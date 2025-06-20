@@ -654,8 +654,10 @@ nav a:not(:hover)::after {
     color: #ff6b6b;
 }
 
-.historial-busquedas {
-    display: none; /* <-- Esto es lo que faltaba */
+/* Estilo base para listas de sugerencias */
+.historial-busquedas,
+.historial-ubicaciones {
+    display: none;
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
@@ -673,18 +675,22 @@ nav a:not(:hover)::after {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-.historial-busquedas li {
+/* Estilo para los ítems de ambas listas */
+.historial-busquedas li,
+.historial-ubicaciones li {
     padding: 10px 12px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
     transition: background 0.2s;
 }
 
-.historial-busquedas li:hover {
+.historial-busquedas li:hover,
+.historial-ubicaciones li:hover {
     background-color: #f0f0f0;
 }
 
-.campo-busqueda {
+/* Asegura que el contenedor padre tenga posición relativa */
+.campo-busqueda,
+.campo-ubicacion {
     position: relative;
 }
