@@ -1,7 +1,6 @@
 const filtrosSeleccionados = {};
 let filtroBusqueda = "";
 let filtroUbicacion = "";
-let historialBusquedas = JSON.parse(localStorage.getItem('historialBusquedas')) || [];
 
 document.addEventListener("DOMContentLoaded", function () {
     const salario = document.getElementById('filtro-salario');
@@ -15,12 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoUbicacion = document.querySelector(".campo-ubicacion input");
     const btnBuscar = document.querySelector(".btn-buscar");
 
-    // Contenedor para historial
-    const historialContainer = document.createElement("ul");
-    historialContainer.classList.add("historial-busquedas");
-    document.querySelector(".campo-busqueda").appendChild(historialContainer);
-
-    renderizarHistorial();
+    // Contenedor para sugerencias
+    const sugerenciasContainer = document.createElement("ul");
+    sugerenciasContainer.classList.add("historial-busquedas"); // Puedes renombrar clase si quieres
+    document.querySelector(".campo-busqueda").appendChild(sugerenciasContainer);
 
     const selects = [salario, fecha, modalidad, contrato, educacion];
 
@@ -49,14 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function dispararBusqueda() {
         filtroBusqueda = campoBusqueda.value.trim();
         filtroUbicacion = campoUbicacion.value.trim();
-
-        if (filtroBusqueda && !historialBusquedas.includes(filtroBusqueda)) {
-            historialBusquedas.unshift(filtroBusqueda);
-            if (historialBusquedas.length > 10) historialBusquedas.pop();
-            localStorage.setItem('historialBusquedas', JSON.stringify(historialBusquedas));
-            renderizarHistorial();
-        }
-
+        sugerenciasContainer.style.display = "none";
         cargarVacantes(1);
     }
 
@@ -82,30 +72,46 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarVacantes(1);
     });
 
-    campoBusqueda.addEventListener("focus", () => {
-        historialContainer.style.display = historialBusquedas.length > 0 ? "block" : "none";
+    campoBusqueda.addEventListener("input", () => {
+        const texto = campoBusqueda.value.trim();
+        if (texto.length < 2) {
+            sugerenciasContainer.style.display = "none";
+            return;
+        }
+
+        fetch(`dao/busquedaSugerencias.php?q=${encodeURIComponent(texto)}`)
+            .then(res => res.json())
+            .then(sugerencias => {
+                sugerenciasContainer.innerHTML = "";
+
+                if (sugerencias.length === 0) {
+                    sugerenciasContainer.style.display = "none";
+                    return;
+                }
+
+                sugerencias.forEach(s => {
+                    const li = document.createElement("li");
+                    li.textContent = s;
+                    li.addEventListener("click", () => {
+                        campoBusqueda.value = s;
+                        filtroBusqueda = s;
+                        sugerenciasContainer.style.display = "none";
+                        cargarVacantes(1);
+                    });
+                    sugerenciasContainer.appendChild(li);
+                });
+
+                sugerenciasContainer.style.display = "block";
+            });
     });
 
     campoBusqueda.addEventListener("blur", () => {
-        setTimeout(() => historialContainer.style.display = "none", 200);
+        setTimeout(() => sugerenciasContainer.style.display = "none", 200);
     });
-
-    function renderizarHistorial() {
-        historialContainer.innerHTML = "";
-        historialBusquedas.forEach(busqueda => {
-            const li = document.createElement("li");
-            li.textContent = busqueda;
-            li.addEventListener("click", () => {
-                campoBusqueda.value = busqueda;
-                filtroBusqueda = busqueda;
-                cargarVacantes(1);
-            });
-            historialContainer.appendChild(li);
-        });
-    }
 
     cargarVacantes(1);
 });
+
 
 function cargarVacantes(pagina) {
     const limite = 5;
