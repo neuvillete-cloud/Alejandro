@@ -658,6 +658,7 @@ nav a:not(:hover)::after {
 }
 
 .historial-busquedas {
+    display: none; /* <-- Esto es lo que faltaba */
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
@@ -674,6 +675,7 @@ nav a:not(:hover)::after {
     font-size: 14px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .historial-busquedas li {
     padding: 10px 12px;
