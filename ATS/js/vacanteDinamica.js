@@ -14,15 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoUbicacion = document.querySelector(".campo-ubicacion input");
     const btnBuscar = document.querySelector(".btn-buscar");
 
-    // Contenedor para sugerencias de búsqueda
-    const sugerenciasContainer = document.createElement("ul");
-    sugerenciasContainer.classList.add("historial-busquedas");
-    document.querySelector(".campo-busqueda").appendChild(sugerenciasContainer);
-
-    // Contenedor para sugerencias de ubicación
-    const sugerenciasUbicacionContainer = document.createElement("ul");
-    sugerenciasUbicacionContainer.classList.add("historial-busquedas");
-    document.querySelector(".campo-ubicacion").appendChild(sugerenciasUbicacionContainer);
+    // Seleccionamos los UL ya existentes del HTML
+    const sugerenciasContainer = document.querySelector(".campo-busqueda .historial-busquedas");
+    const sugerenciasUbicacionContainer = document.querySelector(".campo-ubicacion .historial-ubicaciones");
 
     const selects = [salario, fecha, modalidad, contrato, educacion];
 
@@ -78,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarVacantes(1);
     });
 
-    // Autocompletado de Títulos y Áreas
+    // Autocompletado búsqueda
     campoBusqueda.addEventListener("input", () => {
         const texto = campoBusqueda.value.trim();
         if (texto.length < 2) {
@@ -116,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => sugerenciasContainer.style.display = "none", 200);
     });
 
-    // Autocompletado de Ubicaciones
+    // Autocompletado ubicación
     campoUbicacion.addEventListener("input", () => {
         const texto = campoUbicacion.value.trim();
         if (texto.length < 2) {
