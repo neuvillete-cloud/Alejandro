@@ -39,7 +39,7 @@ session_start();
                         <a href="perfil.php">Perfil</a>
                         <a href="#">Alertas de empleo</a>
                         <a href="#">Historial de solicitudes</a>
-                        <a href="cerrarSesion.php">Cerrar sesión</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
                     </div>
                 </div>
             <?php else: ?>
@@ -276,6 +276,25 @@ session_start();
         const usuario = null;
     </script>
 <?php endif; ?>
+
+<script>
+    const logoutLink = document.getElementById('logout');
+
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('dao/logout.php', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'loginATS.php';
+                    } else {
+                        alert('Error al cerrar sesión. Inténtalo nuevamente.');
+                    }
+                })
+                .catch(error => console.error('Error al cerrar sesión:', error));
+        });
+    }
+</script>
 
 </body>
 </html>
