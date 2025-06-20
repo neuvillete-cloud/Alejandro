@@ -14,10 +14,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoUbicacion = document.querySelector(".campo-ubicacion input");
     const btnBuscar = document.querySelector(".btn-buscar");
 
-    // Contenedor para sugerencias
+    // Contenedor para sugerencias de búsqueda
     const sugerenciasContainer = document.createElement("ul");
-    sugerenciasContainer.classList.add("historial-busquedas"); // Puedes renombrar clase si quieres
+    sugerenciasContainer.classList.add("historial-busquedas");
     document.querySelector(".campo-busqueda").appendChild(sugerenciasContainer);
+
+    // Contenedor para sugerencias de ubicación
+    const sugerenciasUbicacionContainer = document.createElement("ul");
+    sugerenciasUbicacionContainer.classList.add("historial-busquedas");
+    document.querySelector(".campo-ubicacion").appendChild(sugerenciasUbicacionContainer);
 
     const selects = [salario, fecha, modalidad, contrato, educacion];
 
@@ -47,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         filtroBusqueda = campoBusqueda.value.trim();
         filtroUbicacion = campoUbicacion.value.trim();
         sugerenciasContainer.style.display = "none";
+        sugerenciasUbicacionContainer.style.display = "none";
         cargarVacantes(1);
     }
 
@@ -72,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarVacantes(1);
     });
 
+    // Autocompletado de Títulos y Áreas
     campoBusqueda.addEventListener("input", () => {
         const texto = campoBusqueda.value.trim();
         if (texto.length < 2) {
@@ -107,6 +114,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
     campoBusqueda.addEventListener("blur", () => {
         setTimeout(() => sugerenciasContainer.style.display = "none", 200);
+    });
+
+    // Autocompletado de Ubicaciones
+    campoUbicacion.addEventListener("input", () => {
+        const texto = campoUbicacion.value.trim();
+        if (texto.length < 2) {
+            sugerenciasUbicacionContainer.style.display = "none";
+            return;
+        }
+
+        fetch(`dao/busquedaUbicaciones.php?q=${encodeURIComponent(texto)}`)
+            .then(res => res.json())
+            .then(sugerencias => {
+                sugerenciasUbicacionContainer.innerHTML = "";
+
+                if (sugerencias.length === 0) {
+                    sugerenciasUbicacionContainer.style.display = "none";
+                    return;
+                }
+
+                sugerencias.forEach(s => {
+                    const li = document.createElement("li");
+                    li.textContent = s;
+                    li.addEventListener("click", () => {
+                        campoUbicacion.value = s;
+                        filtroUbicacion = s;
+                        sugerenciasUbicacionContainer.style.display = "none";
+                        cargarVacantes(1);
+                    });
+                    sugerenciasUbicacionContainer.appendChild(li);
+                });
+
+                sugerenciasUbicacionContainer.style.display = "block";
+            });
+    });
+
+    campoUbicacion.addEventListener("blur", () => {
+        setTimeout(() => sugerenciasUbicacionContainer.style.display = "none", 200);
     });
 
     cargarVacantes(1);
