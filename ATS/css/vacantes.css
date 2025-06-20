@@ -57,7 +57,8 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
-nav a::after {
+/* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
+nav > a::after {
     content: '';
     position: absolute;
     left: 0;
