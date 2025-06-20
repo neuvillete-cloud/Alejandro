@@ -60,8 +60,11 @@ session_start();
             <div class="fila-superior">
                 <div class="campo-busqueda">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="practicante de ingeniería">
+                    <input type="text" placeholder="practicante de ingeniería" autocomplete="off">
                     <i class="fas fa-times cerrar-busqueda"></i>
+
+                    <!-- Este contenedor es clave para mostrar el historial -->
+                    <ul class="historial-busquedas"></ul>
                 </div>
 
                 <div class="campo-ubicacion">

@@ -656,3 +656,36 @@ nav a:not(:hover)::after {
     font-size: 1.5rem;
     color: #ff6b6b;
 }
+
+.historial-busquedas {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-top: none;
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.historial-busquedas li {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.historial-busquedas li:hover {
+    background-color: #f0f0f0;
+}
+
+.campo-busqueda {
+    position: relative;
+}
