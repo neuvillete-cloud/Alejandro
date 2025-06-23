@@ -443,3 +443,9 @@ form input {
 .tooltip:hover .tooltip-text {
     display: block;
 }
+
+.barra-progreso-container {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
