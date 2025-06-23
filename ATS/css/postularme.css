@@ -302,6 +302,7 @@ form label {
 
 form input {
     width: 100%;
+    max-width: 500px; /* 👈 ajusta este valor a tu gusto (ej. 400px, 450px...) */
     padding: 8px 12px;
     margin-top: 4px;
     border: 1px solid #ccc;
@@ -309,6 +310,7 @@ form input {
     font-size: 14px;
     box-sizing: border-box;
 }
+
 
 
 .dato-estatico {
@@ -405,5 +407,36 @@ form input {
 }
 
 .form-step.active {
+    display: block;
+}
+
+.campo-email {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip-text {
+    display: none;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 13px;
+    z-index: 100;
+}
+
+.tooltip:hover .tooltip-text {
     display: block;
 }
