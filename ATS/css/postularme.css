@@ -302,12 +302,14 @@ form label {
 
 form input {
     width: 100%;
-    padding: 10px;
-    margin-top: 5px;
+    padding: 8px 12px;
+    margin-top: 4px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
 }
+
 
 .dato-estatico {
     margin-top: 5px;
@@ -366,4 +368,42 @@ form input {
     color: #215dbc;
     font-weight: bold;
     text-decoration: none;
+}
+
+.barra-progreso-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.barra-progreso {
+    flex: 1;
+    height: 5px;
+    background-color: #dbe5f1;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-right: 20px;
+}
+
+.progreso {
+    height: 100%;
+    background-color: #215dbc;
+    width: 0%; /* ajusta con JS si quieres progresivo */
+    transition: width 0.3s ease;
+}
+
+.guardar-cerrar {
+    color: #215dbc;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
 }

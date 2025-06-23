@@ -59,30 +59,59 @@ session_start();
         <div class="formulario-postulacion">
             <!-- Columna izquierda: datos del candidato -->
             <div class="columna-formulario">
-                <h2>Agrega tu información de contacto</h2>
+                <!-- Barra de progreso -->
+                <div class="barra-progreso-container">
+                    <div class="barra-progreso">
+                        <div class="progreso" id="barraProgreso" style="width: 25%;"></div>
+                    </div>
+                    <a href="#" class="guardar-cerrar">Guardar y cerrar</a>
+                </div>
+
                 <form id="formPostulacion">
-                    <label>Nombre *</label>
-                    <input type="text" name="nombre" value="<?= $_SESSION['NombreCandidato'] ?? '' ?>" required>
+                    <!-- Paso 1 -->
+                    <div class="form-step active" data-step="1">
+                        <h2>Agrega tu información de contacto</h2>
 
-                    <label>Apellido *</label>
-                    <input type="text" name="apellido" value="<?= $_SESSION['ApellidoCandidato'] ?? '' ?>" required>
+                        <label>Nombre *</label>
+                        <input type="text" name="nombre" value="<?= $_SESSION['NombreCandidato'] ?? '' ?>" required>
 
-                    <label>Email</label>
-                    <input type="email" name="email" value="<?= $_SESSION['CorreoCandidato'] ?? '' ?>">
+                        <label>Apellido *</label>
+                        <input type="text" name="apellido" value="<?= $_SESSION['ApellidoCandidato'] ?? '' ?>" required>
 
-                    <label>País</label>
-                    <div class="dato-estatico">México</div>
+                        <label>Email</label>
+                        <div class="campo-email">
+                            <input type="email" name="email" value="<?= $_SESSION['CorreoCandidato'] ?? '' ?>" readonly>
+                            <div class="tooltip">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">Este es el email de tu cuenta. Para cambiarlo, ve a la configuración de la cuenta.</span>
+                            </div>
+                        </div>
 
-                    <label>Ciudad, estado</label>
-                    <input type="text" name="ciudad" value="<?= $_SESSION['UbicacionCandidato'] ?? '' ?>">
+                        <label>País</label>
+                        <div class="dato-estatico">México</div>
 
-                    <label>Número de teléfono</label>
-                    <div class="telefono-input">
-                        <span class="lada">🇲🇽 +52</span>
-                        <input type="tel" name="telefono" value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
+                        <label>Ciudad, estado</label>
+                        <input type="text" name="ciudad" value="<?= $_SESSION['UbicacionCandidato'] ?? '' ?>">
+
+                        <label>Número de teléfono</label>
+                        <div class="telefono-input">
+                            <span class="lada">🇲🇽 +52</span>
+                            <input type="tel" name="telefono" value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
+                        </div>
+
+                        <button type="button" class="btn-continuar" onclick="nextStep()">Continuar</button>
                     </div>
 
-                    <button type="submit" class="btn-continuar">Continuar</button>
+                    <!-- Paso 2 (ejemplo adicional) -->
+                    <div class="form-step" data-step="2">
+                        <h2>Sube tu CV</h2>
+
+                        <label>Archivo CV</label>
+                        <input type="file" name="cv">
+
+                        <button type="button" onclick="prevStep()">Atrás</button>
+                        <button type="submit" class="btn-continuar">Enviar</button>
+                    </div>
                 </form>
             </div>
 
@@ -99,6 +128,7 @@ session_start();
                 </div>
             </div>
         </div>
+
 
 
 
@@ -140,6 +170,41 @@ session_start();
                 .catch(error => console.error('Error al cerrar sesión:', error));
         });
     }
+</script>
+<script>
+    let currentStep = 1;
+    const totalSteps = document.querySelectorAll('.form-step').length;
+    const barra = document.getElementById('barraProgreso');
+
+    function showStep(step) {
+        document.querySelectorAll('.form-step').forEach(div => {
+            div.classList.remove('active');
+            if (parseInt(div.dataset.step) === step) {
+                div.classList.add('active');
+            }
+        });
+
+        const progreso = Math.round((step / totalSteps) * 100);
+        barra.style.width = progreso + "%";
+    }
+
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showStep(currentStep);
+    });
 </script>
 
 </body>
