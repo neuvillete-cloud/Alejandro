@@ -323,7 +323,10 @@ form input {
     display: flex;
     align-items: center;
     gap: 8px;
+    max-width: 500px; /* 👈 ajusta este valor como gustes (ej. 450px, 400px...) */
+    width: 100%;
 }
+
 
 .telefono-input .lada {
     padding: 10px;
