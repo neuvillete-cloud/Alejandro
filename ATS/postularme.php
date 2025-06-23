@@ -6,6 +6,8 @@
     <title>Vacantes en Grammer Automotive</title>
     <link rel="stylesheet" href="css/postularme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/css/intlTelInput.css"/>
+
 </head>
 <body>
 
@@ -92,11 +94,9 @@ session_start();
                         <label>Ciudad, estado</label>
                         <input type="text" name="ciudad" value="<?= $_SESSION['UbicacionCandidato'] ?? '' ?>">
 
-                        <label>Número de teléfono</label>
-                        <div class="telefono-input">
-                            <span class="lada">🇲🇽 +52</span>
-                            <input type="tel" name="telefono" value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
-                        </div>
+                        <label for="telefono">Número de teléfono</label>
+                        <input id="telefono" type="tel" name="telefono" value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
+
 
                         <button type="button" class="btn-continuar" onclick="nextStep()">Continuar</button>
                     </div>
@@ -137,6 +137,8 @@ session_start();
 </section>
 <script src="js/vacanteDinamica.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/js/intlTelInput.min.js"></script>
+
 <?php if (isset($_SESSION['IdCandidato'])): ?>
     <script>
         const usuario = {
@@ -203,6 +205,20 @@ session_start();
 
     document.addEventListener('DOMContentLoaded', () => {
         showStep(currentStep);
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        showStep(currentStep); // Ya está en tu script
+
+        // Inicializa intl-tel-input
+        const input = document.querySelector("#telefono");
+        window.intlTelInput(input, {
+            initialCountry: "mx",
+            preferredCountries: ["mx", "us"],
+            separateDialCode: true,
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/js/utils.js"
+        });
     });
 </script>
 
