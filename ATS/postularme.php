@@ -76,7 +76,7 @@ session_start();
                         <input type="text" name="nombre" value="<?= $_SESSION['NombreCandidato'] ?? '' ?>" required>
 
                         <label>Apellido *</label>
-                        <input type="text" name="apellido" value="<?= $_SESSION['ApellidoCandidato'] ?? '' ?>" required>
+                        <input type="text" name="apellido" value="<?= $_SESSION['ApellidosCandidato'] ?? '' ?>" required>
 
                         <label>Email</label>
                         <div class="campo-email">
