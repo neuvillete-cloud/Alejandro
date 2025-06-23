@@ -56,6 +56,50 @@ session_start();
 
 <section class="area-blanca">
     <div class="contenido-blanco">
+        <div class="formulario-postulacion">
+            <!-- Columna izquierda: datos del candidato -->
+            <div class="columna-formulario">
+                <h2>Agrega tu información de contacto</h2>
+                <form id="formPostulacion">
+                    <label>Nombre *</label>
+                    <input type="text" name="nombre" value="<?= $_SESSION['NombreCandidato'] ?? '' ?>" required>
+
+                    <label>Apellido *</label>
+                    <input type="text" name="apellido" value="<?= $_SESSION['ApellidoCandidato'] ?? '' ?>" required>
+
+                    <label>Email</label>
+                    <input type="email" name="email" value="<?= $_SESSION['CorreoCandidato'] ?? '' ?>">
+
+                    <label>País</label>
+                    <div class="dato-estatico">México</div>
+
+                    <label>Ciudad, estado</label>
+                    <input type="text" name="ciudad" value="<?= $_SESSION['UbicacionCandidato'] ?? '' ?>">
+
+                    <label>Número de teléfono</label>
+                    <div class="telefono-input">
+                        <span class="lada">🇲🇽 +52</span>
+                        <input type="tel" name="telefono" value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
+                    </div>
+
+                    <button type="submit" class="btn-continuar">Continuar</button>
+                </form>
+            </div>
+
+            <!-- Columna derecha: resumen de la vacante -->
+            <div class="columna-vacante">
+                <div class="tarjeta-vacante">
+                    <h3>Programador y operador CNC</h3>
+                    <p><strong>FEM TOOLING</strong> - La Griega, Qro.</p>
+                    <hr>
+                    <p><strong>Rol y responsabilidades:</strong><br>
+                        Utilizar maquinaria controlada numéricamente por computadora (CNC) de manera segura y precisa para realizar una variedad de funciones en el maquinado de piezas.</p>
+                    <p><strong>Actividades:</strong></p>
+                    <a href="#">Ver descripción completa del empleo</a>
+                </div>
+            </div>
+        </div>
+
 
 
 

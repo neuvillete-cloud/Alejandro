@@ -274,3 +274,96 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+.formulario-postulacion {
+    display: flex;
+    gap: 40px;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 40px;
+}
+
+.columna-formulario {
+    flex: 2;
+}
+
+.columna-formulario h2 {
+    color: #222;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #222;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.dato-estatico {
+    margin-top: 5px;
+    font-size: 16px;
+    color: #000;
+}
+
+.telefono-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.telefono-input .lada {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid #ccc;
+    border-right: none;
+}
+
+.telefono-input input {
+    flex: 1;
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+}
+
+.btn-continuar {
+    margin-top: 30px;
+    background-color: #215dbc;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.columna-vacante {
+    flex: 1;
+}
+
+.tarjeta-vacante {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.tarjeta-vacante h3 {
+    margin-top: 0;
+    color: #000;
+}
+
+.tarjeta-vacante a {
+    color: #215dbc;
+    font-weight: bold;
+    text-decoration: none;
+}
