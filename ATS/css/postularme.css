@@ -327,13 +327,12 @@ form input {
     border-radius: 8px;
     border: 1px solid #ccc;
     box-sizing: border-box;
-    transform: translateY(-30px);
+    transform: translateY(-3px);
 }
 
 .iti {
     width: 100%;
     max-width: 500px;
-    transform: translateY(-30px);
 }
 
 
