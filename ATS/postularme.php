@@ -64,7 +64,6 @@ session_start();
                     <div class="barra-progreso">
                         <div class="progreso" id="barraProgreso" style="width: 25%;"></div>
                     </div>
-                    <a href="#" class="guardar-cerrar">Guardar y cerrar</a>
                 </div>
 
                 <form id="formPostulacion">
