@@ -51,7 +51,7 @@ session_start();
 </header>
 
 <section class="section-title">
-    <h1>Vacantes en Grammer Automotive</h1>
+    <h1>Postularme</h1>
 </section>
 
 <section class="area-blanca">
