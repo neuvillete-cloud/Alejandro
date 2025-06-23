@@ -296,6 +296,11 @@ function mostrarDetalle(vacante) {
     document.querySelector(".detalle-vacante .descripcion").innerHTML =
         `${textoSueldo}<strong>Grammer Automotive, S.A. de C.V.</strong> en ${vacante.Ciudad}, ${vacante.Estado}`;
 
+    document.querySelector(".btn-postularme").addEventListener("click", () => {
+        window.location.href = `postularme.php?id=${vacante.IdVacante}`;
+    });
+
+
     document.getElementById("previewArea").textContent = vacante.Area;
     document.getElementById("previewescolaridad").textContent = vacante.Escolaridad;
     document.getElementById("previewIdioma").textContent = vacante.Idioma;
