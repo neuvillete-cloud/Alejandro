@@ -319,28 +319,21 @@ form input {
     color: #000;
 }
 
-.telefono-input {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    max-width: 500px; /* 👈 ajusta este valor como gustes (ej. 450px, 400px...) */
+#telefono {
+    max-width: 500px;
     width: 100%;
-}
-
-
-.telefono-input .lada {
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 8px 0 0 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 8px;
     border: 1px solid #ccc;
-    border-right: none;
+    box-sizing: border-box;
 }
 
-.telefono-input input {
-    flex: 1;
-    border-radius: 0 8px 8px 0;
-    border-left: none;
+.iti {
+    width: 100%;
+    max-width: 500px;
 }
+
 
 .btn-continuar {
     margin-top: 30px;
