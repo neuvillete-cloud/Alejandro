@@ -350,6 +350,7 @@ form input {
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 600;
 }
 
 .btn-continuar:hover {
