@@ -457,8 +457,24 @@ form input {
 }
 
 .contenido-completo-animado.expandido {
-    max-height: 1000px; /* o ajusta según necesidad */
+    max-height: 300px; /* Altura fija del área expandida */
+    overflow-y: scroll; /* Siempre con scroll, incluso si no se necesita */
 }
+
+/* Opcional: personalización del scrollbar */
+.contenido-completo-animado::-webkit-scrollbar {
+    width: 8px;
+}
+
+.contenido-completo-animado::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius: 4px;
+}
+
+.contenido-completo-animado::-webkit-scrollbar-thumb:hover {
+    background-color: #666;
+}
+
 
 .contenido-interno {
     max-height: 100%;
