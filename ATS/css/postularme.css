@@ -355,25 +355,25 @@ form input {
     flex: 1;
 }
 
-/* Limita la altura inicial */
+/* Estilo general de la tarjeta */
 .tarjeta-vacante {
-    max-height: 300px;        /* Muestra solo una parte del contenido */
-    overflow: hidden;         /* Oculta lo que se pasa del alto */
+    max-height: 300px;          /* ALTURA LIMITADA INICIAL */
+    overflow: hidden;           /* Oculta lo que se pase */
     transition: max-height 0.4s ease;
-    position: relative;
     background-color: #f9f9f9;
     border-radius: 10px;
     padding: 20px;
     border: 1px solid #ddd;
+    position: relative;
 }
 
-/* Al expandirse, muestra más con scroll */
+/* Cuando el usuario hace clic en "ver más" */
 .tarjeta-vacante.expandida {
-    max-height: 600px;       /* o ajusta según necesites */
-    overflow-y: auto;
+    max-height: 600px;         /* Puedes ajustar a lo que necesites */
+    overflow-y: auto;          /* Scroll solo si excede altura */
 }
 
-/* Estilo del botón "Ver más / Ver menos" */
+/* Enlace estilo */
 .tarjeta-vacante .ver-mas {
     display: inline-block;
     margin-top: 10px;
@@ -382,6 +382,7 @@ form input {
     text-decoration: none;
     cursor: pointer;
 }
+
 
 .barra-progreso-container {
     display: flex;
