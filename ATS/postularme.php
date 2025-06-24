@@ -235,31 +235,28 @@ session_start();
                     return;
                 }
 
-                // Agrego la clase tarjeta-vacante para que el CSS funcione correctamente
-                contenedor.classList.add("tarjeta-vacante");
-
                 contenedor.innerHTML = `
-                <h3>${data.Titulo}</h3>
-                <p><strong>Área:</strong> ${data.Area}</p>
-                <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
-                <hr>
+                    <h3>${data.Titulo}</h3>
+                    <p><strong>Área:</strong> ${data.Area}</p>
+                    <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
+                    <hr>
 
-                <div class="resumen-vacante">
-                    <p><strong>Rol y responsabilidades:</strong><br>${recortarTexto(data.Descripcion)}</p>
-                </div>
-
-                <div class="contenido-completo-animado">
-                    <div class="contenido-interno">
-                        <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
-                        <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
-                        <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
-                        <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
-                        <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
+                    <div class="resumen-vacante">
+                        <p><strong>Rol y responsabilidades:</strong><br>${recortarTexto(data.Descripcion)}</p>
                     </div>
-                </div>
 
-                <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
-            `;
+                    <div class="contenido-completo-animado">
+                        <div class="contenido-interno">
+                            <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
+                            <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
+                            <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
+                            <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
+                            <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
+                        </div>
+                    </div>
+
+                    <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
+                `;
 
                 // Cambiar el título del documento y encabezado si existe
                 document.title = `${data.Titulo} - Grammer Automotive`;
@@ -268,21 +265,17 @@ session_start();
                     tituloPagina.textContent = `Postularme a: ${data.Titulo}`;
                 }
 
-                // Referencias para expandir la tarjeta
+                // Agregar funcionalidad al botón "ver más"
                 const linkVerMas = contenedor.querySelector(".ver-mas");
+                const contenidoAnimado = contenedor.querySelector(".contenido-completo-animado");
                 const resumen = contenedor.querySelector(".resumen-vacante");
 
-                if (linkVerMas) {
+                if (linkVerMas && contenidoAnimado) {
                     linkVerMas.addEventListener("click", function (e) {
                         e.preventDefault();
 
-                        // Toggle la clase expandida en el contenedor principal
-                        const expandido = contenedor.classList.toggle("expandida");
-
-                        // Mostrar u ocultar resumen según el estado
+                        const expandido = contenidoAnimado.classList.toggle("expandido");
                         resumen.style.display = expandido ? "none" : "block";
-
-                        // Cambiar texto del botón
                         linkVerMas.textContent = expandido
                             ? "Ver menos"
                             : "Ver descripción completa del empleo";
@@ -308,7 +301,6 @@ session_start();
             : texto;
     }
 </script>
-
 
 </body>
 </html>
