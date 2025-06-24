@@ -327,10 +327,11 @@ form input {
     border-radius: 8px;
     border: 1px solid #ccc;
     box-sizing: border-box;
-
+    margin-bottom: 20px;
 }
 
 .iti {
+    display: block;
     width: 100%;
     max-width: 500px;
 }
