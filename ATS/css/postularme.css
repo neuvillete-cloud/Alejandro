@@ -356,22 +356,29 @@ form input {
 }
 
 .tarjeta-vacante {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    padding: 20px;
-    border: 1px solid #ddd;
+    max-height: 300px; /* Altura resumida */
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.4s ease;
+    padding-right: 10px; /* espacio para scroll interno */
 }
 
-.tarjeta-vacante h3 {
-    margin-top: 0;
-    color: #000;
+.tarjeta-vacante.expandida {
+    max-height: 600px; /* puedes ajustar según necesidad */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    scrollbar-gutter: stable both-edges;
 }
 
-.tarjeta-vacante a {
-    color: #215dbc;
+/* Estilo opcional para el botón */
+.ver-mas {
+    display: inline-block;
+    margin-top: 10px;
+    color: #004aad;
     font-weight: bold;
-    text-decoration: none;
+    cursor: pointer;
 }
+
 
 .barra-progreso-container {
     display: flex;
