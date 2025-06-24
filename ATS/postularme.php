@@ -54,6 +54,7 @@ session_start();
 
 <section class="section-title">
     <h1>Postularme</h1>
+    <img src="imagenes/documento.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
