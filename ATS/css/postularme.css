@@ -311,6 +311,10 @@ form input {
     box-sizing: border-box;
 }
 
+.form input:focus {
+    border-color: #2a7fb8;
+    outline: none;
+}
 
 
 .dato-estatico {
