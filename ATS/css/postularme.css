@@ -342,15 +342,18 @@ form input {
     max-width: 500px;
     width: 100%;
     margin-top: 30px;
-    background-color: #215dbc;
-    color: white;
-    border: none;
+    background-color: white;
+    color: #0077cc;
+    border: 2px solid #0077cc;
     padding: 15px 25px;
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
 }
 
+.btn-continuar {
+    background-color: #d6ecff;
+}
 .columna-vacante {
     flex: 1;
 }
