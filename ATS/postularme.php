@@ -236,17 +236,37 @@ session_start();
                 }
 
                 contenedor.innerHTML = `
-                <h3>${data.Titulo}</h3>
-                <p><strong>Área:</strong> ${data.Area}</p>
-                <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
-                <hr>
-                <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
-                <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
-                <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
-                <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
-                <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
-                <a href="#">Ver descripción completa del empleo</a>
-            `;
+                    <h3>${data.Titulo}</h3>
+                    <p><strong>Área:</strong> ${data.Area}</p>
+                    <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
+                    <hr>
+                    <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
+                    <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
+                    <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
+                    <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
+                    <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
+                    <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
+                `;
+
+                // Cambia el título del documento y del <h1>
+                document.title = `${data.Titulo} - Grammer Automotive`;
+                const tituloPagina = document.getElementById("tituloPagina");
+                if (tituloPagina) {
+                    tituloPagina.textContent = `Postularme a: ${data.Titulo}`;
+                }
+
+                // Activar expansión/colapso con scroll interno
+                const linkVerMas = contenedor.querySelector(".ver-mas");
+                linkVerMas.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    contenedor.classList.toggle("expandida");
+
+                    if (contenedor.classList.contains("expandida")) {
+                        linkVerMas.textContent = "Ver menos";
+                    } else {
+                        linkVerMas.textContent = "Ver descripción completa del empleo";
+                    }
+                });
             })
             .catch(error => {
                 console.error("Error al cargar la vacante:", error);
@@ -259,7 +279,6 @@ session_start();
         const items = texto.split('\n').filter(l => l.trim() !== '');
         return "<ul>" + items.map(item => `<li>${item.trim()}</li>`).join('') + "</ul>";
     }
-
 </script>
 </body>
 </html>
