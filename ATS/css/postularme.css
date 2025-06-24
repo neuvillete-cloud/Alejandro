@@ -457,7 +457,7 @@ form input {
 }
 
 .contenido-completo-animado.expandido {
-    max-height: 300px; /* Altura fija del área expandida */
+    max-height: 400px; /* Altura fija del área expandida */
     overflow-y: scroll; /* Siempre con scroll, incluso si no se necesita */
 }
 
