@@ -248,25 +248,27 @@ session_start();
                     <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
                 `;
 
-                // Cambia el título del documento y del <h1>
+                // Cambiar el título del documento y encabezado si existe
                 document.title = `${data.Titulo} - Grammer Automotive`;
                 const tituloPagina = document.getElementById("tituloPagina");
                 if (tituloPagina) {
                     tituloPagina.textContent = `Postularme a: ${data.Titulo}`;
                 }
 
-                // Activar expansión/colapso con scroll interno
+                // Mostrar/ocultar contenido largo
                 const linkVerMas = contenedor.querySelector(".ver-mas");
-                linkVerMas.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    contenedor.classList.toggle("expandida");
+                if (linkVerMas) {
+                    linkVerMas.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        contenedor.classList.toggle("expandida");
 
-                    if (contenedor.classList.contains("expandida")) {
-                        linkVerMas.textContent = "Ver menos";
-                    } else {
-                        linkVerMas.textContent = "Ver descripción completa del empleo";
-                    }
-                });
+                        if (contenedor.classList.contains("expandida")) {
+                            linkVerMas.textContent = "Ver menos";
+                        } else {
+                            linkVerMas.textContent = "Ver descripción completa del empleo";
+                        }
+                    });
+                }
             })
             .catch(error => {
                 console.error("Error al cargar la vacante:", error);
@@ -280,6 +282,7 @@ session_start();
         return "<ul>" + items.map(item => `<li>${item.trim()}</li>`).join('') + "</ul>";
     }
 </script>
+
 </body>
 </html>
 
