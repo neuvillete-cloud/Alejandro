@@ -330,10 +330,10 @@ form input {
     transform: translateY(-3px);
 }
 
-.iti {
-    width: 100%;
-    max-width: 500px;
+.iti__flag-container {
+    transform: translateY(-2px); /* Ajusta -2px, -3px o lo que necesites */
 }
+
 
 
 .btn-continuar {
