@@ -451,3 +451,17 @@ form input {
     max-width: 500px;
 
 }
+
+.contenido-completo-animado {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.contenido-completo-animado.expandido {
+    max-height: 1000px; /* o ajusta según necesidad */
+}
+
+.contenido-interno {
+    padding-top: 10px;
+}

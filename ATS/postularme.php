@@ -240,11 +240,21 @@ session_start();
                     <p><strong>Área:</strong> ${data.Area}</p>
                     <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
                     <hr>
-                    <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
-                    <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
-                    <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
-                    <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
-                    <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
+
+                    <div class="resumen-vacante">
+                        <p><strong>Rol y responsabilidades:</strong><br>${recortarTexto(data.Descripcion)}</p>
+                    </div>
+
+                    <div class="contenido-completo-animado">
+                        <div class="contenido-interno">
+                            <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
+                            <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
+                            <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
+                            <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
+                            <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
+                        </div>
+                    </div>
+
                     <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
                 `;
 
@@ -255,18 +265,20 @@ session_start();
                     tituloPagina.textContent = `Postularme a: ${data.Titulo}`;
                 }
 
-                // Mostrar/ocultar contenido largo
+                // Agregar funcionalidad al botón "ver más"
                 const linkVerMas = contenedor.querySelector(".ver-mas");
-                if (linkVerMas) {
+                const contenidoAnimado = contenedor.querySelector(".contenido-completo-animado");
+                const resumen = contenedor.querySelector(".resumen-vacante");
+
+                if (linkVerMas && contenidoAnimado) {
                     linkVerMas.addEventListener("click", function (e) {
                         e.preventDefault();
-                        contenedor.classList.toggle("expandida");
 
-                        if (contenedor.classList.contains("expandida")) {
-                            linkVerMas.textContent = "Ver menos";
-                        } else {
-                            linkVerMas.textContent = "Ver descripción completa del empleo";
-                        }
+                        const expandido = contenidoAnimado.classList.toggle("expandido");
+                        resumen.style.display = expandido ? "none" : "block";
+                        linkVerMas.textContent = expandido
+                            ? "Ver menos"
+                            : "Ver descripción completa del empleo";
                     });
                 }
             })
@@ -280,6 +292,13 @@ session_start();
         if (!texto) return "<ul><li>No disponible</li></ul>";
         const items = texto.split('\n').filter(l => l.trim() !== '');
         return "<ul>" + items.map(item => `<li>${item.trim()}</li>`).join('') + "</ul>";
+    }
+
+    function recortarTexto(texto, limite = 200) {
+        if (!texto) return "No disponible";
+        return texto.length > limite
+            ? texto.slice(0, limite) + "..."
+            : texto;
     }
 </script>
 
