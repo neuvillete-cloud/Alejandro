@@ -116,16 +116,11 @@ session_start();
 
             <!-- Columna derecha: resumen de la vacante -->
             <div class="columna-vacante">
-                <div class="tarjeta-vacante">
-                    <h3>Programador y operador CNC</h3>
-                    <p><strong>FEM TOOLING</strong> - La Griega, Qro.</p>
-                    <hr>
-                    <p><strong>Rol y responsabilidades:</strong><br>
-                        Utilizar maquinaria controlada numéricamente por computadora (CNC) de manera segura y precisa para realizar una variedad de funciones en el maquinado de piezas.</p>
-                    <p><strong>Actividades:</strong></p>
-                    <a href="#">Ver descripción completa del empleo</a>
+                <div class="tarjeta-vacante" id="vacanteDetalle">
+                    <p>Cargando vacante...</p>
                 </div>
             </div>
+
         </div>
 
 
@@ -221,7 +216,51 @@ session_start();
         });
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const contenedor = document.getElementById("vacanteDetalle");
+        const params = new URLSearchParams(window.location.search);
+        const idVacante = params.get("id");
 
+        if (!idVacante) {
+            contenedor.innerHTML = "<p>No se proporcionó un ID de vacante.</p>";
+            return;
+        }
+
+        fetch(`dao/obtenerVacantePorId.php?id=${idVacante}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    contenedor.innerHTML = `<p>${data.error}</p>`;
+                    return;
+                }
+
+                contenedor.innerHTML = `
+                <h3>${data.Titulo}</h3>
+                <p><strong>Área:</strong> ${data.Area}</p>
+                <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
+                <hr>
+                <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
+                <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
+                <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
+                <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
+                <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
+                <a href="#">Ver descripción completa del empleo</a>
+            `;
+            })
+            .catch(error => {
+                console.error("Error al cargar la vacante:", error);
+                contenedor.innerHTML = "<p>Error al cargar la vacante.</p>";
+            });
+    });
+
+    function textoAListaHTML(texto) {
+        if (!texto) return "<ul><li>No disponible</li></ul>";
+        const items = texto.split('\n').filter(l => l.trim() !== '');
+        return "<ul>" + items.map(item => `<li>${item.trim()}</li>`).join('') + "</ul>";
+    }
+
+</script>
 </body>
 </html>
 
