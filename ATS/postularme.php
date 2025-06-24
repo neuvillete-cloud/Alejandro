@@ -227,7 +227,7 @@ session_start();
             return;
         }
 
-        fetch(`dao/obtenerVacantePorId.php?id=${idVacante}`)
+        fetch(`dao/obtenerVacanteId.php?id=${idVacante}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
