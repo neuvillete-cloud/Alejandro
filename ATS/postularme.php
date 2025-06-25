@@ -104,14 +104,26 @@ session_start();
 
                     <!-- Paso 2 (ejemplo adicional) -->
                     <div class="form-step" data-step="2">
-                        <h2>Sube tu CV</h2>
+                        <h2>Añade un CV para la empresa</h2>
 
-                        <label>Archivo CV</label>
-                        <input type="file" name="cv">
-
-                        <button type="button" onclick="prevStep()">Atrás</button>
-                        <button type="submit" class="btn-continuar">Enviar</button>
+                        <div class="opcion-cv">
+                            <i class="fas fa-file-arrow-up icono-cv"></i>
+                            <div class="texto-cv">
+                                <h3>Subir CV</h3>
+                                <p>Los formatos de archivos que se admiten son PDF, DOCX, RTF o TXT.</p>
+                                <input type="file" name="cv">
+                            </div>
+                        </div>
+                        <div class="botones-accion">
+                            <button type="button" class="btn-atras" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i> Atrás
+                            </button>
+                            <button type="submit" class="btn-continuar">
+                                Continuar <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
+
                 </form>
             </div>
 

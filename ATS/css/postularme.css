@@ -527,48 +527,81 @@ form input:focus {
     color: white;
 }
 
-/* Contenedor del paso 2 */
-.form-step[data-step="2"] {
-    max-width: 500px;
-    margin: 0 auto;
-    padding-top: 30px;
-}
-
-/* Título */
-.form-step[data-step="2"] h2 {
-    color: #222;
-    font-size: 24px;
+.opcion-cv {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
     margin-bottom: 20px;
+    gap: 15px;
 }
 
-/* Estilo para el input de archivo */
-.form-step[data-step="2"] input[type="file"] {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #fff;
+.icono-cv {
+    font-size: 30px;
+    color: #215dbc;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.texto-cv h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    color: #215dbc;
+}
+
+.texto-cv p {
+    margin: 0 0 10px;
+    color: #555;
     font-size: 14px;
-    cursor: pointer;
-    box-sizing: border-box;
-    margin-top: 10px;
-    margin-bottom: 20px;
 }
 
-/* Estilo para el botón "Atrás" */
-.form-step[data-step="2"] button[type="button"] {
+input[type="file"] {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+/* Botones (como ya tienes) */
+.botones-accion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.btn-atras {
     background-color: transparent;
-    color: #0077cc;
-    border: 2px solid #0077cc;
-    padding: 12px 20px;
+    color: #215dbc;
+    border: 2px solid #215dbc;
+    padding: 12px 25px;
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
-    margin-right: 15px;
+    font-weight: bold;
     transition: background-color 0.3s ease;
 }
 
-/* Hover para el botón "Atrás" */
-.form-step[data-step="2"] button[type="button"]:hover {
-    background-color: #d6ecff;
+.btn-atras:hover {
+    background-color: #e6f0fb;
+}
+
+.btn-continuar {
+    background-color: #215dbc;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-continuar:hover {
+    background-color: #194b96;
+}
+
+.btn-atras i, .btn-continuar i {
+    margin: 0 5px;
 }
