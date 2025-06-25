@@ -190,6 +190,7 @@ session_start();
     let currentStep = 1;
     const totalSteps = document.querySelectorAll('.form-step').length;
     const barra = document.getElementById('barraProgreso');
+    const botonAtrasFlotante = document.getElementById('btnAtrasFlotante');
 
     function showStep(step) {
         document.querySelectorAll('.form-step').forEach(div => {
@@ -199,8 +200,16 @@ session_start();
             }
         });
 
+        // Actualizar la barra de progreso
         const progreso = Math.round((step / totalSteps) * 100);
         barra.style.width = progreso + "%";
+
+        // Mostrar u ocultar el botón "Atrás" flotante solo en el paso 2
+        if (step === 2) {
+            botonAtrasFlotante.style.display = "block";
+        } else {
+            botonAtrasFlotante.style.display = "none";
+        }
     }
 
     function nextStep() {
@@ -221,6 +230,7 @@ session_start();
         showStep(currentStep);
     });
 </script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         showStep(currentStep); // Ya está en tu script

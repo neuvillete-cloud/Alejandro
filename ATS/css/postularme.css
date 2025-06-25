@@ -627,6 +627,7 @@ form input:focus {
     cursor: pointer;
     transition: background-color 0.3s ease;
     z-index: 10;
+    display: none;
 }
 
 .btn-volver-flotante:hover {
