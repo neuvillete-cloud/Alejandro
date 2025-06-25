@@ -103,7 +103,7 @@ session_start();
                     </div>
 
                     <!-- Botón de Atrás flotante arriba a la izquierda -->
-                    <button type="button" class="btn-volver-flotante" onclick="prevStep()">
+                    <button type="button" class="btn-volver-flotante" onclick="prevStep()" id="btnAtrasFlotante">
                         <i class="fas fa-arrow-left"></i> Atrás
                     </button>
 
