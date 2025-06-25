@@ -557,12 +557,48 @@ form input:focus {
     font-size: 14px;
 }
 
-input[type="file"] {
-    margin-top: 8px;
-    font-size: 14px;
+/* NUEVO: Estilo personalizado para el input file */
+.input-cv-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    flex-wrap: wrap;
 }
 
-/* Botones (como ya tienes) */
+.input-cv-wrapper input[type="file"] {
+    display: none;
+}
+
+.btn-subir-cv {
+    background-color: #215dbc;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-subir-cv:hover {
+    background-color: #194b96;
+}
+
+#nombreArchivo {
+    font-size: 14px;
+    color: #333;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Botones acción */
 .botones-accion {
     display: flex;
     justify-content: space-between;
@@ -602,6 +638,7 @@ input[type="file"] {
     background-color: #194b96;
 }
 
-.btn-atras i, .btn-continuar i {
+.btn-atras i,
+.btn-continuar i {
     margin: 0 5px;
 }
