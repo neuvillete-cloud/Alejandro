@@ -615,7 +615,7 @@ form input:focus {
 
 .btn-volver-flotante {
     position: absolute; /* o 'fixed' si quieres que se quede al hacer scroll */
-    top: 430px; /* ajusta según la altura de tu header o barra */
+    top: 420px; /* ajusta según la altura de tu header o barra */
     left: 240px;
     background-color: transparent;
     color: #215dbc;
