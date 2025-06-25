@@ -111,18 +111,9 @@ session_start();
                             <div class="texto-cv">
                                 <h3>Subir CV</h3>
                                 <p>Los formatos de archivos que se admiten son PDF, DOCX, RTF o TXT.</p>
-
-                                <!-- Estilizado -->
-                                <div class="input-cv-wrapper">
-                                    <label for="cvFile" class="btn-subir-cv">
-                                        <i class="fas fa-upload"></i> Elegir archivo
-                                    </label>
-                                    <span id="nombreArchivo">Ningún archivo seleccionado</span>
-                                    <input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx,.rtf,.txt">
-                                </div>
+                                <input type="file" name="cv">
                             </div>
                         </div>
-
                         <div class="botones-accion">
                             <button type="button" class="btn-atras" onclick="prevStep()">
                                 <i class="fas fa-arrow-left"></i> Atrás
@@ -322,20 +313,6 @@ session_start();
             ? texto.slice(0, limite) + "..."
             : texto;
     }
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const inputFile = document.getElementById("cvFile");
-        const nombreArchivo = document.getElementById("nombreArchivo");
-
-        inputFile.addEventListener("change", function () {
-            if (inputFile.files.length > 0) {
-                nombreArchivo.textContent = inputFile.files[0].name;
-            } else {
-                nombreArchivo.textContent = "Ningún archivo seleccionado";
-            }
-        });
-    });
 </script>
 
 </body>
