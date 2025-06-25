@@ -78,7 +78,8 @@ session_start();
                         <input type="text" name="nombre" value="<?= $_SESSION['NombreCandidato'] ?? '' ?>" required>
 
                         <label>Apellido *</label>
-                        <input type="text" name="apellido" value="<?= $_SESSION['ApellidosCandidato'] ?? '' ?>" required>
+                        <input type="text" name="apellido" value="<?= $_SESSION['ApellidosCandidato'] ?? '' ?>"
+                               required>
 
                         <label>Email</label>
                         <div class="campo-email">
@@ -96,7 +97,8 @@ session_start();
                         <input type="text" name="ciudad" value="<?= $_SESSION['UbicacionCandidato'] ?? '' ?>">
 
                         <label for="telefono">Número de teléfono</label>
-                        <input id="telefono" type="tel" name="telefono" value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
+                        <input id="telefono" type="tel" name="telefono"
+                               value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
 
 
                         <button type="button" class="btn-continuar" onclick="nextStep()">Continuar</button>
@@ -117,14 +119,15 @@ session_start();
                             <div class="texto-cv" id="infoArchivo">
                                 <h3>Subir CV</h3>
                                 <p>Los formatos de archivos que se admiten son PDF, DOCX, RTF o TXT.</p>
-                        </div>
-                        <input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx,.rtf,.txt" hidden>
+                            </div>
+                            <input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx,.rtf,.txt" hidden>
                         </label>
 
-                    <!-- Aquí se mostrará la vista previa -->
-                    <div id="vistaPreviaPDF" style="display: none; margin-top: 20px;">
-                        <iframe id="iframePDF" width="100%" height="500px" style="border: 1px solid #ccc; border-radius: 10px;"></iframe>
-                    </div>
+                        <!-- Aquí se mostrará la vista previa -->
+                        <div id="vistaPreviaPDF" style="display: none; margin-top: 20px;">
+                            <iframe id="iframePDF" width="100%" height="500px"
+                                    style="border: 1px solid #ccc; border-radius: 10px;"></iframe>
+                        </div>
 
 
                         <!-- Botón de continuar al final -->
@@ -147,10 +150,6 @@ session_start();
             </div>
 
         </div>
-
-
-
-
 
 
     </div>
@@ -180,7 +179,7 @@ session_start();
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            fetch('dao/logout.php', { method: 'POST' })
+            fetch('dao/logout.php', {method: 'POST'})
                 .then(response => {
                     if (response.ok) {
                         window.location.href = 'loginATS.php';
@@ -337,35 +336,35 @@ session_start();
     }
 </script>
 <script>
-document.getElementById("cvFile").addEventListener("change", function () {
-  const archivo = this.files[0];
-  const info = document.getElementById("infoArchivo");
-  const vistaPrevia = document.getElementById("vistaPreviaPDF");
-  const iframe = document.getElementById("iframePDF");
+    document.getElementById("cvFile").addEventListener("change", function () {
+        const archivo = this.files[0];
+        const info = document.getElementById("infoArchivo");
+        const vistaPrevia = document.getElementById("vistaPreviaPDF");
+        const iframe = document.getElementById("iframePDF");
 
-  if (archivo) {
-    const nombre = archivo.name;
+        if (archivo) {
+            const nombre = archivo.name;
 
-    // Reemplaza el texto con el nombre del archivo
-    info.innerHTML = `
+            // Reemplaza el texto con el nombre del archivo
+            info.innerHTML = `
       <h3><i class="fas fa-check-circle" style="color:green;"></i> ${nombre}</h3>
       <p style="color: gray;">Archivo de CV subido</p>
     `;
 
-    // Si es PDF, generar vista previa
-    if (archivo.type === "application/pdf") {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        iframe.src = e.target.result;
-        vistaPrevia.style.display = "block";
-      };
-      reader.readAsDataURL(archivo);
-    } else {
-      iframe.src = "";
-      vistaPrevia.style.display = "none";
-    }
-  }
-});
+            // Si es PDF, generar vista previa
+            if (archivo.type === "application/pdf") {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    iframe.src = e.target.result;
+                    vistaPrevia.style.display = "block";
+                };
+                reader.readAsDataURL(archivo);
+            } else {
+                iframe.src = "";
+                vistaPrevia.style.display = "none";
+            }
+        }
+    });
 </script>
 
 </body>
