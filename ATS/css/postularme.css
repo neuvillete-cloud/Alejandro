@@ -536,6 +536,17 @@ form input:focus {
     padding: 20px;
     margin-bottom: 20px;
     gap: 15px;
+    cursor: pointer; /* Hace que parezca clickeable */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.opcion-cv:hover {
+    border-color: #215dbc;
+    box-shadow: 0 0 0 3px #e0ecff; /* Glow azul clarito */
+}
+
+.opcion-cv input[type="file"] {
+    display: none; /* Oculta el input para que no estorbe visualmente */
 }
 
 .icono-cv {
@@ -552,13 +563,8 @@ form input:focus {
 }
 
 .texto-cv p {
-    margin: 0 0 10px;
+    margin: 0;
     color: #555;
-    font-size: 14px;
-}
-
-input[type="file"] {
-    margin-top: 8px;
     font-size: 14px;
 }
 
@@ -602,6 +608,7 @@ input[type="file"] {
     background-color: #194b96;
 }
 
-.btn-atras i, .btn-continuar i {
+.btn-atras i,
+.btn-continuar i {
     margin: 0 5px;
 }
