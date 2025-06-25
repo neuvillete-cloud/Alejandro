@@ -526,3 +526,49 @@ form input:focus {
     line-height: 1;
     color: white;
 }
+
+/* Contenedor del paso 2 */
+.form-step[data-step="2"] {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+/* Título */
+.form-step[data-step="2"] h2 {
+    color: #222;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el input de archivo */
+.form-step[data-step="2"] input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el botón "Atrás" */
+.form-step[data-step="2"] button[type="button"] {
+    background-color: transparent;
+    color: #0077cc;
+    border: 2px solid #0077cc;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover para el botón "Atrás" */
+.form-step[data-step="2"] button[type="button"]:hover {
+    background-color: #d6ecff;
+}
