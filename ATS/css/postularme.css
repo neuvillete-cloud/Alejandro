@@ -612,3 +612,23 @@ form input:focus {
 .btn-continuar i {
     margin: 0 5px;
 }
+
+.btn-volver-flotante {
+    position: absolute; /* o 'fixed' si quieres que se quede al hacer scroll */
+    top: 110px; /* ajusta según la altura de tu header o barra */
+    left: 40px;
+    background-color: transparent;
+    color: #215dbc;
+    border: 2px solid #215dbc;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10;
+}
+
+.btn-volver-flotante:hover {
+    background-color: #e6f0fb;
+}

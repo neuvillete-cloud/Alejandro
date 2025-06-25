@@ -102,10 +102,16 @@ session_start();
                         <button type="button" class="btn-continuar" onclick="nextStep()">Continuar</button>
                     </div>
 
-                    <!-- Paso 2 (ejemplo adicional) -->
+                    <!-- Botón de Atrás flotante arriba a la izquierda -->
+                    <button type="button" class="btn-volver-flotante" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Atrás
+                    </button>
+
+                    <!-- Paso del formulario -->
                     <div class="form-step" data-step="2">
                         <h2>Añade un CV para la empresa</h2>
 
+                        <!-- Caja clickable para subir archivo -->
                         <label for="cvFile" class="opcion-cv clickable-upload">
                             <i class="fas fa-file-arrow-up icono-cv"></i>
                             <div class="texto-cv">
@@ -115,15 +121,14 @@ session_start();
                             <input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx,.rtf,.txt">
                         </label>
 
-                        <div class="botones-accion">
-                            <button type="button" class="btn-atras" onclick="prevStep()">
-                                <i class="fas fa-arrow-left"></i> Atrás
-                            </button>
+                        <!-- Botón de continuar al final -->
+                        <div class="botones-accion solo-continuar">
                             <button type="submit" class="btn-continuar">
                                 Continuar <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>
+
 
                 </form>
             </div>
