@@ -114,12 +114,18 @@ session_start();
                         <!-- Caja clickable para subir archivo -->
                         <label for="cvFile" class="opcion-cv clickable-upload">
                             <i class="fas fa-file-arrow-up icono-cv"></i>
-                            <div class="texto-cv">
+                            <div class="texto-cv" id="infoArchivo">
                                 <h3>Subir CV</h3>
                                 <p>Los formatos de archivos que se admiten son PDF, DOCX, RTF o TXT.</p>
-                            </div>
-                            <input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx,.rtf,.txt">
+                        </div>
+                        <input type="file" id="cvFile" name="cv" accept=".pdf,.doc,.docx,.rtf,.txt" hidden>
                         </label>
+
+                    <!-- Aquí se mostrará la vista previa -->
+                    <div id="vistaPreviaPDF" style="display: none; margin-top: 20px;">
+                        <iframe id="iframePDF" width="100%" height="500px" style="border: 1px solid #ccc; border-radius: 10px;"></iframe>
+                    </div>
+
 
                         <!-- Botón de continuar al final -->
                         <div class="botones-accion solo-continuar">
@@ -329,6 +335,37 @@ session_start();
             ? texto.slice(0, limite) + "..."
             : texto;
     }
+</script>
+<script>
+document.getElementById("cvFile").addEventListener("change", function () {
+  const archivo = this.files[0];
+  const info = document.getElementById("infoArchivo");
+  const vistaPrevia = document.getElementById("vistaPreviaPDF");
+  const iframe = document.getElementById("iframePDF");
+
+  if (archivo) {
+    const nombre = archivo.name;
+
+    // Reemplaza el texto con el nombre del archivo
+    info.innerHTML = `
+      <h3><i class="fas fa-check-circle" style="color:green;"></i> ${nombre}</h3>
+      <p style="color: gray;">Archivo de CV subido</p>
+    `;
+
+    // Si es PDF, generar vista previa
+    if (archivo.type === "application/pdf") {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        iframe.src = e.target.result;
+        vistaPrevia.style.display = "block";
+      };
+      reader.readAsDataURL(archivo);
+    } else {
+      iframe.src = "";
+      vistaPrevia.style.display = "none";
+    }
+  }
+});
 </script>
 
 </body>
