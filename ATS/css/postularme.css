@@ -535,6 +535,7 @@ form input:focus {
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
+    max-width: 600px; /* Limita el ancho del texto */
     gap: 15px;
     cursor: pointer; /* Hace que parezca clickeable */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
