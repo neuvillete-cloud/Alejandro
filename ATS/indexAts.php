@@ -37,8 +37,10 @@
     <div class="search-container">
         <div class="grammer-branding">
             <span class="nombre-grammer">Bienvenido a Grammer Automotive</span>
+            <p class="subtexto">Encuentra las mejores oportunidades laborales aquí.</p>
         </div>
     </div>
+
 
     <!-- Sección blanca agregada -->
     <div class="white-section">

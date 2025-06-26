@@ -478,3 +478,9 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+.subtexto {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333; /* Puedes ajustar el color según el diseño */
+}
