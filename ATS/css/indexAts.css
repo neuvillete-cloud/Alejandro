@@ -138,7 +138,7 @@ nav a:not(:hover)::after {
     top: 82%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background:  #2f5e93;
+    background:  white;
     color: #140c33;
     padding: 30px 50px;
     border-radius: 12px;
@@ -164,7 +164,7 @@ nav a:not(:hover)::after {
 .nombre-grammer {
     font-size: 2.2rem;
     font-weight: bold;
-    color: #140c33;
+    color: #2f5e93;
 }
 
 
@@ -481,6 +481,6 @@ nav a:not(:hover)::after {
 
 .subtexto {
     margin-top: 8px;
-    font-size: 14px;
+    font-size: 20px;
     color: #333; /* Puedes ajustar el color según el diseño */
 }
