@@ -35,10 +35,9 @@
     </section>
 
     <div class="search-container">
-        <h3>Hagamos que el mañana sea diferente, hoy mismo.</h3>
-        <div class="search-box">
-            <input type="text" placeholder="">
-            <button>Search Jobs</button>
+        <div class="grammer-branding">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer">
+            <span class="nombre-grammer">Grammer</span>
         </div>
     </div>
 
