@@ -138,7 +138,7 @@ nav a:not(:hover)::after {
     top: 82%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
+    background:  #2f5e93;
     color: #140c33;
     padding: 30px 50px;
     border-radius: 12px;
