@@ -36,9 +36,7 @@
 
     <div class="search-container">
         <div class="grammer-branding">
-            <img src="imagenes/logo_blanco.png" alt="Logo Grammer">
-            <span class="nombre-grammer">Grammer</span>
-            <span class="nombre-grammer">Automotive</span>
+            <span class="nombre-grammer">Bienvenido a Grammer Automotive</span>
         </div>
     </div>
 
