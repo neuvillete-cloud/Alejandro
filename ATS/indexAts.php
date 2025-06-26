@@ -34,6 +34,13 @@
         </video>
     </section>
 
+    <div class="search-container">
+        <div class="grammer-branding">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer">
+            <span class="nombre-grammer">Grammer</span>
+            <span class="nombre-grammer">Automotive</span>
+        </div>
+    </div>
 
     <!-- Sección blanca agregada -->
     <div class="white-section">
