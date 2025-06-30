@@ -224,13 +224,12 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         });
 
-        // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
+        // 🔍 Búsqueda global personalizada
         $('.dataTables_filter input').on('keyup', function () {
             tabla.search(this.value).draw();
         });
 
-        // Funcionalidad de botones
-
+        // 📋 Copiar tabla al portapapeles
         $('#copyBtn').on('click', function () {
             let text = "";
             tabla.rows().every(function () {
@@ -243,6 +242,7 @@ if (!isset($_SESSION['NumNomina'])) {
             }).catch(err => console.error('Error al copiar:', err));
         });
 
+        // 📄 Exportar a PDF
         $('#pdfBtn').on('click', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -250,6 +250,7 @@ if (!isset($_SESSION['NumNomina'])) {
             doc.save('solicitudes.pdf');
         });
 
+        // 📊 Exportar a Excel
         $('#excelBtn').on('click', function () {
             const table = document.querySelector('#solicitudesTable');
             if (table) {
@@ -260,7 +261,7 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         });
 
-        // Evento para subir archivos
+        // 📤 Subir archivo de descripción
         $('#solicitudesTable tbody').on('click', '.upload-btn', function () {
             let id = $(this).data('id');
             let fileInput = $(this).siblings('.file-upload')[0];
@@ -271,8 +272,8 @@ if (!isset($_SESSION['NumNomina'])) {
             }
 
             let formData = new FormData();
-            formData.append('documento', fileInput.files[0]); // Corregido: "documento"
-            formData.append('idSolicitud', id); // Corregido: "idSolicitud"
+            formData.append('documento', fileInput.files[0]);
+            formData.append('idSolicitud', id);
 
             $.ajax({
                 url: 'https://grammermx.com/AleTest/ATS/dao/daoSubirDescripciones.php',
@@ -283,9 +284,21 @@ if (!isset($_SESSION['NumNomina'])) {
                 success: function (response) {
                     try {
                         let jsonResponse = typeof response === "object" ? response : JSON.parse(response);
-                        if (jsonResponse.status === "success") { // Corregido: "status"
+                        if (jsonResponse.status === "success") {
                             Swal.fire("Éxito", "Archivo subido correctamente", "success");
-                            tabla.ajax.reload(); // Recargar la tabla
+
+                            // Reemplazar input y botón por botón "Subir Vacante"
+                            const uploadButton = $(`button.upload-btn[data-id="${id}"]`);
+                            const fileInput = uploadButton.siblings('.file-upload');
+
+                            const subirVacanteBtn = $(`
+                            <button class="btn btn-success btn-sm go-to-vacante" data-id="${id}">
+                                <i class="fas fa-plus-circle"></i> Subir Vacante
+                            </button>
+                        `);
+
+                            fileInput.remove();
+                            uploadButton.replaceWith(subirVacanteBtn);
                         } else {
                             Swal.fire("Error", jsonResponse.message || "No se pudo subir el archivo", "error");
                         }
@@ -298,7 +311,29 @@ if (!isset($_SESSION['NumNomina'])) {
                 }
             });
         });
+
+        // 🔁 Redirigir a cargaVacante con el ID de la solicitud
+        $('#solicitudesTable tbody').on('click', '.go-to-vacante', function () {
+            const id = $(this).data('id');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `Vas a cargar la vacante con ID ${id}.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, continuar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `cargaVacante.php?idSolicitud=${id}`;
+                }
+            });
+        });
+
     });
+
 </script>
 </body>
 </html>
