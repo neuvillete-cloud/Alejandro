@@ -58,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 👉 Agregar IdSolicitud desde la URL si está presente
         const params = new URLSearchParams(window.location.search);
-        const idSolicitud = params.get("IdSolicitud");
+        const idSolicitud = params.get("idSolicitud");
+
 
         if (!idSolicitud) {
             Swal.fire({
