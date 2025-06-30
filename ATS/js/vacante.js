@@ -56,6 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("imagen", imagen);
         }
 
+        // 👉 Agregar IdSolicitud desde la URL si está presente
+        const urlParams = new URLSearchParams(window.location.search);
+        const idSolicitud = urlParams.get("IdSolicitud");
+        if (idSolicitud) {
+            formData.append("IdSolicitud", idSolicitud);
+        }
+
         // Enviar datos
         fetch("dao/daoVacante.php", {
             method: "POST",

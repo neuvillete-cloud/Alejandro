@@ -3,8 +3,6 @@ session_start();
 include_once("ConexionBD.php");
 
 header('Content-Type: application/json');
-
-// Establecer la zona horaria
 date_default_timezone_set('America/Mexico_City');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,9 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $beneficios = $_POST['beneficios'] ?? '';
     $descripcion = $_POST['descripcion'];
 
-    // Obtener fecha y hora actual
+    // Obtener IdSolicitud y validar que sea obligatorio
+    $idSolicitud = $_POST['IdSolicitud'] ?? null;
+    if (!$idSolicitud) {
+        echo json_encode(['status' => 'error', 'message' => 'Falta el IdSolicitud en la petición']);
+        exit;
+    }
+
     $fechaHoraActual = date('Y-m-d');
-    $idEstatus = 1; // Estatus inicial
+    $idEstatus = 1;
 
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -90,17 +94,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombreArchivo = $rutaPublica;
     }
 
-    // Insertar vacante con IdEstatus = 1
+    // Insertar vacante incluyendo IdSolicitud
     $stmt = $conex->prepare("INSERT INTO Vacantes (
-    TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
-    Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
-    Beneficios, Descripcion, Imagen, Fecha, IdEstatus
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
+        Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
+        Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-
-    $stmt->bind_param("sisssssssssssssssi",
+    $stmt->bind_param("sissssssssssssssiii",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
-        $espacio, $idioma, $especialidad, $requisitos, $beneficios, $descripcion, $nombreArchivo, $fechaHoraActual, $idEstatus
+        $espacio, $idioma, $especialidad, $requisitos, $beneficios, $descripcion,
+        $nombreArchivo, $fechaHoraActual, $idEstatus, $idSolicitud
     );
 
     if ($stmt->execute()) {
@@ -114,4 +118,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Se requiere método POST']);
 }
-?>
