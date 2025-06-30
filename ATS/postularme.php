@@ -366,7 +366,7 @@ session_start();
         }
     });
 </script>
-
+<script src="js/cv.js"></script>
 </body>
 </html>
 
