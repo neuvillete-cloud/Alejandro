@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     text: `Por favor, completa el campo: ${item.nombre}`,
                 });
                 item.campo.focus();
-                return; // Detener envío si hay un campo vacío
+                return;
             }
         }
 
@@ -50,16 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("beneficios", form.beneficios.value);
         formData.append("descripcion", form.descripcion.value);
 
-        // Imagen
         const imagen = form.imagen.files[0];
         if (imagen) {
             formData.append("imagen", imagen);
         }
 
-        // 👉 Agregar IdSolicitud desde la URL si está presente
+        // Obtener IdSolicitud sin importar mayúsculas/minúsculas
         const params = new URLSearchParams(window.location.search);
-        const idSolicitud = params.get("idSolicitud");
-
+        let idSolicitud = null;
+        for (const [key, value] of params.entries()) {
+            if (key.toLowerCase() === "idsolicitud") {
+                idSolicitud = value;
+                break;
+            }
+        }
 
         if (!idSolicitud) {
             Swal.fire({
@@ -69,9 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             return;
         }
+
+        // Enviar usando la clave exacta que espera el PHP
         formData.append("IdSolicitud", idSolicitud);
 
-        // Enviar datos
         fetch("dao/daoVacante.php", {
             method: "POST",
             body: formData
@@ -89,11 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
-                    form.reset(); // Limpia el formulario
-                    // Aquí podrías recargar solo las vacantes si las muestras en lista
-                    // o mostrar algún mensaje extra sin recargar la página
+                    form.reset();
                 });
-
             })
             .catch(error => {
                 Swal.fire({
