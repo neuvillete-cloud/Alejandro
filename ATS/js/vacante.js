@@ -32,34 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const formData = new FormData();
-
-        formData.append("titulo", form.titulo.value);
-        formData.append("area", form.area.value);
-        formData.append("tipo", form.tipo.value);
-        formData.append("horario", form.horario.value);
-        formData.append("sueldo", form.sueldo.value);
-        formData.append("escolaridad", form.escolaridad.value);
-        formData.append("pais", form.pais.value);
-        formData.append("estado", form.estado.value);
-        formData.append("ciudad", form.ciudad.value);
-        formData.append("espacio", form.espacio.value);
-        formData.append("idioma", form.idioma.value);
-        formData.append("especialidad", form.especialidad.value);
-        formData.append("requisitos", form.requisitos.value);
-        formData.append("beneficios", form.beneficios.value);
-        formData.append("descripcion", form.descripcion.value);
-
-        // Imagen
-        const imagen = form.imagen.files[0];
-        if (imagen) {
-            formData.append("imagen", imagen);
-        }
-
-        // 👉 Agregar IdSolicitud desde la URL si está presente
-        // 👉 Agregar IdSolicitud desde la URL si está presente
+        // Obtener IdSolicitud desde la URL
         const params = new URLSearchParams(window.location.search);
-        const idSolicitud = params.get("idSolicitud"); // Esto está bien si viene en minúsculas
+        const idSolicitud = params.get("idSolicitud");
 
         if (!idSolicitud) {
             Swal.fire({
@@ -69,38 +44,82 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             return;
         }
-        formData.append("IdSolicitud", idSolicitud); // ← Esto ya lo estás haciendo bien
 
-
-        // Enviar datos
-        fetch("dao/daoVacante.php", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Error en la respuesta del servidor");
+        // Verificar si ya existe vacante para ese IdSolicitud
+        fetch(`dao/verificarVacante.php?idSolicitud=${idSolicitud}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.existe) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Vacante ya registrada',
+                        text: 'Ya se ha registrado una vacante para esta solicitud.',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        window.location.href = "SeguimientoAdministrador.php";
+                    });
+                    return;
                 }
-                return response.text();
-            })
-            .then(data => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Vacante guardada correctamente',
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(() => {
-                    form.reset(); // Limpia el formulario
-                    // Aquí podrías recargar solo las vacantes si las muestras en lista
-                    // o mostrar algún mensaje extra sin recargar la página
-                });
 
+                // Si no existe vacante, proceder a guardar
+                const formData = new FormData();
+                formData.append("titulo", form.titulo.value);
+                formData.append("area", form.area.value);
+                formData.append("tipo", form.tipo.value);
+                formData.append("horario", form.horario.value);
+                formData.append("sueldo", form.sueldo.value);
+                formData.append("escolaridad", form.escolaridad.value);
+                formData.append("pais", form.pais.value);
+                formData.append("estado", form.estado.value);
+                formData.append("ciudad", form.ciudad.value);
+                formData.append("espacio", form.espacio.value);
+                formData.append("idioma", form.idioma.value);
+                formData.append("especialidad", form.especialidad.value);
+                formData.append("requisitos", form.requisitos.value);
+                formData.append("beneficios", form.beneficios.value);
+                formData.append("descripcion", form.descripcion.value);
+                formData.append("IdSolicitud", idSolicitud);
+
+                // Imagen
+                const imagen = form.imagen.files[0];
+                if (imagen) {
+                    formData.append("imagen", imagen);
+                }
+
+                fetch("dao/daoVacante.php", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error en la respuesta del servidor");
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Vacante guardada correctamente',
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            window.location.href = "SeguimientoAdministrador.php";
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al guardar',
+                            text: error.message,
+                        });
+                    });
             })
             .catch(error => {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error al guardar',
-                    text: error.message,
+                    title: 'Error al verificar',
+                    text: 'No se pudo verificar si ya existe una vacante.',
                 });
             });
     });
