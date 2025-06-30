@@ -105,9 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
     Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
     Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $stmt->bind_param("sisssssssssssssssiii",
+    $stmt->bind_param("sissssssssssssssiii",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad,
         $pais, $estado, $ciudad, $espacio, $idioma, $especialidad,
         $requisitos, $beneficios, $descripcion, $nombreArchivo,
