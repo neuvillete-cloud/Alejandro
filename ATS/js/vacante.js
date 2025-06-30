@@ -81,8 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
-                    location.reload();
+                    form.reset(); // Limpia el formulario
+                    // Aquí podrías recargar solo las vacantes si las muestras en lista
+                    // o mostrar algún mensaje extra sin recargar la página
                 });
+
             })
             .catch(error => {
                 Swal.fire({
