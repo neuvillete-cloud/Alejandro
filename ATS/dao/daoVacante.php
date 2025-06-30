@@ -110,8 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Vacante guardada exitosamente']);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error al guardar en la base de datos']);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error al guardar en la base de datos: ' . $stmt->error
+        ]);
     }
+
 
     $stmt->close();
     $conex->close();
