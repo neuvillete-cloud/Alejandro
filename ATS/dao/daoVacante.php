@@ -1,6 +1,8 @@
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 error_reporting(E_ALL);
 
 session_start();
@@ -100,16 +102,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insertar vacante incluyendo IdSolicitud
     $stmt = $conex->prepare("INSERT INTO Vacantes (
-        TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
-        Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
-        Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
+    Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
+    Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $stmt->bind_param("sissssssssssssssiiii",
-        $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad, $pais, $estado, $ciudad,
-        $espacio, $idioma, $especialidad, $requisitos, $beneficios, $descripcion,
-        $nombreArchivo, $fechaHoraActual, $idEstatus, $idSolicitud
+    $stmt->bind_param("sissssssssssssssiii",
+        $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad,
+        $pais, $estado, $ciudad, $espacio, $idioma, $especialidad,
+        $requisitos, $beneficios, $descripcion, $nombreArchivo,
+        $fechaHoraActual, $idEstatus, $idSolicitud
     );
+
 
 
     if ($stmt->execute()) {
