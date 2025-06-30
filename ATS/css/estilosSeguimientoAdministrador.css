@@ -546,3 +546,21 @@ h2 {
 td {
     vertical-align: middle;
 }
+
+.go-to-vacante {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.go-to-vacante:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    cursor: pointer;
+}
