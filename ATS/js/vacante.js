@@ -57,11 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 👉 Agregar IdSolicitud desde la URL si está presente
-        const urlParams = new URLSearchParams(window.location.search);
-        const idSolicitud = urlParams.get("IdSolicitud");
-        if (idSolicitud) {
-            formData.append("IdSolicitud", idSolicitud);
+        const params = new URLSearchParams(window.location.search);
+        const idSolicitud = params.get("IdSolicitud");
+
+        if (!idSolicitud) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error crítico',
+                text: 'No se encontró el IdSolicitud en la URL.',
+            });
+            return;
         }
+        formData.append("IdSolicitud", idSolicitud);
 
         // Enviar datos
         fetch("dao/daoVacante.php", {
