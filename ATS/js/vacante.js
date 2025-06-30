@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     text: `Por favor, completa el campo: ${item.nombre}`,
                 });
                 item.campo.focus();
-                return;
+                return; // Detener envío si hay un campo vacío
             }
         }
 
@@ -50,20 +50,16 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("beneficios", form.beneficios.value);
         formData.append("descripcion", form.descripcion.value);
 
+        // Imagen
         const imagen = form.imagen.files[0];
         if (imagen) {
             formData.append("imagen", imagen);
         }
 
-        // Obtener IdSolicitud sin importar mayúsculas/minúsculas
+        // 👉 Agregar IdSolicitud desde la URL si está presente
+        // 👉 Agregar IdSolicitud desde la URL si está presente
         const params = new URLSearchParams(window.location.search);
-        let idSolicitud = null;
-        for (const [key, value] of params.entries()) {
-            if (key.toLowerCase() === "idsolicitud") {
-                idSolicitud = value;
-                break;
-            }
-        }
+        const idSolicitud = params.get("idSolicitud"); // Esto está bien si viene en minúsculas
 
         if (!idSolicitud) {
             Swal.fire({
@@ -73,10 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             return;
         }
+        formData.append("IdSolicitud", idSolicitud); // ← Esto ya lo estás haciendo bien
 
-        // Enviar usando la clave exacta que espera el PHP
-        formData.append("IdSolicitud", idSolicitud);
 
+        // Enviar datos
         fetch("dao/daoVacante.php", {
             method: "POST",
             body: formData
@@ -94,8 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(() => {
-                    form.reset();
+                    form.reset(); // Limpia el formulario
+                    // Aquí podrías recargar solo las vacantes si las muestras en lista
+                    // o mostrar algún mensaje extra sin recargar la página
                 });
+
             })
             .catch(error => {
                 Swal.fire({
