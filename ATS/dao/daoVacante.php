@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $stmt->bind_param("sissssssssssssssiii",
+    $stmt->bind_param("sisssssssssssssssiii",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad,
         $pais, $estado, $ciudad, $espacio, $idioma, $especialidad,
         $requisitos, $beneficios, $descripcion, $nombreArchivo,
