@@ -184,10 +184,11 @@ if (!isset($_SESSION['NumNomina'])) {
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-            <a href="detallePostulacion.php?id=${row.IdPostulacion}" class="btn btn-info btn-sm">
-                <i class="fas fa-eye"></i> Ver Detalles
-            </a>
-        `;
+    <a href="detallePostulacion.php?id=${row.IdPostulacion}" class="ver-detalles-btn">
+        <i class="fas fa-eye"></i> Ver Detalles
+    </a>
+`;
+
                     }
                 }
 
