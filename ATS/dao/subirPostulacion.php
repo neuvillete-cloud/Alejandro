@@ -79,10 +79,11 @@ try {
     $stmt1->bind_param("ssssssi", $nombre, $apellido, $email, $telefono, $ciudad, $rutaPublica, $idCandidato);
     $stmt1->execute();
 
-    // 2. Insertar en Postulaciones
-    $sql2 = "INSERT INTO Postulaciones (IdCandidato, IdVacante, FechaPostulacion) VALUES (?, ?, NOW())";
+    // 2. Insertar en Postulaciones con IdEstatus = 1
+    $sql2 = "INSERT INTO Postulaciones (IdCandidato, IdVacante, FechaPostulacion, IdEstatus) VALUES (?, ?, NOW(), ?)";
     $stmt2 = $conn->prepare($sql2);
-    $stmt2->bind_param("ii", $idCandidato, $idVacante);
+    $idEstatus = 1;
+    $stmt2->bind_param("iii", $idCandidato, $idVacante, $idEstatus);
     $stmt2->execute();
 
     $conn->commit();
