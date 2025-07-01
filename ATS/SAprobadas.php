@@ -202,7 +202,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 }
             ],
             "dom": 'lfrtip',
-            "pageLength": 2,
+            "pageLength": 3,
             "language": {
                 "search": "Buscar:",
                 "lengthMenu": "Mostrar _MENU_ registros por página",
