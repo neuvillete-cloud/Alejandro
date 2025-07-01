@@ -9,7 +9,7 @@ try {
     $sql = "
         SELECT 
             p.IdPostulacion,
-            c.Nombre AS NombreCandidato,
+            c.Nombre AS Nombre,
             v.TituloVacante,
             p.FechaPostulacion
         FROM Postulaciones p
