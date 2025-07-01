@@ -2,7 +2,6 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
 error_reporting(E_ALL);
 
 session_start();
@@ -38,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $beneficios = $_POST['beneficios'] ?? '';
     $descripcion = $_POST['descripcion'];
 
-    // Obtener IdSolicitud y validar que sea obligatorio
     $idSolicitud = $_POST['IdSolicitud'] ?? null;
     if (!$idSolicitud) {
         echo json_encode(['status' => 'error', 'message' => 'Falta el IdSolicitud en la petición']);
@@ -102,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insertar vacante incluyendo IdSolicitud
     $stmt = $conex->prepare("INSERT INTO Vacantes (
-    TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
-    Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
-    Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        TituloVacante, IdArea, TipoContrato, Horario, Sueldo, EscolaridadMinima,
+        Pais, Estado, Ciudad, EspacioTrabajo, Idioma, Especialidad, Requisitos,
+        Beneficios, Descripcion, Imagen, Fecha, IdEstatus, IdSolicitud
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt->bind_param("sissssssssssssssiii",
         $titulo, $idArea, $tipo, $horario, $sueldo, $escolaridad,
@@ -114,10 +112,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fechaHoraActual, $idEstatus, $idSolicitud
     );
 
-
-
     if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Vacante guardada exitosamente']);
+        // Obtener el FolioSolicitud correspondiente al IdSolicitud
+        $stmtFolio = $conex->prepare("SELECT FolioSolicitud FROM Solicitudes WHERE IdSolicitud = ?");
+        $stmtFolio->bind_param("i", $idSolicitud);
+        $stmtFolio->execute();
+        $resultFolio = $stmtFolio->get_result();
+
+        if ($resultFolio->num_rows > 0) {
+            $rowFolio = $resultFolio->fetch_assoc();
+            $folioSolicitud = $rowFolio['FolioSolicitud'];
+            $stmtFolio->close();
+
+            // Actualizar IdEstatus en la tabla Aprobadores
+            $nuevoEstatus = 5; // Puedes cambiar este valor según el flujo deseado
+            $stmtUpdate = $conex->prepare("UPDATE Aprobadores SET IdEstatus = ? WHERE FolioSolicitud = ?");
+            $stmtUpdate->bind_param("is", $nuevoEstatus, $folioSolicitud);
+
+            if ($stmtUpdate->execute()) {
+                echo json_encode(['status' => 'success', 'message' => 'Vacante guardada y estatus actualizado correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Vacante guardada pero error al actualizar el estatus: ' . $stmtUpdate->error]);
+            }
+
+            $stmtUpdate->close();
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Vacante guardada pero no se encontró el FolioSolicitud']);
+        }
+
+        $conex->close();
     } else {
         echo json_encode([
             'status' => 'error',
@@ -125,9 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
 
-
     $stmt->close();
-    $conex->close();
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Se requiere método POST']);
 }
