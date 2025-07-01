@@ -62,13 +62,11 @@ if (!isset($_SESSION['NumNomina'])) {
         <table id="solicitudesTable" class="display">
             <thead>
             <tr>
-                <th>IdSolicitud</th>
-                <th>Nombre</th>
-                <th>Area</th>
-                <th>Nombre Aprobador</th>
-                <th>FolioSolicitud</th>
-                <th>Estatus</th> <!-- Nueva columna -->
-                <th>Acciones</th>
+                <th>IdPostulacion</th>
+                <th>Nombre Candidato</th>
+                <th>Nombre Vacante</th>
+                <th>Fecha de Postulacion</th>
+                <th>Detalles</th>
 
             </tr>
             </thead>
@@ -77,8 +75,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>#</th>
                 <th>Nomina</th>
                 <th>Nombre</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
 
@@ -176,30 +172,25 @@ if (!isset($_SESSION['NumNomina'])) {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSAprobadas.php',
+                "url": 'https://grammermx.com/AleTest/ATS/dao/daoPostulaciones.php',
                 "dataSrc": "data"
             },
             "columns": [
-                { "data": "IdSolicitud" },
-                { "data": "NombreSolicitante" },
-                { "data": "NombreArea" },
-                { "data": "NombreAprobador" },
-                { "data": "FolioSolicitud" },
-                { "data": "NombreEstatus" },
+                { "data": "IdPostulacion" },
+                { "data": "Nombre" },
+                { "data": "TituloVacante" },
+                { "data": "FechaPostulacion" },
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        if (row.NombreEstatus === "Aprobado") { // Ajusta "Aprobado" según tu base de datos
-                            return `
-                        <button class="btn btn-primary btn-sm go-to-page-btn">
-                            <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
-                        </button>
-                        `;
-                        } else {
-                            return ''; // No mostrar nada si no está aprobado
-                        }
+                        return `
+            <a href="detallePostulacion.php?id=${row.IdPostulacion}" class="btn btn-info btn-sm">
+                <i class="fas fa-eye"></i> Ver Detalles
+            </a>
+        `;
                     }
                 }
+
             ],
             "dom": 'lfrtip',
             "pageLength": 2,
