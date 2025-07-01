@@ -12,7 +12,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador</title>
 
-    <link rel="stylesheet" href="css/cargaVacante.css">
+    <link rel="stylesheet" href="css/postulaciones.css">
 </head>
 <body>
 
