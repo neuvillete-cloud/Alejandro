@@ -188,7 +188,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 });
             },
             "dom": 'lfrtip', // Agrega la barra de búsqueda
-            "pageLength": 10,
+            "pageLength": 5,
             "language": {
                 "search": "Buscar:",
                 "lengthMenu": "Mostrar _MENU_ registros por página",
