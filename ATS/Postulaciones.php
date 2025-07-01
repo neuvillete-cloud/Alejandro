@@ -11,8 +11,11 @@ if (!isset($_SESSION['NumNomina'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador</title>
+    <!-- Bootstrap CSS -->
 
-    <link rel="stylesheet" href="css/postulaciones.css">
+    <link rel="stylesheet" href="css/estilosSAprobadas.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
@@ -41,13 +44,51 @@ if (!isset($_SESSION['NumNomina'])) {
         <li><a href="Administrador.php">Inicio</a></li>
         <li><a href="SAprobadas.php">S. Aprobadas</a></li>
         <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-        <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
-        <li><a href="Postulaciones.php">Candidatos Postulados</a></li>
+        <li><a href="configuraciones.php">Configuraciones</a></li>
     </ul>
 </nav>
 
+<!-- Tabla de Solicitudes -->
+<div class="content">
+    <h2>posibles candidatos</h2>
 
+    <!-- Contenedor de botones de exportación -->
+    <div class="export-buttons">
+        <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copiar</button>
+        <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
+        <button id="pdfBtn" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
+    </div>
+    <div class="table-container">
+        <table id="solicitudesTable" class="display">
+            <thead>
+            <tr>
+                <th>IdSolicitud</th>
+                <th>Nombre</th>
+                <th>Area</th>
+                <th>Nombre Aprobador</th>
+                <th>FolioSolicitud</th>
+                <th>Estatus</th> <!-- Nueva columna -->
+                <th>Acciones</th>
 
+            </tr>
+            </thead>
+            <tfoot>
+            <tr style="display:none;">
+                <th>#</th>
+                <th>Nomina</th>
+                <th>Nombre</th>
+                <th>Pregunta</th>
+                <th>Pregunta</th>
+                <th>Pregunta</th>
+                <th>Pregunta</th>
+
+            </tr>
+            </tfoot>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
 <!-- Modal Perfil -->
@@ -63,72 +104,6 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("vacanteForm");
-        const modal = document.getElementById("modalVistaPreviaVacante");
-
-        const cerrarBtn = document.getElementById("cerrarModalVacante");
-        const cancelarBtn = document.getElementById("cancelarVistaPreviaVacante");
-        const confirmarBtn = document.getElementById("confirmarGuardarVacante");
-
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            // Llenar los datos en el modal
-            document.getElementById("previewTitulo").textContent = form.titulo.value;
-            document.getElementById("previewArea").textContent = form.area.value;
-            document.getElementById("previewTipo").textContent = form.tipo.value;
-            document.getElementById("previewHorario").textContent = form.horario.value;
-            document.getElementById("previewescolaridad").textContent = form.escolaridad.value;
-            document.getElementById("previewIdioma").textContent = form.idioma.value;
-            document.getElementById("previewEspecialidad").textContent = form.especialidad.value;
-            document.getElementById("previewEspacio").textContent = form.espacio.value;
-            document.getElementById("previewSueldo").textContent = form.sueldo.value;
-            document.getElementById("previewPais").textContent = form.pais.value;
-            document.getElementById("previewEstado").textContent = form.estado.value;
-            document.getElementById("previewCiudad").textContent = form.ciudad.value;
-            document.getElementById("previewRequisitos").textContent = form.requisitos.value;
-            document.getElementById("previewBeneficios").textContent = form.beneficios.value;
-            document.getElementById("previewDescripcion").textContent = form.descripcion.value;
-
-            const file = form.imagen.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById("previewImagenVacante").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById("previewImagenVacante").src = "#";
-            }
-
-            modal.style.display = "flex";
-        });
-
-        cerrarBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-
-        cancelarBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-
-        confirmarBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-            // No se hace submit tradicional aquí porque vacante.js ya lo maneja con fetch
-        });
-
-
-        window.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                modal.style.display = "none";
-            }
-        });
-    });
-
-</script>
-
 <!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -178,51 +153,126 @@ if (!isset($_SESSION['NumNomina'])) {
         }
     });
 </script>
-<script>
-    const dropArea = document.getElementById('drop-area');
-    const fileInput = document.getElementById('imagen');
-    const previewImg = document.getElementById('preview');
-    const placeholder = dropArea.querySelector('.placeholder-text');
 
-    dropArea.addEventListener('click', () => fileInput.click());
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS (Asegúrate de incluirlo) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/SheetJS/0.17.1/xlsx.full.min.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    fileInput.addEventListener('change', handleFile);
+<!-- jsPDF AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 
-    dropArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropArea.style.backgroundColor = 'rgba(30, 144, 255, 0.2)';
-    });
-
-    dropArea.addEventListener('dragleave', () => {
-        dropArea.style.backgroundColor = '';
-    });
-
-    dropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropArea.style.backgroundColor = '';
-        const file = e.dataTransfer.files[0];
-        fileInput.files = e.dataTransfer.files;
-        handleFile();
-    });
-
-    function handleFile() {
-        const file = fileInput.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                previewImg.src = e.target.result;
-                previewImg.style.display = 'block';
-                placeholder.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
+<!-- SheetJS (para exportar a Excel) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
 <script src="js/funcionamientoModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/vacante.js"></script>
+<script>
+    $(document).ready(function () {
+        var tabla = $('#solicitudesTable').DataTable({
+            "responsive": true,
+            "ajax": {
+                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSAprobadas.php',
+                "dataSrc": "data"
+            },
+            "columns": [
+                { "data": "IdSolicitud" },
+                { "data": "NombreSolicitante" },
+                { "data": "NombreArea" },
+                { "data": "NombreAprobador" },
+                { "data": "FolioSolicitud" },
+                { "data": "NombreEstatus" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        if (row.NombreEstatus === "Aprobado") { // Ajusta "Aprobado" según tu base de datos
+                            return `
+                        <button class="btn btn-primary btn-sm go-to-page-btn">
+                            <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
+                        </button>
+                        `;
+                        } else {
+                            return ''; // No mostrar nada si no está aprobado
+                        }
+                    }
+                }
+            ],
+            "dom": 'lfrtip',
+            "pageLength": 2,
+            "language": {
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            },
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "loadingRecords": "Cargando...",
+            "deferRender": true,
+            "search": {
+                "regex": true,
+                "caseInsensitive": false
+            }
+        });
+
+        // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
+        $('.dataTables_filter input').on('keyup', function () {
+            tabla.search(this.value).draw();
+        });
+
+        // Funcionalidad de botones
+
+        $('#copyBtn').on('click', function () {
+            let text = "";
+            tabla.rows().every(function () {
+                let data = this.data();
+                text += Object.values(data).join("\t") + "\n";
+            });
+
+            navigator.clipboard.writeText(text).then(function () {
+                alert('Tabla copiada al portapapeles');
+            }).catch(err => console.error('Error al copiar:', err));
+        });
+
+        $('#pdfBtn').on('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: '#solicitudesTable' });
+            doc.save('solicitudes.pdf');
+        });
+
+        $('#excelBtn').on('click', function () {
+            const table = document.querySelector('#solicitudesTable');
+            if (table) {
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
+                XLSX.writeFile(wb, 'solicitudes.xlsx');
+            } else {
+                alert('No se encontró la tabla para exportar');
+            }
+        });
+
+        // Evento para el botón "Ir a Seguimiento"
+        $('#solicitudesTable tbody').on('click', '.go-to-page-btn', function () {
+            window.location.href = 'SeguimientoAdministrador.php';
+        });
+
+
+    });
+</script>
 </body>
 </html>
-
 
