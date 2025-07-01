@@ -13,7 +13,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <title>Administrador</title>
     <!-- Bootstrap CSS -->
 
-    <link rel="stylesheet" href="css/estilosSAprobadas.css">
+    <link rel="stylesheet" href="css/postulaciones.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
