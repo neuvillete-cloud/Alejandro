@@ -108,14 +108,14 @@ session_start();
     document.addEventListener("DOMContentLoaded", function () {
         const contenedor = document.getElementById("vacanteDetalle");
         const params = new URLSearchParams(window.location.search);
-        const idVacante = params.get("id");
+        const idPostulacion = params.get("idPostulacion");
 
-        if (!idVacante) {
-            contenedor.innerHTML = "<p>No se proporcionó un ID de vacante.</p>";
+        if (!idPostulacion) {
+            contenedor.innerHTML = "<p>No se proporcionó un ID de postulación.</p>";
             return;
         }
 
-        fetch(`dao/obtenerVacanteId.php?id=${idVacante}`)
+        fetch(`dao/obtenerVacantePorPostulacion.php?idPostulacion=${idPostulacion}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -124,27 +124,27 @@ session_start();
                 }
 
                 contenedor.innerHTML = `
-                    <h3>${data.Titulo}</h3>
-                    <p><strong>Área:</strong> ${data.Area}</p>
-                    <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
-                    <hr>
+                <h3>${data.Titulo}</h3>
+                <p><strong>Área:</strong> ${data.Area}</p>
+                <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
+                <hr>
 
-                    <div class="resumen-vacante">
-                        <p><strong>Rol y responsabilidades:</strong><br>${recortarTexto(data.Descripcion)}</p>
+                <div class="resumen-vacante">
+                    <p><strong>Rol y responsabilidades:</strong><br>${recortarTexto(data.Descripcion)}</p>
+                </div>
+
+                <div class="contenido-completo-animado">
+                    <div class="contenido-interno">
+                        <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
+                        <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
+                        <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
+                        <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
+                        <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
                     </div>
+                </div>
 
-                    <div class="contenido-completo-animado">
-                        <div class="contenido-interno">
-                            <p><strong>Rol y responsabilidades:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
-                            <p><strong>Requisitos:</strong>${textoAListaHTML(data.Requisitos)}</p>
-                            <p><strong>Beneficios:</strong>${textoAListaHTML(data.Beneficios)}</p>
-                            <p><strong>Horario:</strong> ${data.Horario} / <strong>Modalidad:</strong> ${data.EspacioTrabajo}</p>
-                            <p><strong>Publicado:</strong> ${data.FechaPublicacion}</p>
-                        </div>
-                    </div>
-
-                    <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
-                `;
+                <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
+            `;
 
                 const linkVerMas = contenedor.querySelector(".ver-mas");
                 const contenidoAnimado = contenedor.querySelector(".contenido-completo-animado");
@@ -167,19 +167,6 @@ session_start();
                 contenedor.innerHTML = "<p>Error al cargar la vacante.</p>";
             });
     });
-
-    function textoAListaHTML(texto) {
-        if (!texto) return "<ul><li>No disponible</li></ul>";
-        const items = texto.split('\n').filter(l => l.trim() !== '');
-        return "<ul>" + items.map(item => `<li>${item.trim()}</li>`).join('') + "</ul>";
-    }
-
-    function recortarTexto(texto, limite = 200) {
-        if (!texto) return "No disponible";
-        return texto.length > limite
-            ? texto.slice(0, limite) + "..."
-            : texto;
-    }
 </script>
 
 </body>
