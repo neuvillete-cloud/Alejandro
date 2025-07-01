@@ -29,12 +29,31 @@ try {
 
     $idVacante = $row['IdVacante'];
 
-    // 2. Obtener los datos de la vacante usando el IdVacante
-    $stmtVacante = $conex->prepare("
-        SELECT Titulo, Area, Ciudad, Estado, Descripcion, Requisitos, Beneficios, Horario, EspacioTrabajo, FechaPublicacion
-        FROM Vacantes
-        WHERE IdVacante = ?
-    ");
+    // 2. Obtener los datos de la vacante usando el IdVacante, con JOIN para área
+    $sql = "
+        SELECT 
+            V.IdVacante, 
+            V.TituloVacante, 
+            V.Ciudad, 
+            V.Estado, 
+            V.Sueldo, 
+            V.Requisitos, 
+            V.Beneficios, 
+            V.Descripcion, 
+            A.NombreArea AS Area, 
+            V.EscolaridadMinima, 
+            V.Idioma, 
+            V.Especialidad, 
+            V.Horario, 
+            V.EspacioTrabajo, 
+            V.Fecha AS FechaPublicacion
+        FROM Vacantes V
+        INNER JOIN Area A ON V.IdArea = A.IdArea
+        WHERE V.IdVacante = ?
+        LIMIT 1
+    ";
+
+    $stmtVacante = $conex->prepare($sql);
     $stmtVacante->execute([$idVacante]);
     $vacante = $stmtVacante->fetch(PDO::FETCH_ASSOC);
 
@@ -48,3 +67,4 @@ try {
     echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
     exit;
 }
+

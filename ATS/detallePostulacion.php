@@ -124,7 +124,7 @@ session_start();
                 }
 
                 contenedor.innerHTML = `
-                <h3>${data.Titulo}</h3>
+                <h3>${data.TituloVacante}</h3>
                 <p><strong>Área:</strong> ${data.Area}</p>
                 <p><strong>${data.Ciudad}, ${data.Estado}</strong></p>
                 <hr>
@@ -145,6 +145,7 @@ session_start();
 
                 <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
             `;
+
 
                 const linkVerMas = contenedor.querySelector(".ver-mas");
                 const contenidoAnimado = contenedor.querySelector(".contenido-completo-animado");
