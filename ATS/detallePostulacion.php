@@ -70,45 +70,6 @@ session_start();
                 </div>
 
                 <form id="formPostulacion">
-                    <!-- Paso 1 -->
-                    <div class="form-step active" data-step="1">
-                        <h2>Agrega tu información de contacto</h2>
-
-                        <label>Nombre *</label>
-                        <input type="text" name="nombre" value="<?= $_SESSION['NombreCandidato'] ?? '' ?>" required>
-
-                        <label>Apellido *</label>
-                        <input type="text" name="apellido" value="<?= $_SESSION['ApellidosCandidato'] ?? '' ?>"
-                               required>
-
-                        <label>Email</label>
-                        <div class="campo-email">
-                            <input type="email" name="email" value="<?= $_SESSION['CorreoCandidato'] ?? '' ?>" readonly>
-                            <div class="tooltip">
-                                <i class="fas fa-info-circle"></i>
-                                <span class="tooltip-text">Este es el email de tu cuenta. Para cambiarlo, ve a la configuración de la cuenta.</span>
-                            </div>
-                        </div>
-
-                        <label>País</label>
-                        <div class="dato-estatico">México</div>
-
-                        <label>Ciudad, estado</label>
-                        <input type="text" name="ciudad" value="<?= $_SESSION['UbicacionCandidato'] ?? '' ?>">
-
-                        <label for="telefono">Número de teléfono</label>
-                        <input id="telefono" type="tel" name="telefono"
-                               value="<?= $_SESSION['TelefonoCandidato'] ?? '' ?>" placeholder="442-864-4068">
-
-
-                        <button type="button" class="btn-continuar" onclick="nextStep()">Continuar</button>
-                    </div>
-
-                    <!-- Botón de Atrás flotante arriba a la izquierda -->
-                    <button type="button" class="btn-volver-flotante" onclick="prevStep()" id="btnAtrasFlotante">
-                        <i class="fas fa-arrow-left"></i> Atrás
-                    </button>
-
                     <!-- Paso del formulario -->
                     <div class="form-step" data-step="2">
                         <h2>Añade un CV para la empresa</h2>
