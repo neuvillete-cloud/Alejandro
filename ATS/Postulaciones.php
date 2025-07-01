@@ -50,7 +50,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <!-- Tabla de Solicitudes -->
 <div class="content">
-    <h2>posibles candidatos</h2>
+    <h2>candidatos postulados</h2>
 
     <!-- Contenedor de botones de exportación -->
     <div class="export-buttons">
