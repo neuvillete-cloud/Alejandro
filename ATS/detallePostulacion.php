@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalles</title>
+    <title>Postulación - Vista previa CV</title>
     <link rel="stylesheet" href="css/postularme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -50,7 +50,7 @@ session_start();
 </header>
 
 <section class="section-title">
-    <h1>Vista previa de tu CV</h1>
+    <h1>Detalles</h1>
     <img src="imagenes/documento.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
