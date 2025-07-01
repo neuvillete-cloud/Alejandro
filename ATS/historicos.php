@@ -190,8 +190,7 @@ if (!isset($_SESSION['NumNomina'])) {
             "dom": 'lfrtip', // Agrega la barra de búsqueda
             "pageLength": 5,
             lengthMenu: [
-                [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, -1],
-                [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, "All"]
+                [5, 6]
             ],
             "language": {
                 "search": "Buscar:",
