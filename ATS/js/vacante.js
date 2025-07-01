@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmarBtn.addEventListener("click", function (e) {
         e.preventDefault();
 
+        // Desactivar botón para evitar doble clic
+        confirmarBtn.disabled = true;
+
         // Validar campos obligatorios
         const camposObligatorios = [
             { campo: form.titulo, nombre: "Título del puesto" },
@@ -28,7 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     text: `Por favor, completa el campo: ${item.nombre}`,
                 });
                 item.campo.focus();
-                return; // Detener envío si hay un campo vacío
+                confirmarBtn.disabled = false; // Reactivar si hay error
+                return;
             }
         }
 
@@ -42,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 title: 'Error crítico',
                 text: 'No se encontró el IdSolicitud en la URL.',
             });
+            confirmarBtn.disabled = false;
             return;
         }
 
@@ -81,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 formData.append("descripcion", form.descripcion.value);
                 formData.append("IdSolicitud", idSolicitud);
 
-                // Imagen
                 const imagen = form.imagen.files[0];
                 if (imagen) {
                     formData.append("imagen", imagen);
@@ -95,24 +99,34 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (!response.ok) {
                             throw new Error("Error en la respuesta del servidor");
                         }
-                        return response.text();
+                        return response.json(); // Cambiado de .text() a .json()
                     })
                     .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Vacante guardada correctamente',
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then(() => {
-                            window.location.href = "SeguimientoAdministrador.php";
-                        });
+                        if (data.status === "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Vacante guardada correctamente',
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(() => {
+                                window.location.href = "SeguimientoAdministrador.php";
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error al guardar',
+                                text: data.message || 'Ocurrió un error desconocido',
+                            });
+                            confirmarBtn.disabled = false;
+                        }
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error al guardar',
+                            title: 'Error de red o servidor',
                             text: error.message,
                         });
+                        confirmarBtn.disabled = false;
                     });
             })
             .catch(error => {
@@ -121,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     title: 'Error al verificar',
                     text: 'No se pudo verificar si ya existe una vacante.',
                 });
+                confirmarBtn.disabled = false;
             });
     });
 });
+
