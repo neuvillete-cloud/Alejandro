@@ -108,14 +108,14 @@ session_start();
     document.addEventListener("DOMContentLoaded", function () {
         const contenedor = document.getElementById("vacanteDetalle");
         const params = new URLSearchParams(window.location.search);
-        const idPostulacion = params.get("idPostulacion");
+        const IdPostulacion = params.get("IdPostulacion");
 
-        if (!idPostulacion) {
+        if (!IdPostulacion) {
             contenedor.innerHTML = "<p>No se proporcionó un ID de postulación.</p>";
             return;
         }
 
-        fetch(`dao/obtenerVacantePorPostulacion.php?idPostulacion=${IdPostulacion}`)
+        fetch(`dao/obtenerVacantePorPostulacion.php?IdPostulacion=${IdPostulacion}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {

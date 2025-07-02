@@ -6,12 +6,12 @@ header('Content-Type: application/json');
 
 include_once("ConexionBD.php");
 
-if (!isset($_GET['idPostulacion'])) {
-    echo json_encode(['error' => 'Falta el parámetro idPostulacion']);
+if (!isset($_GET['IdPostulacion'])) {
+    echo json_encode(['error' => 'Falta el parámetro IdPostulacion']);
     exit;
 }
 
-$idPostulacion = $_GET['idPostulacion'];
+$idPostulacion = $_GET['IdPostulacion'];
 
 try {
     $con = new LocalConector();

@@ -184,7 +184,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-    <a href="detallePostulacion.php?idPostulacion=${row.IdPostulacion}" class="ver-detalles-btn">
+    <a href="detallePostulacion.php?IdPostulacion=${row.IdPostulacion}" class="ver-detalles-btn">
         <i class="fas fa-eye"></i> Ver Detalles
     </a>
 `;
