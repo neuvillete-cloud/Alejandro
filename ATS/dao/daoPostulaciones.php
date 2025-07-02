@@ -7,18 +7,19 @@ try {
     $conex = $con->conectar();
 
     $sql = "
-    SELECT 
-        p.IdPostulacion,
-        p.IdVacante,
-        c.Nombre AS Nombre,
-        v.TituloVacante,
-        p.FechaPostulacion
-    FROM Postulaciones p
-    INNER JOIN Candidatos c ON p.IdCandidato = c.IdCandidato
-    INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
-    WHERE p.IdEstatus = 1
-";
-
+        SELECT 
+            p.IdPostulacion,
+            p.IdVacante,
+            c.Nombre AS Nombre,
+            v.TituloVacante,
+            p.FechaPostulacion,
+            e.NombreEstatus
+        FROM Postulaciones p
+        INNER JOIN Candidatos c ON p.IdCandidato = c.IdCandidato
+        INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
+        INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
+        WHERE p.IdEstatus = 1
+    ";
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
@@ -47,4 +48,3 @@ try {
     ]);
 }
 ?>
-
