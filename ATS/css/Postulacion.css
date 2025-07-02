@@ -675,11 +675,11 @@ form input:focus {
 .botones-postulacion {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinea los botones a la izquierda */
     gap: 15px;
     margin-top: 30px;
-    margin-right: 40px; /* Ajusta más o menos según lo que necesites */
+    transform: translateX(-30px); /* Mueve los botones 30px a la izquierda */
 }
+
 
 
 .btn-continuar {
