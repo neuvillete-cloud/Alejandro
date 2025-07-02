@@ -664,9 +664,9 @@ form input:focus {
 }
 
 #formPostulacion h2 {
-    margin-left: -10px; /* Ajusta este valor según cuánto quieras moverlo */
+    margin-left: -15px; /* Ajusta este valor según cuánto quieras moverlo */
 }
 
 #vistaPreviaPDF {
-    margin-left: -10px; /* También mueve el contenido del CV hacia la izquierda */
+    margin-left: -15px; /* También mueve el contenido del CV hacia la izquierda */
 }
