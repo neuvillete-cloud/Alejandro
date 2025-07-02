@@ -677,7 +677,7 @@ form input:focus {
     flex-direction: column;
     gap: 15px;
     margin-top: 30px;
-    transform: translateX(-30px); /* Mueve los botones 30px a la izquierda */
+    transform: translateX(-20px); /* Mueve los botones 30px a la izquierda */
 }
 
 
