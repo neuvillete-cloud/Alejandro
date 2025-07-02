@@ -59,6 +59,12 @@ session_start();
         <div class="formulario-postulacion">
             <!-- Columna izquierda: vista previa dinámica -->
             <div class="columna-formulario">
+
+                <div class="barra-progreso-container">
+                    <div class="barra-progreso">
+                        <div class="progreso" id="barraProgreso" style="width: 25%;"></div>
+                    </div>
+                </div>
                 <form id="formPostulacion" style="padding: 20px;">
                     <h2>Tu CV cargado</h2>
                     <div id="vistaPreviaPDF" style="margin-top: 20px;">
