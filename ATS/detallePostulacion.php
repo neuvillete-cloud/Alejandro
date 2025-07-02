@@ -115,8 +115,7 @@ session_start();
             return;
         }
 
-        fetch(`https://grammermx.com/AleTest/ATS/dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
-
+        fetch(`dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
                 .then(response => response.json())
             .then(data => {
                 if (data.error) {
