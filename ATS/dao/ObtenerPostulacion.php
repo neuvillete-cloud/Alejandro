@@ -1,46 +1,37 @@
 <?php
-// Configuración para depurar
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-error_reporting(E_ALL);
+require_once "ConexionBD.php";
+
 header('Content-Type: application/json');
+date_default_timezone_set('America/Mexico_City');
 
-// Captura cualquier salida accidental
-ob_start();
-
-include_once("ConexionBD.php");
-
-function devolverJSON($datos) {
-    // Asegura que no haya salida antes
-    ob_clean();
-    echo json_encode($datos);
+if (!isset($_GET['IdPostulacion'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Falta el parámetro IdPostulacion']);
     exit;
 }
 
-if (!isset($_GET['IdPostulacion'])) {
-    devolverJSON(['error' => 'Falta el parámetro IdPostulacion']);
+$idPostulacion = intval($_GET['IdPostulacion']);
+
+$conn = (new LocalConector())->conectar();
+
+// 1. Obtener IdVacante de Postulaciones
+$sql1 = "SELECT IdVacante FROM Postulaciones WHERE IdPostulacion = ?";
+$stmt1 = $conn->prepare($sql1);
+$stmt1->bind_param("i", $idPostulacion);
+$stmt1->execute();
+$result1 = $stmt1->get_result();
+
+if (!$row1 = $result1->fetch_assoc()) {
+    http_response_code(404);
+    echo json_encode(['error' => 'No se encontró la postulación']);
+    $conn->close();
+    exit;
 }
 
-$idPostulacion = $_GET['IdPostulacion'];
+$idVacante = $row1['IdVacante'];
 
-try {
-    $con = new LocalConector();
-    $conex = $con->conectar();
-
-    // Paso 1: obtener IdVacante
-    $stmt = $conex->prepare("SELECT IdVacante FROM Postulaciones WHERE IdPostulacion = ?");
-    $stmt->execute([$idPostulacion]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$row) {
-        devolverJSON(['error' => 'No se encontró la postulación']);
-    }
-
-    $idVacante = $row['IdVacante'];
-
-    // Paso 2: obtener datos de la vacante
-    $sql = "
-        SELECT 
+// 2. Obtener detalles de la vacante
+$sql2 = "SELECT 
             V.IdVacante, 
             V.TituloVacante, 
             V.Ciudad, 
@@ -49,30 +40,61 @@ try {
             V.Requisitos, 
             V.Beneficios, 
             V.Descripcion, 
-            A.NombreArea AS Area, 
+            A.NombreArea, 
             V.EscolaridadMinima, 
             V.Idioma, 
             V.Especialidad, 
             V.Horario, 
             V.EspacioTrabajo, 
-            V.Fecha AS FechaPublicacion
+            V.Fecha
         FROM Vacantes V
         INNER JOIN Area A ON V.IdArea = A.IdArea
-        WHERE V.IdVacante = ?
-        LIMIT 1
-    ";
+        WHERE V.IdVacante = ? AND V.IdEstatus = 1
+        LIMIT 1";
 
-    $stmtVacante = $conex->prepare($sql);
-    $stmtVacante->execute([$idVacante]);
-    $vacante = $stmtVacante->fetch(PDO::FETCH_ASSOC);
+$stmt2 = $conn->prepare($sql2);
+$stmt2->bind_param("i", $idVacante);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
 
-    if (!$vacante) {
-        devolverJSON(['error' => 'No se encontró la vacante']);
-    }
+if ($row2 = $result2->fetch_assoc()) {
+    $vacante = [
+        'IdVacante' => $row2['IdVacante'],
+        'TituloVacante' => $row2['TituloVacante'],
+        'Ciudad' => $row2['Ciudad'],
+        'Estado' => $row2['Estado'],
+        'Sueldo' => $row2['Sueldo'],
+        'Requisitos' => $row2['Requisitos'],
+        'Beneficios' => $row2['Beneficios'],
+        'Descripcion' => $row2['Descripcion'],
+        'Area' => $row2['NombreArea'],
+        'EscolaridadMinima' => $row2['EscolaridadMinima'],
+        'Idioma' => $row2['Idioma'],
+        'Especialidad' => $row2['Especialidad'],
+        'Horario' => $row2['Horario'],
+        'EspacioTrabajo' => $row2['EspacioTrabajo'],
+        'FechaPublicacion' => calcularTiempoTranscurrido($row2['Fecha'])
+    ];
 
-    // Enviar JSON final limpio
-    devolverJSON($vacante);
-
-} catch (PDOException $e) {
-    devolverJSON(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
+    echo json_encode($vacante, JSON_UNESCAPED_UNICODE);
+} else {
+    http_response_code(404);
+    echo json_encode(['error' => 'No se encontró la vacante']);
 }
+
+$conn->close();
+
+function calcularTiempoTranscurrido($fechaPublicacion) {
+    $fecha = new DateTime($fechaPublicacion);
+    $hoy = new DateTime();
+    $diferencia = $hoy->diff($fecha);
+
+    if ($diferencia->days === 0) {
+        return 'Hoy';
+    } elseif ($diferencia->days === 1) {
+        return 'Hace 1 día';
+    } else {
+        return 'Hace ' . $diferencia->days . ' días';
+    }
+}
+?>
