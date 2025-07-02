@@ -568,17 +568,17 @@ h2 {
 }
 
 /* Estilos por tipo de estatus */
-.estatus-recibido {
+.estatus-Recibido {
     background-color: #f0ad4e; /* naranja */
     color: white;
 }
 
-.estatus-aprobado {
+.estatus-Aprobado {
     background-color: #5cb85c; /* verde */
     color: white;
 }
 
-.estatus-rechazado {
+.estatus-Rechazado {
     background-color: #d9534f; /* rojo */
     color: white;
 }
