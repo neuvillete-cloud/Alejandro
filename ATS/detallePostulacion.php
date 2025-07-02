@@ -58,20 +58,7 @@ session_start();
     <div class="contenido-blanco">
         <div class="formulario-postulacion">
             <!-- Columna izquierda: solo vista previa -->
-            <div class="columna-formulario">
-                <form id="formPostulacion" style="padding: 20px;">
-                    <h2>Tu CV cargado</h2>
-                    <div id="vistaPreviaPDF" style="margin-top: 20px;">
-                        <iframe
-                                id="iframePDF"
-                                width="100%"
-                                height="500px"
-                                style="border: 1px solid #ccc; border-radius: 10px;"
-                                src="cv_candidatos/<?= urlencode($_SESSION['RutaCV']) ?>"
-                        ></iframe>
-                    </div>
-                </form>
-            </div>
+
 
             <!-- Columna derecha: resumen de vacante -->
             <div class="columna-vacante">
