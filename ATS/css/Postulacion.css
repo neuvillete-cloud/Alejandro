@@ -665,6 +665,7 @@ form input:focus {
 
 #formPostulacion h2 {
     margin-left: -17px; /* Ajusta este valor según cuánto quieras moverlo */
+    margin-top: 10px;
 }
 
 #vistaPreviaPDF {
