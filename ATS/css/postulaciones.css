@@ -556,3 +556,34 @@ h2 {
 .ver-detalles-btn i {
     font-size: 16px;
 }
+
+.estatus-span {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.85em;
+    display: inline-block;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+/* Estilos por tipo de estatus */
+.estatus-recibido {
+    background-color: #f0ad4e; /* naranja */
+    color: white;
+}
+
+.estatus-aprobado {
+    background-color: #5cb85c; /* verde */
+    color: white;
+}
+
+.estatus-rechazado {
+    background-color: #d9534f; /* rojo */
+    color: white;
+}
+
+.estatus-default {
+    background-color: #6c757d; /* gris */
+    color: white;
+}

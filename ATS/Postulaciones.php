@@ -170,6 +170,19 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="js/funcionamientoModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function obtenerClaseEstatus(nombreEstatus) {
+        switch (nombreEstatus.toLowerCase()) {
+            case 'en revisión':
+                return 'estatus-recibido';
+            case 'aceptado':
+                return 'estatus-aprobado';
+            case 'rechazado':
+                return 'estatus-rechazado';
+            default:
+                return 'estatus-default';
+        }
+    }
+
     $(document).ready(function () {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
@@ -182,7 +195,14 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "Nombre" },
                 { "data": "TituloVacante" },
                 { "data": "FechaPostulacion" },
-                { "data": "NombreEstatus" },
+                {
+                    "data": "NombreEstatus",
+                    "render": function (data, type, row) {
+                        const clase = obtenerClaseEstatus(data);
+                        return `<span class="estatus-span ${clase}">${data}</span>`;
+                    }
+                },
+
                 {
                     "data": null,
                     "render": function (data, type, row) {
