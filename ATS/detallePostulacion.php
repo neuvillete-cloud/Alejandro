@@ -66,7 +66,7 @@ session_start();
                     </div>
                 </div>
                 <form id="formPostulacion" style="padding: 20px;">
-                    <h2>Tu CV cargado</h2>
+                    <h2>CV del candidato</h2>
                     <div id="vistaPreviaPDF" style="margin-top: 20px;">
                         <p>Cargando CV...</p>
                     </div>
