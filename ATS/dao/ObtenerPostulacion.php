@@ -1,14 +1,24 @@
 <?php
-ini_set('display_errors', 0);  // Oculta errores para que no rompa el JSON
-ini_set('log_errors', 1);      // Los manda al log de errores del servidor
+// Configuración para depurar
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
+// Captura cualquier salida accidental
+ob_start();
+
 include_once("ConexionBD.php");
 
-if (!isset($_GET['IdPostulacion'])) {
-    echo json_encode(['error' => 'Falta el parámetro IdPostulacion']);
+function devolverJSON($datos) {
+    // Asegura que no haya salida antes
+    ob_clean();
+    echo json_encode($datos);
     exit;
+}
+
+if (!isset($_GET['IdPostulacion'])) {
+    devolverJSON(['error' => 'Falta el parámetro IdPostulacion']);
 }
 
 $idPostulacion = $_GET['IdPostulacion'];
@@ -17,19 +27,18 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // 1. Obtener el IdVacante desde la tabla Postulaciones
+    // Paso 1: obtener IdVacante
     $stmt = $conex->prepare("SELECT IdVacante FROM Postulaciones WHERE IdPostulacion = ?");
     $stmt->execute([$idPostulacion]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$row) {
-        echo json_encode(['error' => 'No se encontró la postulación']);
-        exit;
+        devolverJSON(['error' => 'No se encontró la postulación']);
     }
 
     $idVacante = $row['IdVacante'];
 
-    // 2. Obtener los datos de la vacante usando el IdVacante, con JOIN para área
+    // Paso 2: obtener datos de la vacante
     $sql = "
         SELECT 
             V.IdVacante, 
@@ -46,7 +55,7 @@ try {
             V.Especialidad, 
             V.Horario, 
             V.EspacioTrabajo, 
-            V.Fecha
+            V.Fecha AS FechaPublicacion
         FROM Vacantes V
         INNER JOIN Area A ON V.IdArea = A.IdArea
         WHERE V.IdVacante = ?
@@ -58,13 +67,12 @@ try {
     $vacante = $stmtVacante->fetch(PDO::FETCH_ASSOC);
 
     if (!$vacante) {
-        echo json_encode(['error' => 'No se encontró la vacante']);
-        exit;
+        devolverJSON(['error' => 'No se encontró la vacante']);
     }
 
-    echo json_encode($vacante);
-} catch (PDOException $e) {
-    echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
-    exit;
-}
+    // Enviar JSON final limpio
+    devolverJSON($vacante);
 
+} catch (PDOException $e) {
+    devolverJSON(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
+}
