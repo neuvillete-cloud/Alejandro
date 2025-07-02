@@ -173,13 +173,11 @@ if (!isset($_SESSION['NumNomina'])) {
     function obtenerClaseEstatus(nombreEstatus) {
         switch (nombreEstatus.toLowerCase()) {
             case 'en revisión':
-                return 'estatus-recibido';
+                return 'estatus-Recibido';
             case 'aceptado':
-                return 'estatus-aprobado';
+                return 'estatus-Aprobado';
             case 'rechazado':
-                return 'estatus-rechazado';
-            default:
-                return 'estatus-default';
+                return 'estatus-Rechazado';
         }
     }
 
