@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Postulación - Vista previa CV</title>
-    <link rel="stylesheet" href="css/postularme.css">
+    <link rel="stylesheet" href="css/Postulacion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -57,18 +57,12 @@ session_start();
 <section class="area-blanca">
     <div class="contenido-blanco">
         <div class="formulario-postulacion">
-            <!-- Columna izquierda: solo vista previa -->
+            <!-- Columna izquierda: vista previa dinámica -->
             <div class="columna-formulario">
                 <form id="formPostulacion" style="padding: 20px;">
                     <h2>Tu CV cargado</h2>
                     <div id="vistaPreviaPDF" style="margin-top: 20px;">
-                        <iframe
-                                id="iframePDF"
-                                width="100%"
-                                height="500px"
-                                style="border: 1px solid #ccc; border-radius: 10px;"
-                                src="cv_candidatos/<?= urlencode($_SESSION['RutaCV']) ?>"
-                        ></iframe>
+                        <p>Cargando CV...</p>
                     </div>
                 </form>
             </div>
@@ -114,8 +108,6 @@ session_start();
             contenedor.innerHTML = "<p>No se proporcionó un ID de postulación.</p>";
             return;
         }
-
-        console.log("ID:", IdPostulacion); // <-- para depurar antes del fetch
 
         fetch(`dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
             .then(response => response.json())
@@ -184,6 +176,51 @@ session_start();
     }
 </script>
 
+<!-- Script para cargar dinámicamente el CV -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const contenedorCV = document.getElementById("vistaPreviaPDF");
+        const params = new URLSearchParams(window.location.search);
+        const IdPostulacion = params.get("IdPostulacion");
+
+        if (!IdPostulacion) {
+            contenedorCV.innerHTML = "<p>No se proporcionó un ID de postulación.</p>";
+            return;
+        }
+
+        fetch(`dao/ObtenerCV.php?IdPostulacion=${IdPostulacion}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    contenedorCV.innerHTML = `<p>${data.error}</p>`;
+                    return;
+                }
+
+                const extension = data.RutaCV.split('.').pop().toLowerCase();
+                const extensionesVisibles = ['pdf'];
+
+                if (extensionesVisibles.includes(extension)) {
+                    contenedorCV.innerHTML = `
+                        <iframe
+                            width="100%"
+                            height="500px"
+                            style="border: 1px solid #ccc; border-radius: 10px;"
+                            src="${data.RutaCV}"
+                        ></iframe>
+                    `;
+                } else {
+                    contenedorCV.innerHTML = `
+                        <p>Tu CV fue cargado correctamente pero no puede visualizarse aquí por su formato (${extension}).</p>
+                        <a href="${data.RutaCV}" target="_blank" class="btn-descargar">Descargar CV</a>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error("Error al obtener el CV:", error);
+                contenedorCV.innerHTML = "<p>Error al cargar el CV.</p>";
+            });
+    });
+</script>
 
 </body>
 </html>
