@@ -115,6 +115,9 @@ session_start();
             return;
         }
 
+        console.log("ID:", IdPostulacion); // <-- pon esto antes del fetch
+
+
         fetch(`dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
                 .then(response => response.json())
             .then(data => {
