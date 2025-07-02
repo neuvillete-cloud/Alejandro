@@ -62,7 +62,7 @@ session_start();
 
                 <div class="barra-progreso-container">
                     <div class="barra-progreso">
-                        <div class="progreso" id="barraProgreso" style="width: 25%;"></div>
+                        <div class="progreso" id="barraProgreso" style="width: 100%;"></div>
                     </div>
                 </div>
                 <form id="formPostulacion" style="padding: 20px;">
