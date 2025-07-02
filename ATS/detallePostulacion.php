@@ -118,7 +118,7 @@ session_start();
         console.log("ID:", IdPostulacion); // <-- pon esto antes del fetch
 
 
-        fetch(`/AleTest/ATS/dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
+        fetch(`/dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
 
                 .then(response => response.json())
             .then(data => {
