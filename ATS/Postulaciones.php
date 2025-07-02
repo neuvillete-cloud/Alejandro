@@ -172,14 +172,17 @@ if (!isset($_SESSION['NumNomina'])) {
 <script>
     function obtenerClaseEstatus(nombreEstatus) {
         switch (nombreEstatus.toLowerCase()) {
-            case 'en revisión':
-                return 'estatus-Recibido';
-            case 'aceptado':
-                return 'estatus-Aprobado';
+            case 'recibido':
+                return 'estatus-recibido';
+            case 'aprobado':
+                return 'estatus-aprobado';
             case 'rechazado':
-                return 'estatus-Rechazado';
+                return 'estatus-rechazado';
+            default:
+                return 'estatus-default';
         }
     }
+
 
     $(document).ready(function () {
         var tabla = $('#solicitudesTable').DataTable({
