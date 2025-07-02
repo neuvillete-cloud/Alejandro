@@ -658,3 +658,15 @@ form input:focus {
     background-color: #00356b;
     transform: scale(1.03);
 }
+
+.columna-formulario form {
+    padding-left: 0; /* Quitamos el padding izquierdo extra */
+}
+
+#formPostulacion h2 {
+    margin-left: -10px; /* Ajusta este valor según cuánto quieras moverlo */
+}
+
+#vistaPreviaPDF {
+    margin-left: -10px; /* También mueve el contenido del CV hacia la izquierda */
+}
