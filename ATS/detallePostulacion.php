@@ -188,7 +188,7 @@ session_start();
             return;
         }
 
-        fetch(`dao/ObtenerCV.php?IdPostulacion=${IdPostulacion}`)
+        fetch(`dao/ConsultarCv.php?IdPostulacion=${IdPostulacion}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
