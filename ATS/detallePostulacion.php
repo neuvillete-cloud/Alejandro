@@ -115,12 +115,10 @@ session_start();
             return;
         }
 
-        console.log("ID:", IdPostulacion); // <-- pon esto antes del fetch
-
+        console.log("ID:", IdPostulacion); // <-- para depurar antes del fetch
 
         fetch(`dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
-
-                .then(response => response.json())
+            .then(response => response.json())
             .then(data => {
                 if (data.error) {
                     contenedor.innerHTML = `<p>${data.error}</p>`;
@@ -148,8 +146,7 @@ session_start();
                 </div>
 
                 <a href="#" class="ver-mas">Ver descripción completa del empleo</a>
-            `;
-
+                `;
 
                 const linkVerMas = contenedor.querySelector(".ver-mas");
                 const contenidoAnimado = contenedor.querySelector(".contenido-completo-animado");
@@ -172,7 +169,21 @@ session_start();
                 contenedor.innerHTML = "<p>Error al cargar la vacante.</p>";
             });
     });
+
+    function textoAListaHTML(texto) {
+        if (!texto) return "<ul><li>No disponible</li></ul>";
+        const items = texto.split('\n').filter(l => l.trim() !== '');
+        return "<ul>" + items.map(item => `<li>${item.trim()}</li>`).join('') + "</ul>";
+    }
+
+    function recortarTexto(texto, limite = 200) {
+        if (!texto) return "No disponible";
+        return texto.length > limite
+            ? texto.slice(0, limite) + "..."
+            : texto;
+    }
 </script>
+
 
 </body>
 </html>
