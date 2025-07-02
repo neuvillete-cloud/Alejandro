@@ -46,7 +46,7 @@ try {
             V.Especialidad, 
             V.Horario, 
             V.EspacioTrabajo, 
-            V.Fecha AS FechaPublicacion
+            V.Fecha
         FROM Vacantes V
         INNER JOIN Area A ON V.IdArea = A.IdArea
         WHERE V.IdVacante = ?
