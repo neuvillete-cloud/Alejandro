@@ -379,7 +379,7 @@ form input:focus {
 
 /* Cuando el usuario hace clic en "ver más" */
 .tarjeta-vacante.expandida {
-    max-height: 600px;         /* Puedes ajustar a lo que necesites */
+    max-height: 700px;         /* Puedes ajustar a lo que necesites */
     overflow-y: auto;          /* Scroll solo si excede altura */
 }
 
