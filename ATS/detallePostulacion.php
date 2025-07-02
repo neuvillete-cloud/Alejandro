@@ -70,6 +70,13 @@ session_start();
                     <div id="vistaPreviaPDF" style="margin-top: 20px;">
                         <p>Cargando CV...</p>
                     </div>
+
+                    <!-- Botones Rechazar y Aprobar -->
+                    <div class="botones-postulacion">
+                        <button type="button" class="btn-continuar btn-rechazar">Rechazar</button>
+                        <button type="button" class="btn-continuar">Aprobar</button>
+                    </div>
+
                 </form>
             </div>
 
