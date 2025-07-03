@@ -292,7 +292,7 @@ session_start();
                             title: '¡Listo!',
                             text: data.message
                         }).then(() => {
-                            location.reload(); // o redirige si prefieres
+                            window.location.href = "Postulaciones.php";
                         });
                     } else {
                         Swal.fire({
