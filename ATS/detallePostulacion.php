@@ -73,8 +73,8 @@ session_start();
 
                     <!-- Botones Rechazar y Aprobar -->
                     <div class="botones-postulacion">
-                        <button type="button" class="btn-continuar btn-rechazar">Rechazar</button>
-                        <button type="button" class="btn-continuar">Aprobar</button>
+                        <button type="button" class="btn-continuar btn-rechazar" id="btnRechazar">Rechazar</button>
+                        <button type="button" class="btn-continuar" id="btnAprobar">Aprobar</button>
                     </div>
 
                 </form>
@@ -232,6 +232,55 @@ session_start();
                 console.error("Error al obtener el CV:", error);
                 contenedorCV.innerHTML = "<p>Error al cargar el CV.</p>";
             });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const btnAprobar = document.getElementById("btnAprobar");
+        const btnRechazar = document.getElementById("btnRechazar");
+        const params = new URLSearchParams(window.location.search);
+        const IdPostulacion = params.get("IdPostulacion");
+
+        function actualizarEstatus(nuevoEstatus) {
+            const formData = new FormData();
+            formData.append("id", IdPostulacion);
+            formData.append("status", nuevoEstatus);
+
+            fetch("dao/ActualizarEstatusPostulacion.php", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Listo!',
+                            text: data.message
+                        }).then(() => {
+                            location.reload(); // o redirige si quieres
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de red',
+                        text: 'No se pudo conectar con el servidor.'
+                    });
+                });
+        }
+
+        btnAprobar.addEventListener("click", () => actualizarEstatus(4));
+        btnRechazar.addEventListener("click", () => actualizarEstatus(3));
     });
 </script>
 
