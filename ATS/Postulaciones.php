@@ -196,9 +196,9 @@ if (!isset($_SESSION['NumNomina'])) {
             },
             "columns": [
                 { "data": "IdPostulacion" },
-                { "data": "Nombre" },
+                { "data": "NombreCandidato" },
                 { "data": "TituloVacante" },
-                { "data": "Nombre" },
+                { "data": "NombreSolicitante" },
                 { "data": "FechaPostulacion" },
                 {
                     "data": "NombreEstatus",
