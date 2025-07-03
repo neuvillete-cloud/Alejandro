@@ -236,6 +236,45 @@ session_start();
         const params = new URLSearchParams(window.location.search);
         const IdPostulacion = params.get("IdPostulacion");
 
+        let estatusActual = null;
+
+        // Obtener el estatus actual al cargar la página
+        fetch(`dao/ObtenerEstatusPostulacion.php?IdPostulacion=${IdPostulacion}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    estatusActual = parseInt(data.IdEstatus);
+                } else {
+                    console.error("No se pudo obtener el estatus");
+                }
+            })
+            .catch(error => console.error("Error al obtener el estatus:", error));
+
+        function confirmarYActualizar(accion, nuevoEstatus) {
+            if (estatusActual === 3 || estatusActual === 4) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Acción no permitida',
+                    text: 'Este candidato ya ha sido ' + (estatusActual === 3 ? 'rechazado' : 'aprobado') + '.'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: `¿Estás seguro que deseas ${accion} este candidato?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: accion === 'aprobar' ? '#28a745' : '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: `Sí, ${accion}`,
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    actualizarEstatus(nuevoEstatus);
+                }
+            });
+        }
+
         function actualizarEstatus(nuevoEstatus) {
             const formData = new FormData();
             formData.append("id", IdPostulacion);
@@ -253,7 +292,7 @@ session_start();
                             title: '¡Listo!',
                             text: data.message
                         }).then(() => {
-                            location.reload(); // o redirige si quieres
+                            location.reload(); // o redirige si prefieres
                         });
                     } else {
                         Swal.fire({
@@ -273,10 +312,11 @@ session_start();
                 });
         }
 
-        btnAprobar.addEventListener("click", () => actualizarEstatus(4));
-        btnRechazar.addEventListener("click", () => actualizarEstatus(3));
+        btnAprobar.addEventListener("click", () => confirmarYActualizar('aprobar', 4));
+        btnRechazar.addEventListener("click", () => confirmarYActualizar('rechazar', 3));
     });
 </script>
+
 
 </body>
 </html>
