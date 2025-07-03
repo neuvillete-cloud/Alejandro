@@ -385,71 +385,53 @@ body::after {
 }
 
 /* 🔷 Estilos para Tarjetas de Candidatos */
-.cards-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 1000px;
-    width: 90%;
-    margin: 40px auto;
-    position: relative;
-    z-index: 10;
-}
-
-.candidato-card {
+.horizontal-card {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    gap: 25px;
+    padding: 15px 25px;
     background-color: #E6F4F9;
     border-radius: 12px;
-    padding: 20px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    gap: 25px;
-    transition: transform 0.3s ease;
+    margin-bottom: 15px;
+    flex-wrap: nowrap;
 }
 
-.candidato-card:hover {
-    transform: scale(1.02);
-}
-
-/* Foto/Icono de usuario */
 .card-icon {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #1E90FF;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    color: white;
     flex-shrink: 0;
 }
 
-/* Información del candidato */
-.card-info {
-    flex-grow: 1;
+.card-icon i {
+    font-size: 24px;
+    color: white;
 }
 
-.card-info h3 {
-    margin: 0;
-    color: #333;
-    font-size: 20px;
+.card-dato {
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    text-align: left;
+}
+
+.dato-label {
+    font-size: 13px;
+    color: #777;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.dato-valor {
+    font-size: 15px;
     font-weight: bold;
-}
-
-.card-info p {
-    margin: 4px 0;
-    font-size: 14px;
-    color: #555;
-}
-
-/* Estatus */
-.card-status {
-    font-weight: bold;
-    padding: 6px 12px;
-    border-radius: 12px;
-    text-transform: capitalize;
-    font-size: 0.85em;
+    color: #222;
 }
 
 .estatus-recibido {
@@ -468,26 +450,17 @@ body::after {
 }
 
 /* Botón de acción */
-.card-actions {
-    margin-left: 20px;
-}
-
-.card-actions .ver-detalles-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+.ver-detalles-btn {
     background-color: #1e88e5;
     color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
 
-.card-actions .ver-detalles-btn:hover {
+.ver-detalles-btn:hover {
     background-color: #1565c0;
-    transform: scale(1.03);
 }

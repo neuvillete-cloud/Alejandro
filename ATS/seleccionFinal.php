@@ -76,14 +76,12 @@ if (!isset($_SESSION['NumNomina'])) {
         const profilePic = document.getElementById('profilePic');
         const profileDropdown = document.getElementById('profileDropdown');
 
-        // Sidebar toggle
         if (menuToggle && sidebar) {
             menuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
             });
         }
 
-        // Perfil toggle
         if (profilePic && profileDropdown) {
             profilePic.addEventListener('click', () => {
                 profileDropdown.classList.toggle('active');
@@ -96,7 +94,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Logout
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', function (e) {
@@ -110,7 +107,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Función para asignar clase según estatus
         function obtenerClaseEstatus(nombreEstatus) {
             switch (nombreEstatus.toLowerCase()) {
                 case 'recibido': return 'estatus-recibido';
@@ -120,7 +116,6 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         }
 
-        // Renderizar tarjetas
         function renderizarCandidatos(data) {
             const contenedor = document.getElementById('candidatosContainer');
             contenedor.innerHTML = '';
@@ -129,25 +124,31 @@ if (!isset($_SESSION['NumNomina'])) {
                 const clase = obtenerClaseEstatus(candidato.NombreEstatus);
 
                 const card = `
-                    <div class="candidato-card">
+                    <div class="candidato-card horizontal-card">
                         <div class="card-icon">
                             <i class="fas fa-user"></i>
                         </div>
-                        <div class="card-info">
-                            <h3>${candidato.Nombre}</h3>
+                        <div class="card-dato">
+                            <div class="dato-label">Nombre</div>
+                            <div class="dato-valor">${candidato.Nombre}</div>
                         </div>
-                        <div class="card-status ${clase}">${candidato.NombreEstatus}</div>
-                        <div class="card-actions">
-                            <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
-                                Ver Detalles
-                            </a>
+                        <div class="card-dato">
+                            <div class="dato-label">Estatus</div>
+                            <div class="dato-valor ${clase}">${candidato.NombreEstatus}</div>
+                        </div>
+                        <div class="card-dato">
+                            <div class="dato-label">Acciones</div>
+                            <div class="dato-valor">
+                                <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
+                                    Ver Detalles
+                                </a>
+                            </div>
                         </div>
                     </div>`;
                 contenedor.insertAdjacentHTML('beforeend', card);
             });
         }
 
-        // Cargar datos desde PHP
         fetch('https://grammermx.com/AleTest/ATS/dao/CandidatosFinales.php')
             .then(res => res.json())
             .then(json => {
