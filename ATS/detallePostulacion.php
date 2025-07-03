@@ -28,11 +28,11 @@ session_start();
             <a href="practicantes.php">Escuela de Talentos</a>
             <a href="#">Inclusión y diversidad</a>
 
-            <?php if (isset($_SESSION['NombreCandidato'])): ?>
+            <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
                     <div class="user-info">
                         <i class="fas fa-user-circle"></i>
-                        <span><?= htmlspecialchars($_SESSION['NombreCandidato']) ?></span>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-menu">
