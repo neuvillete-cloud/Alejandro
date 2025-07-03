@@ -33,6 +33,7 @@ body::before {
     background: #1E3A8A;
     top: -100px;
     left: -50px;
+    z-index: -1;
 }
 
 body::after {
@@ -41,6 +42,7 @@ body::after {
     background: #2563EB;
     bottom: -100px;
     right: -50px;
+    z-index: -1;
 }
 
 /* Barra superior */
