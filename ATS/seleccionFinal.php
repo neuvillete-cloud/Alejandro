@@ -132,6 +132,11 @@ if (!isset($_SESSION['NumNomina'])) {
                             <div class="dato-label">Nombre</div>
                             <div class="dato-valor">${candidato.Nombre}</div>
                         </div>
+
+                        <div class="card-dato">
+                            <div class="dato-label">Titulo de la Vacante</div>
+                            <div class="dato-valor">${candidato.TituloVacante}</div>
+                        </div>
                         <div class="card-dato">
                             <div class="dato-label">Estatus</div>
                             <div class="dato-valor ${clase}">${candidato.NombreEstatus}</div>
