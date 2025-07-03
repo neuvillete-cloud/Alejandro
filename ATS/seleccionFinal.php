@@ -65,7 +65,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>IdPostulacion</th>
                 <th>Nombre Candidato</th>
                 <th>Nombre Vacante</th>
-                <th>Fecha de Postulacion</th>
                 <th>Estatus</th>
                 <th>Detalles</th>
 
@@ -76,7 +75,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>#</th>
                 <th>Nomina</th>
                 <th>Nombre</th>
-                <th>Pregunta</th>
                 <th>Pregunta</th>
                 <th>Pregunta</th>
 
@@ -195,7 +193,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "IdPostulacion" },
                 { "data": "Nombre" },
                 { "data": "TituloVacante" },
-                { "data": "FechaPostulacion" },
                 {
                     "data": "NombreEstatus",
                     "render": function (data, type, row) {
