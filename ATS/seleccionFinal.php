@@ -41,11 +41,10 @@ if (!isset($_SESSION['NumNomina'])) {
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
     <ul>
-        <li><a href="Administrador.php">Inicio</a></li>
-        <li><a href="SAprobadas.php">S. Aprobadas</a></li>
-        <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-        <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
-        <li><a href="Postulaciones.php">Candidatos Postulados</a></li>
+        <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
+        <li><a href="seguimiento.php">Seguimiento</a></li>
+        <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
+        <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
     </ul>
 </nav>
 
