@@ -434,20 +434,17 @@ body::after {
     color: #222;
 }
 
-.estatus-recibido {
-    background-color: #0275d8;
-    color: white;
+/* Colores de estatus */
+.dato-valor.estatus-recibido {
+    color: #0275d8;
+}
+.dato-valor.estatus-aprobado {
+    color: #5cb85c;
+}
+.dato-valor.estatus-rechazado {
+    color: #d9534f;
 }
 
-.estatus-aprobado {
-    background-color: #5cb85c;
-    color: white;
-}
-
-.estatus-rechazado {
-    background-color: #d9534f;
-    color: white;
-}
 
 /* Botón de acción */
 .ver-detalles-btn {
