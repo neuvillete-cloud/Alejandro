@@ -389,18 +389,18 @@ body::after {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 25px;
-    padding: 15px 25px;
+    gap: 35px; /* Más espacio entre elementos */
+    padding: 25px 40px; /* Más relleno para hacer la tarjeta más grande */
     background-color: #E6F4F9;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     flex-wrap: nowrap;
 }
 
 .card-icon {
-    width: 50px;
-    height: 50px;
+    width: 70px;  /* Más grande */
+    height: 70px; /* Más grande */
     border-radius: 50%;
     background-color: #1E90FF;
     display: flex;
@@ -410,53 +410,37 @@ body::after {
 }
 
 .card-icon i {
-    font-size: 24px;
+    font-size: 36px; /* Ícono más grande */
     color: white;
 }
 
 .card-dato {
     display: flex;
     flex-direction: column;
-    min-width: 140px;
+    min-width: 180px; /* Más ancho para contenido */
     text-align: left;
 }
 
 .dato-label {
-    font-size: 13px;
+    font-size: 16px; /* Texto más grande */
     color: #777;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .dato-valor {
-    font-size: 15px;
+    font-size: 18px; /* Texto más grande */
     font-weight: bold;
     color: #222;
 }
 
-/* Colores de estatus */
-.dato-valor.estatus-recibido {
-    color: #0275d8;
-}
-.dato-valor.estatus-aprobado {
-    color: #5cb85c;
-}
-.dato-valor.estatus-rechazado {
-    color: #d9534f;
-}
-
-
-/* Botón de acción */
+/* Opcional: ajustar el botón dentro de la tarjeta */
 .ver-detalles-btn {
-    background-color: #1e88e5;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+    padding: 10px 18px; /* Más grande */
+    font-size: 16px; /* Más grande */
+    border-radius: 8px;
 }
+
 
 .ver-detalles-btn:hover {
     background-color: #1565c0;
