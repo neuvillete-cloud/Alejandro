@@ -44,7 +44,8 @@ if (!isset($_SESSION['NumNomina'])) {
         <li><a href="Administrador.php">Inicio</a></li>
         <li><a href="SAprobadas.php">S. Aprobadas</a></li>
         <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-        <li><a href="configuraciones.php">Configuraciones</a></li>
+        <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
+        <li><a href="Postulaciones.php">Candidatos Postulados</a></li>
     </ul>
 </nav>
 
