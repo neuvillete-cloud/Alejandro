@@ -18,8 +18,7 @@ try {
         INNER JOIN Candidatos c ON p.IdCandidato = c.IdCandidato
         INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
         INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
-        WHERE p.IdEstatus = 1
-    ";
+    "; // ← Se quitó el WHERE
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
