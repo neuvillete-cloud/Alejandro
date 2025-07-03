@@ -127,12 +127,11 @@ if (!isset($_SESSION['NumNomina'])) {
 
             data.forEach(candidato => {
                 const clase = obtenerClaseEstatus(candidato.NombreEstatus);
-                const avatar = `https://grammermx.com/Fotos/${candidato.NumNomina}.png`;
 
                 const card = `
                     <div class="candidato-card">
                         <div class="card-icon">
-                            <img src="${avatar}" alt="${candidato.Nombre}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                            <i class="fas fa-user"></i>
                         </div>
                         <div class="card-info">
                             <h3>${candidato.Nombre}</h3>
