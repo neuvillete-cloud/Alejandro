@@ -33,13 +33,11 @@ session_start();
                     </div>
                     <div class="dropdown-menu">
                         <a href="perfil.php">Perfil</a>
-                        <a href="#">Alertas de empleo</a>
-                        <a href="#">Historial de solicitudes</a>
                         <a href="#" id="logout">Cerrar sesión</a>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="loginATS.php">Inicio de sesión</a>
+                <a href="login.php">Inicio de sesión</a>
             <?php endif; ?>
         </nav>
     </div>
