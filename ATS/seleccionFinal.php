@@ -44,7 +44,9 @@ if (!isset($_SESSION['NumNomina'])) {
 </nav>
 
 <div class="content">
-    <h2>Candidatos Finales</h2>
+    <div class="titulo-candidatos">
+        <h2>Candidatos Finales</h2>
+    </div>
 
     <!-- Contenedor de Tarjetas -->
     <div id="candidatosContainer" class="cards-container"></div>
