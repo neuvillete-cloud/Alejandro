@@ -51,7 +51,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <!-- Tabla de Solicitudes -->
 <div class="content">
-    <h2>Candidatos Postulados</h2>
+    <h2>Candidatos Finales</h2>
 
     <!-- Contenedor de botones de exportación -->
     <div class="export-buttons">
@@ -189,7 +189,7 @@ if (!isset($_SESSION['NumNomina'])) {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
             "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoPostulaciones.php',
+                "url": 'https://grammermx.com/AleTest/ATS/dao/CandidatosFinales.php',
                 "dataSrc": "data"
             },
             "columns": [
