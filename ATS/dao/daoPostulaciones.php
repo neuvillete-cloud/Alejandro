@@ -10,10 +10,10 @@ try {
         SELECT 
             p.IdPostulacion,
             p.IdVacante,
-            c.Nombre AS NombreCandidato,
+            c.Nombre AS Nombre,
             v.TituloVacante,
             v.IdSolicitud,
-            s.Nombre AS NombreSolicitante,
+            s.Nombre AS Nombre,
             p.FechaPostulacion,
             e.NombreEstatus
         FROM Postulaciones p
