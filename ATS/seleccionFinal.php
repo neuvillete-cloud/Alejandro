@@ -41,7 +41,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
     <ul>
-        <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
+        <li><a href="Solicitante.php" >Inicio</a></li>
         <li><a href="seguimiento.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
