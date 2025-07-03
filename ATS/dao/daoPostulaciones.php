@@ -10,15 +10,18 @@ try {
         SELECT 
             p.IdPostulacion,
             p.IdVacante,
-            c.Nombre AS Nombre,
+            c.Nombre AS NombreCandidato,
             v.TituloVacante,
+            v.IdSolicitud,
+            s.Nombre AS NombreSolicitante,
             p.FechaPostulacion,
             e.NombreEstatus
         FROM Postulaciones p
         INNER JOIN Candidatos c ON p.IdCandidato = c.IdCandidato
         INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
+        INNER JOIN Solicitudes s ON v.IdSolicitud = s.IdSolicitud
         INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
-    "; // ← Se quitó el WHERE
+    ";
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
