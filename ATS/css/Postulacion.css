@@ -686,8 +686,9 @@ form input:focus {
     display: block;
     max-width: 500px;
     width: 100%;
-    background-color: #215dbc;
-    color: white;
+    background-color: white;
+    color: #0077cc;
+    border: 2px solid #0077cc;
     padding: 15px 25px;
     font-size: 16px;
     border-radius: 8px;
