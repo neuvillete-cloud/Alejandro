@@ -33,6 +33,7 @@ function validarCredenciales($NumNomina, $Contrasena) {
         $usuario = $resultado->fetch_assoc(); // Obtener los datos del usuario
         // Guardar la nómina y rol en la sesión
         $_SESSION['NumNomina'] = $NumNomina;
+        $_SESSION['Nombre'] = $NumNomina;
         $_SESSION['Rol'] = $usuario['IdRol']; // Suponiendo que el campo del rol en la tabla se llama 'IdRol'
 
         // Retornar éxito y redireccionar dependiendo del rol
