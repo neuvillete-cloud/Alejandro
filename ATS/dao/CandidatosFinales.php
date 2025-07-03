@@ -3,6 +3,12 @@ session_start();
 include_once("ConexionBD.php");
 
 try {
+    if (!isset($_SESSION['NumNomina'])) {
+        throw new Exception("Número de nómina no disponible en la sesión.");
+    }
+
+    $numNomina = $_SESSION['NumNomina'];
+
     $con = new LocalConector();
     $conex = $con->conectar();
 
@@ -18,7 +24,8 @@ try {
         INNER JOIN Candidatos c ON p.IdCandidato = c.IdCandidato
         INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
         INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
-        WHERE p.IdEstatus = 4
+        INNER JOIN Solicitudes s ON v.IdSolicitud = s.IdSolicitud
+        WHERE p.IdEstatus = 4 AND s.NumNomina = ?
     ";
 
     $stmt = $conex->prepare($sql);
@@ -26,6 +33,7 @@ try {
         throw new Exception("Error en la preparación de la consulta: " . $conex->error);
     }
 
+    $stmt->bind_param("s", $numNomina);
     $stmt->execute();
     $result = $stmt->get_result();
     $postulaciones = [];
