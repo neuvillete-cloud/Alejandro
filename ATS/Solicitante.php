@@ -39,7 +39,7 @@ if (!isset($_SESSION['NumNomina'])) {
         <li><a href="#" data-page="Solicitante.php" >Inicio</a></li>
         <li><a href="seguimiento.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
-        <li><a href="#" data-page="configuraciones.php">Configuraciones</a></li>
+        <li><a href="seleccionFinal.php">Seguimiento</a></li>
     </ul>
 </nav>
 <main class="main-content" id="mainContent">
