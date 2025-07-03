@@ -134,7 +134,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         </div>
 
                         <div class="card-dato">
-                            <div class="dato-label">Vacante</div>
+                            <div class="dato-label">Titulo de la Vacante</div>
                             <div class="dato-valor">${candidato.TituloVacante}</div>
                         </div>
                         <div class="card-dato">
