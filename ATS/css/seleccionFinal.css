@@ -464,6 +464,9 @@ body::after {
     background-color: #1565c0;
 }
 
-.content h2 {
-    margin-top: 20px; /* Puedes reducirlo más si quieres que esté más arriba */
+.titulo-candidatos h2 {
+    margin-top: 20px; /* Súbelo más si quieres */
+    margin-bottom: 10px;
+    text-align: left; /* opcional */
 }
+
