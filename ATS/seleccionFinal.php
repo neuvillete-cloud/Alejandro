@@ -47,7 +47,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <h2>Candidatos Finales</h2>
 
     <!-- Contenedor de Tarjetas -->
-    <div id="candidatosContainer" class="candidatos-container"></div>
+    <div id="candidatosContainer" class="cards-container"></div>
 </div>
 
 <!-- Modal de Perfil -->
@@ -64,6 +64,7 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/funcionamientoModal.js"></script>
@@ -75,12 +76,14 @@ if (!isset($_SESSION['NumNomina'])) {
         const profilePic = document.getElementById('profilePic');
         const profileDropdown = document.getElementById('profileDropdown');
 
+        // Sidebar toggle
         if (menuToggle && sidebar) {
             menuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
             });
         }
 
+        // Perfil toggle
         if (profilePic && profileDropdown) {
             profilePic.addEventListener('click', () => {
                 profileDropdown.classList.toggle('active');
@@ -107,7 +110,7 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Función para asignar color según estatus
+        // Función para asignar clase según estatus
         function obtenerClaseEstatus(nombreEstatus) {
             switch (nombreEstatus.toLowerCase()) {
                 case 'recibido': return 'estatus-recibido';
@@ -127,21 +130,25 @@ if (!isset($_SESSION['NumNomina'])) {
                 const avatar = `https://grammermx.com/Fotos/${candidato.NumNomina}.png`;
 
                 const card = `
-                <div class="candidato-card">
-                    <div class="candidato-info">
-                        <img src="${avatar}" alt="${candidato.Nombre}" class="candidato-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
-                        <div class="candidato-nombre">${candidato.Nombre}</div>
-                    </div>
-                    <div class="candidato-estatus ${clase}">${candidato.NombreEstatus}</div>
-                    <div class="candidato-acciones">
-                        <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}">Ver Detalles</a>
-                    </div>
-                </div>`;
+                    <div class="candidato-card">
+                        <div class="card-icon">
+                            <img src="${avatar}" alt="${candidato.Nombre}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                        </div>
+                        <div class="card-info">
+                            <h3>${candidato.Nombre}</h3>
+                        </div>
+                        <div class="card-status ${clase}">${candidato.NombreEstatus}</div>
+                        <div class="card-actions">
+                            <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    </div>`;
                 contenedor.insertAdjacentHTML('beforeend', card);
             });
         }
 
-        // Cargar candidatos desde PHP
+        // Cargar datos desde PHP
         fetch('https://grammermx.com/AleTest/ATS/dao/CandidatosFinales.php')
             .then(res => res.json())
             .then(json => {
