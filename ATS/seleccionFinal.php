@@ -161,7 +161,7 @@ if (!isset($_SESSION['NumNomina'])) {
                             }
                         }
                     });
-                document.getElementById("btnAprobar").onclick = () => actualizarEstatus(IdPostulacion, 4);
+                document.getElementById("btnAprobar").onclick = () => actualizarEstatus(IdPostulacion, 9);
                 document.getElementById("btnRechazar").onclick = () => actualizarEstatus(IdPostulacion, 3);
             }
         });
