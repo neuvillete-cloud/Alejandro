@@ -152,7 +152,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         } else {
                             const ext = data.RutaCV.split('.').pop().toLowerCase();
                             if (ext === 'pdf') {
-                                contenedorCV.innerHTML = `<iframe width="130%" height="400" src="${data.RutaCV}" style="border:1px solid #ccc; border-radius:10px;"></iframe>`;
+                                contenedorCV.innerHTML = `<iframe width="120%" height="400" src="${data.RutaCV}" style="border:1px solid #ccc; border-radius:10px;"></iframe>`;
                             } else {
                                 contenedorCV.innerHTML = `<p>Formato no soportado: ${ext}</p><a href="${data.RutaCV}" target="_blank" class="btn btn-primary">Descargar CV</a>`;
                             }
