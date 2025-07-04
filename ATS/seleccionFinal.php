@@ -48,8 +48,16 @@ if (!isset($_SESSION['NumNomina'])) {
         <h2>Candidatos Finales</h2>
     </div>
 
-    <!-- Contenedor de Tarjetas -->
-    <div id="candidatosContainer" class="cards-container"></div>
+    <!-- Contenedor tipo tabla -->
+    <div class="cards-container">
+        <div class="cards-header">
+            <div class="col col-nombre">Nombre</div>
+            <div class="col col-vacante">Vacante</div>
+            <div class="col col-estatus">Estatus</div>
+            <div class="col col-acciones">Acciones</div>
+        </div>
+        <div id="candidatosContainer" class="cards-body"></div>
+    </div>
 </div>
 
 <!-- Modal de Perfil -->
@@ -124,34 +132,23 @@ if (!isset($_SESSION['NumNomina'])) {
 
             data.forEach(candidato => {
                 const clase = obtenerClaseEstatus(candidato.NombreEstatus);
-
                 const card = `
-                    <div class="candidato-card horizontal-card">
-                        <div class="card-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="card-dato">
-                            <div class="dato-label">Nombre</div>
-                            <div class="dato-valor">${candidato.Nombre}</div>
-                        </div>
+                <div class="candidato-card">
+                    <div class="col col-nombre">
+    <div class="card-icon">
+        <i class="fas fa-user"></i>
+    </div>
+    <div class="nombre-texto">${candidato.Nombre}</div>
+</div>
 
-                        <div class="card-dato">
-                            <div class="dato-label">Titulo de la Vacante</div>
-                            <div class="dato-valor">${candidato.TituloVacante}</div>
-                        </div>
-                        <div class="card-dato">
-                            <div class="dato-label">Estatus</div>
-                            <div class="dato-valor ${clase}">${candidato.NombreEstatus}</div>
-                        </div>
-                        <div class="card-dato">
-                            <div class="dato-label">Acciones</div>
-                            <div class="dato-valor">
-                                <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
-                                    Ver Detalles
-                                </a>
-                            </div>
-                        </div>
-                    </div>`;
+                    <div class="col col-vacante">${candidato.TituloVacante}</div>
+                    <div class="col col-estatus ${clase}">${candidato.NombreEstatus}</div>
+                    <div class="col col-acciones">
+                        <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>`;
                 contenedor.insertAdjacentHTML('beforeend', card);
             });
         }

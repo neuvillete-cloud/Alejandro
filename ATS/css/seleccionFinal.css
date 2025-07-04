@@ -386,23 +386,51 @@ body::after {
     font-size: 16px;
 }
 
-/* 🔷 Estilos para Tarjetas de Candidatos */
-.horizontal-card {
+/* Estructura general */
+.cards-container {
+    width: 100%;
+    margin: 20px auto;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.cards-header,
+.candidato-card {
+    display: grid;
+    grid-template-columns: 30% 25% 20% 25%;
+    padding: 12px 16px;
+    align-items: center;
+}
+
+.cards-header {
+    background-color: #0f2748;
+    font-weight: bold;
+    border-bottom: 2px solid #063962;
+    color: #ffffff;
+}
+
+.candidato-card {
+    background-color: #1c3460;
+    border-bottom: 1px solid #345a8d;
+    color: #f0f0f0;
+    transition: background 0.2s ease;
+}
+
+.candidato-card:hover {
+    background-color: #254376;
+}
+
+/* Columna Nombre con ícono */
+.col-nombre {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 35px; /* Más espacio entre elementos */
-    padding: 25px 40px; /* Más relleno para hacer la tarjeta más grande */
-    background-color: #E6F4F9;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
-    flex-wrap: nowrap;
+    gap: 10px;
 }
 
 .card-icon {
-    width: 70px;  /* Más grande */
-    height: 70px; /* Más grande */
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #1E90FF;
     display: flex;
@@ -412,57 +440,57 @@ body::after {
 }
 
 .card-icon i {
-    font-size: 36px; /* Ícono más grande */
+    font-size: 24px;
     color: white;
 }
 
-.card-dato {
-    display: flex;
-    flex-direction: column;
-    min-width: 180px; /* Más ancho para contenido */
-    text-align: left;
-}
-
-.dato-label {
-    font-size: 16px; /* Texto más grande */
-    color: #777;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.dato-valor {
-    font-size: 18px; /* Texto más grande */
-    font-weight: bold;
-    color: #222;
-}
-
-/* Colores de estatus */
-.dato-valor.estatus-recibido {
-    color: #0275d8;
-}
-.dato-valor.estatus-aprobado {
-    color: #5cb85c;
-}
-.dato-valor.estatus-rechazado {
-    color: #d9534f;
-}
-
-
-/* Botón de acción */
-.ver-detalles-btn {
-    background-color: #1e88e5;
-    color: white;
-    padding: 10px 18px; /* Más grande */
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 16px; /* Más grande */
+.nombre-texto {
     font-weight: 500;
-    transition: background-color 0.3s ease;
+    color: white;
+    word-break: break-word;
 }
 
-.ver-detalles-btn:hover {
-    background-color: #1565c0;
+/* Columnas generales */
+.col {
+    padding: 6px 8px;
+    overflow-wrap: break-word;
 }
+
+/* Botón "Ver Detalles" */
+.col-acciones a.ver-detalles-btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.col-acciones a.ver-detalles-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Colores por estatus */
+.estatus-aprobado {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.estatus-rechazado {
+    color: #F44336;
+    font-weight: bold;
+}
+
+.estatus-recibido {
+    color: #FF9800;
+    font-weight: bold;
+}
+
+.estatus-default {
+    color: #cccccc;
+    font-weight: bold;
+}
+
 
 .titulo-candidatos h2 {
     margin-top: 20px; /* Súbelo más si quieres */
