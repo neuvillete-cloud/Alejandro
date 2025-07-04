@@ -249,5 +249,6 @@ if (!isset($_SESSION['NumNomina'])) {
         }
     });
 </script>
+<script src="js/funcionamientoModal.js"></script>
 </body>
 </html>
