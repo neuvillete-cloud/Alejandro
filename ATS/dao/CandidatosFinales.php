@@ -25,7 +25,14 @@ try {
         INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
         INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
         INNER JOIN Solicitudes s ON v.IdSolicitud = s.IdSolicitud
-        WHERE p.IdEstatus = 4 AND s.NumNomina = ?
+        WHERE 
+            p.IdEstatus = 4 
+            AND s.NumNomina = ?
+            AND p.IdVacante NOT IN (
+                SELECT IdVacante 
+                FROM Postulaciones 
+                WHERE IdEstatus = 9
+            )
     ";
 
     $stmt = $conex->prepare($sql);
