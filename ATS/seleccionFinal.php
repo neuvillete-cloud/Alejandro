@@ -162,26 +162,6 @@ if (!isset($_SESSION['NumNomina'])) {
                             }
                         }
                     });
-
-                fetch(`dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        const cont = document.getElementById("vacanteDetalle");
-                        if (data.error) {
-                            cont.innerHTML = `<p>${data.error}</p>`;
-                        } else {
-                            cont.innerHTML = `
-                <h5>${data.TituloVacante}</h5>
-                <p><strong>Área:</strong> ${data.Area}</p>
-                <p><strong>Ubicación:</strong> ${data.Ciudad}, ${data.Estado}</p>
-                <p><strong>Horario:</strong> ${data.Horario}</p>
-                <hr>
-                <p><strong>Descripción:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
-                <p><strong>Requisitos:</strong><br>${textoAListaHTML(data.Requisitos)}</p>
-                <p><strong>Beneficios:</strong><br>${textoAListaHTML(data.Beneficios)}</p>`;
-                        }
-                    });
-
                 document.getElementById("btnAprobar").onclick = () => actualizarEstatus(IdPostulacion, 4);
                 document.getElementById("btnRechazar").onclick = () => actualizarEstatus(IdPostulacion, 3);
             }
