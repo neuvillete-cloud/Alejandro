@@ -60,6 +60,10 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <div id="candidatosContainer" class="cards-body"></div>
     </div>
+    <div id="mensajeSinCandidatos" class="alert alert-info text-center mt-4" style="display: none;">
+        No hay candidatos para aprobar en este momento.
+    </div>
+
 </div>
 
 <!-- Offcanvas Panel -->
@@ -118,21 +122,35 @@ if (!isset($_SESSION['NumNomina'])) {
 
         function renderizarCandidatos(data) {
             const contenedor = document.getElementById('candidatosContainer');
+            const contenedorTarjetas = document.querySelector('.cards-container');
+            const mensaje = document.getElementById('mensajeSinCandidatos');
+
             contenedor.innerHTML = '';
-            data.forEach(candidato => {
-                const clase = obtenerClaseEstatus(candidato.NombreEstatus);
-                contenedor.insertAdjacentHTML('beforeend', `
-          <div class="candidato-card">
-            <div class="col col-icono"><div class="card-icon"><i class="fas fa-user"></i></div></div>
-            <div class="col col-nombre"><div class="nombre-texto">${candidato.Nombre}</div></div>
-            <div class="col col-vacante">${candidato.TituloVacante}</div>
-            <div class="col col-estatus"><span class="${clase}">${candidato.NombreEstatus}</span></div>
-            <div class="col col-acciones">
-              <a href="#" class="ver-detalles-btn" data-id="${candidato.IdPostulacion}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">Ver Detalles</a>
-            </div>
-          </div>`);
-            });
+
+            if (data.length === 0) {
+                contenedorTarjetas.style.display = 'none';
+                mensaje.style.display = 'block';
+            } else {
+                contenedorTarjetas.style.display = 'block';
+                mensaje.style.display = 'none';
+
+                data.forEach(candidato => {
+                    const clase = obtenerClaseEstatus(candidato.NombreEstatus);
+                    contenedor.insertAdjacentHTML('beforeend', `
+                <div class="candidato-card">
+                    <div class="col col-icono"><div class="card-icon"><i class="fas fa-user"></i></div></div>
+                    <div class="col col-nombre"><div class="nombre-texto">${candidato.Nombre}</div></div>
+                    <div class="col col-vacante">${candidato.TituloVacante}</div>
+                    <div class="col col-estatus"><span class="${clase}">${candidato.NombreEstatus}</span></div>
+                    <div class="col col-acciones">
+                        <a href="#" class="ver-detalles-btn" data-id="${candidato.IdPostulacion}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">Ver Detalles</a>
+                    </div>
+                </div>
+            `);
+                });
+            }
         }
+
 
         fetch('https://grammermx.com/AleTest/ATS/dao/CandidatosFinales.php')
             .then(res => res.json())
