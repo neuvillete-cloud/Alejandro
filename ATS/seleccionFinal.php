@@ -20,7 +20,7 @@ if (!isset($_SESSION['NumNomina'])) {
 <header class="header">
     <div class="header-left">
         <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>R.H Admin</h1>
+        <h1>R.H Admind</h1>
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
     <div class="header-right">
@@ -35,9 +35,10 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </header>
 
-<nav class="sidebar" id="sidebar">
+<!-- Sidebar -->
+<nav class="sidebar active" id="sidebar">
     <ul>
-        <li><a href="Solicitante.php">Inicio</a></li>
+        <li><a href="Solicitante.php" >Inicio</a></li>
         <li><a href="seguimiento.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
