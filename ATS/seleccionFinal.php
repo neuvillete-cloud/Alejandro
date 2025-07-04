@@ -147,7 +147,10 @@ if (!isset($_SESSION['NumNomina'])) {
 
 
                     <div class="col col-vacante">${candidato.TituloVacante}</div>
-                    <div class="col col-estatus ${clase}">${candidato.NombreEstatus}</div>
+                    <div class="col col-estatus">
+    <span class="${clase}">${candidato.NombreEstatus}</span>
+</div>
+
                     <div class="col col-acciones">
                         <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
                             Ver Detalles

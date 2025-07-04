@@ -479,26 +479,32 @@ body::after {
     background-color: #0056b3;
 }
 
+.col-estatus span {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: white;
+    display: inline-block;
+    font-size: 13px;
+}
+
 /* Colores por estatus */
 .estatus-aprobado {
-    color: #4CAF50;
-    font-weight: bold;
+    background-color: #4CAF50; /* Verde */
 }
 
 .estatus-rechazado {
-    color: #F44336;
-    font-weight: bold;
+    background-color: #F44336; /* Rojo */
 }
 
 .estatus-recibido {
-    color: #FF9800;
-    font-weight: bold;
+    background-color: #FF9800; /* Naranja */
 }
 
 .estatus-default {
-    color: #cccccc;
-    font-weight: bold;
+    background-color: #888888; /* Gris */
 }
+
 
 
 .titulo-candidatos h2 {
