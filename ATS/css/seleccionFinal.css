@@ -406,7 +406,7 @@ body::after {
 }
 
 .cards-header {
-    background-color: #063962;         /* Azul medio oscuro moderno */
+    background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
     font-weight: bold;
     color: #ffffff;
 }
