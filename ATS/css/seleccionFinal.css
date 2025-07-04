@@ -516,3 +516,17 @@ body::after {
     color: white;
 }
 
+.mensaje-vacio {
+    background-color: #f0f4f8;
+    border: 2px dashed #a0aebf;
+    color: #3a3f44;
+    padding: 30px;
+    border-radius: 15px;
+    margin: 40px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+.mensaje-vacio i {
+    color: #a0aebf;
+}
+
