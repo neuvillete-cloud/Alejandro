@@ -68,6 +68,7 @@ if (!isset($_SESSION['NumNomina'])) {
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Detalle del Candidato</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
     </div>
+    <p id="nombreCandidato" class="fw-bold mb-3" style="font-size: 1.1rem;"></p>
     <div class="offcanvas-body">
         <div id="vistaPreviaPDF"><p>Cargando CV...</p></div>
         <div class="botones-postulacion mb-4">
@@ -142,6 +143,8 @@ if (!isset($_SESSION['NumNomina'])) {
             if (e.target.classList.contains('ver-detalles-btn')) {
                 e.preventDefault();
                 const IdPostulacion = e.target.dataset.id;
+                const nombre = e.target.closest('.candidato-card').querySelector('.nombre-texto').textContent;
+                document.getElementById("nombreCandidato").textContent = nombre;
 
                 fetch(`dao/ConsultarCv.php?IdPostulacion=${IdPostulacion}`)
                     .then(res => res.json())
@@ -203,8 +206,6 @@ if (!isset($_SESSION['NumNomina'])) {
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
-        // Menú lateral (sidebar)
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
 
@@ -214,7 +215,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Menú de perfil
         const userProfile = document.getElementById('profilePic');
         const profileDropdown = document.getElementById('profileDropdown');
 
@@ -230,7 +230,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Cerrar sesión con fetch
         const logoutLink = document.getElementById('logout');
 
         if (logoutLink) {
