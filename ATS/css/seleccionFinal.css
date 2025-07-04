@@ -464,6 +464,7 @@ body::after {
 .col {
     padding: 10px 12px;
     overflow-wrap: break-word;
+    color: white;
 }
 
 /* Botón "Ver Detalles" */
