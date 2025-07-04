@@ -506,3 +506,45 @@ body::after {
     text-align: left; /* opcional */
 }
 
+.cards-container {
+    width: 90%; /* Amplía el ancho, puedes probar 90% o 100% */
+    margin: 30px auto;
+    font-size: 16px; /* Aumenta tamaño base de texto */
+}
+
+.cards-header,
+.candidato-card {
+    padding: 18px 24px; /* Más espacio arriba y abajo, y lateral */
+    grid-template-columns: 12% 28% 28% 18% 14%; /* Ajusta proporciones si quieres */
+}
+
+.candidato-card {
+    min-height: 90px; /* Más alto para que no se vea tan comprimido */
+    font-size: 1.1rem; /* Texto un poco más grande */
+    border-radius: 8px; /* Opcional, para bordes redondeados */
+}
+
+.col {
+    padding: 12px 16px; /* Más espacio interno */
+}
+
+.card-icon {
+    width: 80px;  /* Más grande */
+    height: 80px;
+}
+
+.card-icon i {
+    font-size: 36px; /* Icono más grande */
+}
+
+.nombre-texto {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* Header */
+.cards-header {
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 20px 24px;
+}
