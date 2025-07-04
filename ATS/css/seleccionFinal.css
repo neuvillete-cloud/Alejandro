@@ -512,5 +512,6 @@ body::after {
     margin-top: 20px; /* Súbelo más si quieres */
     margin-bottom: 20px;
     text-align: left; /* opcional */
+    color: white;
 }
 
