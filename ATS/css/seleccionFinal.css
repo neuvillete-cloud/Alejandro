@@ -388,11 +388,13 @@ body::after {
 
 /* Estructura general */
 .cards-container {
-    width: 95%;
-    max-width: 1400px;
-    margin: 30px auto;
-    font-size: 16px;
+    width: 95% !important;
+    max-width: 1400px !important;
+    margin: 30px auto !important;
+    font-size: 16px !important;
+    background-color: rgba(255, 0, 0, 0.1); /* prueba visual */
 }
+
 
 .cards-header,
 .candidato-card {
