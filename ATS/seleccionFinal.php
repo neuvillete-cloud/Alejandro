@@ -68,7 +68,8 @@ if (!isset($_SESSION['NumNomina'])) {
         <h5 class="offcanvas-title" id="offcanvasRightLabel">Detalle del Candidato</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
     </div>
-    <p id="nombreCandidato" class="fw-bold mb-3" style="font-size: 1.1rem;"></p>
+    <p id="nombreCandidato" class="fw-bold fs-5" style="margin-left: 100px;"></p>
+
     <div class="offcanvas-body">
         <div id="vistaPreviaPDF"><p>Cargando CV...</p></div>
         <div class="botones-postulacion mb-4">
