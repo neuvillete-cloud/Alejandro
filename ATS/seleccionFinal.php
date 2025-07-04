@@ -161,8 +161,36 @@ if (!isset($_SESSION['NumNomina'])) {
                             }
                         }
                     });
-                document.getElementById("btnAprobar").onclick = () => actualizarEstatus(IdPostulacion, 9);
-                document.getElementById("btnRechazar").onclick = () => actualizarEstatus(IdPostulacion, 3);
+                document.getElementById("btnAprobar").onclick = () => {
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: 'Vas a aprobar a este candidato.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, aprobar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            actualizarEstatus(IdPostulacion, 9);
+                        }
+                    });
+                };
+
+                document.getElementById("btnRechazar").onclick = () => {
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: 'Vas a rechazar a este candidato.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, rechazar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            actualizarEstatus(IdPostulacion, 3);
+                        }
+                    });
+                };
+
             }
         });
 
