@@ -76,7 +76,6 @@ if (!isset($_SESSION['NumNomina'])) {
             <button type="button" class="btn btn-danger me-2" id="btnRechazar">Rechazar</button>
             <button type="button" class="btn btn-success" id="btnAprobar">Aprobar</button>
         </div>
-        <div class="tarjeta-vacante" id="vacanteDetalle"><p>Cargando vacante...</p></div>
     </div>
 </div>
 
