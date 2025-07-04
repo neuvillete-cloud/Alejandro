@@ -51,11 +51,13 @@ if (!isset($_SESSION['NumNomina'])) {
     <!-- Contenedor tipo tabla -->
     <div class="cards-container">
         <div class="cards-header">
+            <div class="col col-icono"></div>
             <div class="col col-nombre">Nombre</div>
             <div class="col col-vacante">Vacante</div>
             <div class="col col-estatus">Estatus</div>
             <div class="col col-acciones">Acciones</div>
         </div>
+
         <div id="candidatosContainer" class="cards-body"></div>
     </div>
 </div>
@@ -134,12 +136,15 @@ if (!isset($_SESSION['NumNomina'])) {
                 const clase = obtenerClaseEstatus(candidato.NombreEstatus);
                 const card = `
                 <div class="candidato-card">
-                    <div class="col col-nombre">
+                    <div class="col col-icono">
     <div class="card-icon">
         <i class="fas fa-user"></i>
     </div>
+</div>
+<div class="col col-nombre">
     <div class="nombre-texto">${candidato.Nombre}</div>
 </div>
+
 
                     <div class="col col-vacante">${candidato.TituloVacante}</div>
                     <div class="col col-estatus ${clase}">${candidato.NombreEstatus}</div>

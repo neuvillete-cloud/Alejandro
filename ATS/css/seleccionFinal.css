@@ -398,10 +398,11 @@ body::after {
 .cards-header,
 .candidato-card {
     display: grid;
-    grid-template-columns: 30% 25% 20% 25%;
+    grid-template-columns: 10% 25% 25% 20% 20%;
     padding: 12px 16px;
     align-items: center;
 }
+
 
 .cards-header {
     background-color: #0f2748;
@@ -443,6 +444,13 @@ body::after {
     font-size: 24px;
     color: white;
 }
+
+.col-icono {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
 .nombre-texto {
     font-weight: 500;
