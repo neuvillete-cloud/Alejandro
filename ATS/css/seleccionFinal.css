@@ -409,6 +409,7 @@ body::after {
     background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
     font-weight: bold;
     color: #ffffff;
+    border-bottom: 1px solid white;
 }
 
 .candidato-card {
