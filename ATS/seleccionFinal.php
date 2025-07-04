@@ -60,9 +60,11 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <div id="candidatosContainer" class="cards-body"></div>
     </div>
-    <div id="mensajeSinCandidatos" class="alert alert-info text-center mt-4" style="display: none;">
-        No hay candidatos para aprobar en este momento.
+    <div id="mensajeSinCandidatos" class="mensaje-vacio text-center" style="display: none;">
+        <i class="fas fa-users-slash fa-3x mb-3"></i>
+        <p class="fw-bold fs-5">No hay candidatos disponibles para aprobar en este momento.</p>
     </div>
+
 
 </div>
 
