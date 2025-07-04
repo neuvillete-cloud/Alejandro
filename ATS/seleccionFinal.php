@@ -193,6 +193,54 @@
         }
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
 
+        // Menú lateral (sidebar)
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Menú de perfil
+        const userProfile = document.getElementById('profilePic');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (userProfile && profileDropdown) {
+            userProfile.addEventListener('click', () => {
+                profileDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
+                    profileDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        // Cerrar sesión con fetch
+        const logoutLink = document.getElementById('logout');
+
+        if (logoutLink) {
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                fetch('dao/logout.php', { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = 'login.php';
+                        } else {
+                            alert('Error al cerrar sesión. Inténtalo nuevamente.');
+                        }
+                    })
+                    .catch(error => console.error('Error al cerrar sesión:', error));
+            });
+        }
+    });
+</script>
+<script src="js/funcionamientoModal.js"></script>
 </body>
 </html>
