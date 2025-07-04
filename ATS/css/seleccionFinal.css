@@ -398,7 +398,7 @@ body::after {
 .cards-header,
 .candidato-card {
     display: grid;
-    grid-template-columns: 20% 25% 25% 20% 20%;
+    grid-template-columns: 10% 25% 25% 20% 20%;
     padding: 12px 16px;
     align-items: center;
 }
