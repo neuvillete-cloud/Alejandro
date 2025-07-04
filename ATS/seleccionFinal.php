@@ -1,10 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php');
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,6 +6,7 @@ if (!isset($_SESSION['NumNomina'])) {
     <title>Candidatos Finales</title>
     <link rel="stylesheet" href="css/seleccionFinal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -48,7 +42,6 @@ if (!isset($_SESSION['NumNomina'])) {
         <h2>Candidatos Finales</h2>
     </div>
 
-    <!-- Contenedor tipo tabla -->
     <div class="cards-container">
         <div class="cards-header">
             <div class="col col-icono"></div>
@@ -57,65 +50,37 @@ if (!isset($_SESSION['NumNomina'])) {
             <div class="col col-estatus">Estatus</div>
             <div class="col col-acciones">Acciones</div>
         </div>
-
         <div id="candidatosContainer" class="cards-body"></div>
     </div>
 </div>
 
-<!-- Modal de Perfil -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Perfil del Usuario</h2>
-        <div class="modal-body">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
-            <p><strong>Nombre:</strong> <span id="userName"></span></p>
-            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
-            <p><strong>Área:</strong> <span id="userArea"></span></p>
+<!-- Offcanvas Panel -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Detalle del Candidato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="vistaPreviaPDF"><p>Cargando CV...</p></div>
+        <div class="botones-postulacion mb-4">
+            <button type="button" class="btn btn-danger me-2" id="btnRechazar">Rechazar</button>
+            <button type="button" class="btn btn-success" id="btnAprobar">Aprobar</button>
         </div>
+        <div class="tarjeta-vacante" id="vacanteDetalle"><p>Cargando vacante...</p></div>
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/funcionamientoModal.js"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const profilePic = document.getElementById('profilePic');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (menuToggle && sidebar) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-            });
-        }
-
-        if (profilePic && profileDropdown) {
-            profilePic.addEventListener('click', () => {
-                profileDropdown.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!profileDropdown.contains(e.target) && !profilePic.contains(e.target)) {
-                    profileDropdown.classList.remove('active');
-                }
-            });
-        }
-
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', function (e) {
                 e.preventDefault();
                 fetch('dao/logout.php', { method: 'POST' })
-                    .then(res => {
-                        if (res.ok) {
-                            window.location.href = 'login.php';
-                        }
-                    });
+                    .then(res => res.ok && (window.location.href = 'login.php'));
             });
         }
 
@@ -131,44 +96,87 @@ if (!isset($_SESSION['NumNomina'])) {
         function renderizarCandidatos(data) {
             const contenedor = document.getElementById('candidatosContainer');
             contenedor.innerHTML = '';
-
             data.forEach(candidato => {
                 const clase = obtenerClaseEstatus(candidato.NombreEstatus);
-                const card = `
-                <div class="candidato-card">
-                    <div class="col col-icono">
-    <div class="card-icon">
-        <i class="fas fa-user"></i>
-    </div>
-</div>
-<div class="col col-nombre">
-    <div class="nombre-texto">${candidato.Nombre}</div>
-</div>
-
-
-                    <div class="col col-vacante">${candidato.TituloVacante}</div>
-                    <div class="col col-estatus">
-    <span class="${clase}">${candidato.NombreEstatus}</span>
-</div>
-
-                    <div class="col col-acciones">
-                        <a href="detallePostulacion.php?IdPostulacion=${candidato.IdPostulacion}" class="ver-detalles-btn">
-                            Ver Detalles
-                        </a>
-                    </div>
-                </div>`;
-                contenedor.insertAdjacentHTML('beforeend', card);
+                contenedor.insertAdjacentHTML('beforeend', `
+          <div class="candidato-card">
+            <div class="col col-icono"><div class="card-icon"><i class="fas fa-user"></i></div></div>
+            <div class="col col-nombre"><div class="nombre-texto">${candidato.Nombre}</div></div>
+            <div class="col col-vacante">${candidato.TituloVacante}</div>
+            <div class="col col-estatus"><span class="${clase}">${candidato.NombreEstatus}</span></div>
+            <div class="col col-acciones">
+              <a href="#" class="ver-detalles-btn" data-id="${candidato.IdPostulacion}" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight">Ver Detalles</a>
+            </div>
+          </div>`);
             });
         }
 
         fetch('https://grammermx.com/AleTest/ATS/dao/CandidatosFinales.php')
             .then(res => res.json())
-            .then(json => {
-                if (json && json.data) {
-                    renderizarCandidatos(json.data);
-                }
-            })
+            .then(json => json?.data && renderizarCandidatos(json.data))
             .catch(err => console.error("Error:", err));
+
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('ver-detalles-btn')) {
+                e.preventDefault();
+                const IdPostulacion = e.target.dataset.id;
+
+                fetch(`dao/ConsultarCv.php?IdPostulacion=${IdPostulacion}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const contenedorCV = document.getElementById("vistaPreviaPDF");
+                        if (data.error) {
+                            contenedorCV.innerHTML = `<p>${data.error}</p>`;
+                        } else {
+                            const ext = data.RutaCV.split('.').pop().toLowerCase();
+                            if (ext === 'pdf') {
+                                contenedorCV.innerHTML = `<iframe width="100%" height="400" src="${data.RutaCV}" style="border:1px solid #ccc; border-radius:10px;"></iframe>`;
+                            } else {
+                                contenedorCV.innerHTML = `<p>Formato no soportado: ${ext}</p><a href="${data.RutaCV}" target="_blank" class="btn btn-primary">Descargar CV</a>`;
+                            }
+                        }
+                    });
+
+                fetch(`dao/ObtenerPostulacion.php?IdPostulacion=${IdPostulacion}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const cont = document.getElementById("vacanteDetalle");
+                        if (data.error) {
+                            cont.innerHTML = `<p>${data.error}</p>`;
+                        } else {
+                            cont.innerHTML = `
+                <h5>${data.TituloVacante}</h5>
+                <p><strong>Área:</strong> ${data.Area}</p>
+                <p><strong>Ubicación:</strong> ${data.Ciudad}, ${data.Estado}</p>
+                <p><strong>Horario:</strong> ${data.Horario}</p>
+                <hr>
+                <p><strong>Descripción:</strong><br>${data.Descripcion.replace(/\n/g, "<br>")}</p>
+                <p><strong>Requisitos:</strong><br>${textoAListaHTML(data.Requisitos)}</p>
+                <p><strong>Beneficios:</strong><br>${textoAListaHTML(data.Beneficios)}</p>`;
+                        }
+                    });
+
+                document.getElementById("btnAprobar").onclick = () => actualizarEstatus(IdPostulacion, 4);
+                document.getElementById("btnRechazar").onclick = () => actualizarEstatus(IdPostulacion, 3);
+            }
+        });
+
+        function textoAListaHTML(texto) {
+            if (!texto) return "<ul><li>No disponible</li></ul>";
+            return "<ul>" + texto.split('\n').map(l => `<li>${l.trim()}</li>`).join('') + "</ul>";
+        }
+
+        function actualizarEstatus(id, status) {
+            fetch(`dao/ActualizarEstatusPostulacion.php`, {
+                method: "POST",
+                body: new URLSearchParams({ id, status })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    Swal.fire(data.message).then(() => location.reload());
+                })
+                .catch(() => Swal.fire("Error al actualizar estatus"));
+        }
     });
 </script>
 
