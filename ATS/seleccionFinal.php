@@ -1,19 +1,27 @@
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php'); // Redirige al login si no está autenticado
+    exit;
+}
+?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidatos Finales</title>
+    <title>Históricos</title>
     <link rel="stylesheet" href="css/seleccionFinal.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
+<!-- Header -->
 <header class="header">
     <div class="header-left">
         <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>R.H Admin</h1>
+        <h1>Candidatos Finales</h1>
         <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
     <div class="header-right">
@@ -28,9 +36,10 @@
     </div>
 </header>
 
-<nav class="sidebar" id="sidebar">
+<!-- Sidebar -->
+<nav class="sidebar active" id="sidebar">
     <ul>
-        <li><a href="Solicitante.php">Inicio</a></li>
+        <li><a href="Solicitante.php" >Inicio</a></li>
         <li><a href="seguimiento.php">Seguimiento</a></li>
         <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
         <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
