@@ -70,6 +70,20 @@
     </div>
 </div>
 
+<!-- Modal Perfil -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Perfil del Usuario</h2>
+        <div class="modal-body">
+            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
+            <p><strong>Nombre:</strong> <span id="userName"></span></p>
+            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
+            <p><strong>Área:</strong> <span id="userArea"></span></p>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
