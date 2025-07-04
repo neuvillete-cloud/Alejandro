@@ -406,22 +406,23 @@ body::after {
 }
 
 .cards-header {
-    background-color: #0f2748;
+    background-color: #1E3A8A;         /* Azul oscuro elegante */
     font-weight: bold;
-    border-bottom: 2px solid #063962;
+    border-bottom: 2px solid #2563EB; /* Azul brillante de acento */
     color: #ffffff;
 }
 
 .candidato-card {
-    background-color: #1c3460;
-    border-bottom: 1px solid #345a8d;
-    color: #f0f0f0;
+    background-color: #2A4D8F;         /* Azul medio moderno */
+    border-bottom: 1px solid #4B74B3;  /* Azul más claro para división */
+    color: #f0f4ff;                    /* Blanco azulado */
     transition: background 0.2s ease;
 }
 
 .candidato-card:hover {
-    background-color: #254376;
+    background-color: #345FAF;         /* Un azul brillante al hacer hover */
 }
+
 
 /* Columna Nombre con ícono */
 .col-nombre {
