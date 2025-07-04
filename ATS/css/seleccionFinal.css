@@ -406,22 +406,23 @@ body::after {
 }
 
 .cards-header {
-    background-color: #1E3A8A;         /* Azul oscuro elegante */
+    background-color: #145DA0;         /* Azul medio oscuro moderno */
     font-weight: bold;
-    border-bottom: 2px solid #2563EB; /* Azul brillante de acento */
+    border-bottom: 2px solid #2E8BC0;  /* Azul acento más brillante */
     color: #ffffff;
 }
 
 .candidato-card {
-    background-color: #2A4D8F;         /* Azul medio moderno */
-    border-bottom: 1px solid #4B74B3;  /* Azul más claro para división */
-    color: #f0f4ff;                    /* Blanco azulado */
+    background-color: #B0D4F1;         /* Azul pastel claro para las tarjetas */
+    border-bottom: 1px solid #A0C4E0;  /* División suave */
+    color: #0D1B2A;                    /* Azul muy oscuro para texto */
     transition: background 0.2s ease;
 }
 
 .candidato-card:hover {
-    background-color: #345FAF;         /* Un azul brillante al hacer hover */
+    background-color: #A0C4E0;         /* Azul pastel ligeramente más oscuro al hacer hover */
 }
+
 
 
 /* Columna Nombre con ícono */
