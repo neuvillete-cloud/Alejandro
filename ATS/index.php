@@ -48,7 +48,7 @@
 <main class="main">
     <h1 class="title"><i class="fas fa-users"></i> Sistema de Reclutamiento y Selección</h1>
     <p class="subtitle">Bienvenido de Nuevo a tu ATS</p>
-    <a href="#" class="button">Ingresar de nuevo</a>
+    <a href="login.php" class="button">Ingresar de nuevo</a>
 </main>
 </body>
 </html>
