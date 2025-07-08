@@ -70,7 +70,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <th>Tipo de Contratacion</th>
                 <th>Nombre</th>
                 <th>Nombre del Reemplazo</th>
-                <th>Fecha Solicitud</th>
+                <th>Fecha de Solicitud</th>
                 <th>Folio Solicitud</th>
                 <th>Estatus</th>
                 <th>Acciones</th> <!-- Nueva columna -->
