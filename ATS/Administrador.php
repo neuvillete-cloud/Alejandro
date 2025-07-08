@@ -63,7 +63,7 @@ if (!isset($_SESSION['NumNomina'])) {
         <table id="solicitudesTable" class="display">
             <thead>
             <tr>
-                <th>IdSolicitud</th>
+                <th>Numero de Solicitud</th>
                 <th>Nomina</th>
                 <th>Area</th>
                 <th>Puesto</th>
