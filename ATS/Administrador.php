@@ -64,14 +64,14 @@ if (!isset($_SESSION['NumNomina'])) {
             <thead>
             <tr>
                 <th>IdSolicitud</th>
-                <th>NumNomina</th>
-                <th>IdArea</th>
+                <th>Nomina</th>
+                <th>Area</th>
                 <th>Puesto</th>
-                <th>TipoContratacion</th>
+                <th>Tipo de Contratacion</th>
                 <th>Nombre</th>
-                <th>NombreReemplazo</th>
-                <th>FechaSolicitud</th>
-                <th>FolioSolicitud</th>
+                <th>Nombre del Reemplazo</th>
+                <th>Fecha Solicitud</th>
+                <th>Folio Solicitud</th>
                 <th>Estatus</th>
                 <th>Acciones</th> <!-- Nueva columna -->
 
