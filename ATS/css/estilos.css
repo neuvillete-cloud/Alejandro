@@ -5,16 +5,25 @@
     box-sizing: border-box;
 }
 
+/* Fondo degradado animado */
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
+    background: linear-gradient(-45deg, #87CEEB, #00BFFF, #1E90FF, #B0E0E6);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
     color: white;
     height: 100vh;
     overflow: hidden;
-    position: relative; /* Para posicionar los círculos */
+    position: relative;
     display: flex;
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 header {
@@ -68,7 +77,7 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
-/* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
+/* Subrayado animado en enlaces */
 nav > a::after {
     content: '';
     position: absolute;
@@ -125,11 +134,18 @@ nav a:not(:hover)::after {
     }
 }
 
+/* Animación de entrada para contenido */
 .main {
     text-align: center;
     position: relative;
-    z-index: 10; /* Asegura que esté por encima de los círculos */
-    max-width: 800px; /* Limita el ancho para que no ocupe todo el espacio */
+    z-index: 10;
+    max-width: 800px;
+    animation: fadeInUp 1.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .title {
@@ -137,51 +153,70 @@ nav a:not(:hover)::after {
     margin-bottom: 10px;
 }
 
+.title i {
+    margin-right: 10px;
+}
+
 .subtitle {
     font-size: 20px;
     margin-bottom: 20px;
 }
 
+/* Botón mejorado */
 .button {
     text-decoration: none;
-    background-color: #1E90FF; /* Azul brillante */
+    background: linear-gradient(90deg, #1E90FF, #00BFFF);
+    box-shadow: 0 4px 15px rgba(0, 191, 255, 0.6);
     color: white;
     padding: 15px 30px;
     font-size: 16px;
     border-radius: 50px;
-    transition: background-color 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .button:hover {
-    background-color: #4682B4; /* Azul más oscuro */
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(30, 144, 255, 0.8);
 }
 
-/* Círculos en el fondo */
+/* Círculos animados */
 body::before, body::after {
     content: '';
     position: absolute;
     border-radius: 50%;
-    opacity: 0.5; /* Transparencia de los círculos */
+    opacity: 0.5;
     filter: blur(70px);
-    z-index: 1; /* Debajo del contenido */
+    z-index: 1;
 }
 
-/* Primer círculo (azul marino) */
 body::before {
     width: 500px;
     height: 500px;
-    background: #1E3A8A; /* Azul marino */
+    background: #1E3A8A;
     top: -100px;
     left: -50px;
+    animation: float1 20s ease-in-out infinite;
 }
 
-/* Segundo círculo (azul medio) */
 body::after {
     width: 400px;
     height: 400px;
-    background: #2563EB; /* Azul medio */
+    background: #2563EB;
     bottom: -100px;
     right: -50px;
+    animation: float2 25s ease-in-out infinite;
+}
+
+@keyframes float1 {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -20px); }
+    100% { transform: translate(0, 0); }
+}
+
+@keyframes float2 {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-20px, 25px); }
+    100% { transform: translate(0, 0); }
 }
 
 .imagen-banner {
@@ -203,4 +238,37 @@ body::after {
 .logo-img {
     height: 50px;
     width: auto;
+}
+
+/* Menú desplegable usuario */
+.user-menu {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #1E3A8A;
+    padding: 10px;
+    top: 100%;
+    right: 0;
+    border-radius: 5px;
+    min-width: 180px;
+    text-align: left;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.dropdown-menu a:hover {
+    background-color: #4682B4;
+}
+
+.dropdown-menu.show {
+    display: block;
 }
