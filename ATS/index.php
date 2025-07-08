@@ -7,19 +7,56 @@
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-<header class="header">
-    <div class="logo-container">
-        <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Logo de Grammer" class="logo-img">
-        <span class="logo-text">Grammer</span>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacantes en Grammer Automotive</title>
+    <link rel="stylesheet" href="css/vacantes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<?php
+session_start();
+?>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
+        </div>
+        <nav>
+            <a href="#">Buscar empleos</a>
+            <a href="aboutUs.php">Acerca de nosotros</a>
+            <a href="practicantes.php"> Escuela de Talentos</a>
+            <a href="#">Inclusión y diversidad</a>
+
+            <?php if (isset($_SESSION['NombreCandidato'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['NombreCandidato']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.php">Perfil</a>
+                        <a href="#">Alertas de empleo</a>
+                        <a href="#">Historial de solicitudes</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="loginATS.php">Inicio de sesión</a>
+            <?php endif; ?>
+
+        </nav>
     </div>
-    <nav class="nav">
-        <a href="#">Premium</a>
-        <a href="#">Ayuda</a>
-        <a href="https://www.grammermx.com/">Sobre Nosotros</a>
-        <span>|</span>
-        <a href="registroUsuarios.php">Regístrate</a> <!-- Redirige a la página de registro -->
-        <a href="login.php">Inicia sesión</a> <!-- Redirige a la página de inicio de sesión -->
-    </nav>
 </header>
 <main class="main">
     <h1 class="title">Sistema de Reclutamiento Y Seleccion</h1>

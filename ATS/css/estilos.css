@@ -17,55 +17,112 @@ body {
     align-items: center; /* Centrar verticalmente */
 }
 
-.header {
-    position: absolute;
+header {
+    background-color: #063962;
+    padding: 20px 0;
+    border-bottom: 3px solid transparent;
+    position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    padding: 20px 40px;
+    z-index: 1000;
+}
+
+.header-container {
+    width: 80%;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(30, 30, 30, 0.6); /* Barra negra transparente */
-    z-index: 10;
 }
 
-.logo-container {
+nav {
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-left: 40px; /* Mueve el logo más a la derecha */
+    gap: 30px;
+    padding-right: 60px;
 }
 
-.logo-img {
-    width: 50px;
-    height: 32px;
-    margin-right: 10px;
-}
-
-.logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-}
-
-.nav {
-    margin-right: 20px; /* Ajusta la separación del menú a la derecha */
-}
-
-.nav a {
+nav a {
     color: white;
     text-decoration: none;
-    margin: 0 10px;
-    font-size: 14px;
-    transition: color 0.3s; /* Agrega una transición suave para el color */
+    font-weight: bold;
+    font-size: 18px;
+    position: relative;
+    padding-bottom: 10px;
 }
 
-.nav a:hover {
-    color: #1E90FF; /* Azul brillante al pasar el mouse */
+nav a:last-of-type {
+    position: relative;
+    padding-left: 15px;
 }
 
-.nav span {
+nav a:last-of-type::before {
+    content: "|";
+    position: absolute;
+    left: -10px;
     color: white;
-    margin: 0 5px;
+    font-size: 18px;
+    transform: scaleY(2);
+    display: inline-block;
+}
+
+/* Aplica solo a los <a> directos dentro de nav, no a los que están dentro de .user-menu */
+nav > a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -34px;
+    width: 0;
+    height: 4px;
+    background: #99d0e9;
+    transform-origin: left;
+    transition: width 0.3s ease-in-out;
+}
+
+nav a:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+
+nav a:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
+
+@keyframes smooth-infinite-bar {
+    0% { width: 0%; transform: translateX(0); }
+    50% { width: 100%; transform: translateX(0); }
+    100% { width: 100%; transform: translateX(0); }
+}
+
+@keyframes smooth-infinite-bar-out {
+    0% { width: 100%; transform: translateX(0); }
+    100% { width: 0%; transform: translateX(0); }
+}
+
+.logo h1 {
+    font-size: 28px;
+    margin: 0;
+    line-height: 1;
+}
+
+.logo span {
+    display: block;
+    font-size: 25px;
+    line-height: 1;
+}
+
+@media(max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
 }
 
 .main {
