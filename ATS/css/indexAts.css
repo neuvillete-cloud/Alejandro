@@ -443,7 +443,7 @@ nav a:not(:hover)::after {
 }
 
 .arrow {
-    color: #a86bd5;
+    color: #0077cc;
     font-size: 22px;
     transition: transform 0.3s;
 }
