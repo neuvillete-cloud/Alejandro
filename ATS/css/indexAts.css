@@ -313,7 +313,7 @@ nav a:not(:hover)::after {
 }
 
 .carousel-btn:hover {
-    color: #a86bd5; /* Cambio de color */
+    color: #005fa3; /* Cambio de color */
     opacity: 1;
 }
 
