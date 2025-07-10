@@ -351,7 +351,7 @@
             </div>
         </section>
 
-        <footer style="background-color: #151032; color: white; padding: 50px 20px 20px 20px; font-family: 'Arial', sans-serif;">
+        <footer style="background-color: #063962; color: white; padding: 50px 20px 20px 20px; font-family: 'Arial', sans-serif;">
             <div style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between;">
                 <div style="flex: 1 1 200px; margin: 20px;">
                     <h3>Empresa</h3>
