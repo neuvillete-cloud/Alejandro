@@ -299,7 +299,7 @@ nav a:not(:hover)::after {
 .carousel-btn {
     background: none; /* Sin fondo */
     border: none;
-    color: #4a1c6f; /* Color de la flecha */
+    color: #0077cc; /* Color de la flecha */
     font-size: 50px; /* Tamaño más grande para que sean visibles */
     font-weight: bold;
     cursor: pointer;
@@ -351,7 +351,7 @@ nav a:not(:hover)::after {
     bottom: 0;
     width: 0;
     height: 4px;
-    background: #a86bd5;
+    background: #0077cc;
     z-index: 2;
     transition: width 0.3s ease-in-out; /* Transición para la animación */
     max-width: 100%;
@@ -381,7 +381,7 @@ nav a:not(:hover)::after {
     position: absolute;
     bottom: 15px; /* Ajusta la posición vertical */
     right: 15px;  /* Ajusta la posición horizontal */
-    color: #a86bd5;
+    color: #0077cc;
     font-size: 30px; /* Tamaño del icono */
     padding: 5px 10px;
     border-radius: 5px;
