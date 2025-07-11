@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vacantes en Grammer Automotive</title>
-    <link rel="stylesheet" href="css/vacantes.css">
+    <link rel="stylesheet" href="css/HistorialUsuario.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -51,7 +51,7 @@ session_start();
 </header>
 
 <section class="section-title">
-    <h1>Vacantes en Grammer Automotive</h1>
+    <h1></h1>
 </section>
 
 <section class="area-blanca">
