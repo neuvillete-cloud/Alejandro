@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vacantes en Grammer Automotive</title>
-    <link rel="stylesheet" href="css/perfil.css">
+    <link rel="stylesheet" href="css/vacantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -25,7 +25,7 @@ session_start();
         <nav>
             <a href="#">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
-            <a href="practicantes.php">Escuela de Talentos</a>
+            <a href="practicantes.php"> Escuela de Talentos</a>
             <a href="#">Inclusión y diversidad</a>
 
             <?php if (isset($_SESSION['NombreCandidato'])): ?>
@@ -36,7 +36,7 @@ session_start();
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a href="#">Perfil</a>
+                        <a href="perfil.php">Perfil</a>
                         <a href="#">Alertas de empleo</a>
                         <a href="#">Historial de solicitudes</a>
                         <a href="#" id="logout">Cerrar sesión</a>
@@ -51,17 +51,14 @@ session_start();
 </header>
 
 <section class="section-title">
-    <div class="perfil-icono">
-        <img src="imagenes/perfil.png" alt="Imagen decorativa" class="imagen-banner">
-    </div>
-    <div class="perfil-texto">
-        <span>MI PERFIL</span>
-        <h1><?= htmlspecialchars($_SESSION['NombreCandidato'] . ' ' . $_SESSION['ApellidosCandidato']) ?></h1>
-    </div>
+    <h1>Vacantes en Grammer Automotive</h1>
 </section>
 
-
-
+<section class="area-blanca">
+    <div class="contenido-blanco">
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const logoutLink = document.getElementById('logout');
 
