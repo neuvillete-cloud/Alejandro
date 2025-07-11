@@ -51,7 +51,7 @@ session_start();
 </header>
 
 <section class="section-title">
-    <h1>Inicio de Sesion</h1>
+    <h1>Historial de Postulacion</h1>
     <img src="imagenes/historial-de-transacciones%20(1).png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
