@@ -51,7 +51,7 @@ session_start();
 </header>
 
 <section class="section-title">
-    <h1></h1>
+    <h1>Historial de Postulaciones</h1>
 </section>
 
 <section class="area-blanca">
