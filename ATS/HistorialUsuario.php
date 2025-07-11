@@ -56,9 +56,12 @@ session_start();
 
 <section class="area-blanca">
     <div class="contenido-blanco">
+
+
     </div>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const logoutLink = document.getElementById('logout');
 
