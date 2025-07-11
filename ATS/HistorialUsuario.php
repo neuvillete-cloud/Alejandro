@@ -52,7 +52,7 @@ session_start();
 
 <section class="section-title">
     <h1>Inicio de Sesion</h1>
-    <img src="imagenes/iniciar-sesion.png" alt="Imagen decorativa" class="imagen-banner">
+    <img src="imagenes/historial-de-transacciones%20(1).png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
