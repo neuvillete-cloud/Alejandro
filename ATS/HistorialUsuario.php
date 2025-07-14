@@ -6,16 +6,12 @@
     <title>Vacantes en Grammer Automotive</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="css/HistorialUsuario.css">
 </head>
 <body>
 
-<?php
-session_start();
-?>
+<?php session_start(); ?>
 
 <header>
     <div class="header-container">
@@ -29,7 +25,7 @@ session_start();
         <nav>
             <a href="#">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
-            <a href="practicantes.php"> Escuela de Talentos</a>
+            <a href="practicantes.php">Escuela de Talentos</a>
             <a href="#">Inclusión y diversidad</a>
 
             <?php if (isset($_SESSION['NombreCandidato'])): ?>
@@ -49,7 +45,6 @@ session_start();
             <?php else: ?>
                 <a href="loginATS.php">Inicio de sesión</a>
             <?php endif; ?>
-
         </nav>
     </div>
 </header>
@@ -61,46 +56,13 @@ session_start();
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-
         <div class="mensaje-usuario">
             <p>¡Gracias por confiar en nosotros! Aquí puedes revisar el estado de tus postulaciones.</p>
         </div>
 
         <div class="contenedor-cards">
-            <div class="card-solicitud">
-                <div class="cabecera-card">
-                    <h3>Operador de Ensamble</h3>
-                    <span class="estatus estatus-recibido">Recibido</span>
-                </div>
-                <p><strong>Área:</strong> Producción</p>
-                <p><strong>Fecha de Postulación:</strong> 10/07/2025</p>
-                <p><strong>Modalidad:</strong> Presencial</p>
-                <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles">Ver Detalles</button>
-            </div>
-
-            <div class="card-solicitud">
-                <div class="cabecera-card">
-                    <h3>Ingeniero de Calidad</h3>
-                    <span class="estatus estatus-aprobado">Aprobado</span>
-                </div>
-                <p><strong>Área:</strong> Ingeniería</p>
-                <p><strong>Fecha de Postulación:</strong> 02/07/2025</p>
-                <p><strong>Modalidad:</strong> Híbrido</p>
-                <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles">Ver Detalles</button>
-            </div>
-
-            <div class="card-solicitud">
-                <div class="cabecera-card">
-                    <h3>Diseñador CAD</h3>
-                    <span class="estatus estatus-rechazado">Rechazado</span>
-                </div>
-                <p><strong>Área:</strong> Diseño</p>
-                <p><strong>Fecha de Postulación:</strong> 28/06/2025</p>
-                <p><strong>Modalidad:</strong> Remota</p>
-                <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles">Ver Detalles</button>
-            </div>
+            <!-- Las cards se llenarán dinámicamente con JS -->
         </div>
-
     </div>
 </section>
 
@@ -110,22 +72,92 @@ session_start();
         <h5 class="offcanvas-title" id="offcanvasDetallesLabel">Detalles de la Postulación</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body small">
-        <p><strong>Vacante:</strong> Operador de Ensamble</p>
-        <p><strong>Área:</strong> Producción</p>
-        <p><strong>Fecha de Postulación:</strong> 10/07/2025</p>
-        <p><strong>Modalidad:</strong> Presencial</p>
-        <p><strong>Descripción:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget...</p>
+    <div class="offcanvas-body small" id="detallePostulacionBody">
+        <p>Selecciona una postulación para ver sus detalles.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const logoutLink = document.getElementById('logout');
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('dao/obtenerHistorialPostulaciones.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+                renderizarPostulaciones(data);
+            })
+            .catch(error => console.error('Error al obtener postulaciones:', error));
+    });
 
+    function renderizarPostulaciones(postulaciones) {
+        const contenedor = document.querySelector('.contenedor-cards');
+        contenedor.innerHTML = '';
+
+        if (postulaciones.length === 0) {
+            contenedor.innerHTML = '<p>No tienes postulaciones aún.</p>';
+            return;
+        }
+
+        postulaciones.forEach(post => {
+            const card = document.createElement('div');
+            card.classList.add('card-solicitud');
+
+            let claseEstatus = '';
+            switch (post.Estatus.toLowerCase()) {
+                case 'aprobado': claseEstatus = 'estatus-aprobado'; break;
+                case 'rechazado': claseEstatus = 'estatus-rechazado'; break;
+                default: claseEstatus = 'estatus-recibido';
+            }
+
+            card.innerHTML = `
+            <div class="cabecera-card">
+                <h3>${post.TituloVacante}</h3>
+                <span class="estatus ${claseEstatus}">${post.Estatus}</span>
+            </div>
+            <p><strong>Área:</strong> ${post.NombreArea}</p>
+            <p><strong>Fecha de Postulación:</strong> ${post.FechaPostulacion}</p>
+            <p><strong>Modalidad:</strong> ${post.EspacioTrabajo}</p>
+            <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles"
+                data-titulo="${post.TituloVacante}"
+                data-area="${post.NombreArea}"
+                data-fecha="${post.FechaPostulacion}"
+                data-modalidad="${post.EspacioTrabajo}"
+            >
+                Ver Detalles
+            </button>
+        `;
+
+            contenedor.appendChild(card);
+        });
+
+        agregarEventosVerDetalles();
+    }
+
+    function agregarEventosVerDetalles() {
+        document.querySelectorAll('.btn-ver').forEach(boton => {
+            boton.addEventListener('click', function() {
+                const titulo = this.getAttribute('data-titulo');
+                const area = this.getAttribute('data-area');
+                const fecha = this.getAttribute('data-fecha');
+                const modalidad = this.getAttribute('data-modalidad');
+
+                document.getElementById('detallePostulacionBody').innerHTML = `
+                <p><strong>Vacante:</strong> ${titulo}</p>
+                <p><strong>Área:</strong> ${area}</p>
+                <p><strong>Fecha de Postulación:</strong> ${fecha}</p>
+                <p><strong>Modalidad:</strong> ${modalidad}</p>
+                <p><strong>Descripción:</strong> Esta información se puede ampliar según tu necesidad.</p>
+            `;
+            });
+        });
+    }
+
+    const logoutLink = document.getElementById('logout');
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
