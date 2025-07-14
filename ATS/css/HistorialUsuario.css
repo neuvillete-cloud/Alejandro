@@ -89,15 +89,15 @@ nav a:not(:hover)::after {
 }
 
 .logo h1 {
-    font-size: 28px;
-    margin: 0;
-    line-height: 1;
+    font-size: 28px !important;
+    margin: 0 !important;
+    line-height: 1 !important;
 }
 
 .logo span {
-    display: block;
-    font-size: 25px;
-    line-height: 1;
+    display: block !important;
+    font-size: 25px !important;
+    line-height: 1 !important;
 }
 
 @media(max-width: 768px) {
