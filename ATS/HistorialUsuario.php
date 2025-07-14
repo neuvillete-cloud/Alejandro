@@ -6,6 +6,8 @@
     <title>Vacantes en Grammer Automotive</title>
     <link rel="stylesheet" href="css/HistorialUsuario.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -71,7 +73,7 @@ session_start();
                 <p><strong>Área:</strong> Producción</p>
                 <p><strong>Fecha de Postulación:</strong> 10/07/2025</p>
                 <p><strong>Modalidad:</strong> Presencial</p>
-                <button class="btn-ver">Ver Detalles</button>
+                <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles">Ver Detalles</button>
             </div>
 
             <div class="card-solicitud">
@@ -82,7 +84,7 @@ session_start();
                 <p><strong>Área:</strong> Ingeniería</p>
                 <p><strong>Fecha de Postulación:</strong> 02/07/2025</p>
                 <p><strong>Modalidad:</strong> Híbrido</p>
-                <button class="btn-ver">Ver Detalles</button>
+                <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles">Ver Detalles</button>
             </div>
 
             <div class="card-solicitud">
@@ -93,14 +95,31 @@ session_start();
                 <p><strong>Área:</strong> Diseño</p>
                 <p><strong>Fecha de Postulación:</strong> 28/06/2025</p>
                 <p><strong>Modalidad:</strong> Remota</p>
-                <button class="btn-ver">Ver Detalles</button>
+                <button class="btn-ver" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDetalles">Ver Detalles</button>
             </div>
         </div>
 
     </div>
 </section>
 
+<!-- Offcanvas Inferior -->
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasDetalles" aria-labelledby="offcanvasDetallesLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasDetallesLabel">Detalles de la Postulación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <p><strong>Vacante:</strong> Operador de Ensamble</p>
+        <p><strong>Área:</strong> Producción</p>
+        <p><strong>Fecha de Postulación:</strong> 10/07/2025</p>
+        <p><strong>Modalidad:</strong> Presencial</p>
+        <p><strong>Descripción:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget...</p>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     const logoutLink = document.getElementById('logout');
