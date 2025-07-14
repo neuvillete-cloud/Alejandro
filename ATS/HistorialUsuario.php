@@ -66,8 +66,8 @@
     </div>
 </section>
 
-<!-- Offcanvas Inferior -->
-<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasDetalles" aria-labelledby="offcanvasDetallesLabel">
+<!-- Offcanvas Derecho con scroll y backdrop -->
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasDetalles" aria-labelledby="offcanvasDetallesLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasDetallesLabel">Detalles de la Postulación</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -76,6 +76,7 @@
         <p>Selecciona una postulación para ver sus detalles.</p>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
