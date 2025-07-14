@@ -24,10 +24,11 @@ try {
             a.NombreArea,
             p.FechaPostulacion,
             v.EspacioTrabajo,
-            p.Estatus
+            e.NombreEstatus
         FROM Postulaciones p
         INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
         INNER JOIN Area a ON v.IdArea = a.IdArea
+        INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
         WHERE p.IdCandidato = ?
     ");
 
@@ -43,7 +44,7 @@ try {
             'NombreArea' => $row['NombreArea'],
             'FechaPostulacion' => $row['FechaPostulacion'],
             'EspacioTrabajo' => $row['EspacioTrabajo'],
-            'Estatus' => $row['Estatus']
+            'Estatus' => $row['NombreEstatus']
         ];
     }
 
@@ -55,4 +56,3 @@ try {
     $conn->close();
 }
 ?>
-
