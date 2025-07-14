@@ -725,3 +725,73 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+.mensaje-usuario {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.contenedor-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card-solicitud {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.card-solicitud:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cabecera-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.estatus {
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.estatus-recibido {
+    background-color: #FFA500; /* Naranja */
+}
+
+.estatus-aprobado {
+    background-color: #4CAF50; /* Verde */
+}
+
+.estatus-rechazado {
+    background-color: #F44336; /* Rojo */
+}
+
+.btn-ver {
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-ver:hover {
+    background-color: #0056b3;
+}

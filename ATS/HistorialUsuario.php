@@ -51,16 +51,55 @@ session_start();
 </header>
 
 <section class="section-title">
-    <h1>Historial de Postulacion</h1>
+    <h1>Historial de Postulación</h1>
     <img src="imagenes/historial-de-transacciones%20(1).png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
     <div class="contenido-blanco">
 
+        <div class="mensaje-usuario">
+            <p>¡Gracias por confiar en nosotros! Aquí puedes revisar el estado de tus postulaciones.</p>
+        </div>
+
+        <div class="contenedor-cards">
+            <div class="card-solicitud">
+                <div class="cabecera-card">
+                    <h3>Operador de Ensamble</h3>
+                    <span class="estatus estatus-recibido">Recibido</span>
+                </div>
+                <p><strong>Área:</strong> Producción</p>
+                <p><strong>Fecha de Postulación:</strong> 10/07/2025</p>
+                <p><strong>Modalidad:</strong> Presencial</p>
+                <button class="btn-ver">Ver Detalles</button>
+            </div>
+
+            <div class="card-solicitud">
+                <div class="cabecera-card">
+                    <h3>Ingeniero de Calidad</h3>
+                    <span class="estatus estatus-aprobado">Aprobado</span>
+                </div>
+                <p><strong>Área:</strong> Ingeniería</p>
+                <p><strong>Fecha de Postulación:</strong> 02/07/2025</p>
+                <p><strong>Modalidad:</strong> Híbrido</p>
+                <button class="btn-ver">Ver Detalles</button>
+            </div>
+
+            <div class="card-solicitud">
+                <div class="cabecera-card">
+                    <h3>Diseñador CAD</h3>
+                    <span class="estatus estatus-rechazado">Rechazado</span>
+                </div>
+                <p><strong>Área:</strong> Diseño</p>
+                <p><strong>Fecha de Postulación:</strong> 28/06/2025</p>
+                <p><strong>Modalidad:</strong> Remota</p>
+                <button class="btn-ver">Ver Detalles</button>
+            </div>
+        </div>
 
     </div>
 </section>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
