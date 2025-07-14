@@ -795,3 +795,39 @@ nav a:not(:hover)::after {
 .btn-ver:hover {
     background-color: #0056b3;
 }
+
+/* Mantiene el fondo blanco solo en el offcanvas */
+.offcanvas {
+    background-color: #fff !important;
+    color: #333 !important;
+}
+
+/* Estilo de título del offcanvas */
+.offcanvas .offcanvas-title {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: #063962 !important; /* mismo azul que tu header */
+}
+
+/* Botón cerrar */
+.offcanvas .btn-close {
+    filter: invert(0%) !important; /* para mantenerlo oscuro */
+}
+
+/* Estilo del cuerpo del offcanvas */
+.offcanvas .offcanvas-body {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Opcional: sombra suave para el offcanvas */
+.offcanvas-bottom {
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Opcional: refina el tamaño del offcanvas */
+.offcanvas-bottom {
+    height: 300px; /* Ajusta el alto */
+    max-height: 40vh; /* Máximo porcentaje de la altura de la ventana */
+}
