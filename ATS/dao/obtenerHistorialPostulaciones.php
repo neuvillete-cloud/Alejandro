@@ -18,19 +18,22 @@ $conn = (new LocalConector())->conectar();
 
 try {
     $stmt = $conn->prepare("
-        SELECT 
-            v.IdVacante,
-            v.TituloVacante,
-            a.NombreArea,
-            p.FechaPostulacion,
-            v.EspacioTrabajo,
-            e.NombreEstatus
-        FROM Postulaciones p
-        INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
-        INNER JOIN Area a ON v.IdArea = a.IdArea
-        INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
-        WHERE p.IdCandidato = ?
-    ");
+    SELECT 
+        v.IdVacante,
+        v.TituloVacante,
+        v.ImagenVacante,
+        a.NombreArea,
+        p.FechaPostulacion,
+        v.EspacioTrabajo,
+        e.NombreEstatus,
+        e.Descripcion AS DescripcionEstatus
+    FROM Postulaciones p
+    INNER JOIN Vacantes v ON p.IdVacante = v.IdVacante
+    INNER JOIN Area a ON v.IdArea = a.IdArea
+    INNER JOIN Estatus e ON p.IdEstatus = e.IdEstatus
+    WHERE p.IdCandidato = ?
+");
+
 
     $stmt->bind_param("i", $IdCandidato);
     $stmt->execute();
@@ -41,12 +44,15 @@ try {
         $postulaciones[] = [
             'IdVacante' => $row['IdVacante'],
             'TituloVacante' => $row['TituloVacante'],
+            'ImagenVacante' => $row['ImagenVacante'],
             'NombreArea' => $row['NombreArea'],
             'FechaPostulacion' => $row['FechaPostulacion'],
             'EspacioTrabajo' => $row['EspacioTrabajo'],
-            'Estatus' => $row['NombreEstatus']
+            'Estatus' => $row['NombreEstatus'],
+            'DescripcionEstatus' => $row['DescripcionEstatus']
         ];
     }
+
 
     echo json_encode($postulaciones, JSON_UNESCAPED_UNICODE);
 } catch (Exception $e) {

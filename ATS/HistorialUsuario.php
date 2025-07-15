@@ -128,6 +128,8 @@
                 data-area="${post.NombreArea}"
                 data-fecha="${post.FechaPostulacion}"
                 data-modalidad="${post.EspacioTrabajo}"
+                data-imagen="${post.ImagenVacante}"
+                data-descripcion-estatus="${post.DescripcionEstatus}"
             >
                 Ver Detalles
             </button>
@@ -146,13 +148,16 @@
                 const area = this.getAttribute('data-area');
                 const fecha = this.getAttribute('data-fecha');
                 const modalidad = this.getAttribute('data-modalidad');
+                const imagen = this.getAttribute('data-imagen');
+                const descripcionEstatus = this.getAttribute('data-descripcion-estatus');
 
                 document.getElementById('detallePostulacionBody').innerHTML = `
                 <p><strong>Vacante:</strong> ${titulo}</p>
                 <p><strong>Área:</strong> ${area}</p>
                 <p><strong>Fecha de Postulación:</strong> ${fecha}</p>
                 <p><strong>Modalidad:</strong> ${modalidad}</p>
-                <p><strong>Descripción:</strong> Esta información se puede ampliar según tu necesidad.</p>
+                <p><strong>Descripción del Estatus:</strong> ${descripcionEstatus}</p>
+                <img src="${imagen}" alt="Imagen de la Vacante" style="max-width:100%; margin-top:10px;">
             `;
             });
         });
@@ -173,6 +178,7 @@
                 .catch(error => console.error('Error al cerrar sesión:', error));
         });
     }
+
 </script>
 
 </body>
