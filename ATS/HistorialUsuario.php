@@ -157,7 +157,7 @@
                 <p><strong>Área:</strong> ${area}</p>
                 <p><strong>Fecha de Postulación:</strong> ${fecha}</p>
                 <p><strong>Modalidad:</strong> ${modalidad}</p>
-                <p><strong>Descripción del Estatus:</strong> ${descripcionEstatus}</p>
+                <p><strong>Actualizaciones hasta el momento:</strong> ${descripcionEstatus}</p>
 
             `;
             });
