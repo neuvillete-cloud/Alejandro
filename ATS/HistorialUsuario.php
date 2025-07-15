@@ -152,12 +152,13 @@
                 const descripcionEstatus = this.getAttribute('data-descripcion-estatus');
 
                 document.getElementById('detallePostulacionBody').innerHTML = `
+                <img src="${imagen}" alt="Imagen de la Vacante" style="max-width:100%; margin-top:10px;">
                 <p><strong>Vacante:</strong> ${titulo}</p>
                 <p><strong>Área:</strong> ${area}</p>
                 <p><strong>Fecha de Postulación:</strong> ${fecha}</p>
                 <p><strong>Modalidad:</strong> ${modalidad}</p>
                 <p><strong>Descripción del Estatus:</strong> ${descripcionEstatus}</p>
-                <img src="${imagen}" alt="Imagen de la Vacante" style="max-width:100%; margin-top:10px;">
+
             `;
             });
         });
