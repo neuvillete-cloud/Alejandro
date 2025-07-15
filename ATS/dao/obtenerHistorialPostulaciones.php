@@ -21,7 +21,7 @@ try {
     SELECT 
         v.IdVacante,
         v.TituloVacante,
-        v.ImagenVacante,
+        v.Imagen,
         a.NombreArea,
         p.FechaPostulacion,
         v.EspacioTrabajo,
