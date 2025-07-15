@@ -73,12 +73,12 @@ nav > a::after {
     transition: width 0.3s ease-in-out !important;
 }
 
-nav a:hover::after {
-    animation: smooth-infinite-bar 0.8s linear forwards; !important;
+header nav a:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards !important;
 }
 
-nav a:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards; !important;
+header nav a:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards !important;
 }
 
 @keyframes smooth-infinite-bar {
