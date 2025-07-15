@@ -35,13 +35,16 @@ nav {
 }
 
 nav a {
+    display: inline-block !important;   /* Evita que se comporten como bloque */
+    position: relative !important;      /* Necesario para que el ::after se posicione relativo al enlace */
     color: white !important;
     text-decoration: none !important;
     font-weight: bold !important;
     font-size: 18px !important;
-    position: relative !important;
     padding-bottom: 10px !important;
+    overflow: visible !important;      /* Permite que el ::after se dibuje fuera si es necesario */
 }
+
 
 nav a:last-of-type {
     position: relative !important;
