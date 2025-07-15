@@ -44,7 +44,7 @@ try {
         $postulaciones[] = [
             'IdVacante' => $row['IdVacante'],
             'TituloVacante' => $row['TituloVacante'],
-            'ImagenVacante' => $row['ImagenVacante'],
+            'ImagenVacante' => $row['Imagen'],
             'NombreArea' => $row['NombreArea'],
             'FechaPostulacion' => $row['FechaPostulacion'],
             'EspacioTrabajo' => $row['EspacioTrabajo'],
