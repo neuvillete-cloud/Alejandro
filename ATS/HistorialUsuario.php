@@ -13,6 +13,7 @@
 
 <?php session_start(); ?>
 
+<div class="mi-header">
 <header>
     <div class="header-container">
         <div class="logo">
@@ -48,7 +49,7 @@
         </nav>
     </div>
 </header>
-
+</div>
 <section class="section-title">
     <h1>Historial de Postulación</h1>
     <img src="imagenes/historial-de-transacciones%20(1).png" alt="Imagen decorativa" class="imagen-banner">

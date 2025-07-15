@@ -7,7 +7,7 @@ body {
 }
 
 
-header {
+.mi-header header {
     background-color: #063962 !important;
     padding: 20px 0 !important;
     border-bottom: 3px solid transparent !important;
@@ -18,7 +18,7 @@ header {
     z-index: 1000 !important;
 }
 
-.header-container {
+.mi-header .header-container {
     width: 80% !important;
     margin: 0 auto !important;
     display: flex !important;
@@ -26,7 +26,7 @@ header {
     align-items: center !important;
 }
 
-nav {
+.mi-header nav {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -34,7 +34,7 @@ nav {
     padding-right: 60px !important;
 }
 
-nav a {
+.mi-header nav a {
     color: white !important;
     text-decoration: none !important;
     font-weight: bold !important;
@@ -43,12 +43,12 @@ nav a {
     padding-bottom: 10px !important;
 }
 
-nav a:last-of-type {
+.mi-header nav a:last-of-type {
     position: relative !important;
     padding-left: 15px !important;
 }
 
-nav a:last-of-type::before {
+.mi-header nav a:last-of-type::before {
     content: "|" !important;
     position: absolute !important;
     left: -10px !important;
@@ -58,7 +58,7 @@ nav a:last-of-type::before {
     display: inline-block !important;
 }
 
-nav > a::after {
+.mi-header nav > a::after {
     content: '' !important;
     position: absolute !important;
     left: 0 !important;
@@ -70,12 +70,12 @@ nav > a::after {
     transition: width 0.3s ease-in-out !important;
 }
 
-nav a:hover::after {
-    animation: smooth-infinite-bar 0.8s linear forwards; !important;
+.mi-header nav a:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards !important;
 }
 
-nav a:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards; !important;
+.mi-header nav a:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards !important;
 }
 
 @keyframes smooth-infinite-bar {
