@@ -262,13 +262,14 @@
         detail.classList.add('impact-detail-inline');
 
         const closeButton = document.createElement('button');
-        closeButton.textContent = 'Cerrar';
+        closeButton.innerHTML = '&times;'; // Símbolo de X
         closeButton.classList.add('close-detail-btn');
 
         closeButton.addEventListener('click', () => {
             detail.remove();
             resetActiveState();
         });
+
 
         const video = document.createElement('video');
         video.controls = true;

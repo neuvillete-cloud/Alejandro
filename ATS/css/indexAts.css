@@ -493,6 +493,7 @@ nav a:not(:hover)::after {
     flex-direction: row;
     gap: 15px;
     align-items: flex-start;
+    position: relative;
 }
 
 .impact-detail-inline video {
@@ -526,17 +527,18 @@ nav a:not(:hover)::after {
 }
 
 .close-detail-btn {
-    background-color: #c0392b;
-    color: white;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: transparent;
     border: none;
-    padding: 8px 12px;
+    color: #e74c3c;
+    font-size: 24px;
     font-weight: bold;
-    border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 10px;
-    display: block;
 }
 
 .close-detail-btn:hover {
-    background-color: #e74c3c;
+    color: #c0392b;
 }
+
