@@ -508,3 +508,10 @@ nav a:not(:hover)::after {
     color: #333;
     margin: 0;
 }
+
+.impact-card.activa {
+    border: 2px solid #0077cc;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
