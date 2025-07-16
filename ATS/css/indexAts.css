@@ -485,38 +485,26 @@ nav a:not(:hover)::after {
     color: #333; /* Puedes ajustar el color según el diseño */
 }
 
-.impact-detail {
-    display: flex;
-    gap: 20px;
+.impact-detail-inline {
+    grid-column: span 2; /* Ocupa dos columnas */
     background: white;
-    padding: 20px;
-    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
     align-items: flex-start;
 }
 
-.impact-detail.hidden {
-    display: none;
-}
-
-.impact-card-selected {
-    flex: 1;
-    border: 2px solid #0077cc;
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.impact-extra-content {
-    flex: 2;
-}
-
-.impact-extra-content video {
-    width: 100%;
-    max-width: 600px;
+.impact-detail-inline video {
+    width: 300px;
     height: auto;
+    border: 1px solid #ccc;
 }
 
-#impact-text {
-    margin-top: 15px;
-    font-size: 18px;
+.impact-detail-inline p {
+    flex: 1;
+    font-size: 16px;
     color: #333;
+    margin: 0;
 }

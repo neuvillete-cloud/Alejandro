@@ -243,50 +243,57 @@
 <script>
     document.querySelectorAll('.impact-card').forEach(card => {
         card.addEventListener('click', () => {
-            const detailSection = document.getElementById('impact-detail');
-            const selectedCardContainer = detailSection.querySelector('.impact-card-selected');
-            const video = detailSection.querySelector('#impact-video');
-            const text = detailSection.querySelector('#impact-text');
+            // Elimina cualquier detalle existente
+            document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
 
-            // Limpia la card seleccionada anterior
-            selectedCardContainer.innerHTML = '';
-            const clonedCard = card.cloneNode(true);
-            selectedCardContainer.appendChild(clonedCard);
+            // Crea el contenedor del detalle
+            const detail = document.createElement('div');
+            detail.classList.add('impact-detail-inline');
 
-            // Aquí defines el video y texto relacionado
+            const video = document.createElement('video');
+            video.controls = true;
+            video.width = 300;
+
+            const source = document.createElement('source');
+            source.type = 'video/mp4';
+
+            const text = document.createElement('p');
+
+            // Determina el contenido en función del área seleccionada
             const cardTitle = card.querySelector('span').innerText;
-
             let videoSrc = '';
             let description = '';
 
             switch (cardTitle) {
                 case 'Seguridad e Higiene':
                     videoSrc = 'videos/seguridad.mp4';
-                    description = 'En Seguridad e Higiene garantizamos un ambiente laboral seguro para todos los empleados.';
+                    description = 'En Seguridad e Higiene garantizamos un entorno de trabajo seguro y saludable para todos.';
                     break;
                 case 'GPS':
                     videoSrc = 'videos/gps.mp4';
-                    description = 'El área GPS se encarga de optimizar procesos mediante metodologías ágiles y eficientes.';
+                    description = 'GPS optimiza nuestros procesos productivos con metodologías de clase mundial.';
                     break;
                 case 'IT':
                     videoSrc = 'videos/it.mp4';
-                    description = 'Nuestro equipo de IT desarrolla soluciones tecnológicas que impulsan la innovación.';
+                    description = 'IT desarrolla e implementa soluciones tecnológicas que transforman nuestra forma de trabajar.';
                     break;
-                // Agrega más casos según las áreas
                 default:
                     videoSrc = 'videos/default.mp4';
-                    description = 'Descubre más sobre esta área en nuestro video.';
+                    description = 'Conoce más sobre esta área en nuestro video introductorio.';
             }
 
-            video.querySelector('source').src = videoSrc;
-            video.load(); // Para recargar el video con el nuevo src
-            text.innerText = description;
+            source.src = videoSrc;
+            video.appendChild(source);
+            text.textContent = description;
 
-            // Muestra la sección de detalle
-            detailSection.classList.remove('hidden');
-            detailSection.scrollIntoView({ behavior: 'smooth' });
+            detail.appendChild(video);
+            detail.appendChild(text);
+
+            // Insertamos el detalle justo después de la card clickeada
+            card.insertAdjacentElement('afterend', detail);
         });
     });
+
 
 </script>
 </body>
