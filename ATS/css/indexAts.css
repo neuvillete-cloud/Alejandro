@@ -515,3 +515,12 @@ nav a:not(:hover)::after {
     transition: all 0.3s ease;
 }
 
+.impact-card.animada {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.impact-card.animada:hover {
+    transform: scale(1.15);
+}

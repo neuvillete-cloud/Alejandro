@@ -244,27 +244,26 @@
     const impactGrid = document.querySelector('.impact-grid');
 
     function resetActiveState() {
-        document.querySelectorAll('.impact-card').forEach(card => card.classList.remove('activa'));
+        document.querySelectorAll('.impact-card').forEach(card => card.classList.remove('activa', 'animada'));
         document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
     }
 
     document.querySelectorAll('.impact-card').forEach(card => {
         card.addEventListener('click', () => {
-            // Limpiar estados previos
             resetActiveState();
 
-            // Siempre buscamos la tarjeta en la primera posición
             const firstCard = impactGrid.querySelector('.impact-card');
 
             if (firstCard !== card) {
-                // Intercambiamos posiciones: ponemos la clickeada antes de la primera tarjeta
                 impactGrid.insertBefore(card, firstCard);
+
+                // Pequeña pausa para que el navegador registre el cambio antes de animar
+                setTimeout(() => {
+                    card.classList.add('animada');
+                }, 50);
             }
 
-            // Marcamos la clickeada como activa
             card.classList.add('activa');
-
-            // Mostramos el detalle
             insertDetailAfter(card);
         });
     });
@@ -313,8 +312,6 @@
 
         card.insertAdjacentElement('afterend', detail);
     }
-
-
 </script>
 </body>
 </html>
