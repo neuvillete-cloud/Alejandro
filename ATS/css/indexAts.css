@@ -484,3 +484,39 @@ nav a:not(:hover)::after {
     font-size: 20px;
     color: #333; /* Puedes ajustar el color según el diseño */
 }
+
+.impact-detail {
+    display: flex;
+    gap: 20px;
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+.impact-detail.hidden {
+    display: none;
+}
+
+.impact-card-selected {
+    flex: 1;
+    border: 2px solid #0077cc;
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.impact-extra-content {
+    flex: 2;
+}
+
+.impact-extra-content video {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+}
+
+#impact-text {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #333;
+}

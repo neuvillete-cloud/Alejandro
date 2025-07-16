@@ -188,6 +188,20 @@
             </div>
         </section>
 
+        <div id="impact-detail" class="impact-detail hidden">
+            <div class="impact-card-selected">
+                <!-- Aquí se clona la card seleccionada -->
+            </div>
+            <div class="impact-extra-content">
+                <video id="impact-video" controls>
+                    <source src="" type="video/mp4">
+                    Tu navegador no soporta la etiqueta de video.
+                </video>
+                <p id="impact-text"></p>
+            </div>
+        </div>
+
+
     </div>
 
 </main>
@@ -226,6 +240,54 @@
         });
     });
 </script>
+<script>
+    document.querySelectorAll('.impact-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const detailSection = document.getElementById('impact-detail');
+            const selectedCardContainer = detailSection.querySelector('.impact-card-selected');
+            const video = detailSection.querySelector('#impact-video');
+            const text = detailSection.querySelector('#impact-text');
 
+            // Limpia la card seleccionada anterior
+            selectedCardContainer.innerHTML = '';
+            const clonedCard = card.cloneNode(true);
+            selectedCardContainer.appendChild(clonedCard);
+
+            // Aquí defines el video y texto relacionado
+            const cardTitle = card.querySelector('span').innerText;
+
+            let videoSrc = '';
+            let description = '';
+
+            switch (cardTitle) {
+                case 'Seguridad e Higiene':
+                    videoSrc = 'videos/seguridad.mp4';
+                    description = 'En Seguridad e Higiene garantizamos un ambiente laboral seguro para todos los empleados.';
+                    break;
+                case 'GPS':
+                    videoSrc = 'videos/gps.mp4';
+                    description = 'El área GPS se encarga de optimizar procesos mediante metodologías ágiles y eficientes.';
+                    break;
+                case 'IT':
+                    videoSrc = 'videos/it.mp4';
+                    description = 'Nuestro equipo de IT desarrolla soluciones tecnológicas que impulsan la innovación.';
+                    break;
+                // Agrega más casos según las áreas
+                default:
+                    videoSrc = 'videos/default.mp4';
+                    description = 'Descubre más sobre esta área en nuestro video.';
+            }
+
+            video.querySelector('source').src = videoSrc;
+            video.load(); // Para recargar el video con el nuevo src
+            text.innerText = description;
+
+            // Muestra la sección de detalle
+            detailSection.classList.remove('hidden');
+            detailSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+</script>
 </body>
 </html>
