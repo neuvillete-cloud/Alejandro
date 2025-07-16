@@ -188,18 +188,7 @@
             </div>
         </section>
 
-        <div id="impact-detail" class="impact-detail hidden">
-            <div class="impact-card-selected">
-                <!-- Aquí se clona la card seleccionada -->
-            </div>
-            <div class="impact-extra-content">
-                <video id="impact-video" controls>
-                    <source src="" type="video/mp4">
-                    Tu navegador no soporta la etiqueta de video.
-                </video>
-                <p id="impact-text"></p>
-            </div>
-        </div>
+
 
 
     </div>
