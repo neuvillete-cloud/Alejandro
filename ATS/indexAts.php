@@ -243,58 +243,95 @@
 <script>
     document.querySelectorAll('.impact-card').forEach(card => {
         card.addEventListener('click', () => {
-            // Elimina cualquier detalle existente
-            document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
+            const impactGrid = document.querySelector('.impact-grid');
+            const seguridadCard = Array.from(impactGrid.children).find(c => c.querySelector('span')?.innerText === 'Seguridad e Higiene');
 
-            // Crea el contenedor del detalle
-            const detail = document.createElement('div');
-            detail.classList.add('impact-detail-inline');
+            if (!seguridadCard || seguridadCard === card) return; // Evitar si ya es la de Seguridad
 
-            const video = document.createElement('video');
-            video.controls = true;
-            video.width = 300;
+            // Intercambiar las posiciones en el DOM
+            const cardClone = card.cloneNode(true);
+            const seguridadClone = seguridadCard.cloneNode(true);
 
-            const source = document.createElement('source');
-            source.type = 'video/mp4';
+            card.replaceWith(seguridadClone);
+            seguridadCard.replaceWith(cardClone);
 
-            const text = document.createElement('p');
+            // Reasignamos los event listeners al clonar
+            reassignClickHandlers();
 
-            // Determina el contenido en función del área seleccionada
-            const cardTitle = card.querySelector('span').innerText;
-            let videoSrc = '';
-            let description = '';
-
-            switch (cardTitle) {
-                case 'Seguridad e Higiene':
-                    videoSrc = 'videos/seguridad.mp4';
-                    description = 'En Seguridad e Higiene garantizamos un entorno de trabajo seguro y saludable para todos.';
-                    break;
-                case 'GPS':
-                    videoSrc = 'videos/gps.mp4';
-                    description = 'GPS optimiza nuestros procesos productivos con metodologías de clase mundial.';
-                    break;
-                case 'IT':
-                    videoSrc = 'videos/it.mp4';
-                    description = 'IT desarrolla e implementa soluciones tecnológicas que transforman nuestra forma de trabajar.';
-                    break;
-                default:
-                    videoSrc = 'videos/default.mp4';
-                    description = 'Conoce más sobre esta área en nuestro video introductorio.';
-            }
-
-            source.src = videoSrc;
-            video.appendChild(source);
-            text.textContent = description;
-
-            detail.appendChild(video);
-            detail.appendChild(text);
-
-            // Insertamos el detalle justo después de la card clickeada
-            card.insertAdjacentElement('afterend', detail);
+            // Después del swap, mostramos el detalle al lado de la nueva posición
+            showDetail(cardClone);
         });
     });
 
+    // Función para mostrar detalle al lado de la tarjeta
+    function showDetail(selectedCard) {
+        // Elimina cualquier detalle previo
+        document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
 
+        const detail = document.createElement('div');
+        detail.classList.add('impact-detail-inline');
+
+        const video = document.createElement('video');
+        video.controls = true;
+        video.width = 300;
+
+        const source = document.createElement('source');
+        source.type = 'video/mp4';
+
+        const text = document.createElement('p');
+
+        const cardTitle = selectedCard.querySelector('span').innerText;
+        let videoSrc = '';
+        let description = '';
+
+        switch (cardTitle) {
+            case 'Seguridad e Higiene':
+                videoSrc = 'videos/seguridad.mp4';
+                description = 'En Seguridad e Higiene garantizamos un entorno de trabajo seguro y saludable para todos.';
+                break;
+            case 'GPS':
+                videoSrc = 'videos/gps.mp4';
+                description = 'GPS optimiza nuestros procesos productivos con metodologías de clase mundial.';
+                break;
+            case 'IT':
+                videoSrc = 'videos/it.mp4';
+                description = 'IT desarrolla e implementa soluciones tecnológicas que transforman nuestra forma de trabajar.';
+                break;
+            default:
+                videoSrc = 'videos/default.mp4';
+                description = 'Conoce más sobre esta área en nuestro video introductorio.';
+        }
+
+        source.src = videoSrc;
+        video.appendChild(source);
+        text.textContent = description;
+
+        detail.appendChild(video);
+        detail.appendChild(text);
+
+        selectedCard.insertAdjacentElement('afterend', detail);
+    }
+
+    // Necesario porque al clonar se pierden los event listeners
+    function reassignClickHandlers() {
+        document.querySelectorAll('.impact-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const impactGrid = document.querySelector('.impact-grid');
+                const seguridadCard = Array.from(impactGrid.children).find(c => c.querySelector('span')?.innerText === 'Seguridad e Higiene');
+
+                if (!seguridadCard || seguridadCard === card) return;
+
+                const cardClone = card.cloneNode(true);
+                const seguridadClone = seguridadCard.cloneNode(true);
+
+                card.replaceWith(seguridadClone);
+                seguridadCard.replaceWith(cardClone);
+
+                reassignClickHandlers();
+                showDetail(cardClone);
+            });
+        });
+    }
 </script>
 </body>
 </html>
