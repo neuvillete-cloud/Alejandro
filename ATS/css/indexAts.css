@@ -441,7 +441,6 @@ nav a:not(:hover)::after {
     color: #2c2047;
     font-weight: 500;
 }
-
 .arrow {
     color: #0077cc;
     font-size: 22px;
@@ -515,3 +514,4 @@ nav a:not(:hover)::after {
     transform: scale(1.05);
     transition: all 0.3s ease;
 }
+

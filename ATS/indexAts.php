@@ -241,30 +241,30 @@
     });
 </script>
 <script>
-    const impactCards = document.querySelectorAll('.impact-card');
     const impactGrid = document.querySelector('.impact-grid');
 
-    impactCards.forEach(card => {
+    function resetActiveState() {
+        document.querySelectorAll('.impact-card').forEach(card => card.classList.remove('activa'));
+        document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
+    }
+
+    document.querySelectorAll('.impact-card').forEach(card => {
         card.addEventListener('click', () => {
-            // Si ya está activa, no hacemos nada
-            if (card.classList.contains('activa')) return;
+            // Limpiar estados previos
+            resetActiveState();
 
-            // Limpiamos cualquier tarjeta activa
-            impactCards.forEach(c => c.classList.remove('activa'));
-            document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
+            // Siempre buscamos la tarjeta en la primera posición
+            const firstCard = impactGrid.querySelector('.impact-card');
 
-            // Buscamos la tarjeta de Seguridad e Higiene
-            const seguridadCard = Array.from(impactGrid.children).find(c => c.querySelector('span')?.innerText === 'Seguridad e Higiene');
+            if (firstCard !== card) {
+                // Intercambiamos posiciones: ponemos la clickeada antes de la primera tarjeta
+                impactGrid.insertBefore(card, firstCard);
+            }
 
-            if (!seguridadCard) return;
-
-            // Intercambiamos la tarjeta actual con Seguridad e Higiene
-            seguridadCard.parentNode.insertBefore(card, seguridadCard);
-
-            // Activamos la tarjeta seleccionada
+            // Marcamos la clickeada como activa
             card.classList.add('activa');
 
-            // Insertamos el detalle al lado
+            // Mostramos el detalle
             insertDetailAfter(card);
         });
     });
@@ -313,6 +313,7 @@
 
         card.insertAdjacentElement('afterend', detail);
     }
+
 
 </script>
 </body>
