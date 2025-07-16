@@ -486,7 +486,7 @@ nav a:not(:hover)::after {
 }
 
 .impact-detail-inline {
-    grid-column: span 2; /* Ocupa dos columnas */
+    grid-column: span 3; /* Ocupa dos columnas */
     background: white;
     border: 1px solid #ddd;
     padding: 15px;
