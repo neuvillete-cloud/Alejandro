@@ -230,89 +230,130 @@
     });
 </script>
 <script>
-    const impactGrid = document.querySelector('.impact-grid');
+    document.addEventListener("DOMContentLoaded", function () {
+        const carousel = document.querySelector(".carousel");
+        const prevBtn = document.querySelector(".carousel-btn.prev");
+        const nextBtn = document.querySelector(".carousel-btn.next");
 
-    function resetActiveState() {
-        document.querySelectorAll('.impact-card').forEach(card => card.classList.remove('activa', 'animada'));
-        document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
-    }
+        const itemWidth = document.querySelector(".carousel-item").offsetWidth + 10; // 10 = gap
+        let currentPosition = 0;
 
-    document.querySelectorAll('.impact-card').forEach(card => {
-        card.addEventListener('click', () => {
-            resetActiveState();
-
-            const firstCard = impactGrid.querySelector('.impact-card');
-
-            if (firstCard !== card) {
-                impactGrid.insertBefore(card, firstCard);
-
-                // Pequeña pausa para que el navegador registre el cambio antes de animar
-                setTimeout(() => {
-                    card.classList.add('animada');
-                }, 50);
+        nextBtn.addEventListener("click", () => {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            if (currentPosition + itemWidth <= maxScroll) {
+                currentPosition += itemWidth;
+            } else {
+                currentPosition = maxScroll; // no pasarse
             }
-
-            card.classList.add('activa');
-            insertDetailAfter(card);
-        });
-    });
-
-    function insertDetailAfter(card) {
-        const detail = document.createElement('div');
-        detail.classList.add('impact-detail-inline');
-
-        const closeButton = document.createElement('button');
-        closeButton.innerHTML = '&times;'; // Símbolo de X
-        closeButton.classList.add('close-detail-btn');
-
-        closeButton.addEventListener('click', () => {
-            detail.remove();
-            resetActiveState();
+            carousel.scrollTo({
+                left: currentPosition,
+                behavior: 'smooth'
+            });
         });
 
+        prevBtn.addEventListener("click", () => {
+            if (currentPosition - itemWidth >= 0) {
+                currentPosition -= itemWidth;
+            } else {
+                currentPosition = 0; // no ir más atrás del inicio
+            }
+            carousel.scrollTo({
+                left: currentPosition,
+                behavior: 'smooth'
+            });
+        });
 
-        const video = document.createElement('video');
-        video.controls = true;
-        video.width = 300;
+        // ----------- LÓGICA PARA TARJETAS (impact-card) -----------
 
-        const source = document.createElement('source');
-        source.type = 'video/mp4';
+        const impactGrid = document.querySelector('.impact-grid');
+        const originalOrder = Array.from(impactGrid.children); // Guardamos el orden original
 
-        const text = document.createElement('p');
+        function resetActiveState() {
+            document.querySelectorAll('.impact-card').forEach(card => card.classList.remove('activa', 'animada'));
+            document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
 
-        const cardTitle = card.querySelector('span').innerText;
-        let videoSrc = '';
-        let description = '';
-
-        switch (cardTitle) {
-            case 'Seguridad e Higiene':
-                videoSrc = 'videos/seguridad.mp4';
-                description = 'En Seguridad e Higiene garantizamos un entorno de trabajo seguro y saludable para todos.';
-                break;
-            case 'GPS':
-                videoSrc = 'videos/gps.mp4';
-                description = 'GPS optimiza nuestros procesos productivos con metodologías de clase mundial.';
-                break;
-            case 'IT':
-                videoSrc = 'videos/it.mp4';
-                description = 'IT desarrolla e implementa soluciones tecnológicas que transforman nuestra forma de trabajar.';
-                break;
-            default:
-                videoSrc = 'videos/default.mp4';
-                description = 'Conoce más sobre esta área en nuestro video introductorio.';
+            // Restauramos el orden original
+            originalOrder.forEach(card => {
+                impactGrid.appendChild(card);
+            });
         }
 
-        source.src = videoSrc;
-        video.appendChild(source);
-        text.textContent = description;
+        document.querySelectorAll('.impact-card').forEach(card => {
+            card.addEventListener('click', () => {
+                resetActiveState();
 
-        detail.appendChild(closeButton);
-        detail.appendChild(video);
-        detail.appendChild(text);
+                const firstCard = impactGrid.querySelector('.impact-card');
 
-        card.insertAdjacentElement('afterend', detail);
-    }
+                if (firstCard !== card) {
+                    impactGrid.insertBefore(card, firstCard);
 
+                    // Pequeña pausa para que el navegador registre el cambio antes de animar
+                    setTimeout(() => {
+                        card.classList.add('animada');
+                    }, 50);
+                }
+
+                card.classList.add('activa');
+                insertDetailAfter(card);
+            });
+        });
+
+        function insertDetailAfter(card) {
+            const detail = document.createElement('div');
+            detail.classList.add('impact-detail-inline');
+
+            const closeButton = document.createElement('button');
+            closeButton.innerHTML = '&times;'; // Símbolo de X
+            closeButton.classList.add('close-detail-btn');
+
+            closeButton.addEventListener('click', () => {
+                detail.remove();
+                resetActiveState();
+            });
+
+            const video = document.createElement('video');
+            video.controls = true;
+            video.width = 300;
+
+            const source = document.createElement('source');
+            source.type = 'video/mp4';
+
+            const text = document.createElement('p');
+
+            const cardTitle = card.querySelector('span').innerText;
+            let videoSrc = '';
+            let description = '';
+
+            switch (cardTitle) {
+                case 'Seguridad e Higiene':
+                    videoSrc = 'videos/seguridad.mp4';
+                    description = 'En Seguridad e Higiene garantizamos un entorno de trabajo seguro y saludable para todos.';
+                    break;
+                case 'GPS':
+                    videoSrc = 'videos/gps.mp4';
+                    description = 'GPS optimiza nuestros procesos productivos con metodologías de clase mundial.';
+                    break;
+                case 'IT':
+                    videoSrc = 'videos/it.mp4';
+                    description = 'IT desarrolla e implementa soluciones tecnológicas que transforman nuestra forma de trabajar.';
+                    break;
+                default:
+                    videoSrc = 'videos/default.mp4';
+                    description = 'Conoce más sobre esta área en nuestro video introductorio.';
+            }
+
+            source.src = videoSrc;
+            video.appendChild(source);
+            text.textContent = description;
+
+            detail.appendChild(closeButton);
+            detail.appendChild(video);
+            detail.appendChild(text);
+
+            card.insertAdjacentElement('afterend', detail);
+        }
+    });
 </script>
+
 </body>
 </html>
