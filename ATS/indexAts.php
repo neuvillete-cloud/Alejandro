@@ -241,33 +241,35 @@
     });
 </script>
 <script>
-    document.querySelectorAll('.impact-card').forEach(card => {
+    const impactCards = document.querySelectorAll('.impact-card');
+    const impactGrid = document.querySelector('.impact-grid');
+
+    impactCards.forEach(card => {
         card.addEventListener('click', () => {
-            const impactGrid = document.querySelector('.impact-grid');
+            // Si ya está activa, no hacemos nada
+            if (card.classList.contains('activa')) return;
+
+            // Limpiamos cualquier tarjeta activa
+            impactCards.forEach(c => c.classList.remove('activa'));
+            document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
+
+            // Buscamos la tarjeta de Seguridad e Higiene
             const seguridadCard = Array.from(impactGrid.children).find(c => c.querySelector('span')?.innerText === 'Seguridad e Higiene');
 
-            if (!seguridadCard || seguridadCard === card) return; // Evitar si ya es la de Seguridad
+            if (!seguridadCard) return;
 
-            // Intercambiar las posiciones en el DOM
-            const cardClone = card.cloneNode(true);
-            const seguridadClone = seguridadCard.cloneNode(true);
+            // Intercambiamos la tarjeta actual con Seguridad e Higiene
+            seguridadCard.parentNode.insertBefore(card, seguridadCard);
 
-            card.replaceWith(seguridadClone);
-            seguridadCard.replaceWith(cardClone);
+            // Activamos la tarjeta seleccionada
+            card.classList.add('activa');
 
-            // Reasignamos los event listeners al clonar
-            reassignClickHandlers();
-
-            // Después del swap, mostramos el detalle al lado de la nueva posición
-            showDetail(cardClone);
+            // Insertamos el detalle al lado
+            insertDetailAfter(card);
         });
     });
 
-    // Función para mostrar detalle al lado de la tarjeta
-    function showDetail(selectedCard) {
-        // Elimina cualquier detalle previo
-        document.querySelectorAll('.impact-detail-inline').forEach(el => el.remove());
-
+    function insertDetailAfter(card) {
         const detail = document.createElement('div');
         detail.classList.add('impact-detail-inline');
 
@@ -280,7 +282,7 @@
 
         const text = document.createElement('p');
 
-        const cardTitle = selectedCard.querySelector('span').innerText;
+        const cardTitle = card.querySelector('span').innerText;
         let videoSrc = '';
         let description = '';
 
@@ -309,29 +311,9 @@
         detail.appendChild(video);
         detail.appendChild(text);
 
-        selectedCard.insertAdjacentElement('afterend', detail);
+        card.insertAdjacentElement('afterend', detail);
     }
 
-    // Necesario porque al clonar se pierden los event listeners
-    function reassignClickHandlers() {
-        document.querySelectorAll('.impact-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const impactGrid = document.querySelector('.impact-grid');
-                const seguridadCard = Array.from(impactGrid.children).find(c => c.querySelector('span')?.innerText === 'Seguridad e Higiene');
-
-                if (!seguridadCard || seguridadCard === card) return;
-
-                const cardClone = card.cloneNode(true);
-                const seguridadClone = seguridadCard.cloneNode(true);
-
-                card.replaceWith(seguridadClone);
-                seguridadCard.replaceWith(cardClone);
-
-                reassignClickHandlers();
-                showDetail(cardClone);
-            });
-        });
-    }
 </script>
 </body>
 </html>
