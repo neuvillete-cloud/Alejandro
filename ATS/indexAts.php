@@ -261,6 +261,15 @@
         const detail = document.createElement('div');
         detail.classList.add('impact-detail-inline');
 
+        const closeButton = document.createElement('button');
+        closeButton.textContent = 'Cerrar';
+        closeButton.classList.add('close-detail-btn');
+
+        closeButton.addEventListener('click', () => {
+            detail.remove();
+            resetActiveState();
+        });
+
         const video = document.createElement('video');
         video.controls = true;
         video.width = 300;
@@ -296,11 +305,13 @@
         video.appendChild(source);
         text.textContent = description;
 
+        detail.appendChild(closeButton);
         detail.appendChild(video);
         detail.appendChild(text);
 
         card.insertAdjacentElement('afterend', detail);
     }
+
 </script>
 </body>
 </html>

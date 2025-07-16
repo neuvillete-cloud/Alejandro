@@ -524,3 +524,19 @@ nav a:not(:hover)::after {
 .impact-card.animada:hover {
     transform: scale(1.15);
 }
+
+.close-detail-btn {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.close-detail-btn:hover {
+    background-color: #e74c3c;
+}
