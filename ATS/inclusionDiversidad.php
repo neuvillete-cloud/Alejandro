@@ -73,7 +73,7 @@
             <img src="imagenes/Grammer_Logo_Original_White_sRGB_screen_transparent.png" class="logo" alt="Siemens Logo" />
 
             <div class="text">
-                <h1>Inclusion Y Diverdidad<br />Grammer</h1>
+                <h1>Inclusion Y Diversidad<br />Grammer</h1>
             </div>
         </section>
         <section class="program-description">
