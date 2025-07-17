@@ -78,7 +78,12 @@
         </section>
         <section class="program-description">
             <div class="content">
-                <h2>Diversidad e Inclusión en Grammer</h2>
+                <h2 class="rainbow-title">
+                    <span>D</span><span>i</span><span>v</span><span>e</span><span>r</span><span>s</span><span>i</span><span>d</span><span>a</span><span>d</span>
+                    <span> </span>
+                    <span>e</span><span> </span><span>I</span><span>n</span><span>c</span><span>l</span><span>u</span><span>s</span><span>i</span><span>ó</span><span>n</span>
+                </h2>
+
 
                 <p>
                     En <strong>Grammer Querétaro</strong>, creemos firmemente que la diversidad nos enriquece y la inclusión nos fortalece. Nuestro compromiso va más allá de las palabras: construimos cada día un entorno donde todas las personas se sientan valoradas, respetadas y empoderadas para ser ellas mismas.
