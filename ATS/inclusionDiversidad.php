@@ -76,199 +76,54 @@
                 <h1>Inclusion Y Diversidad<br />Grammer</h1>
             </div>
         </section>
-        <section class="program-description">
-            <div class="content">
-                <h2>Da el siguiente paso y desbloquea tu potencial con Grammer Querétaro</h2>
+        <section class="diversidad-inclusion">
+            <div class="titulo-diversidad">
+                <h2>Diversidad e Inclusión en Grammer</h2>
+                <p>En Grammer valoramos a cada persona por lo que es. Nuestro compromiso con la diversidad y la inclusión es parte fundamental de nuestra cultura.</p>
+            </div>
 
-                <p>
-                    ¿Estás listo para impulsar tu carrera profesional y formar parte de una empresa que apuesta por el talento joven? Entonces el programa <strong>Escuela de Talentos</strong> de <strong>Grammer Querétaro</strong> es para ti.
-                </p>
-                <p>
-                    Este programa estructurado tiene como objetivo <strong>identificar, desarrollar y potenciar</strong> a practicantes con alto potencial, a través de un proceso dividido en tres fases: <em>selección, desarrollo de proyectos y evaluación de desempeño</em>. Más que una práctica profesional, es una experiencia de crecimiento personalizada, respaldada por el acompañamiento constante de tu jefe inmediato y el equipo de Recursos Humanos.
-                </p>
-                <p>
-                    Durante el programa, los participantes trabajan en <strong>proyectos reales y significativos</strong> que impactan directamente en la mejora continua e innovación de nuestras operaciones. Al finalizar, presentan sus resultados en una <strong>exposición de alto impacto</strong> frente a la gerencia de planta y otras áreas clave. El proyecto más destacado recibe una <strong>beca patrocinada por Grammer</strong> para continuar su desarrollo profesional mediante talleres, capacitaciones o diplomados alineados a su perfil.
-                </p>
-                <p>
-                    Desde su implementación en 2022, la <strong>Escuela de Talentos</strong> ha sido un motor clave para el <strong>fortalecimiento del talento interno</strong> y la <strong>transformación organizacional</strong> en Grammer. Buscamos estudiantes comprometidos, con visión y pasión por dejar huella, que estén listos para dar el siguiente paso y construir su futuro junto a un líder global en soluciones para interiores automotrices.
-                </p>
-                <p>
-                    Este es tu momento. Deja que Grammer impulse tu energía, fortalezca tus habilidades y te acompañe en el camino hacia una carrera profesional con propósito.
-                </p>
+            <!-- Frase inspiradora -->
+            <div class="frase-inspiradora">
+                <blockquote>“Aquí cabemos todos. Aquí crecemos todos.”</blockquote>
+            </div>
+
+            <!-- Tarjetas de datos -->
+            <div class="cards-diversidad">
+                <div class="card">
+                    <img src="imagenes/icono_lgbti.svg" alt="LGBTI+" />
+                    <h3>Comunidad LGBTI+</h3>
+                    <p><strong>41 personas</strong> forman parte activa de nuestra comunidad.</p>
+                </div>
+                <div class="card">
+                    <img src="imagenes/icono_auditiva.svg" alt="Discapacidad Auditiva" />
+                    <h3>Discapacidad Auditiva</h3>
+                    <p>Incluimos a <strong>21 personas</strong> con discapacidad auditiva.</p>
+                </div>
+                <div class="card">
+                    <img src="imagenes/icono_tercera_edad.svg" alt="Tercera edad" />
+                    <h3>Personas de la tercera edad</h3>
+                    <p><strong>14 personas</strong> activas en nuestra operación diaria.</p>
+                </div>
+                <div class="card">
+                    <img src="imagenes/icono_ascendencia.svg" alt="Ascendencia nacional" />
+                    <h3>Ascendencia Nacional</h3>
+                    <p><strong>4 personas</strong> de diversas raíces culturales enriquecen nuestro equipo.</p>
+                </div>
+            </div>
+
+            <!-- Galería visual -->
+            <div class="galeria-inclusion">
+                <img src="imagenes/inclusion1.jpg" alt="Equipo Grammer" />
+                <img src="imagenes/inclusion2.jpg" alt="Taller de inclusión" />
+                <img src="imagenes/inclusion3.jpg" alt="Personas trabajando" />
+                <img src="imagenes/inclusion4.jpg" alt="Evento especial" />
+            </div>
+
+            <!-- Botón de unirse -->
+            <div class="boton-unirse">
+                <a href="vacantes.php" class="btn-unete">Quiero ser parte</a>
             </div>
         </section>
-
-        <section class="program-description">
-            <div class="content">
-                <h2>Aspectos destacados del proyecto</h2>
-                <p>
-                    A lo largo de tu participación en el programa, desarrollarás un <strong>proyecto con impacto real</strong>, el cual será guiado en todo momento por tu asesor o jefe directo. Este acompañamiento cercano te permitirá aplicar tus conocimientos en un entorno profesional y enriquecedor.
-                </p>
-                <p>
-                    El proyecto se alineará estratégicamente con los estándares y objetivos de Grammer Querétaro, asegurando una experiencia de aprendizaje sólida y orientada a resultados. Estas son las principales características que definen la estructura del proyecto:
-                </p>
-                <p>
-                    • Justificación objetiva<br>
-                    • Impacto sustentable<br>
-                    • Innovador y tecnológico<br>
-                    • Apegarse a los estándares de Grammer<br>
-                    • Mostrar datos reales y claros<br>
-                    • Alcanzable en los tiempos establecidos<br>
-                    • Evaluado de forma semanal<br>
-                    • Duración mínima de 4 meses
-                </p>
-                <p>
-                    Esta estructura busca fomentar el pensamiento estratégico, la autonomía y el crecimiento profesional del estudiante, al mismo tiempo que contribuye al desarrollo continuo de nuestra organización.
-                </p>
-            </div>
-        </section>
-
-        <div class="tabs-container">
-            <div class="tabs-header">
-                <div class="tab active" onclick="showTab(event, 'contenido')">Contenido del programa</div>
-                <div class="tab" onclick="showTab(event, 'requisitos')">Requisitos</div>
-                <div class="tab" onclick="showTab(event, 'areas')">Diferentes áreas</div>
-                <div class="tab" onclick="showTab(event, 'proceso')">Proceso de solicitud</div>
-            </div>
-
-            <div class="tabs-content">
-                <div class="tab-panel" id="contenido">
-                    <!-- Aquí va el contenido visible al cargar -->
-                    <div class="tab-body">
-                        <div class="tab-image">
-                            <img src="imagenes/B20JmLHn1SooTYxnZoalYAtXlgf60IJxmYhMP7fU.jpeg" alt="Imagen de contenido">
-                        </div>
-                        <div class="tab-text">
-                            <ul>
-                                <li><strong>Seguimiento personalizado:</strong> Cada practicante cuenta con el acompañamiento constante de su jefe directo.</li>
-                                <li><strong>Proyecto asignado:</strong> Se otorga un proyecto real donde se aplican los conocimientos adquiridos.</li>
-                                <li><strong>Trabajo en equipo:</strong> Se recibe apoyo del equipo para facilitar el aprendizaje y la integración.</li>
-                                <li><strong>Conocimiento de procesos:</strong> Se aprende sobre distintas áreas y procedimientos de la empresa.</li>
-                                <li><strong>Experiencia laboral:</strong> El programa brinda una visión completa del entorno profesional y del mundo laboral.</li>
-                            </ul>
-                        </div>
-
-
-                    </div>
-                </div>
-
-                <div class="tab-panel hidden" id="requisitos">
-                    <div class="requisitos-flex">
-                        <div class="requisitos-box">
-                            <h3>Lo que llevarás</h3>
-                            <ul>
-                                <li>La oportunidad de liberar tus prácticas profesionales en una empresa global con impacto real.</li>
-                                <li>Participación en proyectos reales donde aplicarás los conocimientos adquiridos en tu carrera universitaria.</li>
-                                <li>Acompañamiento y guía de un asesor o jefe directo durante toda la estancia.</li>
-                                <li>Desarrollo de habilidades técnicas y profesionales en un entorno laboral dinámico.</li>
-                                <li>Un espacio para crecer, aprender y comenzar tu camino profesional.</li>
-                            </ul>
-                        </div>
-                        <div class="requisitos-box">
-                            <h3>Cómo lograrás un impacto</h3>
-                            <ul>
-                                <li>Siendo proactivo y tomando responsabilidad en los proyectos asignados.</li>
-                                <li>Demostrando motivación y apertura para aprender constantemente.</li>
-                                <li>Colaborando con diferentes áreas y trabajando en equipo con actitud positiva.</li>
-                                <li>Aplicando tus conocimientos con curiosidad, compromiso y ética profesional.</li>
-                                <li>Comunicándote con claridad, incluso en entornos donde se utilice el inglés de forma práctica.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="tab-panel hidden" id="areas">
-                    <h3>Áreas disponibles para prácticas profesionales</h3>
-                    <div class="areas-grid">
-                        <ul>
-                            <li>Seguridad e Higiene</li>
-                            <li>GPS</li>
-                            <li>IT</li>
-                            <li>RH</li>
-                        </ul>
-                        <ul>
-                            <li>Calidad</li>
-                            <li>Ingeniería</li>
-                            <li>Controlling</li>
-                            <li>Logística</li>
-                        </ul>
-                        <ul>
-                            <li>Mantenimiento</li>
-                            <li>Finanzas</li>
-                            <li>Compras</li>
-                            <li>Regionales</li>
-                        </ul>
-                    </div>
-                </div>
-
-
-                <div class="tab-panel hidden" id="proceso">
-                    <div class="proceso-container">
-                        <div class="proceso-img">
-                            <img src="imagenes/fb2z1ct9.png" alt="Proceso de solicitud en Grammer">
-                        </div>
-                        <div class="proceso-info">
-                            <h3>Proceso de Solicitud</h3>
-                            <ol>
-                                <li><strong>Envío del CV:</strong> Postula enviando tu currículum actualizado.</li>
-                                <li><strong>Entrevista telefónica:</strong> Primer contacto con el equipo de Recursos Humanos.</li>
-                                <li><strong>Entrevista con el jefe de área:</strong> Presencial o por videollamada según disponibilidad.</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <section class="galeria-testimonios">
-            <div class="encabezado-galeria">
-                <h2>Casos de éxito</h2>
-                <p>Estos son algunos de nuestros casos de éxito de personas que antes eran practicantes y ahora fueron contratadas.</p>
-            </div>
-
-            <div class="galeria">
-                <div class="imagen" data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa.">
-                    <button class="cerrar">&times;</button>
-                    <img src="imagenes/IT.jpg" alt="Persona 1">
-                    <p class="frase"></p>
-                </div>
-                <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
-                    <button class="cerrar">&times;</button>
-                    <img src="imagenes/Ingenieria.jpg" alt="Persona 2">
-                    <p class="frase"></p>
-                </div>
-                <div class="imagen" data-frase="Pude liderar un equipo internacional increíble.">
-                    <button class="cerrar">&times;</button>
-                    <img src="imagenes/Comunicacion.jpg" alt="Persona 3">
-                    <p class="frase"></p>
-                </div>
-                <div class="imagen" data-frase="Aprendí a combinar tecnología y sostenibilidad.">
-                    <button class="cerrar">&times;</button>
-                    <img src="imagenes/Controlling.jpg" alt="Persona 4">
-                    <p class="frase"></p>
-                </div>
-                <div class="imagen" data-frase="Fue un reto que cambió mi vida profesional.">
-                    <button class="cerrar">&times;</button>
-                    <img src="imagenes/Logistica.jpg" alt="Persona 5">
-                    <p class="frase"></p>
-                </div>
-                <div class="imagen" data-frase="Hoy sé que todo es posible con propósito y energía.">
-                    <button class="cerrar">&times;</button>
-                    <img src="imagenes/Metrologia.jpg" alt="Persona 6">
-                    <p class="frase"></p>
-                </div>
-            </div>
-
-            <div class="frase-seleccionada">
-                <p class="comillas">“</p>
-                <p id="texto-frase">Selecciona una foto para ver su historia.</p>
-            </div>
-        </section>
-
-
     </main>
 </div>
 <script>

@@ -1,0 +1,300 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 80px;
+    background-color: #063962;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.sidebar.expanded {
+    width: 350px;
+}
+
+.sidebar-icons {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    pointer-events: none;
+}
+
+.top-icon,
+.middle-icon,
+.bottom-icon {
+    pointer-events: all;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.middle-icon:hover {
+    transform: scale(1.2);
+}
+
+.sidebar-content {
+    margin-left: 80px;
+    padding: 20px;
+    color: white;
+    display: none;
+}
+
+/* Mostrar contenido solo si está expandido */
+.sidebar.expanded .sidebar-content {
+    display: block;
+}
+
+
+.top-icon,
+.middle-icon,
+.bottom-icon {
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.middle-icon {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.main-content {
+    flex: 1;
+    position: relative;
+}
+
+header .global {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    color: white;
+    font-weight: bold;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.hero {
+    width: 100%;
+    height: 100%;
+    background-image: url('../imagenes/los-becarios-son-contratados-por-las-empresas-donde-hacen-prácticas-formativas_2-1024x768.jpg'); /* Imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* Logo dentro del hero */
+.hero .logo {
+    position: absolute;
+    top: 20px;
+    left: 130px;
+    width: 130px;
+    z-index: 10;
+}
+
+.hero .text {
+    position: absolute;
+    bottom: 80px;
+    left: 100px;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.icon-img {
+    width: 28px; /* Ajusta el tamaño del ícono */
+    height: 30px; /* Ajusta el tamaño del ícono */
+    fill: white;  /* Color del ícono */
+    transition: transform 0.3s ease-in-out; /* Animación para hover */
+}
+
+.icon-img:hover {
+    transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
+}
+
+.icon-global {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    margin-left: -10px;   /* Mueve hacia la izquierda */
+    margin-top: 5px;     /* Mueve hacia abajo */
+    vertical-align: middle;
+}
+
+.global-text {
+    color: white;
+    font-size: 18px;
+}
+
+.middle-icon:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+@keyframes bounceContent {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(10px); }
+    40% { transform: translateX(-8px); }
+    60% { transform: translateX(6px); }
+    80% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+
+.sidebar.bounce .top-icon,
+.sidebar.bounce .middle-icon,
+.sidebar.bounce .bottom-icon {
+    animation: bounceContent 0.6s ease-in-out;
+}
+
+/* Opcional: que los íconos se alineen a la izquierda cuando se expanda */
+.sidebar.expanded .top-icon,
+.sidebar.expanded .middle-icon,
+.sidebar.expanded .bottom-icon {
+    align-self: flex-start;
+    margin-left: 30px;
+}
+
+.program-description {
+    background-color: white;
+    padding: 60px 20px;
+    color: #1a1a1a;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.program-description .content {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.diversidad-inclusion {
+    padding: 50px 20px;
+    background-color: #f5f5f5;
+    color: #333;
+    text-align: center;
+}
+
+.titulo-diversidad h2 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: #005b8f;
+}
+
+.titulo-diversidad p {
+    max-width: 700px;
+    margin: 0 auto 40px;
+    font-size: 1.1rem;
+}
+
+.frase-inspiradora blockquote {
+    font-style: italic;
+    font-size: 1.4rem;
+    margin: 20px auto 40px;
+    max-width: 600px;
+    color: #0077c8;
+}
+
+.cards-diversidad {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 40px;
+}
+
+.cards-diversidad .card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.cards-diversidad .card:hover {
+    transform: translateY(-5px);
+}
+
+.cards-diversidad img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+.cards-diversidad h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #0077c8;
+}
+
+.cards-diversidad p {
+    font-size: 1rem;
+}
+
+/* Galería visual */
+.galeria-inclusion {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 40px 0;
+}
+
+.galeria-inclusion img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    height: 200px;
+    transition: transform 0.3s ease;
+}
+
+.galeria-inclusion img:hover {
+    transform: scale(1.05);
+}
+
+/* Botón */
+.boton-unirse {
+    margin-top: 30px;
+}
+
+.btn-unete {
+    background-color: #0077c8;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-unete:hover {
+    background-color: #005f9e;
+}
