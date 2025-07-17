@@ -78,7 +78,7 @@
         </section>
         <section class="program-description">
             <div class="content">
-                <h2>Da el siguiente paso y desbloquea tu potencial con Grammer Querétaro</h2>
+                <h2>Diversidad e Inclusión en Grammer</h2>
 
                 <p>
                     ¿Estás listo para impulsar tu carrera profesional y formar parte de una empresa que apuesta por el talento joven? Entonces el programa <strong>Escuela de Talentos</strong> de <strong>Grammer Querétaro</strong> es para ti.
