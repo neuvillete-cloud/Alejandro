@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Graduate Program</title>
+    <title>Inclusion y Diversidad</title>
     <link rel="stylesheet" href="css/practicantes.css" />
 </head>
 <body>
@@ -73,7 +73,7 @@
             <img src="imagenes/Grammer_Logo_Original_White_sRGB_screen_transparent.png" class="logo" alt="Siemens Logo" />
 
             <div class="text">
-                <h1>Grammer Escuela de Talentos<br />Program</h1>
+                <h1>Inclusion Y Diverdidad<br />Grammer</h1>
             </div>
         </section>
         <section class="program-description">
