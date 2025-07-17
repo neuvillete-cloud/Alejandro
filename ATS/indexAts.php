@@ -188,6 +188,33 @@
             </div>
         </section>
 
+        <!-- Mapa interactivo -->
+        <section class="global-map-section">
+            <h2>Presencia Global de Grammer</h2>
+            <div class="map-container">
+                <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Alemania -->
+                    <path id="DE" class="country" d="M530 220 L560 215 L570 230 L550 240 L530 230 Z" />
+                    <!-- Estados Unidos -->
+                    <path id="US" class="country" d="M300 200 L350 195 L360 210 L320 220 L300 210 Z" />
+                    <!-- México -->
+                    <path id="MX" class="country" d="M320 240 L350 235 L360 250 L330 260 L320 255 Z" />
+                    <!-- Japón -->
+                    <path id="JP" class="country" d="M730 230 L760 225 L770 240 L740 250 L730 245 Z" />
+                    <!-- Reino Unido -->
+                    <path id="UK" class="country" d="M490 200 L510 195 L520 210 L500 220 L490 215 Z" />
+                </svg>
+
+                <div class="info-panel" id="infoPanel">
+                    <h3 id="countryName">País</h3>
+                    <p><strong>Plantas:</strong> <span id="plantsCount">-</span></p>
+                    <p><strong>Vacantes disponibles:</strong> <span id="vacanciesCount">-</span></p>
+                    <img src="" alt="" id="countryImage" />
+                </div>
+            </div>
+        </section>
+
+
 
 
 
@@ -352,6 +379,85 @@
 
             card.insertAdjacentElement('afterend', detail);
         }
+    });
+</script>
+<script>
+    const countriesData = {
+        DE: {
+            name: "Alemania",
+            plants: 5,
+            vacancies: 12,
+            img: "imagenes/IMG_0076-min.JPG"
+        },
+        US: {
+            name: "Estados Unidos",
+            plants: 3,
+            vacancies: 8,
+            img: "imagenes/IMG_3238-min.JPG"
+        },
+        MX: {
+            name: "México",
+            plants: 4,
+            vacancies: 6,
+            img: "imagenes/8.png"
+        },
+        JP: {
+            name: "Japón",
+            plants: 2,
+            vacancies: 5,
+            img: "imagenes/HyM.png"
+        },
+        UK: {
+            name: "Reino Unido",
+            plants: 1,
+            vacancies: 4,
+            img: "imagenes/IMG_3238-min.JPG"
+        }
+    };
+
+    const infoPanel = document.getElementById('infoPanel');
+    const countryName = document.getElementById('countryName');
+    const plantsCount = document.getElementById('plantsCount');
+    const vacanciesCount = document.getElementById('vacanciesCount');
+    const countryImage = document.getElementById('countryImage');
+    const mapContainer = document.querySelector('.map-container');
+
+    function showInfo(id, event) {
+        const data = countriesData[id];
+        if (!data) return;
+
+        countryName.textContent = data.name;
+        plantsCount.textContent = data.plants;
+        vacanciesCount.textContent = data.vacancies;
+        countryImage.src = data.img;
+        countryImage.alt = `Imagen de ${data.name}`;
+
+        infoPanel.style.display = 'block';
+
+        const containerRect = mapContainer.getBoundingClientRect();
+        let left = event.clientX - containerRect.left + 15;
+        let top = event.clientY - containerRect.top + 15;
+
+        if (left + infoPanel.offsetWidth > containerRect.width) {
+            left = containerRect.width - infoPanel.offsetWidth - 10;
+        }
+        if (top + infoPanel.offsetHeight > containerRect.height) {
+            top = containerRect.height - infoPanel.offsetHeight - 10;
+        }
+
+        infoPanel.style.left = left + 'px';
+        infoPanel.style.top = top + 'px';
+    }
+
+    function hideInfo() {
+        infoPanel.style.display = 'none';
+    }
+
+    Object.keys(countriesData).forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('mouseenter', e => showInfo(id, e));
+        el.addEventListener('mousemove', e => showInfo(id, e));
+        el.addEventListener('mouseleave', hideInfo);
     });
 </script>
 
