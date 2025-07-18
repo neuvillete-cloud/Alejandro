@@ -139,7 +139,7 @@
 
         <section class="diversidad-inclusion">
             <div class="titulo-diversidad">
-                <h2>Diversidad e Inclusión en Grammer</h2>
+                <h2>Somos Diversidad: Grammer Incluyente</h2>
                 <p>En Grammer valoramos a cada persona por lo que es. Nuestro compromiso con la diversidad y la inclusión es parte fundamental de nuestra cultura.</p>
             </div>
 

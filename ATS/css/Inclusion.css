@@ -645,77 +645,63 @@ header .global {
 }
 
 .cards-diversidad {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 30px;
-    justify-content: center;
-    align-items: stretch;
-    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;  /* Centrar horizontalmente */
+    gap: 30px;                /* Espacio entre tarjetas */
+    max-width: 1200px;
+    margin: 0 auto;           /* Centrar contenedor */
+    padding: 20px 0;
 }
 
-.cards-diversidad .card {
+.card {
     background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
     padding: 20px;
-    border-radius: 15px;
+    width: 220px;
+    text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
 }
 
-.cards-diversidad .card:hover {
-    transform: translateY(-5px);
+.card:hover {
+    transform: scale(1.05);
 }
 
-.cards-diversidad img {
+.card img {
     width: 60px;
     height: 60px;
     margin-bottom: 15px;
 }
 
-.cards-diversidad h3 {
-    font-size: 1.3rem;
+.card h3 {
+    font-size: 18px;
+    color: #005b8f;
     margin-bottom: 10px;
-    color: #0077c8;
 }
 
-.cards-diversidad p {
-    font-size: 1rem;
+.card p {
+    font-size: 16px;
+    color: #333;
 }
 
-/* Galería visual */
-.galeria-inclusion {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin: 40px 0;
-}
 
-.galeria-inclusion img {
-    width: 100%;
-    border-radius: 10px;
-    object-fit: cover;
-    height: 200px;
-    transition: transform 0.3s ease;
-}
-
-.galeria-inclusion img:hover {
-    transform: scale(1.05);
-}
-
-/* Botón */
 .boton-unirse {
-    margin-top: 30px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 .btn-unete {
-    background-color: #0077c8;
+    background-color: #005b8f;
     color: white;
-    padding: 12px 30px;
-    border-radius: 30px;
+    padding: 12px 25px;
+    border-radius: 8px;
     text-decoration: none;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .btn-unete:hover {
-    background-color: #005f9e;
+    background-color: #003f66;
 }
