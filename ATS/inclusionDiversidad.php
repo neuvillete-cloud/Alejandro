@@ -75,7 +75,6 @@
             <div class="text">
                 <h1>
                     <span class="highlight">Inclusion Y Diversidad</span><br />
-                    <span class="highlight">Grammer</span>
                 </h1>
             </div>
 
