@@ -563,3 +563,10 @@ header .global {
 .rainbow-title span:nth-child(19) { animation-delay: 0.9s; }
 .rainbow-title span:nth-child(20) { animation-delay: 0.95s; }
 .rainbow-title span:nth-child(21) { animation-delay: 1s; }
+
+.hero .text h1 .highlight {
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro con opacidad */
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+}
