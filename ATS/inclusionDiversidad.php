@@ -151,7 +151,8 @@
             <!-- Tarjetas de datos -->
             <div class="cards-diversidad">
                 <div class="card">
-                    <img src="imagenes/icono_lgbti.svg" alt="LGBTI+" />
+                    <i class="fas fa-rainbow fa-3x" style="color:#e74c3c;"></i>
+
                     <h3>Comunidad LGBTI+</h3>
                     <p><strong>41 personas</strong> forman parte activa de nuestra comunidad.</p>
                 </div>
