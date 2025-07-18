@@ -574,7 +574,7 @@ header .global {
 
 .image-text-section {
     padding: 50px 20px;
-    background-color: #f5f5f5;
+    background-color: white;
     max-width: 1100px;
     margin: 0 auto;
 }
