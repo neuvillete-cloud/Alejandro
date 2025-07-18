@@ -137,6 +137,46 @@
             </div>
         </section>
 
+        <section class="diversidad-inclusion">
+            <div class="titulo-diversidad">
+                <h2>Diversidad e Inclusión en Grammer</h2>
+                <p>En Grammer valoramos a cada persona por lo que es. Nuestro compromiso con la diversidad y la inclusión es parte fundamental de nuestra cultura.</p>
+            </div>
+
+            <!-- Frase inspiradora -->
+            <div class="frase-inspiradora">
+                <blockquote>“Aquí cabemos todos. Aquí crecemos todos.”</blockquote>
+            </div>
+
+            <!-- Tarjetas de datos -->
+            <div class="cards-diversidad">
+                <div class="card">
+                    <img src="imagenes/icono_lgbti.svg" alt="LGBTI+" />
+                    <h3>Comunidad LGBTI+</h3>
+                    <p><strong>41 personas</strong> forman parte activa de nuestra comunidad.</p>
+                </div>
+                <div class="card">
+                    <img src="imagenes/icono_auditiva.svg" alt="Discapacidad Auditiva" />
+                    <h3>Discapacidad Auditiva</h3>
+                    <p>Incluimos a <strong>21 personas</strong> con discapacidad auditiva.</p>
+                </div>
+                <div class="card">
+                    <img src="imagenes/icono_tercera_edad.svg" alt="Tercera edad" />
+                    <h3>Personas de la tercera edad</h3>
+                    <p><strong>14 personas</strong> activas en nuestra operación diaria.</p>
+                </div>
+                <div class="card">
+                    <img src="imagenes/icono_ascendencia.svg" alt="Ascendencia nacional" />
+                    <h3>Ascendencia Nacional</h3>
+                    <p><strong>4 personas</strong> de diversas raíces culturales enriquecen nuestro equipo.</p>
+                </div>
+            </div>
+            <!-- Botón de unirse -->
+            <div class="boton-unirse">
+                <a href="formularioPostulacion.php" class="btn-unete">Quiero ser parte</a>
+            </div>
+        </section>
+
 
 
     </main>
