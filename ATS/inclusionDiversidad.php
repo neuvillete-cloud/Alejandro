@@ -159,17 +159,17 @@
                     <p><strong>41 personas</strong> forman parte activa de nuestra comunidad.</p>
                 </div>
                 <div class="card">
-                    <img src="imagenes/icono_auditiva.svg" alt="Discapacidad Auditiva" />
+                    <i class="fas fa-deaf fa-3x" style="color:#3498db;"></i>
                     <h3>Discapacidad Auditiva</h3>
                     <p>Incluimos a <strong>21 personas</strong> con discapacidad auditiva.</p>
                 </div>
                 <div class="card">
-                    <img src="imagenes/icono_tercera_edad.svg" alt="Tercera edad" />
+                    <i class="fas fa-blind fa-3x" style="color:#f39c12;"></i>
                     <h3>Personas de la tercera edad</h3>
                     <p><strong>14 personas</strong> activas en nuestra operación diaria.</p>
                 </div>
                 <div class="card">
-                    <img src="imagenes/icono_ascendencia.svg" alt="Ascendencia nacional" />
+                    <i class="fas fa-globe-americas fa-3x" style="color:#2ecc71;"></i>
                     <h3>Ascendencia Nacional</h3>
                     <p><strong>4 personas</strong> de diversas raíces culturales enriquecen nuestro equipo.</p>
                 </div>
