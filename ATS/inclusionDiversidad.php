@@ -113,8 +113,8 @@
             <div class="image-text-block">
                 <img src="imagenes/Diseño%20sin%20título%202.jpg" alt="Imagen 1">
                 <div class="text-content">
-                    <h3>Título 1</h3>
-                    <p>Este es el contenido de texto correspondiente a la imagen 1.</p>
+                    <h3>Orgullo y Compromiso con la Diversidad</h3>
+                    <p>En Grammer Querétaro izamos con orgullo la bandera de la diversidad. Creemos en un entorno laboral donde todas las personas son respetadas y valoradas por quienes son, promoviendo la equidad, el respeto y la inclusión como parte esencial de nuestra cultura organizacional.</p>
                 </div>
             </div>
 
@@ -122,8 +122,8 @@
             <div class="image-text-block reverse">
                 <img src="imagenes/IMG_0175.JPG" alt="Imagen 2">
                 <div class="text-content">
-                    <h3>Título 2</h3>
-                    <p>Este es el contenido de texto correspondiente a la imagen 2.</p>
+                    <h3>Comunidad de Personas Sordas: Talento que Inspira</h3>
+                    <p>Contamos con un equipo extraordinario de colaboradores con discapacidad auditiva que cada día demuestran que las barreras solo existen cuando dejamos que existan. Su compromiso, talento y dedicación enriquecen nuestro entorno laboral y nos inspiran a construir espacios más accesibles e incluyentes.</p>
                 </div>
             </div>
 
@@ -131,8 +131,8 @@
             <div class="image-text-block">
                 <img src="imagenes/IMG_0172.JPG" alt="Imagen 3">
                 <div class="text-content">
-                    <h3>Título 3</h3>
-                    <p>Este es el contenido de texto correspondiente a la imagen 3.</p>
+                    <h3>Acciones que Transforman</h3>
+                    <p>La inclusión en Grammer Querétaro se vive con acciones concretas. Nos esforzamos por garantizar oportunidades equitativas, promover el desarrollo profesional de todos nuestros colaboradores y fortalecer una cultura donde la diversidad es nuestra mayor fortaleza.</p>
                 </div>
             </div>
         </section>
