@@ -573,9 +573,12 @@ header .global {
 
 
 .image-text-section {
-    padding: 50px 100px;
+    padding: 50px 20px;
     background-color: #f5f5f5;
+    max-width: 1100px;
+    margin: 0 auto;
 }
+
 
 .image-text-block {
     display: flex;
