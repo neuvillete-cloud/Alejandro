@@ -103,7 +103,7 @@ header .global {
 .hero {
     width: 100%;
     height: 100%;
-    background-image: url('../imagenes/los-becarios-son-contratados-por-las-empresas-donde-hacen-prácticas-formativas_2-1024x768.jpg'); /* Imagen de fondo */
+    background-image: url('../imagenes/image.jpg'); /* Imagen de fondo */
     background-size: cover;
     background-position: center;
     position: relative;
