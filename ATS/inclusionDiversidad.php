@@ -111,7 +111,7 @@
         <section class="image-text-section">
             <!-- Bloque 1: imagen izquierda, texto derecha -->
             <div class="image-text-block">
-                <img src="imagenes/imagen1.jpg" alt="Imagen 1">
+                <img src="imagenes/Diseño%20sin%20título%202.jpg" alt="Imagen 1">
                 <div class="text-content">
                     <h3>Título 1</h3>
                     <p>Este es el contenido de texto correspondiente a la imagen 1.</p>
@@ -120,7 +120,7 @@
 
             <!-- Bloque 2: imagen derecha, texto izquierda -->
             <div class="image-text-block reverse">
-                <img src="imagenes/imagen2.jpg" alt="Imagen 2">
+                <img src="imagenes/IMG_0175.JPG" alt="Imagen 2">
                 <div class="text-content">
                     <h3>Título 2</h3>
                     <p>Este es el contenido de texto correspondiente a la imagen 2.</p>
@@ -129,7 +129,7 @@
 
             <!-- Bloque 3: imagen izquierda, texto derecha -->
             <div class="image-text-block">
-                <img src="imagenes/imagen3.jpg" alt="Imagen 3">
+                <img src="imagenes/IMG_0172.JPG" alt="Imagen 3">
                 <div class="text-content">
                     <h3>Título 3</h3>
                     <p>Este es el contenido de texto correspondiente a la imagen 3.</p>
