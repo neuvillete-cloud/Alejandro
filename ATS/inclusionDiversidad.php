@@ -176,7 +176,7 @@
             </div>
             <!-- Botón de unirse -->
             <div class="boton-unirse">
-                <a href="formularioPostulacion.php" class="btn-unete">Quiero ser parte</a>
+                <a href="loginATS.php" class="btn-unete">Quiero ser parte</a>
             </div>
         </section>
 
