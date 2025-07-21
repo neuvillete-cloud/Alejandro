@@ -647,7 +647,7 @@ header .global {
 
 .cards-diversidad {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     gap: 40px;  /* Más espacio entre tarjetas */
     max-width: 1000px;
