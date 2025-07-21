@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
+// Tabla del ISR con datos necesarios
 function obtenerTarifaISR($baseGravable) {
     $tarifa = [
         [0.01, 746.04, 0.00, 0.0192],
@@ -20,16 +21,32 @@ function obtenerTarifaISR($baseGravable) {
         [$limInf, $limSup, $cuotaFija, $porcentaje] = $rango;
         if ($baseGravable >= $limInf && $baseGravable <= $limSup) {
             $excedente = $baseGravable - $limInf;
-            return round($cuotaFija + $excedente * $porcentaje, 2);
+            $impuestoMarginal = $excedente * $porcentaje;
+            $ISR = round($cuotaFija + $impuestoMarginal, 2);
+            return [
+                'limite_inferior' => $limInf,
+                'excedente' => round($excedente, 2),
+                'porcentaje' => $porcentaje,
+                'cuota_fija' => $cuotaFija,
+                'impuesto_marginal' => round($impuestoMarginal, 2),
+                'ISR' => $ISR
+            ];
         }
     }
-    return 0.0;
+    return [];
 }
 
+// Subsidio al empleo (simplificado)
 function obtenerSubsidio($baseGravable) {
     return ($baseGravable <= 10171) ? 475.00 : 0.00;
 }
 
+// IMSS estimado
+function calcularIMSS($baseGravable) {
+    return round($baseGravable * 0.025, 2); // 2.5% estimado
+}
+
+// Entrada JSON
 $input = json_decode(file_get_contents('php://input'), true);
 $periodo = strtolower($input['periodo'] ?? 'mensual');
 $monto = floatval($input['monto'] ?? 0);
@@ -41,8 +58,9 @@ if ($monto <= 0) {
     exit;
 }
 
+// Ajustes de periodo
 function ajustarAMensual($periodo, $valor) {
-    switch($periodo) {
+    switch ($periodo) {
         case 'quincenal': return $valor * 2;
         case 'semanal': return $valor * 4.3333;
         default: return $valor;
@@ -50,32 +68,41 @@ function ajustarAMensual($periodo, $valor) {
 }
 
 function ajustarADeseado($periodo, $valor) {
-    switch($periodo) {
+    switch ($periodo) {
         case 'quincenal': return round($valor / 2, 2);
         case 'semanal': return round($valor / 4.3333, 2);
         default: return $valor;
     }
 }
 
+// =========================
+// BRUTO A NETO
+// =========================
 if ($tipoCalculo === 'brutoANeto') {
     $baseGravable = ajustarAMensual($periodo, $monto);
-    $isrMensual = obtenerTarifaISR($baseGravable);
+    $detalleISR = obtenerTarifaISR($baseGravable);
     $subsidioMensual = obtenerSubsidio($baseGravable);
+    $imssMensual = calcularIMSS($baseGravable);
 
     $bruto = $monto;
-    $isr = ajustarADeseado($periodo, $isrMensual);
+    $isr = ajustarADeseado($periodo, $detalleISR['ISR']);
     $subsidio = ajustarADeseado($periodo, $subsidioMensual);
-    $neto = round($bruto - $isr + $subsidio, 2);
+    $imss = ajustarADeseado($periodo, $imssMensual);
+    $neto = round($bruto - $isr - $imss + $subsidio, 2);
 
-} else if ($tipoCalculo === 'netoABruto') {
-    // Aproximación inversa con iteración
+// =========================
+// NETO A BRUTO (Aproximado)
+// =========================
+} elseif ($tipoCalculo === 'netoABruto') {
     $brutoAproxMensual = ajustarAMensual($periodo, $monto);
     $brutoEstimado = $brutoAproxMensual;
 
     do {
-        $isr = obtenerTarifaISR($brutoEstimado);
-        $subsidio = obtenerSubsidio($brutoEstimado);
-        $netoEstimado = $brutoEstimado - $isr + $subsidio;
+        $detalleISR = obtenerTarifaISR($brutoEstimado);
+        $subsidioMensual = obtenerSubsidio($brutoEstimado);
+        $imssMensual = calcularIMSS($brutoEstimado);
+
+        $netoEstimado = $brutoEstimado - $detalleISR['ISR'] - $imssMensual + $subsidioMensual;
 
         if ($netoEstimado < $brutoAproxMensual) {
             $brutoEstimado += 1;
@@ -86,23 +113,36 @@ if ($tipoCalculo === 'brutoANeto') {
     } while (abs($netoEstimado - $brutoAproxMensual) > 1);
 
     $bruto = ajustarADeseado($periodo, $brutoEstimado);
-    $isr = ajustarADeseado($periodo, obtenerTarifaISR($brutoEstimado));
-    $subsidio = ajustarADeseado($periodo, obtenerSubsidio($brutoEstimado));
+    $isr = ajustarADeseado($periodo, $detalleISR['ISR']);
+    $subsidio = ajustarADeseado($periodo, $subsidioMensual);
+    $imss = ajustarADeseado($periodo, $imssMensual);
     $neto = $monto;
+
+// =========================
+// TIPO INVÁLIDO
+// =========================
 } else {
     http_response_code(400);
-    echo json_encode(['status'=>'error', 'message'=>'Tipo de cálculo inválido']);
+    echo json_encode(['status' => 'error', 'message' => 'Tipo de cálculo inválido']);
     exit;
 }
 
+// =========================
+// RESPUESTA JSON COMPLETA
+// =========================
 echo json_encode([
     'status' => 'success',
     'data' => [
         'periodo' => ucfirst($periodo),
         'sueldo_bruto' => number_format($bruto, 2),
+        'limite_inferior' => number_format($detalleISR['limite_inferior'], 2),
+        'excedente' => number_format($detalleISR['excedente'], 2),
+        'porcentaje' => ($detalleISR['porcentaje'] * 100) . '%',
+        'cuota_fija' => number_format($detalleISR['cuota_fija'], 2),
+        'impuesto_marginal' => number_format($detalleISR['impuesto_marginal'], 2),
         'ISR' => number_format($isr, 2),
+        'IMSS' => number_format($imss, 2),
         'Subsidio' => number_format($subsidio, 2),
         'sueldo_neto' => number_format($neto, 2)
     ]
 ]);
-
