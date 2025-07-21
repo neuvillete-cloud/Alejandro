@@ -80,40 +80,43 @@
     <img src="imagenes/iniciar-sesion.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
-<section class="calculadora-sueldo">
-    <h2>Calcula tu sueldo Neto o Bruto</h2>
-    <p>Selecciona el tipo de cálculo e ingresa el monto correspondiente.</p>
+<section class="section-calculadora">
+    <section class="calculadora-sueldo">
+        <h2>Calcula tu sueldo Neto o Bruto</h2>
+        <p>Selecciona el tipo de cálculo e ingresa el monto correspondiente.</p>
 
-    <form id="formCalculadora">
-        <div class="form-group">
-            <label>Periodo de pago:</label>
-            <select id="periodoPago">
-                <option value="mensual">Mensual</option>
-                <option value="quincenal">Quincenal</option>
-                <option value="semanal">Semanal</option>
-            </select>
-        </div>
+        <form id="formCalculadora">
+            <div class="form-group">
+                <label>Periodo de pago:</label>
+                <select id="periodoPago">
+                    <option value="mensual">Mensual</option>
+                    <option value="quincenal">Quincenal</option>
+                    <option value="semanal">Semanal</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label>Tipo de cálculo:</label>
-            <label><input type="radio" name="tipoCalculo" value="brutoANeto" checked> Bruto a Neto</label>
-            <label><input type="radio" name="tipoCalculo" value="netoABruto"> Neto a Bruto</label>
-        </div>
+            <div class="form-group">
+                <label>Tipo de cálculo:</label>
+                <label><input type="radio" name="tipoCalculo" value="brutoANeto" checked> Bruto a Neto</label>
+                <label><input type="radio" name="tipoCalculo" value="netoABruto"> Neto a Bruto</label>
+            </div>
 
-        <div class="form-group">
-            <label>Monto:</label>
-            <input type="number" id="montoBruto" placeholder="$ Monto" required>
-        </div>
+            <div class="form-group">
+                <label>Monto:</label>
+                <input type="number" id="montoBruto" placeholder="$ Monto" required>
+            </div>
 
-        <button type="submit">Calcular</button>
-    </form>
+            <button type="submit">Calcular</button>
+        </form>
 
-    <section id="resultadoCalculadora" style="display:none;">
-        <h2>Resultados:</h2>
-        <div id="detalleRetenciones"></div>
-        <canvas id="graficoDeducciones" width="300" height="300"></canvas>
+        <section id="resultadoCalculadora" style="display:none;">
+            <h3>Resultados:</h3>
+            <div id="detalleRetenciones"></div>
+            <canvas id="graficoDeducciones" width="300" height="300"></canvas>
+        </section>
     </section>
 </section>
+
 
 <script>
     document.getElementById('formCalculadora').addEventListener('submit', async function(e) {
