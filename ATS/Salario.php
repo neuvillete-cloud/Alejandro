@@ -4,55 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grammer Automotive - Calculadora de Sueldo</title>
-    <link rel="stylesheet" href="css/loginAts.css">
+    <link rel="stylesheet" href="css/Salario.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .calculadora-sueldo {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        h2 {
-            color: #063962;
-        }
-        .form-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            background: #063962;
-            color: white;
-            border: none;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #052b4e;
-        }
-        #detalleRetenciones {
-            text-align: left;
-            margin-top: 20px;
-        }
-    </style>
+
 </head>
 <body>
 
