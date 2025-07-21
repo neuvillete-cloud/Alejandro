@@ -86,7 +86,7 @@
             return;
         }
 
-        const response = await fetch('api/calculadora.php', {
+        const response = await fetch('dao/calculadora.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
