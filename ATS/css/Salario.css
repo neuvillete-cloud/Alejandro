@@ -205,3 +205,86 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+.calculadora-sueldo {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    color: #140c33;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+.calculadora-sueldo h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #063962;
+}
+
+.calculadora-sueldo p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input[type="number"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    background-color: #063962;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #052b4e;
+}
+
+#detalleRetenciones {
+    text-align: left;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+#resultadoCalculadora {
+    margin-top: 25px;
+}
+
+canvas#graficoDeducciones {
+    max-width: 300px;
+    margin-top: 20px;
+}
+
+.calculadora-sueldo input[type="radio"] {
+    margin-right: 6px;
+}
+
+@media (max-width: 768px) {
+    .calculadora-sueldo {
+        padding: 20px;
+    }
+}
