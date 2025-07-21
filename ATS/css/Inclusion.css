@@ -618,50 +618,51 @@ header .global {
 }
 
 .diversidad-inclusion {
-    padding: 50px 20px;
+    padding: 70px 20px; /* Aumentamos el padding vertical */
     background-color: white;
     color: #333;
     text-align: center;
 }
 
 .titulo-diversidad h2 {
-    font-size: 2.2rem;
-    margin-bottom: 10px;
+    font-size: 2.6rem;
+    margin-bottom: 20px;
     color: #005b8f;
 }
 
 .titulo-diversidad p {
-    max-width: 700px;
-    margin: 0 auto 40px;
-    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 50px auto;
+    font-size: 1.2rem;
+    line-height: 1.8;
 }
 
 .frase-inspiradora blockquote {
     font-style: italic;
-    font-size: 1.4rem;
-    margin: 20px auto 40px;
-    max-width: 600px;
+    font-size: 1.6rem;
+    margin: 30px auto 50px auto;
+    max-width: 650px;
     color: #0077c8;
 }
 
 .cards-diversidad {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;  /* Centrar horizontalmente */
-    gap: 30px;                /* Espacio entre tarjetas */
-    max-width: 1200px;
-    margin: 0 auto;           /* Centrar contenedor */
-    padding: 20px 0;
+    justify-content: center;
+    gap: 40px;  /* Más espacio entre tarjetas */
+    max-width: 1000px;
+    margin: 0 auto 50px auto;
+    padding: 30px 0;
 }
 
 .card {
     background: white;
     border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 20px;
-    width: 220px;
+    border-radius: 16px;
+    padding: 25px;
+    width: 250px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
 }
 
@@ -689,15 +690,16 @@ header .global {
 
 .boton-unirse {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .btn-unete {
     background-color: #005b8f;
     color: white;
-    padding: 12px 25px;
-    border-radius: 8px;
+    padding: 14px 30px;
+    border-radius: 10px;
     text-decoration: none;
+    font-size: 18px;
     font-weight: bold;
     transition: background-color 0.3s ease;
 }
