@@ -313,36 +313,26 @@
     imagenes.forEach(imagen => {
         const btnCerrar = imagen.querySelector('.cerrar');
         const frase = imagen.querySelector('.frase');
-        const nombre = imagen.querySelector('.nombre');
-        const universidad = imagen.querySelector('.universidad');
 
         imagen.addEventListener('click', () => {
             const yaActiva = imagen.classList.contains('activa');
-
             imagenes.forEach(img => {
                 img.classList.remove('activa');
                 img.querySelector('.frase').textContent = '';
-                img.querySelector('.nombre').textContent = '';
-                img.querySelector('.universidad').textContent = '';
             });
-
             galeria.classList.remove('activa');
 
             if (!yaActiva) {
                 imagen.classList.add('activa');
                 frase.textContent = imagen.getAttribute('data-frase');
-                nombre.textContent = imagen.getAttribute('data-nombre');
-                universidad.textContent = imagen.getAttribute('data-universidad');
                 galeria.classList.add('activa');
             }
         });
 
         btnCerrar.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Evita el click en imagen
             imagen.classList.remove('activa');
             frase.textContent = '';
-            nombre.textContent = '';
-            universidad.textContent = '';
             galeria.classList.remove('activa');
         });
     });
