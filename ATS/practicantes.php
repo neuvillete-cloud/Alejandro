@@ -241,63 +241,108 @@
                      data-universidad="Universidad Autónoma de Querétaro">
 
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/IT.jpg" alt="Persona 1">
 
-                    <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
+                    <div class="contenido-frase">
+                        <img src="imagenes/IT.jpg" alt="Persona 1">
+                        <p class="frase"></p>
+                    </div>
+
+                    <div class="detalle-persona">
+                        <p class="nombre"></p>
+                        <p class="universidad"></p>
+                    </div>
                 </div>
 
                 <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
+                     data-frase="Gracias al programa, me convertí en un líder más consciente."
                      data-nombre="Juan Pérez"
                      data-universidad="Universidad Autónoma de Querétaro">
+
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/Ingenieria.jpg" alt="Persona 2">
-                    <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
+
+                    <div class="contenido-frase">
+                        <img src="imagenes/Ingenieria.jpg" alt="Persona 2">
+                        <p class="frase"></p>
+                    </div>
+
+                    <div class="detalle-persona">
+                        <p class="nombre"></p>
+                        <p class="universidad"></p>
+                    </div>
                 </div>
+
                 <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
+                     data-frase="Pude liderar un equipo internacional increíble."
                      data-nombre="Juan Pérez"
                      data-universidad="Universidad Autónoma de Querétaro">
+
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/Comunicacion.jpg" alt="Persona 3">
-                    <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
+
+                    <div class="contenido-frase">
+                        <img src="imagenes/Comunicacion.jpg" alt="Persona 3">
+                        <p class="frase"></p>
+                    </div>
+
+                    <div class="detalle-persona">
+                        <p class="nombre"></p>
+                        <p class="universidad"></p>
+                    </div>
                 </div>
+
                 <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
+                     data-frase="Aprendí a combinar tecnología y sostenibilidad."
                      data-nombre="Juan Pérez"
                      data-universidad="Universidad Autónoma de Querétaro">
+
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/Controlling.jpg" alt="Persona 4">
-                    <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
+
+                    <div class="contenido-frase">
+                        <img src="imagenes/Controlling.jpg" alt="Persona 4">
+                        <p class="frase"></p>
+                    </div>
+
+                    <div class="detalle-persona">
+                        <p class="nombre"></p>
+                        <p class="universidad"></p>
+                    </div>
                 </div>
+
                 <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
+                     data-frase="Fue un reto que cambió mi vida profesional."
                      data-nombre="Juan Pérez"
                      data-universidad="Universidad Autónoma de Querétaro">
+
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/Logistica.jpg" alt="Persona 5">
-                    <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
+
+                    <div class="contenido-frase">
+                        <img src="imagenes/Logistica.jpg" alt="Persona 5">
+                        <p class="frase"></p>
+                    </div>
+
+                    <div class="detalle-persona">
+                        <p class="nombre"></p>
+                        <p class="universidad"></p>
+                    </div>
                 </div>
+
                 <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
+                     data-frase="Hoy sé que todo es posible con propósito y energía."
                      data-nombre="Juan Pérez"
                      data-universidad="Universidad Autónoma de Querétaro">
+
                     <button class="cerrar">&times;</button>
-                    <img src="imagenes/Metrologia.jpg" alt="Persona 6">
-                    <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
+
+                    <div class="contenido-frase">
+                        <img src="imagenes/Metrologia.jpg" alt="Persona 6">
+                        <p class="frase"></p>
+                    </div>
+
+                    <div class="detalle-persona">
+                        <p class="nombre"></p>
+                        <p class="universidad"></p>
+                    </div>
                 </div>
+
             </div>
         </section>
 

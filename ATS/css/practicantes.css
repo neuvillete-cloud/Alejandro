@@ -536,6 +536,51 @@ header .global {
     display: block;
 }
 
+.imagen.activa {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    grid-column: span 3;
+    transform: scale(1.05);
+    z-index: 2;
+    gap: 10px;
+}
+
+.contenido-frase {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 1000px;
+}
+
+.contenido-frase img {
+    max-width: 250px;
+    border-radius: 10px;
+}
+
+.frase {
+    font-size: 22px;
+    color: #333;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.detalle-persona {
+    padding-left: 270px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nombre {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.universidad {
+    font-size: 18px;
+    color: #555;
+}
 
 
 
