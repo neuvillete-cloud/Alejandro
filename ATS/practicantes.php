@@ -235,11 +235,17 @@
             </div>
 
             <div class="galeria">
-                <div class="imagen" data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa.">
+                <div class="imagen"
+                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa."
+                     data-nombre="Hadbet Ayari Altamirano Martinez"
+                     data-universidad="Universidad Politecnica de Queretaro">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/IT.jpg" alt="Persona 1">
                     <p class="frase"></p>
+                    <p class="nombre"></p>
+                    <p class="universidad"></p>
                 </div>
+
                 <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Ingenieria.jpg" alt="Persona 2">
@@ -310,26 +316,36 @@
     imagenes.forEach(imagen => {
         const btnCerrar = imagen.querySelector('.cerrar');
         const frase = imagen.querySelector('.frase');
+        const nombre = imagen.querySelector('.nombre');
+        const universidad = imagen.querySelector('.universidad');
 
         imagen.addEventListener('click', () => {
             const yaActiva = imagen.classList.contains('activa');
+
             imagenes.forEach(img => {
                 img.classList.remove('activa');
                 img.querySelector('.frase').textContent = '';
+                img.querySelector('.nombre').textContent = '';
+                img.querySelector('.universidad').textContent = '';
             });
+
             galeria.classList.remove('activa');
 
             if (!yaActiva) {
                 imagen.classList.add('activa');
                 frase.textContent = imagen.getAttribute('data-frase');
+                nombre.textContent = imagen.getAttribute('data-nombre');
+                universidad.textContent = imagen.getAttribute('data-universidad');
                 galeria.classList.add('activa');
             }
         });
 
         btnCerrar.addEventListener('click', (e) => {
-            e.stopPropagation(); // Evita el click en imagen
+            e.stopPropagation();
             imagen.classList.remove('activa');
             frase.textContent = '';
+            nombre.textContent = '';
+            universidad.textContent = '';
             galeria.classList.remove('activa');
         });
     });
