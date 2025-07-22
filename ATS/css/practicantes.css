@@ -536,12 +536,7 @@ header .global {
     display: block;
 }
 
-.contenido-frase {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    max-width: 1000px;
-}
+
 
 
 
