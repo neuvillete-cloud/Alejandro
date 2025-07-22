@@ -235,17 +235,14 @@
             </div>
 
             <div class="galeria">
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa."
-                     data-nombre="Hadbet Ayari Altamirano Martinez"
-                     data-universidad="Universidad Politecnica de Queretaro">
+                <div class="imagen" data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa.">
+
+
+
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/IT.jpg" alt="Persona 1">
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
-
                 <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Ingenieria.jpg" alt="Persona 2">

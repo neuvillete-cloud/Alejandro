@@ -521,19 +521,6 @@ header .global {
     position: relative;
 }
 
-.nombre,
-.universidad {
-    display: none;
-    text-align: center;
-    margin-top: 8px;
-    color: #333;
-}
-
-.imagen.activa .nombre,
-.imagen.activa .universidad {
-    display: block;
-    font-size: 18px;
-}
 
 
 
