@@ -231,7 +231,6 @@
 
 
             <div class="frase-seleccionada">
-                <p class="comillas">“</p>
                 <p id="texto-frase">Selecciona una foto para ver su historia.</p>
             </div>
 
