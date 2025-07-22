@@ -521,6 +521,20 @@ header .global {
     position: relative;
 }
 
+.imagen .nombre,
+.imagen .universidad {
+    display: none; /* Ocultos por defecto */
+    font-size: 20px;
+    color: #333;
+    text-align: left;
+    max-width: 500px;
+    margin: 8px 0 0 0;
+}
+
+.imagen.activa .nombre,
+.imagen.activa .universidad {
+    display: block; /* Solo visibles cuando la imagen está activa */
+}
 
 
 
