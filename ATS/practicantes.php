@@ -235,68 +235,35 @@
             </div>
 
             <div class="galeria">
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa."
-                     data-nombre="Juan Pérez"
-                     data-universidad="Universidad Autónoma de Querétaro">
-
+                <div class="imagen" data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos de software web y de escritorio que me permitieron ascender a Programador Jr. Posteriormente, mi trabajo fue reconocido con el premio del Orgullo Grammer 2022 por el impacto a nivel global de mis desarrollos. Actualmente, soy Programador Sr., y en conjunto a mi equipo creamos soluciones tecnológicas internas implementadas en Grammer Querétaro y otras plantas de la empresa.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/IT.jpg" alt="Persona 1">
-
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
-
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
-                     data-nombre="Juan Pérez"
-                     data-universidad="Universidad Autónoma de Querétaro">
+                <div class="imagen" data-frase="Gracias al programa, me convertí en un líder más consciente.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Ingenieria.jpg" alt="Persona 2">
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
-                     data-nombre="Juan Pérez"
-                     data-universidad="Universidad Autónoma de Querétaro">
+                <div class="imagen" data-frase="Pude liderar un equipo internacional increíble.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Comunicacion.jpg" alt="Persona 3">
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
-                     data-nombre="Juan Pérez"
-                     data-universidad="Universidad Autónoma de Querétaro">
+                <div class="imagen" data-frase="Aprendí a combinar tecnología y sostenibilidad.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Controlling.jpg" alt="Persona 4">
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
-                     data-nombre="Juan Pérez"
-                     data-universidad="Universidad Autónoma de Querétaro">
+                <div class="imagen" data-frase="Fue un reto que cambió mi vida profesional.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Logistica.jpg" alt="Persona 5">
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
-                <div class="imagen"
-                     data-frase="Como practicante de programación en IT de Grammer, desarrollé 27 proyectos..."
-                     data-nombre="Juan Pérez"
-                     data-universidad="Universidad Autónoma de Querétaro">
+                <div class="imagen" data-frase="Hoy sé que todo es posible con propósito y energía.">
                     <button class="cerrar">&times;</button>
                     <img src="imagenes/Metrologia.jpg" alt="Persona 6">
                     <p class="frase"></p>
-                    <p class="nombre"></p>
-                    <p class="universidad"></p>
                 </div>
             </div>
         </section>
@@ -343,41 +310,29 @@
     imagenes.forEach(imagen => {
         const btnCerrar = imagen.querySelector('.cerrar');
         const frase = imagen.querySelector('.frase');
-        const nombre = imagen.querySelector('.nombre');
-        const universidad = imagen.querySelector('.universidad');
 
         imagen.addEventListener('click', () => {
             const yaActiva = imagen.classList.contains('activa');
-
             imagenes.forEach(img => {
                 img.classList.remove('activa');
                 img.querySelector('.frase').textContent = '';
-                if (img.querySelector('.nombre')) img.querySelector('.nombre').textContent = '';
-                if (img.querySelector('.universidad')) img.querySelector('.universidad').textContent = '';
             });
-
             galeria.classList.remove('activa');
 
             if (!yaActiva) {
                 imagen.classList.add('activa');
                 frase.textContent = imagen.getAttribute('data-frase');
-                if (nombre) nombre.textContent = imagen.getAttribute('data-nombre') || '';
-                if (universidad) universidad.textContent = imagen.getAttribute('data-universidad') || '';
                 galeria.classList.add('activa');
             }
         });
 
         btnCerrar.addEventListener('click', (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Evita el click en imagen
             imagen.classList.remove('activa');
             frase.textContent = '';
-            if (nombre) nombre.textContent = '';
-            if (universidad) universidad.textContent = '';
             galeria.classList.remove('activa');
         });
     });
 </script>
-
-
 </body>
 </html>
