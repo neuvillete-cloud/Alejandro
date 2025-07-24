@@ -58,6 +58,38 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </main>
 
+
+<!-- Modal Perfil -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2>Perfil del Usuario</h2>
+        <div class="modal-body">
+            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
+            <p><strong>Nombre:</strong> <span id="userName"></span></p>
+            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
+            <p><strong>Área:</strong> <span id="userArea"></span></p>
+        </div>
+    </div>
+</div>
+
+<div id="customEmailModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Enviar correos</h2>
+
+        <label for="email1">Correo 1 (obligatorio):</label>
+        <input type="email" id="email1" required>
+
+        <label for="email2">Correo 2 (opcional):</label>
+        <input type="email" id="email2">
+
+        <label for="email3">Correo 3 (opcional):</label>
+        <input type="email" id="email3">
+
+        <button id="sendEmailsBtn">Enviar</button>
+    </div>
+</div>
 <!-- Scripts -->
 <script src="js/candidatoSeleccionado.js"></script>
 <script src="js/funcionamientoModal.js"></script>
