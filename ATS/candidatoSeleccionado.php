@@ -133,11 +133,20 @@ if (!isset($_SESSION['NumNomina'])) {
 
 
         </div>
+
+        <!-- Contenido principal -->
+        <main style="padding: 80px 20px 20px 240px;">
+            <h2 style="text-align: center; margin-bottom: 30px;">Candidatos Seleccionados para Contratación</h2>
+            <div class="contenedor-candidatos" id="contenedorCandidatos">
+                <!-- Se insertan desde JS -->
+            </div>
+        </main>
+
     </div>
 </section>
 <script src="js/vacanteDinamica.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="js/candidatoSeleccionado.js"></script>
 <script>
     const logoutLink = document.getElementById('logout');
 
