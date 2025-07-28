@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const card = document.createElement('div');
                 card.classList.add('candidato-card');
 
+                // Dentro de data.forEach...
                 card.innerHTML = `
                     <div class="foto-candidato">
                         <i class="fas fa-user-circle"></i>
@@ -32,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="info-candidato">
                         <h3>${candidato.NombreCompleto}</h3>
                         <p><strong>Puesto:</strong> ${candidato.TituloVacante}</p>
-                        <p><strong>Área:</strong> ${candidato.Area}</p>
-                        <p><strong>Contratado el:</strong> ${candidato.FechaSeleccion}</p>
+                        <p><strong>Área:</strong> ${candidato.NombreArea}</p>
+                        <p><strong>Seleccionado por:</strong> ${candidato.NombreSelector}</p>
                     </div>
                 `;
 
