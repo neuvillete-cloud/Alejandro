@@ -135,8 +135,8 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
 
         <!-- Contenido principal -->
-        <main style="padding: 80px 20px 20px 240px;">
-            <h2 style="text-align: center; margin-bottom: 30px;">Candidatos Seleccionados para Contratación</h2>
+        <main class="main-candidatos">
+        <h2 style="text-align: center; margin-bottom: 30px;">Candidatos Seleccionados para Contratación</h2>
             <div class="contenedor-candidatos" id="contenedorCandidatos">
                 <!-- Se insertan desde JS -->
             </div>
