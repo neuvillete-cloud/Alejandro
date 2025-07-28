@@ -705,17 +705,25 @@ nav a:not(:hover)::after {
 }
 
 .candidato-card {
+    flex: 0 0 calc(50% - 10px); /* 2 tarjetas por fila con espacio entre ellas */
     display: flex;
     align-items: center;
-    width: 100%;
-    max-width: 600px;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     transition: transform 0.2s ease;
-    border-left: 6px solid #1a2a6c; /* color Grammer */
+    border-left: 6px solid #1a2a6c;
+    box-sizing: border-box;
 }
+
+/* Ajuste para pantallas pequeñas (responsivo) */
+@media (max-width: 768px) {
+    .candidato-card {
+        flex: 0 0 100%;
+    }
+}
+
 
 .candidato-card:hover {
     transform: scale(1.02);
