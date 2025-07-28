@@ -587,54 +587,58 @@ h2 {
     color: white;
 }
 
+/* Tarjeta de candidato */
 .contenedor-candidatos {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 20px;
 }
 
 .candidato-card {
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 320px;
-    padding: 20px;
     display: flex;
-    gap: 15px;
     align-items: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease;
+    border-left: 6px solid #1a2a6c; /* color Grammer */
 }
 
 .candidato-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
 }
 
+/* Icono o foto del candidato */
 .foto-candidato {
-    font-size: 50px;
-    color: #063962;
-    flex-shrink: 0;
+    font-size: 60px;
+    color: #1a2a6c;
+    margin-right: 20px;
 }
 
+/* Información del candidato */
 .info-candidato h3 {
     margin: 0;
-    font-size: 18px;
-    color: #333;
+    font-size: 20px;
+    color: #1a2a6c;
 }
 
 .info-candidato p {
     margin: 5px 0;
     font-size: 14px;
-    color: #555;
+    color: #333;
 }
 
-.mensaje-vacio, .mensaje-error {
-    width: 100%;
-    text-align: center;
-    color: #666;
+/* Mensajes vacíos o de error */
+.mensaje-vacio,
+.mensaje-error {
     font-size: 16px;
-    margin-top: 40px;
+    color: #888;
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
 }
-
