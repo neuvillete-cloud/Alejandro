@@ -56,6 +56,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <section class="section-title">
     <h1>Candidatos Seleccionados</h1>
+    <img src="imagenes/candidato.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
