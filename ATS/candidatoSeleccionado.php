@@ -145,7 +145,6 @@ if (!isset($_SESSION['NumNomina'])) {
 
     </div>
 </section>
-<script src="js/vacanteDinamica.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/candidatoSeleccionado.js"></script>
 <script>
