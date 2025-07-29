@@ -740,6 +740,10 @@ nav a:not(:hover)::after {
     align-items: center; /* Centra todo horizontalmente */
 }
 
+.section-title {
+    position: relative;
+}
+
 .imagen-banner {
     position: absolute;
     top: 60%;
