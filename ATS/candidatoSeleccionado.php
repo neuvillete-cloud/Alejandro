@@ -55,7 +55,7 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 
 <section class="section-title">
-    <h1>Vacantes en Grammer Automotive</h1>
+    <h1>Candidatos Seleccionados</h1>
 </section>
 
 <section class="area-blanca">
