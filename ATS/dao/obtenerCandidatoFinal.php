@@ -10,16 +10,18 @@ $sql = "SELECT
             p.IdPostulacion,
             c.Nombre AS NombreCandidato,
             c.Apellidos AS ApellidosCandidato,
+            c.Telefono,
+            c.Correo,
             v.TituloVacante,
+            e.NombreEstatus,
             a.NombreArea,
-            s.Nombre AS NombreSelector,
-            e.NombreEstatus
+            s.Nombre AS NombreSelector
         FROM Postulaciones p
         INNER JOIN Candidatos c ON c.IdCandidato = p.IdCandidato
         INNER JOIN Vacantes v ON v.IdVacante = p.IdVacante
+        INNER JOIN Estatus e ON e.IdEstatus = p.IdEstatus
         INNER JOIN Area a ON a.IdArea = v.IdArea
         INNER JOIN Solicitudes s ON s.IdSolicitud = v.IdSolicitud
-        INNER JOIN Estatus e ON e.IdEstatus = p.IdEstatus
         WHERE p.IdEstatus = 9";
 
 $stmt = $conn->prepare($sql);
@@ -38,15 +40,18 @@ $candidatos = [];
 
 while ($row = $result->fetch_assoc()) {
     $candidatos[] = [
-        'IdPostulacion' => $row['IdPostulacion'],
-        'NombreCompleto' => $row['NombreCandidato'] . ' ' . $row['ApellidosCandidato'],
-        'TituloVacante' => $row['TituloVacante'],
-        'NombreArea' => $row['NombreArea'],
-        'NombreSelector' => $row['NombreSelector'],
-        'NombreEstatus' => $row['NombreEstatus'],
-        'Foto' => 'imagenes/user-default.png'
+        'IdPostulacion'   => $row['IdPostulacion'],
+        'NombreCompleto'  => $row['NombreCandidato'] . ' ' . $row['ApellidosCandidato'],
+        'Telefono'        => $row['Telefono'],
+        'Correo'          => $row['Correo'],
+        'TituloVacante'   => $row['TituloVacante'],
+        'NombreEstatus'   => $row['NombreEstatus'],
+        'NombreArea'      => $row['NombreArea'],
+        'NombreSelector'  => $row['NombreSelector'],
+        'Foto'            => 'imagenes/user-default.png' // Imagen genérica
     ];
 }
 
 echo json_encode($candidatos, JSON_UNESCAPED_UNICODE);
 $conn->close();
+?>
