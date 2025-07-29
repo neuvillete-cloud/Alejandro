@@ -1,11 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Obtener el contenedor donde se mostrarán los candidatos
     const contenedor = document.getElementById('contenedorCandidatos');
-
 
     if (!contenedor) return;
 
-    // Cargar los candidatos seleccionados al iniciar la página
     fetch('dao/obtenerCandidatoFinal.php')
         .then(response => {
             if (!response.ok) {
@@ -19,13 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Generar tarjetas
             contenedor.innerHTML = '';
             data.forEach(candidato => {
                 const card = document.createElement('div');
                 card.classList.add('candidato-card');
 
-                // Dentro de data.forEach...
                 card.innerHTML = `
                     <div class="foto-candidato">
                         <i class="fas fa-user-circle"></i>
@@ -35,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         <p><strong>Puesto:</strong> ${candidato.TituloVacante}</p>
                         <p><strong>Área:</strong> ${candidato.NombreArea}</p>
                         <p><strong>Seleccionado por:</strong> ${candidato.NombreSelector}</p>
+                        <p><strong>Correo:</strong> <a href="mailto:${candidato.Correo}">${candidato.Correo}</a></p>
+                        <p><strong>Teléfono:</strong> <a href="tel:${candidato.Telefono}">${candidato.Telefono}</a></p>
                     </div>
                 `;
 
