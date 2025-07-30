@@ -8,6 +8,7 @@ $conn = (new LocalConector())->conectar();
 
 $sql = "SELECT 
             p.IdPostulacion,
+            p.fechaSeleccion,
             c.Nombre AS NombreCandidato,
             c.Apellidos AS ApellidosCandidato,
             c.Telefono,
@@ -48,7 +49,8 @@ while ($row = $result->fetch_assoc()) {
         'NombreEstatus'   => $row['NombreEstatus'],
         'NombreArea'      => $row['NombreArea'],
         'NombreSelector'  => $row['NombreSelector'],
-        'Foto'            => 'imagenes/user-default.png' // Imagen genérica
+        'FechaSeleccion'  => $row['fechaSeleccion'],
+        'Foto'            => 'imagenes/user-default.png'
     ];
 }
 

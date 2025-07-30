@@ -21,6 +21,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 const card = document.createElement('div');
                 card.classList.add('candidato-card');
 
+                // 👉 Formato mexicano de fecha
+                let fechaOriginal = candidato.FechaSeleccion;
+                let fechaFormateada = 'Sin fecha';
+
+                if (fechaOriginal && fechaOriginal !== '0000-00-00 00:00:00') {
+                    const fecha = new Date(fechaOriginal);
+                    const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+                    fechaFormateada = fecha.toLocaleDateString('es-MX', opciones);
+                }
+
                 card.innerHTML = `
                     <div class="foto-candidato">
                         <i class="fas fa-user-circle"></i>
@@ -32,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <p><strong>Seleccionado por:</strong> ${candidato.NombreSelector}</p>
                         <p><strong>Correo:</strong> <a href="mailto:${candidato.Correo}">${candidato.Correo}</a></p>
                         <p><strong>Teléfono:</strong> <a href="tel:${candidato.Telefono}">${candidato.Telefono}</a></p>
+                        <p><strong>Fecha de selección:</strong> ${fechaFormateada}</p>
                     </div>
                 `;
 
