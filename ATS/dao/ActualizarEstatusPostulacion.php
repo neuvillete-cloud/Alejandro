@@ -18,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
     }
 
     if ($nuevoEstado === 9) {
-        // Si el estado es 9 (seleccionado), actualizar también la fecha solo si es NULL
+        // ✅ Verifica si la fecha es exactamente '0000-00-00 00:00:00' en lugar de NULL
         $fechaSeleccion = date("Y-m-d H:i:s");
         $sql = "UPDATE Postulaciones 
                 SET IdEstatus = ?, 
-                    fechaSeleccion = IF(fechaSeleccion IS NULL, ?, fechaSeleccion) 
+                    fechaSeleccion = IF(fechaSeleccion = '0000-00-00 00:00:00', ?, fechaSeleccion) 
                 WHERE IdPostulacion = ?";
         $stmt = $conex->prepare($sql);
         if (!$stmt) {
@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
         }
         $stmt->bind_param("isi", $nuevoEstado, $fechaSeleccion, $idPostulacion);
     } else {
-        // Para otros estados
         $sql = "UPDATE Postulaciones SET IdEstatus = ? WHERE IdPostulacion = ?";
         $stmt = $conex->prepare($sql);
         if (!$stmt) {
@@ -55,3 +54,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['status'
     echo json_encode(["success" => false, "message" => "Datos inválidos o método incorrecto"]);
 }
 ?>
+
