@@ -1,36 +1,189 @@
+const filtrosSeleccionados = {};
+let filtroBusqueda = "";
+let filtroNombreCandidato = "";
+
 document.addEventListener("DOMContentLoaded", function () {
-    const contenedor = document.getElementById('contenedorCandidatos');
+    const fecha = document.getElementById('filtro-fecha');
+    const area = document.getElementById('filtro-area');
+    const limpiar = document.getElementById('limpiar-filtros');
 
-    if (!contenedor) return;
+    const campoBusqueda = document.querySelector(".campo-busqueda input"); // Título vacante
+    const campoNombre = document.querySelector(".campo-ubicacion input"); // Nombre del candidato
+    const btnBuscar = document.querySelector(".btn-buscar");
 
-    fetch('dao/obtenerCandidatoFinal.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al obtener los candidatos');
+    const sugerenciasTitulo = document.querySelector(".campo-busqueda .historial-busquedas");
+    const sugerenciasNombre = document.querySelector(".campo-ubicacion .historial-ubicaciones");
+
+    const selects = [fecha, area];
+
+    // Evento para selects
+    selects.forEach(select => {
+        select.addEventListener("change", () => {
+            const key = select.id.replace('filtro-', '');
+            if (select.value === "") {
+                delete filtrosSeleccionados[key];
+            } else {
+                filtrosSeleccionados[key] = select.value;
             }
-            return response.json();
-        })
+            cargarCandidatos();
+        });
+    });
+
+    // Botón limpiar
+    limpiar.addEventListener("click", () => {
+        selects.forEach(select => select.value = "");
+        campoBusqueda.value = "";
+        campoNombre.value = "";
+        filtroBusqueda = "";
+        filtroNombreCandidato = "";
+        Object.keys(filtrosSeleccionados).forEach(k => delete filtrosSeleccionados[k]);
+        cargarCandidatos();
+    });
+
+    // Función para buscar al dar Enter o clic
+    function dispararBusqueda() {
+        filtroBusqueda = campoBusqueda.value.trim();
+        filtroNombreCandidato = campoNombre.value.trim();
+        sugerenciasTitulo.style.display = "none";
+        sugerenciasNombre.style.display = "none";
+        cargarCandidatos();
+    }
+
+    btnBuscar.addEventListener("click", dispararBusqueda);
+    [campoBusqueda, campoNombre].forEach(input => {
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                dispararBusqueda();
+            }
+        });
+    });
+
+    // Botones para cerrar input
+    document.querySelector(".cerrar-busqueda").addEventListener("click", () => {
+        campoBusqueda.value = "";
+        filtroBusqueda = "";
+        cargarCandidatos();
+    });
+
+    document.querySelector(".cerrar-ubicacion").addEventListener("click", () => {
+        campoNombre.value = "";
+        filtroNombreCandidato = "";
+        cargarCandidatos();
+    });
+
+    // Autocompletado de Título de Vacante
+    campoBusqueda.addEventListener("input", () => {
+        const texto = campoBusqueda.value.trim();
+        if (texto.length < 2) {
+            sugerenciasTitulo.style.display = "none";
+            return;
+        }
+
+        fetch(`dao/busquedaTitulosVacante.php?q=${encodeURIComponent(texto)}`)
+            .then(res => res.json())
+            .then(sugerencias => {
+                sugerenciasTitulo.innerHTML = "";
+
+                if (sugerencias.length === 0) {
+                    sugerenciasTitulo.style.display = "none";
+                    return;
+                }
+
+                sugerencias.forEach(s => {
+                    const li = document.createElement("li");
+                    li.textContent = s;
+                    li.addEventListener("click", () => {
+                        campoBusqueda.value = s;
+                        filtroBusqueda = s;
+                        sugerenciasTitulo.style.display = "none";
+                        cargarCandidatos();
+                    });
+                    sugerenciasTitulo.appendChild(li);
+                });
+
+                sugerenciasTitulo.style.display = "block";
+            });
+    });
+
+    campoBusqueda.addEventListener("blur", () => {
+        setTimeout(() => sugerenciasTitulo.style.display = "none", 200);
+    });
+
+    // Autocompletado de Nombre Candidato
+    campoNombre.addEventListener("input", () => {
+        const texto = campoNombre.value.trim();
+        if (texto.length < 2) {
+            sugerenciasNombre.style.display = "none";
+            return;
+        }
+
+        fetch(`dao/busquedaCandidatos.php?q=${encodeURIComponent(texto)}`)
+            .then(res => res.json())
+            .then(sugerencias => {
+                sugerenciasNombre.innerHTML = "";
+
+                if (sugerencias.length === 0) {
+                    sugerenciasNombre.style.display = "none";
+                    return;
+                }
+
+                sugerencias.forEach(s => {
+                    const li = document.createElement("li");
+                    li.textContent = s;
+                    li.addEventListener("click", () => {
+                        campoNombre.value = s;
+                        filtroNombreCandidato = s;
+                        sugerenciasNombre.style.display = "none";
+                        cargarCandidatos();
+                    });
+                    sugerenciasNombre.appendChild(li);
+                });
+
+                sugerenciasNombre.style.display = "block";
+            });
+    });
+
+    campoNombre.addEventListener("blur", () => {
+        setTimeout(() => sugerenciasNombre.style.display = "none", 200);
+    });
+
+    // Cargar inicialmente
+    cargarCandidatos();
+});
+
+
+// Función que envía los filtros al PHP y renderiza los candidatos
+function cargarCandidatos() {
+    const params = new URLSearchParams();
+
+    if (filtroBusqueda) params.append("titulo", filtroBusqueda);
+    if (filtroNombreCandidato) params.append("nombre", filtroNombreCandidato);
+
+    for (let key in filtrosSeleccionados) {
+        params.append(key, filtrosSeleccionados[key]);
+    }
+
+    fetch(`dao/filtrarCandidatos.php?${params.toString()}`)
+        .then(response => response.json())
         .then(data => {
+            const contenedor = document.getElementById("contenedorCandidatos");
             if (!Array.isArray(data) || data.length === 0) {
-                contenedor.innerHTML = '<p class="mensaje-vacio">No hay candidatos seleccionados aún.</p>';
+                contenedor.innerHTML = `<p class="mensaje-vacio">No hay candidatos que coincidan con los filtros.</p>`;
                 return;
             }
 
-            contenedor.innerHTML = '';
+            contenedor.innerHTML = "";
             data.forEach(candidato => {
-                const card = document.createElement('div');
-                card.classList.add('candidato-card');
-
-                // 👉 Formato mexicano de fecha
-                let fechaOriginal = candidato.FechaSeleccion;
-                let fechaFormateada = 'Sin fecha';
-
-                if (fechaOriginal && fechaOriginal !== '0000-00-00 00:00:00') {
-                    const fecha = new Date(fechaOriginal);
+                let fechaFormateada = "Sin fecha";
+                if (candidato.FechaSeleccion && candidato.FechaSeleccion !== "0000-00-00 00:00:00") {
+                    const fecha = new Date(candidato.FechaSeleccion);
                     const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-                    fechaFormateada = fecha.toLocaleDateString('es-MX', opciones);
+                    fechaFormateada = fecha.toLocaleDateString("es-MX", opciones);
                 }
 
+                const card = document.createElement("div");
+                card.classList.add("candidato-card");
                 card.innerHTML = `
                     <div class="foto-candidato">
                         <i class="fas fa-user-circle"></i>
@@ -45,12 +198,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         <p><strong>Fecha de selección:</strong> ${fechaFormateada}</p>
                     </div>
                 `;
-
                 contenedor.appendChild(card);
             });
         })
         .catch(error => {
-            console.error('Error:', error);
-            contenedor.innerHTML = '<p class="mensaje-error">Hubo un error al cargar los candidatos.</p>';
+            console.error("Error al cargar candidatos:", error);
+            document.getElementById("contenedorCandidatos").innerHTML = `<p class="mensaje-error">Error al cargar los datos.</p>`;
         });
-});
+}

@@ -12,7 +12,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php'); // Redirige al login si no está autenticado
+    header('Location: login.php');
     exit;
 }
 ?>
@@ -29,7 +29,7 @@ if (!isset($_SESSION['NumNomina'])) {
         <nav>
             <a href="#">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
-            <a href="practicantes.php"> Escuela de Talentos</a>
+            <a href="practicantes.php">Escuela de Talentos</a>
             <a href="#">Inclusión y diversidad</a>
 
             <?php if (isset($_SESSION['NombreCandidato'])): ?>
@@ -49,7 +49,6 @@ if (!isset($_SESSION['NumNomina'])) {
             <?php else: ?>
                 <a href="loginATS.php">Inicio de sesión</a>
             <?php endif; ?>
-
         </nav>
     </div>
 </header>
@@ -67,31 +66,28 @@ if (!isset($_SESSION['NumNomina'])) {
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="practicante de ingeniería" autocomplete="off">
                     <i class="fas fa-times cerrar-busqueda"></i>
-
-                    <!-- Historial de búsqueda -->
                     <ul class="historial-busquedas"></ul>
                 </div>
 
                 <div class="campo-ubicacion">
                     <i class="fas fa-map-marker-alt"></i>
-                    <input type="text" placeholder="Querétaro" autocomplete="off">
+                    <input type="text" placeholder="Nombre del candidato" autocomplete="off">
                     <i class="fas fa-times cerrar-ubicacion"></i>
-
-                    <!-- Historial de ubicaciones -->
                     <ul class="historial-ubicaciones"></ul>
                 </div>
 
                 <button class="btn-buscar">Buscar empleo</button>
             </div>
 
+            <!-- FILTROS FUNCIONALES -->
             <div class="filtros">
-                <!-- Salario -->
-                <select id="filtro-salario" class="filtro">
-                    <option value="" disabled selected>Salario</option>
-                    <option value="0-4999">Menos de $5,000</option>
-                    <option value="5000-10000">$5,000 - $10,000</option>
-                    <option value="10001-15000">$10,001 - $15,000</option>
-                    <option value="15001-99999">Más de $15,000</option>
+                <!-- Área -->
+                <select id="filtro-area" class="filtro">
+                    <option value="" disabled selected>Área</option>
+                    <option value="Ingeniería">Ingeniería</option>
+                    <option value="Calidad">Calidad</option>
+                    <option value="Producción">Producción</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
                 </select>
 
                 <!-- Fecha -->
@@ -101,55 +97,24 @@ if (!isset($_SESSION['NumNomina'])) {
                     <option value="antiguas">Más antiguas</option>
                 </select>
 
-                <!-- Modalidad -->
-                <select id="filtro-modalidad" class="filtro">
-                    <option value="" disabled selected>Modalidad</option>
-                    <option value="presencial">Presencial</option>
-                    <option value="remoto">Desde casa</option>
-                    <option value="hibrido">Híbrido</option>
-                </select>
-
-                <!-- Tipo de contratación -->
-                <select id="filtro-contrato" class="filtro">
-                    <option value="" disabled selected>Tipo de contratación</option>
-                    <option value="becario">Becario/Prácticas</option>
-                    <option value="temporal">Temporal</option>
-                    <option value="Tiempo completo">Tiempo completo</option>
-                </select>
-
-                <!-- Educación -->
-                <select id="filtro-educacion" class="filtro">
-                    <option value="" disabled selected>Educación</option>
-                    <option value="secundaria">Secundaria</option>
-                    <option value="preparatoria">Preparatoria</option>
-                    <option value="tecnico">Técnico</option>
-                    <option value="licenciatura">Licenciatura</option>
-                    <option value="maestria">Maestría</option>
-                </select>
-
                 <!-- Botón limpiar -->
                 <button id="limpiar-filtros" class="filtro limpiar">Limpiar filtros</button>
             </div>
-
-
-
         </div>
 
-        <!-- Contenido principal -->
         <main class="main-candidatos">
-        <h2 style="text-align: center; margin-bottom: 30px;">Candidatos Seleccionados para Contratación</h2>
+            <h2 style="text-align: center; margin-bottom: 30px;">Candidatos Seleccionados para Contratación</h2>
             <div class="contenedor-candidatos" id="contenedorCandidatos">
                 <!-- Se insertan desde JS -->
             </div>
         </main>
-
     </div>
 </section>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/candidatoSeleccionado.js"></script>
 <script>
     const logoutLink = document.getElementById('logout');
-
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
