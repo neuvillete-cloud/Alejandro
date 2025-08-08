@@ -129,9 +129,8 @@ $candidatos = [];
 
 while ($row = $result->fetch_assoc()) {
     $fecha = $row['fechaSeleccion'];
-    $fechaFormateada = $fecha && $fecha !== '0000-00-00 00:00:00'
-        ? date("d/m/Y", strtotime($fecha))
-        : "Sin definir";
+    $fechaFormateada = ($fecha && $fecha !== '0000-00-00 00:00:00') ? $fecha : null;
+
 
     $candidatos[] = [
         'IdPostulacion'   => $row['IdPostulacion'],
