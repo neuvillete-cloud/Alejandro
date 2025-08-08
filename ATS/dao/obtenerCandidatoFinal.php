@@ -1,38 +1,85 @@
 <?php
 require_once "ConexionBD.php";
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
-// Filtros dinámicos
+// Autocompletado: títulos de vacante
+if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'titulo' && !empty($_GET['q'])) {
+    $termino = "%" . trim($_GET['q']) . "%";
+    $stmt = $conn->prepare("
+        SELECT DISTINCT V.TituloVacante 
+        FROM Vacantes V
+        INNER JOIN Area A ON V.IdArea = A.IdArea
+        WHERE (V.TituloVacante LIKE ? OR A.NombreArea LIKE ?)
+        AND V.IdEstatus = 1
+        ORDER BY V.TituloVacante ASC
+        LIMIT 10
+    ");
+    $stmt->bind_param("ss", $termino, $termino);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    $sugerencias = [];
+    while ($row = $res->fetch_assoc()) {
+        $sugerencias[] = $row['TituloVacante'];
+    }
+    echo json_encode($sugerencias, JSON_UNESCAPED_UNICODE);
+    $stmt->close();
+    $conn->close();
+    exit;
+}
+
+// Autocompletado: nombre de candidato
+if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'nombre' && !empty($_GET['q'])) {
+    $termino = "%" . trim($_GET['q']) . "%";
+    $stmt = $conn->prepare("
+        SELECT DISTINCT CONCAT(Nombre, ' ', Apellidos) AS NombreCompleto 
+        FROM Candidatos 
+        WHERE CONCAT(Nombre, ' ', Apellidos) LIKE ?
+        ORDER BY Nombre ASC
+        LIMIT 10
+    ");
+    $stmt->bind_param("s", $termino);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    $sugerencias = [];
+    while ($row = $res->fetch_assoc()) {
+        $sugerencias[] = $row['NombreCompleto'];
+    }
+    echo json_encode($sugerencias, JSON_UNESCAPED_UNICODE);
+    $stmt->close();
+    $conn->close();
+    exit;
+}
+
+// ----------- Filtro General de Candidatos -----------
+
 $filtros = [];
 $params = [];
 $tipos = "";
 
-// Filtro: título
 if (!empty($_GET['titulo'])) {
     $filtros[] = "v.TituloVacante LIKE ?";
     $params[] = '%' . $_GET['titulo'] . '%';
     $tipos .= "s";
 }
 
-// Filtro: nombre (nombre + apellidos)
 if (!empty($_GET['nombre'])) {
     $filtros[] = "CONCAT(c.Nombre, ' ', c.Apellidos) LIKE ?";
     $params[] = '%' . $_GET['nombre'] . '%';
     $tipos .= "s";
 }
 
-// Filtro: área
 if (!empty($_GET['area'])) {
     $filtros[] = "a.NombreArea = ?";
     $params[] = $_GET['area'];
     $tipos .= "s";
 }
 
-// Base SQL
 $sql = "SELECT 
             p.IdPostulacion,
             p.fechaSeleccion,
@@ -52,19 +99,17 @@ $sql = "SELECT
         INNER JOIN Solicitudes s ON s.IdSolicitud = v.IdSolicitud
         WHERE p.IdEstatus = 9";
 
-// Agregar filtros si hay
 if (!empty($filtros)) {
     $sql .= " AND " . implode(" AND ", $filtros);
 }
 
-// Ordenamiento por fecha
-$orden = "p.fechaSeleccion DESC"; // por defecto
+// Ordenamiento
+$orden = "p.fechaSeleccion DESC";
 if (!empty($_GET['fecha']) && $_GET['fecha'] === 'antiguas') {
     $orden = "p.fechaSeleccion ASC";
 }
 $sql .= " ORDER BY $orden";
 
-// Preparar y ejecutar
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     http_response_code(500);

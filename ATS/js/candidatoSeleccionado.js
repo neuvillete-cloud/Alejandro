@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const selects = [fecha, area];
 
-    // Evento para selects
     selects.forEach(select => {
         select.addEventListener("change", () => {
             const key = select.id.replace('filtro-', '');
@@ -29,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Botón limpiar
     limpiar.addEventListener("click", () => {
         selects.forEach(select => select.value = "");
         campoBusqueda.value = "";
@@ -40,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarCandidatos();
     });
 
-    // Función para buscar al dar Enter o clic
     function dispararBusqueda() {
         filtroBusqueda = campoBusqueda.value.trim();
         filtroNombreCandidato = campoNombre.value.trim();
@@ -59,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Botones para cerrar input
     document.querySelector(".cerrar-busqueda").addEventListener("click", () => {
         campoBusqueda.value = "";
         filtroBusqueda = "";
@@ -72,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarCandidatos();
     });
 
-    // Autocompletado de Título de Vacante
     campoBusqueda.addEventListener("input", () => {
         const texto = campoBusqueda.value.trim();
         if (texto.length < 2) {
@@ -80,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch(`dao/busquedaTitulosVacante.php?q=${encodeURIComponent(texto)}`)
+        fetch(`php/obtenerCandidatosSeleccionados.php?autocomplete=titulo&q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
                 sugerenciasTitulo.innerHTML = "";
@@ -110,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => sugerenciasTitulo.style.display = "none", 200);
     });
 
-    // Autocompletado de Nombre Candidato
     campoNombre.addEventListener("input", () => {
         const texto = campoNombre.value.trim();
         if (texto.length < 2) {
@@ -118,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch(`dao/busquedaCandidatos.php?q=${encodeURIComponent(texto)}`)
+        fetch(`php/obtenerCandidatosSeleccionados.php?autocomplete=nombre&q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
                 sugerenciasNombre.innerHTML = "";
@@ -148,12 +142,10 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => sugerenciasNombre.style.display = "none", 200);
     });
 
-    // Cargar inicialmente
     cargarCandidatos();
 });
 
-
-// Función que envía los filtros al PHP y renderiza los candidatos
+// Función que envía los filtros al PHP y renderiza los candidatos seleccionados
 function cargarCandidatos() {
     const params = new URLSearchParams();
 
@@ -164,7 +156,7 @@ function cargarCandidatos() {
         params.append(key, filtrosSeleccionados[key]);
     }
 
-    fetch(`dao/filtrarCandidatos.php?${params.toString()}`)
+    fetch(`php/obtenerCandidatosSeleccionados.php?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             const contenedor = document.getElementById("contenedorCandidatos");
