@@ -76,7 +76,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     <ul class="historial-ubicaciones"></ul>
                 </div>
 
-                <button class="btn-buscar">Buscar empleo</button>
+                <button class="btn-buscar">Buscar Candidato</button>
             </div>
 
             <!-- FILTROS FUNCIONALES -->
