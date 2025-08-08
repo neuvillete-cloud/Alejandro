@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch(`php/obtenerCandidatoFinal.php?autocomplete=titulo&q=${encodeURIComponent(texto)}`)
+        fetch(`dao/obtenerCandidatoFinal.php?autocomplete=titulo&q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
                 sugerenciasTitulo.innerHTML = "";
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch(`php/obtenerCandidatoFinal.php?autocomplete=nombre&q=${encodeURIComponent(texto)}`)
+        fetch(`dao/obtenerCandidatoFinal.php?autocomplete=nombre&q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
                 sugerenciasNombre.innerHTML = "";
@@ -156,7 +156,7 @@ function cargarCandidatos() {
         params.append(key, filtrosSeleccionados[key]);
     }
 
-    fetch(`php/obtenerCandidatoFinal.php?${params.toString()}`)
+    fetch(`dao/obtenerCandidatoFinal.php?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             const contenedor = document.getElementById("contenedorCandidatos");
