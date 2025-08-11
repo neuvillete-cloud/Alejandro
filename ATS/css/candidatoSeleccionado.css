@@ -470,6 +470,6 @@ nav a:not(:hover)::after {
 }
 
 .contenedor-candidatos.solo-uno .candidato-card {
-    flex: 0 0 80%;
+    flex: 0 0 90%;
     max-width: 900px;
 }
