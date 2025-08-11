@@ -103,11 +103,14 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
 
         <main class="main-candidatos">
-            <h2 style="text-align: center; margin-bottom: 30px;">Candidatos Seleccionados para Contratación</h2>
+            <h2 style="text-align: center; margin-top: -10px; margin-bottom: 30px;">
+                Candidatos Seleccionados para Contratación
+            </h2>
             <div class="contenedor-candidatos" id="contenedorCandidatos">
                 <!-- Se insertan desde JS -->
             </div>
         </main>
+
     </div>
 </section>
 
