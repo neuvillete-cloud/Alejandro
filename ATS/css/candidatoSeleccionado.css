@@ -389,6 +389,7 @@ nav a:not(:hover)::after {
 }
 
 /* Tarjeta de candidato */
+/* === Ajuste para centrar una sola card === */
 .contenedor-candidatos {
     display: flex;
     flex-wrap: wrap;
@@ -397,8 +398,9 @@ nav a:not(:hover)::after {
     padding: 20px;
 }
 
+/* Estilo normal de las cards */
 .candidato-card {
-    flex: 0 0 calc(50% - 10px); /* 2 tarjetas por fila con espacio entre ellas */
+    flex: 0 0 calc(50% - 10px); /* 2 por fila */
     display: flex;
     align-items: center;
     background-color: #fff;
@@ -410,12 +412,23 @@ nav a:not(:hover)::after {
     box-sizing: border-box;
 }
 
-/* Ajuste para pantallas pequeñas (responsivo) */
+/* Ajuste para pantallas pequeñas */
 @media (max-width: 768px) {
     .candidato-card {
         flex: 0 0 100%;
     }
 }
+
+/* Cuando solo haya una card, centrarla y hacerla más ancha */
+.contenedor-candidatos.solo-uno {
+    justify-content: center;
+}
+
+.contenedor-candidatos.solo-uno .candidato-card {
+    flex: 0 0 80%; /* ancho más grande */
+    max-width: 700px; /* límite para que no sea gigante */
+}
+
 
 
 .candidato-card:hover {
