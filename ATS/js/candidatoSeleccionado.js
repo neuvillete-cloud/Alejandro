@@ -160,8 +160,10 @@ function cargarCandidatos() {
         .then(response => response.json())
         .then(data => {
             const contenedor = document.getElementById("contenedorCandidatos");
+
             if (!Array.isArray(data) || data.length === 0) {
                 contenedor.innerHTML = `<p class="mensaje-vacio">No hay candidatos que coincidan con los filtros.</p>`;
+                contenedor.classList.remove("solo-uno"); // quitar si no hay cards
                 return;
             }
 
@@ -192,6 +194,14 @@ function cargarCandidatos() {
                 `;
                 contenedor.appendChild(card);
             });
+
+            // 👇 Aquí detectamos si solo hay una card
+            const cards = contenedor.querySelectorAll(".candidato-card");
+            if (cards.length === 1) {
+                contenedor.classList.add("solo-uno");
+            } else {
+                contenedor.classList.remove("solo-uno");
+            }
         })
         .catch(error => {
             console.error("Error al cargar candidatos:", error);
