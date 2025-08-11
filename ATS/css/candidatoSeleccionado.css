@@ -297,7 +297,7 @@ nav a:not(:hover)::after {
 }
 
 .btn-buscar:hover {
-    background-color: #b73049;
+    background-color: #99d0e9;
 }
 
 .filtros {
