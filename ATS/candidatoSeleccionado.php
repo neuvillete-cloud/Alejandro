@@ -27,6 +27,7 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
         </div>
         <nav>
+            <a href="#">Inicio</a>
             <a href="#">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
             <a href="practicantes.php">Escuela de Talentos</a>
