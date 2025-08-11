@@ -48,7 +48,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     </div>
                 </div>
             <?php else: ?>
-                <a href="loginATS.php">Inicio de sesión</a>
+                <a href="login.php">Inicio de sesión</a>
             <?php endif; ?>
         </nav>
     </div>
