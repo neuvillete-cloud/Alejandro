@@ -117,6 +117,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/candidatoSeleccionado.js"></script>
+<script src="js/funcionamientoModal.js"></script>
 <script>
     const logoutLink = document.getElementById('logout');
     if (logoutLink) {
