@@ -28,10 +28,10 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="#">Inicio</a>
-            <a href="#">Buscar empleos</a>
-            <a href="aboutUs.php">Acerca de nosotros</a>
-            <a href="practicantes.php">Escuela de Talentos</a>
-            <a href="#">Inclusión y diversidad</a>
+            <a href="#">S.Aprobadas</a>
+            <a href="aboutUs.php">Seguimiento</a>
+            <a href="practicantes.php">Carga de Vacantes</a>
+            <a href="#">Candidatos Postulados</a>
 
             <?php if (isset($_SESSION['NombreCandidato'])): ?>
                 <div class="user-menu">
