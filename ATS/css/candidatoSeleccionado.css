@@ -30,7 +30,7 @@ nav {
     justify-content: center;
     align-items: center;
     gap: 30px;
-    padding-right: 60px;
+    padding-right: 1px;
 }
 
 nav a {
