@@ -1,3 +1,13 @@
+/* ==========================================================
+   postulaciones.css  — Versión con tabla rediseñada
+   - Mantiene tus estilos originales y reemplaza la apariencia
+     completa de la tabla para que combine con el tema oscuro
+     y los acentos azul/gris del header.
+   ========================================================== */
+
+/* ----------------------------
+   Estilos globales / header
+   ---------------------------- */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -57,6 +67,7 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
+/* animación barra inferior en nav */
 nav > a::after {
     content: '';
     position: absolute;
@@ -88,6 +99,24 @@ nav a:not(:hover)::after {
     100% { width: 0%; transform: translateX(0); }
 }
 
+/* logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.logo-texto h1, .logo-texto span {
+    margin: 0;
+    line-height: 1;
+    color: white;
+}
+
 .logo h1 {
     font-size: 28px;
     margin: 0;
@@ -100,11 +129,13 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
+/* responsive header */
 @media(max-width: 768px) {
     .header-container {
         flex-direction: column;
         text-align: center;
         gap: 20px;
+        width: 92%;
     }
     nav {
         flex-wrap: wrap;
@@ -113,8 +144,11 @@ nav a:not(:hover)::after {
     }
 }
 
+/* ----------------------------
+   Sección principal / banner
+   ---------------------------- */
 .section-title {
-    background-color:	#3b8ac9a3;
+    background-color: rgba(59,138,201,0.64); /* '#3b8ac9a3' equivalente */
     padding: 100px 20px;
     min-height: 170px;
     display: flex;
@@ -122,6 +156,7 @@ nav a:not(:hover)::after {
     justify-content: center;
     text-align: center;
     flex-direction: column;
+    position: relative;
 }
 
 .section-title h1 {
@@ -129,10 +164,23 @@ nav a:not(:hover)::after {
     color: white;
     margin: 0;
     font-weight: bold;
-    padding-right: 940px;
     padding-top: 60px;
 }
 
+/* imagen decorativa en el banner */
+.imagen-banner {
+    position: absolute;
+    top: 60%;
+    right: 2rem;
+    transform: translateY(-50%);
+    max-height: 200px;
+    width: auto;
+    padding-right: 265px;
+}
+
+/* ----------------------------
+   User menu / dropdown
+   ---------------------------- */
 .user-menu {
     position: relative;
     display: inline-block;
@@ -149,6 +197,7 @@ nav a:not(:hover)::after {
     background-color: transparent;
     font-size: 18px;
     padding-bottom: 10px;
+    position: relative;
 }
 
 .user-menu::after {
@@ -205,10 +254,7 @@ nav a:not(:hover)::after {
     background-color: #007BFF;
 }
 
-.user-info {
-    position: relative;
-}
-
+/* efecto barra en user-info */
 .user-info::after {
     content: '';
     position: absolute;
@@ -229,6 +275,9 @@ nav a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
+/* ----------------------------
+   Area blanca (contenido principal)
+   ---------------------------- */
 .area-blanca {
     background-color: #fff;
     padding: 80px 20px;
@@ -243,6 +292,9 @@ nav a:not(:hover)::after {
     color: #333;
 }
 
+/* ----------------------------
+   Buscador / filtros / tarjetas
+   ---------------------------- */
 .buscador-vacantes {
     display: flex;
     flex-direction: column;
@@ -368,6 +420,9 @@ nav a:not(:hover)::after {
     background-color: #f0f0f0;
 }
 
+/* ----------------------------
+   Tarjetas candidatos
+   ---------------------------- */
 .contenedor-candidatos {
     display: flex;
     flex-wrap: wrap;
@@ -433,38 +488,7 @@ nav a:not(:hover)::after {
     align-items: center;
 }
 
-.section-title {
-    position: relative;
-}
-
-.imagen-banner {
-    position: absolute;
-    top: 60%;
-    right: 2rem;
-    transform: translateY(-50%);
-    max-height: 200px;
-    width: auto;
-    padding-right: 265px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-img {
-    height: 50px;
-    width: auto;
-}
-
-.logo-texto h1, .logo-texto span {
-    margin: 0;
-    line-height: 1;
-    color: white;
-}
-
-/* ===== NUEVO: Centrar y agrandar cuando solo hay una card ===== */
+/* Centrar y agrandar cuando solo hay una card */
 .contenedor-candidatos.solo-uno {
     justify-content: center;
 }
@@ -474,189 +498,240 @@ nav a:not(:hover)::after {
     max-width: 700px;
 }
 
+/* ----------------------------
+   TABLA: Rediseño completo (DataTables)
+   ---------------------------- */
 
-/* Contenedor de la tabla */
+/* Contenedor de la tabla (panel que la contiene) */
 .table-container {
     width: 100%;
     max-width: 1500px;
-    margin: 20px auto; /* Más arriba y centrado */
-    padding: 20px;
-    background: #E6F4F9;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(6,57,98,0.08), rgba(20,12,40,0.04));
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     position: relative;
-    z-index: 10; /* 🔼 Lleva la tabla al frente */
+    z-index: 10;
+    overflow: hidden;
 }
 
-/* 📌 Título de la tabla (h2) */
+/* Título de la sección (h2) */
 h2 {
     font-size: 1.8em;
     font-weight: bold;
-    margin-bottom: -44px; /* 🔼 Más separación respecto a la tabla */
+    margin-bottom: 10px;
     position: relative;
-    z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
+    z-index: 20;
+    color: #063962;
 }
 
-/* 🔍 Controles superiores (selector y buscador) */
-.top-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px; /* 🔼 Más separación de la tabla */
-    width: 100%;
-    padding: 15px 0;
-}
-
-/* Selector de registros */
-.dataTables_length {
-    flex: 1;
-    text-align: left;
-    margin-left: 20px; /* 🔼 Más separación */
-}
-
-/* Buscador */
-.dataTables_filter {
-    flex: 1;
-    text-align: right;
-    margin-right: 20px; /* 🔼 Más separación */
-}
-
-/* 📌 Estiliza el input de búsqueda */
-.dataTables_filter input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 220px; /* 🔼 Más ancho */
-}
-
-/* Selector de registros */
-.dataTables_length select {
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-}
-/* 📌 Tabla */
-#solicitudesTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-    text-align: left;
-    background-color: #E6F4F9; /* 🔼 Fondo para toda la tabla */
-}
-
-/* 📌 Encabezados */
-#solicitudesTable thead {
-    background: linear-gradient(135deg, #2e3c5c, rgba(0.15, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
-    color: white;
-    font-weight: bold;
-}
-/* Bordes y espaciado */
-#solicitudesTable th, #solicitudesTable td {
-    padding: 14px 18px;
-    border: 1px solid #ddd;
-}
-
-/* 📌 Aplicar fondo a TODAS las filas y columnas */
-#solicitudesTable tbody tr th,
-#solicitudesTable tbody tr td {
-    background-color: #E6F4F9 !important; /* 🔼 Asegura que todas las columnas tengan color */
-    color: black !important; /* 🔼 Asegura que todo el texto sea negro */
-}
-
-
-/* 📌 Hover */
-#solicitudesTable tbody tr:hover td {
-    background-color: #d4edf4 !important; /* 🔼 Un poco más oscuro en hover */
-}
-
-
-/* Paginación */
-.dataTables_paginate {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-/* Botones de paginación */
-.dataTables_paginate .paginate_button {
-    padding: 10px 15px;
-    margin: 5px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-/* Hover en paginación */
-.dataTables_paginate .paginate_button:hover {
-    background-color: #f4eed4 !important;
-}
-
-/* Texto de info */
-.dataTables_info {
-    font-size: 14px;
-    margin-top: 15px;
-}
-
-/* 🎯 Botones de Exportación */
-.buttons-container {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    width: 90%;
-    margin: 20px auto;
-}
-
-
-/* Contenedor de los botones de exportación */
+/* Export buttons container (por encima de la tabla) */
 .export-buttons {
     display: flex;
-    justify-content: flex-end; /* Alinea los botones a la derecha */
-    gap: 10px; /* Espaciado entre botones */
-    margin: 10px 0; /* Espaciado superior e inferior */
-    position: relative; /* Asegura que los botones estén en la capa correcta */
-    z-index: 1000; /* Se asegura de que estén por encima de otros elementos */
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 10px 0 14px 0;
+    position: relative;
+    z-index: 1001;
 }
 
-/* Botones */
+/* Botones de exportación (ids existentes en tu HTML) */
 #copyBtn, #pdfBtn, #excelBtn {
-    display: inline-flex; /* Mantiene tamaño correcto */
-    align-items: center; /* Centra el contenido verticalmente */
-    justify-content: center; /* Centra el texto y el icono */
-    padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
     font-size: 14px;
     border: none;
-    border-radius: 5px;
+    border-radius: 9px;
     cursor: pointer;
     color: white;
-    transition: 0.3s;
-    position: relative; /* Evita que otro elemento los cubra */
-    z-index: 1001; /* Más alto que otros elementos */
-    pointer-events: auto; /* Asegura que los clics funcionen */
+    font-weight: 700;
+    box-shadow: 0 6px 12px rgba(6,57,98,0.12);
+    transition: transform .12s ease, filter .12s ease;
+    z-index: 1001;
 }
 
-/* Colores */
-#copyBtn { background-color: #6c757d; }
-#pdfBtn { background-color: #dc3545; }
-#excelBtn { background-color: #28a745; }
+/* colores */
+#copyBtn { background: linear-gradient(180deg,#6c757d,#5a6268); }
+#excelBtn { background: linear-gradient(180deg,#28a745,#1f8f3a); }
+#pdfBtn   { background: linear-gradient(180deg,#dc3545,#b32a2a); }
 
-/* Hover */
-#copyBtn:hover { background-color: #5a6268; }
-#pdfBtn:hover { background-color: #c82333; }
-#excelBtn:hover { background-color: #218838; }
-
-
-
-/* Ocultar el título cuando la sidebar está activa */
-.sidebar.active ~ .content h2 {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+#copyBtn:hover, #excelBtn:hover, #pdfBtn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
 }
 
+/* DataTable general */
+#solicitudesTable {
+    width: 100% !important;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+    color: #e6f4ff;
+    font-size: 15px;
+    table-layout: auto;
+}
+
+/* Encabezados (thead) */
+#solicitudesTable thead th {
+    background: linear-gradient(90deg, #063962 0%, #0b5a88 100%);
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    padding: 14px 18px;
+    border-bottom: 2px solid rgba(255,255,255,0.06);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+}
+
+/* esquinas redondeadas superiores del thead */
+#solicitudesTable thead th:first-child  { border-top-left-radius: 8px; }
+#solicitudesTable thead th:last-child   { border-top-right-radius: 8px; }
+
+/* Filas (tbody) */
+#solicitudesTable tbody tr {
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    transition: transform .12s ease, background-color .18s ease;
+    cursor: default;
+}
+
+#solicitudesTable tbody tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.02);
+}
+
+#solicitudesTable tbody tr:hover {
+    background-color: rgba(6,57,98,0.18);
+    transform: translateY(-1px);
+}
+
+/* celdas */
+#solicitudesTable td {
+    padding: 12px 18px;
+    vertical-align: middle;
+    color: #e6f4ff;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+/* columna id más estrecha */
+#solicitudesTable td:first-child { width: 80px; font-weight:600; color:#cfe9ff; }
+
+/* Acciones / Ver detalles */
+.ver-detalles-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: linear-gradient(180deg,#1e88e5,#1565c0);
+    color: white;
+    text-decoration: none;
+    font-weight:600;
+    box-shadow: 0 6px 14px rgba(21,101,192,0.14);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.ver-detalles-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(21,101,192,0.22);
+}
+
+/* Badge / estatus */
+.estatus-span {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: inline-block;
+    color: #fff;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.08);
+    text-transform: capitalize;
+}
+
+.estatus-recibido { background: linear-gradient(180deg,#0b84d1,#026fb1); }
+.estatus-aprobado  { background: linear-gradient(180deg,#5cb85c,#3e8f3e); }
+.estatus-rechazado { background: linear-gradient(180deg,#d9534f,#b83a36); }
+.estatus-default   { background: linear-gradient(180deg,#6c757d,#565e63); }
+
+/* ----------------------------
+   DataTables controls (buscador, length, paginación)
+   ---------------------------- */
+.dataTables_wrapper .dataTables_filter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.dataTables_wrapper .dataTables_filter label { color: #9fbfdc; font-size: 14px; }
+
+.dataTables_wrapper .dataTables_filter input {
+    background: #0f1b34;
+    color: #e6f4ff;
+    border: 1px solid rgba(6,57,98,0.6);
+    padding: 8px 10px;
+    border-radius: 8px;
+    width: 260px;
+    outline: none;
+}
+
+.dataTables_wrapper .dataTables_length {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    background: #0f1b34;
+    color: #e6f4ff;
+    border: 1px solid rgba(6,57,98,0.6);
+    padding: 6px 8px;
+    border-radius: 8px;
+    outline: none;
+}
+
+/* Paginación */
+.dataTables_wrapper .dataTables_paginate {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    gap: 4px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: linear-gradient(180deg,#063962,#0b5a88);
+    color: #fff !important;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 0 4px;
+    box-shadow: 0 6px 12px rgba(5,50,90,0.16);
+    cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: linear-gradient(180deg,#0a5b94,#0d78b1);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: linear-gradient(180deg,#1d6fa0,#2e93c6);
+    color: #fff !important;
+}
+
+/* Info */
+.dataTables_wrapper .dataTables_info {
+    color: #cfdff0;
+    margin-top: 12px;
+}
+
+/* =============================
+   Botones y utilidades restantes
+   ============================= */
 .go-to-page-btn {
-    background-color: #007bff; /* Azul brillante */
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -667,71 +742,44 @@ h2 {
     cursor: pointer;
 }
 
-.go-to-page-btn i {
-    margin-right: 5px; /* Espaciado entre el icono y el texto */
+.go-to-page-btn i { margin-right: 5px; }
+
+.go-to-page-btn:hover { background-color: #0056b3; }
+
+.go-to-page-btn:active { transform: scale(0.98); }
+
+/* Ocultar el título cuando la sidebar está activa (mantengo tu regla) */
+.sidebar.active ~ .content h2 {
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.go-to-page-btn:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+/* ----------------------------
+   Otros estilos que ya tenías
+   ---------------------------- */
+/* Ajustes finos de layout para sección principal */
+.table-container { /* ya definido arriba con rediseño */ }
+
+/* Ver detalles botón (ya definido) */
+
+/* Mantener visibilidad y contraste de otros elementos */
+.dataTables_wrapper .dataTables_filter input::placeholder {
+    color: rgba(255,255,255,0.5);
 }
 
-.go-to-page-btn:active {
-    background-color: #004494; /* Azul aún más oscuro al hacer clic */
-    transform: scale(0.98); /* Pequeño efecto de clic */
+/* ----------------------------
+   Responsive tweaks
+   ---------------------------- */
+@media (max-width: 900px) {
+    .header-container { width: 92%; }
+    .table-container { padding: 12px; }
+    .dataTables_wrapper .dataTables_filter input { width: 180px; }
+    #solicitudesTable thead th { font-size: 12px; padding: 10px; }
 }
 
-.ver-detalles-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: #1e88e5;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+@media (max-width: 520px) {
+    #solicitudesTable td { padding: 10px 8px; font-size: 13px; }
+    /* Opcional: ocultar columna solicitante en pantallas muy pequeñas */
+    #solicitudesTable td:nth-child(4),
+    #solicitudesTable th:nth-child(4) { display: none; }
 }
-
-.ver-detalles-btn:hover {
-    background-color: #1565c0;
-    transform: scale(1.03);
-    text-decoration: none;
-}
-
-.ver-detalles-btn i {
-    font-size: 16px;
-}
-
-.estatus-span {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 0.85em;
-    display: inline-block;
-    text-align: center;
-    text-transform: capitalize;
-}
-
-.estatus-recibido {
-    background-color: #0275d8; /* azul */
-    color: white;
-}
-
-.estatus-aprobado {
-    background-color: #5cb85c; /* verde */
-    color: white;
-}
-
-.estatus-rechazado {
-    background-color: #d9534f; /* rojo */
-    color: white;
-}
-
-.estatus-default {
-    background-color: #6c757d; /* gris */
-    color: white;
-}
-
