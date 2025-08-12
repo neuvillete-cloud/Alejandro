@@ -17,721 +17,111 @@ header {
     z-index: 1000;
 }
 
-.header-container {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    padding-right: 1px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-nav a:last-of-type {
-    position: relative;
-    padding-left: 15px;
-}
-
-nav a:last-of-type::before {
-    content: "|";
-    position: absolute;
-    left: -10px;
-    color: white;
-    font-size: 18px;
-    transform: scaleY(2);
-    display: inline-block;
-}
-
-nav > a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -34px;
-    width: 0;
-    height: 4px;
-    background: #99d0e9;
-    transform-origin: left;
-    transition: width 0.3s ease-in-out;
-}
-
-nav a:hover::after {
-    animation: smooth-infinite-bar 0.8s linear forwards;
-}
-
-nav a:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards;
-}
-
-@keyframes smooth-infinite-bar {
-    0% { width: 0%; transform: translateX(0); }
-    50% { width: 100%; transform: translateX(0); }
-    100% { width: 100%; transform: translateX(0); }
-}
-
-@keyframes smooth-infinite-bar-out {
-    0% { width: 100%; transform: translateX(0); }
-    100% { width: 0%; transform: translateX(0); }
-}
-
-.logo h1 {
-    font-size: 28px;
+header h1 {
     margin: 0;
-    line-height: 1;
-}
-
-.logo span {
-    display: block;
-    font-size: 25px;
-    line-height: 1;
-}
-
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
-.section-title {
-    background-color:	#3b8ac9a3;
-    padding: 100px 20px;
-    min-height: 170px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    flex-direction: column;
 }
 
-.section-title h1 {
-    font-size: 60px;
-    color: white;
-    margin: 0;
-    font-weight: bold;
-    padding-right: 940px;
-    padding-top: 60px;
+main {
+    padding: 100px 20px 20px 20px;
 }
 
-.user-menu {
-    position: relative;
-    display: inline-block;
+/* 🎯 ESTILO NUEVO DE LA TABLA */
+.table-container {
+    background-color: #1c1c3c;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    overflow-x: auto;
 }
 
-.user-info {
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: bold;
-    border-radius: 6px;
-    background-color: transparent;
-    font-size: 18px;
-    padding-bottom: 10px;
-}
-
-.user-menu::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
+table {
     width: 100%;
-    height: 40px;
-    z-index: 1;
-}
-
-.user-menu:hover .dropdown-menu {
-    display: block;
-}
-
-.user-info i.fas.fa-user-circle {
-    font-size: 20px;
-}
-
-.user-info i.fas.fa-chevron-down {
-    font-size: 12px;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: calc(100% + 34px);
-    left: 0;
-    background-color: #063962;
-    border: 2px solid #99d0e9;
-    border-radius: 6px;
-    min-width: 220px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    z-index: 1000;
+    border-collapse: collapse;
+    background-color: #24244d;
+    border-radius: 10px;
     overflow: hidden;
 }
 
-.dropdown-menu a {
-    color: #fff;
-    padding: 12px 20px;
-    display: block;
-    text-decoration: none;
+table thead {
+    background-color: #063962;
+    color: white;
+    text-transform: uppercase;
     font-size: 14px;
-    border-bottom: 1px solid #1f3b77;
-    transition: background-color 0.2s ease;
 }
 
-.dropdown-menu a:last-child {
-    border-bottom: none;
+table thead th {
+    padding: 12px 15px;
+    text-align: left;
 }
 
-.dropdown-menu a:hover {
-    background-color: #007BFF;
+table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease;
 }
 
-.user-info {
-    position: relative;
+table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
-.user-info::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -34px;
-    width: 0;
-    height: 4px;
-    background: #99d0e9;
-    transform-origin: left;
-    transition: width 0.3s ease-in-out;
+table tbody td {
+    padding: 12px 15px;
+    color: #f0f0f0;
+    font-size: 14px;
 }
 
-.user-info:hover::after {
-    animation: smooth-infinite-bar 0.8s linear forwards;
+/* Bordes suaves en las celdas */
+table td, table th {
+    border: none;
 }
 
-.user-info:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards;
-}
-
-.area-blanca {
-    background-color: #fff;
-    padding: 80px 20px;
-    min-height: 500px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.contenido-blanco {
-    max-width: 1200px;
-    margin: 0 auto;
-    font-size: 16px;
-    color: #333;
-}
-
-.buscador-vacantes {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.fila-superior {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-}
-
-.campo-busqueda,
-.campo-ubicacion {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
+/* Botones de acción dentro de la tabla */
+.table-btn {
+    padding: 6px 12px;
     border-radius: 8px;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    flex: 1;
-    min-width: 250px;
-    position: relative;
-}
-
-.campo-busqueda input,
-.campo-ubicacion input {
     border: none;
-    outline: none;
-    margin: 0 10px;
-    flex: 1;
-    font-size: 16px;
-}
-
-.cerrar-busqueda,
-.cerrar-ubicacion {
-    color: #888;
-    cursor: pointer;
-}
-
-.btn-buscar {
-    background-color: #2196F3;
+    background-color: #007bff;
     color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-weight: bold;
+    font-size: 13px;
     cursor: pointer;
-    min-width: 180px;
-    transition: background 0.3s;
+    transition: background 0.3s ease;
 }
 
-.btn-buscar:hover {
-    background-color: #99d0e9;
+.table-btn:hover {
+    background-color: #0056b3;
 }
 
-.filtros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.filtro {
-    background-color: #1146b0;
+/* DataTables estilos personalizados */
+.dataTables_wrapper .dataTables_filter input {
+    background-color: #1c1c3c;
+    border: 1px solid #063962;
     color: white;
-    border: none;
-    padding: 10px 15px;
+    padding: 6px 10px;
     border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: inherit;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg%20fill%3D%22white%22%20height%3D%2218%22%20viewBox%3D%220%200%2024%2024%22%20width%3D%2218%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-    padding-right: 35px;
 }
 
-.filtro::-ms-expand {
-    display: none;
-}
-
-.filtro.limpiar {
-    background-color: transparent;
-    color: #1146b0;
-    font-weight: bold;
-    background-image: none;
-    padding-right: 15px;
-}
-
-.historial-busquedas,
-.historial-ubicaciones {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-top: none;
-    z-index: 100;
-    max-height: 200px;
-    overflow-y: auto;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 14px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.historial-busquedas li,
-.historial-ubicaciones li {
-    padding: 10px 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s;
-}
-
-.historial-busquedas li:hover,
-.historial-ubicaciones li:hover {
-    background-color: #f0f0f0;
-}
-
-.contenedor-candidatos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    padding: 20px;
-}
-
-.candidato-card {
-    flex: 0 0 calc(50% - 10px);
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: transform 0.2s ease;
-    border-left: 6px solid #1a2a6c;
-    box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-    .candidato-card {
-        flex: 0 0 100%;
-    }
-}
-
-.candidato-card:hover {
-    transform: scale(1.02);
-}
-
-.foto-candidato {
-    font-size: 60px;
-    color: #1a2a6c;
-    margin-right: 20px;
-}
-
-.info-candidato h3 {
-    margin: 0;
-    font-size: 20px;
-    color: #1a2a6c;
-}
-
-.info-candidato p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #333;
-}
-
-.mensaje-vacio,
-.mensaje-error {
-    font-size: 16px;
-    color: #888;
-    padding: 40px 20px;
-    text-align: center;
-    width: 100%;
-}
-
-.main-candidatos {
-    padding: 60px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.section-title {
-    position: relative;
-}
-
-.imagen-banner {
-    position: absolute;
-    top: 60%;
-    right: 2rem;
-    transform: translateY(-50%);
-    max-height: 200px;
-    width: auto;
-    padding-right: 265px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-img {
-    height: 50px;
-    width: auto;
-}
-
-.logo-texto h1, .logo-texto span {
-    margin: 0;
-    line-height: 1;
+.dataTables_wrapper .dataTables_length select {
+    background-color: #1c1c3c;
+    border: 1px solid #063962;
     color: white;
+    padding: 4px 6px;
+    border-radius: 6px;
 }
 
-/* ===== NUEVO: Centrar y agrandar cuando solo hay una card ===== */
-.contenedor-candidatos.solo-uno {
-    justify-content: center;
-}
-
-.contenedor-candidatos.solo-uno .candidato-card {
-    flex: 0 0 80%;
-    max-width: 700px;
-}
-
-
-/* Contenedor de la tabla */
-.table-container {
-    width: 100%;
-    max-width: 1500px;
-    margin: 20px auto; /* Más arriba y centrado */
-    padding: 20px;
-    background: #E6F4F9;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 10; /* 🔼 Lleva la tabla al frente */
-}
-
-/* 📌 Título de la tabla (h2) */
-h2 {
-    font-size: 1.8em;
-    font-weight: bold;
-    margin-bottom: -44px; /* 🔼 Más separación respecto a la tabla */
-    position: relative;
-    z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
-}
-
-/* 🔍 Controles superiores (selector y buscador) */
-.top-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px; /* 🔼 Más separación de la tabla */
-    width: 100%;
-    padding: 15px 0;
-}
-
-/* Selector de registros */
-.dataTables_length {
-    flex: 1;
-    text-align: left;
-    margin-left: 20px; /* 🔼 Más separación */
-}
-
-/* Buscador */
-.dataTables_filter {
-    flex: 1;
-    text-align: right;
-    margin-right: 20px; /* 🔼 Más separación */
-}
-
-/* 📌 Estiliza el input de búsqueda */
-.dataTables_filter input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 220px; /* 🔼 Más ancho */
-}
-
-/* Selector de registros */
-.dataTables_length select {
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-}
-/* 📌 Tabla */
-#solicitudesTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-    text-align: left;
-    background-color: #E6F4F9; /* 🔼 Fondo para toda la tabla */
-}
-
-/* 📌 Encabezados */
-#solicitudesTable thead {
-    background: linear-gradient(135deg, #2e3c5c, rgba(0.15, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
-    color: white;
-    font-weight: bold;
-}
-/* Bordes y espaciado */
-#solicitudesTable th, #solicitudesTable td {
-    padding: 14px 18px;
-    border: 1px solid #ddd;
-}
-
-/* 📌 Aplicar fondo a TODAS las filas y columnas */
-#solicitudesTable tbody tr th,
-#solicitudesTable tbody tr td {
-    background-color: #E6F4F9 !important; /* 🔼 Asegura que todas las columnas tengan color */
-    color: black !important; /* 🔼 Asegura que todo el texto sea negro */
-}
-
-
-/* 📌 Hover */
-#solicitudesTable tbody tr:hover td {
-    background-color: #d4edf4 !important; /* 🔼 Un poco más oscuro en hover */
-}
-
-
-/* Paginación */
-.dataTables_paginate {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-/* Botones de paginación */
-.dataTables_paginate .paginate_button {
-    padding: 10px 15px;
-    margin: 5px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-/* Hover en paginación */
-.dataTables_paginate .paginate_button:hover {
-    background-color: #f4eed4 !important;
-}
-
-/* Texto de info */
-.dataTables_info {
-    font-size: 14px;
-    margin-top: 15px;
-}
-
-/* 🎯 Botones de Exportación */
-.buttons-container {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    width: 90%;
-    margin: 20px auto;
-}
-
-
-/* Contenedor de los botones de exportación */
-.export-buttons {
-    display: flex;
-    justify-content: flex-end; /* Alinea los botones a la derecha */
-    gap: 10px; /* Espaciado entre botones */
-    margin: 10px 0; /* Espaciado superior e inferior */
-    position: relative; /* Asegura que los botones estén en la capa correcta */
-    z-index: 1000; /* Se asegura de que estén por encima de otros elementos */
-}
-
-/* Botones */
-#copyBtn, #pdfBtn, #excelBtn {
-    display: inline-flex; /* Mantiene tamaño correcto */
-    align-items: center; /* Centra el contenido verticalmente */
-    justify-content: center; /* Centra el texto y el icono */
-    padding: 10px 18px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
-    transition: 0.3s;
-    position: relative; /* Evita que otro elemento los cubra */
-    z-index: 1001; /* Más alto que otros elementos */
-    pointer-events: auto; /* Asegura que los clics funcionen */
-}
-
-/* Colores */
-#copyBtn { background-color: #6c757d; }
-#pdfBtn { background-color: #dc3545; }
-#excelBtn { background-color: #28a745; }
-
-/* Hover */
-#copyBtn:hover { background-color: #5a6268; }
-#pdfBtn:hover { background-color: #c82333; }
-#excelBtn:hover { background-color: #218838; }
-
-
-
-/* Ocultar el título cuando la sidebar está activa */
-.sidebar.active ~ .content h2 {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.go-to-page-btn {
-    background-color: #007bff; /* Azul brillante */
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-}
-
-.go-to-page-btn i {
-    margin-right: 5px; /* Espaciado entre el icono y el texto */
-}
-
-.go-to-page-btn:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-}
-
-.go-to-page-btn:active {
-    background-color: #004494; /* Azul aún más oscuro al hacer clic */
-    transform: scale(0.98); /* Pequeño efecto de clic */
-}
-
-.ver-detalles-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: #1e88e5;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.ver-detalles-btn:hover {
-    background-color: #1565c0;
-    transform: scale(1.03);
-    text-decoration: none;
-}
-
-.ver-detalles-btn i {
-    font-size: 16px;
-}
-
-.estatus-span {
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #063962;
+    color: white !important;
+    border-radius: 6px;
+    margin: 0 3px;
     padding: 4px 10px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 0.85em;
-    display: inline-block;
-    text-align: center;
-    text-transform: capitalize;
+    transition: background 0.3s ease;
 }
 
-.estatus-recibido {
-    background-color: #0275d8; /* azul */
-    color: white;
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #0a4d88;
 }
 
-.estatus-aprobado {
-    background-color: #5cb85c; /* verde */
-    color: white;
+/* Texto de información */
+.dataTables_wrapper .dataTables_info {
+    color: #bbb;
 }
-
-.estatus-rechazado {
-    background-color: #d9534f; /* rojo */
-    color: white;
-}
-
-.estatus-default {
-    background-color: #6c757d; /* gris */
-    color: white;
-}
-
