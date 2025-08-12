@@ -633,7 +633,7 @@ h2 {
     color: white;
     transition: 0.3s;
     position: relative; /* Evita que otro elemento los cubra */
-    z-index: 1001; /* Más alto que otros elementos */
+    z-index: 0; /* Más alto que otros elementos */
     pointer-events: auto; /* Asegura que los clics funcionen */
 }
 
