@@ -71,11 +71,12 @@ if (!isset($_SESSION['NumNomina'])) {
                 </div>
 
                 <div class="campo-ubicacion">
-                    <i class="fas fa-map-marker-alt"></i>
+                    <i class="fas fa-user"></i>
                     <input type="text" placeholder="Nombre del candidato" autocomplete="off">
                     <i class="fas fa-times cerrar-ubicacion"></i>
                     <ul class="historial-ubicaciones"></ul>
                 </div>
+
 
                 <button class="btn-buscar">Buscar Candidato</button>
             </div>
