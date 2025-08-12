@@ -6,6 +6,7 @@
     <title>Vacantes en Grammer Automotive</title>
     <link rel="stylesheet" href="css/candidatoSeleccionado.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 </head>
 <body>
 
