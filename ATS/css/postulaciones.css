@@ -481,7 +481,7 @@ nav a:not(:hover)::after {
     max-width: 1500px;
     margin: 20px auto; /* Más arriba y centrado */
     padding: 20px;
-    background: #E6F4F9;
+    background: white;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     position: relative;
