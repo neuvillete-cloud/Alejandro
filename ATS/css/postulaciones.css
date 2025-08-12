@@ -617,7 +617,7 @@ h2 {
     gap: 10px; /* Espaciado entre botones */
     margin: 10px 0; /* Espaciado superior e inferior */
     position: relative; /* Asegura que los botones estén en la capa correcta */
-    z-index: 0; /* Se asegura de que estén por encima de otros elementos */
+    z-index: 1000; /* Se asegura de que estén por encima de otros elementos */
 }
 
 /* Botones */
@@ -633,7 +633,7 @@ h2 {
     color: white;
     transition: 0.3s;
     position: relative; /* Evita que otro elemento los cubra */
-    z-index: 0; /* Más alto que otros elementos */
+    z-index: 1001; /* Más alto que otros elementos */
     pointer-events: auto; /* Asegura que los clics funcionen */
 }
 
