@@ -27,11 +27,11 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
         </div>
         <nav>
-            <a href="#">Inicio</a>
-            <a href="#">S.Aprobadas</a>
-            <a href="aboutUs.php">Seguimiento</a>
-            <a href="practicantes.php">Carga de Vacantes</a>
-            <a href="#">Candidatos Postulados</a>
+            <a href="Administrador.php">Inicio</a>
+            <a href="SAprobadas.php">S.Aprobadas</a>
+            <a href="SeguimientoAdministrador.php">Seguimiento</a>
+            <a href="cargaVacante.php">Carga de Vacantes</a>
+            <a href="Postulaciones.php">Candidatos Postulados</a>
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
