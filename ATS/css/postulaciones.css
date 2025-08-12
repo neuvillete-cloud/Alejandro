@@ -494,7 +494,7 @@ h2 {
     font-weight: bold;
     margin-bottom: -44px; /* 🔼 Más separación respecto a la tabla */
     position: relative;
-    z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
+
 }
 
 /* 🔍 Controles superiores (selector y buscador) */
