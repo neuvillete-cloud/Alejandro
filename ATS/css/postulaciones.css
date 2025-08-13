@@ -813,12 +813,25 @@ h2 {
     transform: translateY(0);
 }
 
-/* 🎯 Iconos de KPI */
+/* 🎯 Animación de rebote para iconos KPI */
+@keyframes kpiPop {
+    0%   { transform: scale(0); opacity: 0; }
+    50%  { transform: scale(1.2); opacity: 1; }
+    70%  { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
 .kpi-icon {
     font-size: 2.5em;
     margin-bottom: 8px;
     display: block;
+    opacity: 0;
+    transform: scale(0);
 }
+.kpi-icon.pop {
+    animation: kpiPop 0.6s ease forwards;
+}
+
 
 /* Ajustes extra en amarillo (porque tiene texto negro) */
 .kpi-card.amarillo .kpi-icon {

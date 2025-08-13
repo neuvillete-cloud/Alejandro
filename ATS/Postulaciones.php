@@ -383,7 +383,17 @@ if (!isset($_SESSION['NumNomina'])) {
             animarContador(document.getElementById('totalAprobadas'), aprobadas);
             animarContador(document.getElementById('totalRechazadas'), rechazadas);
             animarContador(document.getElementById('totalPendientes'), pendientes);
+
+            // 🎯 Activar animación de iconos KPI
+            document.querySelectorAll('.kpi-icon').forEach((icon, index) => {
+                setTimeout(() => {
+                    icon.classList.remove('pop'); // reset por si ya estaba
+                    void icon.offsetWidth; // forzar reflow
+                    icon.classList.add('pop');
+                }, index * 150); // retraso para que aparezcan uno por uno
+            });
         }
+
 
 // 📌 Animar timeline al aparecer
         function llenarTimeline(arr) {
