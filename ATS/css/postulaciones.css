@@ -762,6 +762,8 @@ h2 {
 .verde { background-color: #28a745; }
 .rojo { background-color: #dc3545; }
 .amarillo { background-color: #ffc107; color: black; }
+.morado { background-color: #6f42c1; }
+
 
 .panel-analitico {
     display: flex;

@@ -78,6 +78,12 @@ if (!isset($_SESSION['NumNomina'])) {
             <h3>Rechazadas</h3>
             <p id="totalRechazadas">0</p>
         </div>
+        <div class="kpi-card morado">
+            <i class="fas fa-user-check kpi-icon"></i>
+            <h3>Seleccionados</h3>
+            <p id="totalSeleccionados">0</p>
+        </div>
+
         <div class="kpi-card amarillo">
             <i class="fas fa-hourglass-half kpi-icon"></i>
             <h3>Pendientes</h3>
@@ -194,45 +200,46 @@ if (!isset($_SESSION['NumNomina'])) {
 
     function kpisDesdeArray(arr) {
         const total = arr.length;
-        let aprobadas = 0, rechazadas = 0, pendientes = 0;
+        let aprobadas = 0, rechazadas = 0, pendientes = 0, seleccionados = 0;
         arr.forEach(d => {
             const s = String(d.NombreEstatus || '').toLowerCase();
             if (s === 'aprobado') aprobadas++;
             else if (s === 'rechazado') rechazadas++;
+            else if (s === 'seleccionado') seleccionados++; // Nuevo estatus
             else pendientes++;
         });
-        return { total, aprobadas, rechazadas, pendientes };
+        return { total, aprobadas, rechazadas, pendientes, seleccionados };
     }
 
-    function pintarKpis({ total, aprobadas, rechazadas, pendientes }) {
-        document.getElementById('totalPostulaciones').textContent = total;
-        document.getElementById('totalAprobadas').textContent = aprobadas;
-        document.getElementById('totalRechazadas').textContent = rechazadas;
-        document.getElementById('totalPendientes').textContent = pendientes;
-    }
 
-    function actualizarGrafico({ aprobadas, rechazadas, pendientes }) {
+    function actualizarGrafico({ aprobadas, rechazadas, pendientes, seleccionados }) {
         const ctx = document.getElementById('estatusChart');
         if (!ctx) return;
+
         if (!estatusChart) {
             estatusChart = new Chart(ctx, {
-                type: 'doughnut',
+                type: 'bar', // cambio a barras
                 data: {
-                    labels: ['Aprobadas', 'Rechazadas', 'Pendientes'],
+                    labels: ['Aprobadas', 'Rechazadas', 'Pendientes', 'Seleccionados'],
                     datasets: [{
-                        data: [aprobadas, rechazadas, pendientes],
-                        backgroundColor: ['#28A745', '#DC3545', '#FFC107']
+                        label: 'Cantidad de postulaciones',
+                        data: [aprobadas, rechazadas, pendientes, seleccionados],
+                        backgroundColor: ['#28A745', '#DC3545', '#FFC107', '#6f42c1']
                     }]
                 },
                 options: {
-                    plugins: { legend: { position: 'bottom' } }
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
                 }
             });
         } else {
-            estatusChart.data.datasets[0].data = [aprobadas, rechazadas, pendientes];
+            estatusChart.data.datasets[0].data = [aprobadas, rechazadas, pendientes, seleccionados];
             estatusChart.update();
         }
     }
+
 
     function llenarTimeline(arr) {
         const lista = document.getElementById('actividadLista');
@@ -378,21 +385,22 @@ if (!isset($_SESSION['NumNomina'])) {
         }
 
 // 📌 Modificar pintarKpis para incluir animación
-        function pintarKpis({ total, aprobadas, rechazadas, pendientes }) {
+        function pintarKpis({ total, aprobadas, rechazadas, pendientes, seleccionados }) {
             animarContador(document.getElementById('totalPostulaciones'), total);
             animarContador(document.getElementById('totalAprobadas'), aprobadas);
             animarContador(document.getElementById('totalRechazadas'), rechazadas);
             animarContador(document.getElementById('totalPendientes'), pendientes);
+            animarContador(document.getElementById('totalSeleccionados'), seleccionados); // nuevo
 
-            // 🎯 Activar animación de iconos KPI
             document.querySelectorAll('.kpi-icon').forEach((icon, index) => {
                 setTimeout(() => {
-                    icon.classList.remove('pop'); // reset por si ya estaba
-                    void icon.offsetWidth; // forzar reflow
+                    icon.classList.remove('pop');
+                    void icon.offsetWidth;
                     icon.classList.add('pop');
-                }, index * 150); // retraso para que aparezcan uno por uno
+                }, index * 150);
             });
         }
+
 
 
 // 📌 Animar timeline al aparecer
