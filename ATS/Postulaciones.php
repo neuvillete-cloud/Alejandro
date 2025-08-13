@@ -64,21 +64,26 @@ if (!isset($_SESSION['NumNomina'])) {
     <!-- 📊 TARJETAS DE ESTADÍSTICAS -->
     <div class="kpi-container">
         <div class="kpi-card azul">
+            <i class="fas fa-users kpi-icon"></i>
             <h3>Total Postulaciones</h3>
             <p id="totalPostulaciones">0</p>
         </div>
         <div class="kpi-card verde">
+            <i class="fas fa-check-circle kpi-icon"></i>
             <h3>Aprobadas</h3>
             <p id="totalAprobadas">0</p>
         </div>
         <div class="kpi-card rojo">
+            <i class="fas fa-times-circle kpi-icon"></i>
             <h3>Rechazadas</h3>
             <p id="totalRechazadas">0</p>
         </div>
         <div class="kpi-card amarillo">
+            <i class="fas fa-hourglass-half kpi-icon"></i>
             <h3>Pendientes</h3>
             <p id="totalPendientes">0</p>
         </div>
+
     </div>
 
     <!-- 📈 GRÁFICO Y TIMELINE -->

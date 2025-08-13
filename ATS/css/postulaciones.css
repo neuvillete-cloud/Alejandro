@@ -812,3 +812,15 @@ h2 {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* 🎯 Iconos de KPI */
+.kpi-icon {
+    font-size: 2.5em;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Ajustes extra en amarillo (porque tiene texto negro) */
+.kpi-card.amarillo .kpi-icon {
+    color: black;
+}
