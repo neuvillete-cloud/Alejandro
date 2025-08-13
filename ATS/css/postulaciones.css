@@ -735,3 +735,60 @@ h2 {
     color: white;
 }
 
+.kpi-container {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+.kpi-card {
+    flex: 1;
+    min-width: 180px;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+.kpi-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+.kpi-card p {
+    font-size: 2em;
+    margin: 0;
+}
+.azul { background-color: #007bff; }
+.verde { background-color: #28a745; }
+.rojo { background-color: #dc3545; }
+.amarillo { background-color: #ffc107; color: black; }
+
+.panel-analitico {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.grafico {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+.timeline {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+.timeline ul {
+    list-style: none;
+    padding: 0;
+}
+.timeline li {
+    border-left: 3px solid #007bff;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}

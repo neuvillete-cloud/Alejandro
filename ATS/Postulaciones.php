@@ -61,6 +61,39 @@ if (!isset($_SESSION['NumNomina'])) {
 </section>
 
 <section class="area-blanca">
+    <!-- 📊 TARJETAS DE ESTADÍSTICAS -->
+    <div class="kpi-container">
+        <div class="kpi-card azul">
+            <h3>Total Postulaciones</h3>
+            <p id="totalPostulaciones">0</p>
+        </div>
+        <div class="kpi-card verde">
+            <h3>Aprobadas</h3>
+            <p id="totalAprobadas">0</p>
+        </div>
+        <div class="kpi-card rojo">
+            <h3>Rechazadas</h3>
+            <p id="totalRechazadas">0</p>
+        </div>
+        <div class="kpi-card amarillo">
+            <h3>Pendientes</h3>
+            <p id="totalPendientes">0</p>
+        </div>
+    </div>
+
+    <!-- 📈 GRÁFICO Y TIMELINE -->
+    <div class="panel-analitico">
+        <div class="grafico">
+            <canvas id="estatusChart"></canvas>
+        </div>
+        <div class="timeline">
+            <h3>Actividad Reciente</h3>
+            <ul id="actividadLista">
+                <!-- Se llena con JS -->
+            </ul>
+        </div>
+    </div>
+
     <div class="contenido-blanco">
 <!-- Tabla de Solicitudes -->
         <div class="content">
@@ -140,20 +173,72 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function obtenerClaseEstatus(nombreEstatus) {
-        switch (nombreEstatus.toLowerCase()) {
-            case 'recibido':
-                return 'estatus-recibido';
-            case 'aprobado':
-                return 'estatus-aprobado';
-            case 'rechazado':
-                return 'estatus-rechazado';
-            default:
-                return 'estatus-default';
+        switch (String(nombreEstatus).toLowerCase()) {
+            case 'recibido': return 'estatus-recibido';
+            case 'aprobado': return 'estatus-aprobado';
+            case 'rechazado': return 'estatus-rechazado';
+            default: return 'estatus-default';
         }
     }
 
+    // Helpers para KPIs/Gráfico/Timeline
+    let estatusChart = null;
+
+    function kpisDesdeArray(arr) {
+        const total = arr.length;
+        let aprobadas = 0, rechazadas = 0, pendientes = 0;
+        arr.forEach(d => {
+            const s = String(d.NombreEstatus || '').toLowerCase();
+            if (s === 'aprobado') aprobadas++;
+            else if (s === 'rechazado') rechazadas++;
+            else pendientes++;
+        });
+        return { total, aprobadas, rechazadas, pendientes };
+    }
+
+    function pintarKpis({ total, aprobadas, rechazadas, pendientes }) {
+        document.getElementById('totalPostulaciones').textContent = total;
+        document.getElementById('totalAprobadas').textContent = aprobadas;
+        document.getElementById('totalRechazadas').textContent = rechazadas;
+        document.getElementById('totalPendientes').textContent = pendientes;
+    }
+
+    function actualizarGrafico({ aprobadas, rechazadas, pendientes }) {
+        const ctx = document.getElementById('estatusChart');
+        if (!ctx) return;
+        if (!estatusChart) {
+            estatusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aprobadas', 'Rechazadas', 'Pendientes'],
+                    datasets: [{
+                        data: [aprobadas, rechazadas, pendientes],
+                        backgroundColor: ['#28A745', '#DC3545', '#FFC107']
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        } else {
+            estatusChart.data.datasets[0].data = [aprobadas, rechazadas, pendientes];
+            estatusChart.update();
+        }
+    }
+
+    function llenarTimeline(arr) {
+        const lista = document.getElementById('actividadLista');
+        if (!lista) return;
+        lista.innerHTML = '';
+        arr.slice(0, 5).forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${item.NombreCandidato}</strong> - ${item.NombreEstatus} (${item.FechaPostulacion})`;
+            lista.appendChild(li);
+        });
+    }
 
     $(document).ready(function () {
         var tabla = $('#solicitudesTable').DataTable({
@@ -175,19 +260,15 @@ if (!isset($_SESSION['NumNomina'])) {
                         return `<span class="estatus-span ${clase}">${data}</span>`;
                     }
                 },
-
                 {
                     "data": null,
                     "render": function (data, type, row) {
                         return `
-    <a href="detallePostulacion.php?IdPostulacion=${row.IdPostulacion}" class="ver-detalles-btn">
-        <i class="fas fa-eye"></i> Ver Detalles
-    </a>
-`;
-
+                            <a href="detallePostulacion.php?IdPostulacion=${row.IdPostulacion}" class="ver-detalles-btn">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>`;
                     }
                 }
-
             ],
             "dom": 'lfrtip',
             "pageLength": 10,
@@ -217,23 +298,39 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         });
 
-        // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
+        // 🔹 Mantener la barra de búsqueda global funcionando
         $('.dataTables_filter input').on('keyup', function () {
             tabla.search(this.value).draw();
         });
 
-        // Funcionalidad de botones
+        // 📌 KPIs/Gráfico/Timeline al terminar de cargar AJAX
+        tabla.on('xhr.dt', function (e, settings, json) {
+            if (!json || !json.data) return;
+            const k = kpisDesdeArray(json.data);
+            pintarKpis(k);
+            actualizarGrafico(k);
+            llenarTimeline(json.data);
+        });
 
+        // 📌 Actualizar KPIs/Gráfico con los datos filtrados/buscados
+        tabla.on('draw.dt', function () {
+            const datosFiltrados = tabla.rows({ search: 'applied' }).data().toArray();
+            const k = kpisDesdeArray(datosFiltrados);
+            pintarKpis(k);
+            actualizarGrafico(k);
+        });
+
+        // Funcionalidad de botones
         $('#copyBtn').on('click', function () {
             let text = "";
-            tabla.rows().every(function () {
+            tabla.rows({ search: 'applied' }).every(function () {
                 let data = this.data();
                 text += Object.values(data).join("\t") + "\n";
             });
 
-            navigator.clipboard.writeText(text).then(function () {
-                alert('Tabla copiada al portapapeles');
-            }).catch(err => console.error('Error al copiar:', err));
+            navigator.clipboard.writeText(text)
+                .then(function () { alert('Tabla copiada al portapapeles'); })
+                .catch(err => console.error('Error al copiar:', err));
         });
 
         $('#pdfBtn').on('click', function () {
@@ -257,8 +354,6 @@ if (!isset($_SESSION['NumNomina'])) {
         $('#solicitudesTable tbody').on('click', '.go-to-page-btn', function () {
             window.location.href = 'SeguimientoAdministrador.php';
         });
-
-
     });
 </script>
 </body>
