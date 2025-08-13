@@ -792,3 +792,23 @@ h2 {
     padding-left: 10px;
     margin-bottom: 10px;
 }
+
+/* 🎯 Animación hover en KPI */
+.kpi-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.kpi-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 🎯 Animación de aparición en la timeline */
+.timeline li {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+.timeline li.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

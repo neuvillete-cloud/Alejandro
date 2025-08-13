@@ -354,6 +354,57 @@ if (!isset($_SESSION['NumNomina'])) {
         $('#solicitudesTable tbody').on('click', '.go-to-page-btn', function () {
             window.location.href = 'SeguimientoAdministrador.php';
         });
+
+        // 📌 Función para animar el conteo de KPIs
+        function animarContador(element, final) {
+            let inicio = 0;
+            const duracion = 1000; // 1 segundo
+            const incremento = final / (duracion / 16);
+            function actualizar() {
+                inicio += incremento;
+                if (inicio >= final) {
+                    element.textContent = final;
+                } else {
+                    element.textContent = Math.floor(inicio);
+                    requestAnimationFrame(actualizar);
+                }
+            }
+            actualizar();
+        }
+
+// 📌 Modificar pintarKpis para incluir animación
+        function pintarKpis({ total, aprobadas, rechazadas, pendientes }) {
+            animarContador(document.getElementById('totalPostulaciones'), total);
+            animarContador(document.getElementById('totalAprobadas'), aprobadas);
+            animarContador(document.getElementById('totalRechazadas'), rechazadas);
+            animarContador(document.getElementById('totalPendientes'), pendientes);
+        }
+
+// 📌 Animar timeline al aparecer
+        function llenarTimeline(arr) {
+            const lista = document.getElementById('actividadLista');
+            if (!lista) return;
+            lista.innerHTML = '';
+
+            arr.slice(0, 5).forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${item.NombreCandidato}</strong> - ${item.NombreEstatus} (${item.FechaPostulacion})`;
+                lista.appendChild(li);
+
+                setTimeout(() => {
+                    li.classList.add('visible');
+                }, index * 200); // Retraso entre elementos
+            });
+        }
+
+// 📌 Activar animación inicial del gráfico Chart.js
+        if (estatusChart) {
+            estatusChart.options.animation = {
+                animateRotate: true,
+                animateScale: true
+            };
+        }
+
     });
 </script>
 </body>
