@@ -1,186 +1,187 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php'); // Redirige al login si no está autenticado
-    exit;
-}
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador</title>
-
+    <title>Vacantes en Grammer Automotive</title>
     <link rel="stylesheet" href="css/cargaVacante.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="header-left">
-        <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>R.H Admin</h1>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-    </div>
-    <div class="header-right">
-        <div class="user-profile" id="profilePic">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
         </div>
-        <div class="user-name" id="userNameHeader"></div>
-        <div class="profile-dropdown" id="profileDropdown">
-            <a href="#">Ver Perfil</a>
-            <a href="#" id="logout">Cerrar Sesión</a>
-        </div>
+        <nav>
+            <a href="Administrador.php">Inicio</a>
+            <a href="SAprobadas.php">S.Aprobadas</a>
+            <a href="SeguimientoAdministrador.php">Seguimiento</a>
+            <a href="cargaVacante.php">Carga de Vacantes</a>
+            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.php">Perfil</a>
+                        <a href="#">Alertas de empleo</a>
+                        <a href="HistorialUsuario.php">Historial de solicitudes</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
     </div>
 </header>
 
-<!-- Sidebar -->
-<nav class="sidebar" id="sidebar">
-    <ul>
-        <li><a href="Administrador.php">Inicio</a></li>
-        <li><a href="SAprobadas.php">S. Aprobadas</a></li>
-        <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-        <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
-        <li><a href="Postulaciones.php">Candidatos Postulados</a></li>
-    </ul>
-</nav>
+<section class="section-title">
+    <h1>Postulaciones</h1>
+    <img src="imagenes/demanda%20(1).png" alt="Imagen decorativa" class="imagen-banner">
+</section>
 
-<!-- Contenido Principal -->
-<main class="vacante-container">
-    <section class="formulario-vacante">
-        <h2>Cargar Nueva Vacante</h2>
-        <form id="vacanteForm" class="form-cv-layout grid-cv">
-            <!-- FOTO -->
-            <div class="foto-cv" id="drop-area">
-                <img id="preview" class="preview-img" src="#" alt="Preview" />
-                <span class="placeholder-text">Haz clic o arrastra tu imagen aquí</span>
-                <input type="file" id="imagen" name="imagen" accept="image/*" />
-            </div>
+<section class="area-blanca">
+    <div class="contenido-blanco">
+        <!-- Contenido Principal -->
+        <main class="vacante-container">
+            <section class="formulario-vacante">
+                <h2>Cargar Nueva Vacante</h2>
+                <form id="vacanteForm" class="form-cv-layout grid-cv">
+                    <!-- FOTO -->
+                    <div class="foto-cv" id="drop-area">
+                        <img id="preview" class="preview-img" src="#" alt="Preview" />
+                        <span class="placeholder-text">Haz clic o arrastra tu imagen aquí</span>
+                        <input type="file" id="imagen" name="imagen" accept="image/*" />
+                    </div>
 
-            <!-- Fila 1 -->
-            <div class="input-group titulo-full">
-                <label for="titulo">Título del puesto:</label>
-                <input type="text" id="titulo" name="titulo" required />
-            </div>
+                    <!-- Fila 1 -->
+                    <div class="input-group titulo-full">
+                        <label for="titulo">Título del puesto:</label>
+                        <input type="text" id="titulo" name="titulo" required />
+                    </div>
 
 
-            <div class="input-group">
-                <label for="area">Área / Departamento:</label>
-                <select id="area" name="area" required>
-                    <option value="">Selecciona un área</option>
-                    <option value="Seguridad e Higiene">Seguridad e Higiene</option>
-                    <option value="GPS">GPS</option>
-                    <option value="IT">IT</option>
-                    <option value="RH">RH</option>
-                    <option value="Calidad">Calidad</option>
-                    <option value="Ingenieria">Ingenieria</option>
-                    <option value="Controlling">Controlling</option>
-                    <option value="Logistica">Logistica</option>
-                    <option value="Mantenimiento">Mantenimiento</option>
-                    <option value="Producción (APU)">Producción (APU)</option>
-                    <option value="Finanzas">Finanzas</option>
-                    <option value="Compras">Compras</option>
-                    <option value="Regionales">Regionales</option>
-                </select>
-            </div>
+                    <div class="input-group">
+                        <label for="area">Área / Departamento:</label>
+                        <select id="area" name="area" required>
+                            <option value="">Selecciona un área</option>
+                            <option value="Seguridad e Higiene">Seguridad e Higiene</option>
+                            <option value="GPS">GPS</option>
+                            <option value="IT">IT</option>
+                            <option value="RH">RH</option>
+                            <option value="Calidad">Calidad</option>
+                            <option value="Ingenieria">Ingenieria</option>
+                            <option value="Controlling">Controlling</option>
+                            <option value="Logistica">Logistica</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Producción (APU)">Producción (APU)</option>
+                            <option value="Finanzas">Finanzas</option>
+                            <option value="Compras">Compras</option>
+                            <option value="Regionales">Regionales</option>
+                        </select>
+                    </div>
 
 
-            <!-- Fila 2 -->
-            <div class="input-group">
-                <label for="tipo">Tipo de contrato:</label>
-                <select id="tipo" name="tipo">
-                    <option value="Tiempo completo">Tiempo completo</option>
-                    <option value="Medio tiempo">Medio tiempo</option>
-                    <option value="Temporal">Temporal</option>
-                </select>
-            </div>
+                    <!-- Fila 2 -->
+                    <div class="input-group">
+                        <label for="tipo">Tipo de contrato:</label>
+                        <select id="tipo" name="tipo">
+                            <option value="Tiempo completo">Tiempo completo</option>
+                            <option value="Medio tiempo">Medio tiempo</option>
+                            <option value="Temporal">Temporal</option>
+                        </select>
+                    </div>
 
-            <div class="input-group">
-                <label for="horario">Horario:</label>
-                <input type="text" id="horario" name="horario" />
-            </div>
+                    <div class="input-group">
+                        <label for="horario">Horario:</label>
+                        <input type="text" id="horario" name="horario" />
+                    </div>
 
-            <!-- Fila 3 -->
-            <div class="input-group">
-                <label for="sueldo">Sueldo:</label>
-                <input type="text" id="sueldo" name="sueldo" />
-            </div>
+                    <!-- Fila 3 -->
+                    <div class="input-group">
+                        <label for="sueldo">Sueldo:</label>
+                        <input type="text" id="sueldo" name="sueldo" />
+                    </div>
 
-            <div class="input-group">
-                <label for="escolaridad">Escolaridad Minima:</label>
-                <input type="text" id="escolaridad" name="escolaridad" required />
-            </div>
+                    <div class="input-group">
+                        <label for="escolaridad">Escolaridad Minima:</label>
+                        <input type="text" id="escolaridad" name="escolaridad" required />
+                    </div>
 
-            <div class="input-group">
-                <label for="pais">País / Región:</label>
-                <input type="text" id="pais" name="pais" required />
-            </div>
+                    <div class="input-group">
+                        <label for="pais">País / Región:</label>
+                        <input type="text" id="pais" name="pais" required />
+                    </div>
 
-            <!-- Fila 4 -->
-            <div class="input-group">
-                <label for="estado">Estado / Provincia:</label>
-                <input type="text" id="estado" name="estado" required />
-            </div>
+                    <!-- Fila 4 -->
+                    <div class="input-group">
+                        <label for="estado">Estado / Provincia:</label>
+                        <input type="text" id="estado" name="estado" required />
+                    </div>
 
-            <div class="input-group">
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" required />
-            </div>
+                    <div class="input-group">
+                        <label for="ciudad">Ciudad:</label>
+                        <input type="text" id="ciudad" name="ciudad" required />
+                    </div>
 
-            <div class="input-group">
-                <label for="espacio">Espacio de trabajo:</label>
-                <input type="text" id="espacio" name="espacio" required />
-            </div>
+                    <div class="input-group">
+                        <label for="espacio">Espacio de trabajo:</label>
+                        <input type="text" id="espacio" name="espacio" required />
+                    </div>
 
-            <div class="input-group">
-                <label for="idioma">Idioma:</label>
-                <input type="text" id="idioma" name="idioma" required />
-            </div>
+                    <div class="input-group">
+                        <label for="idioma">Idioma:</label>
+                        <input type="text" id="idioma" name="idioma" required />
+                    </div>
 
-            <div class="input-group">
-                <label for="especialidad">Especialidad:</label>
-                <input type="text" id="especialidad" name="especialidad" required />
-            </div>
+                    <div class="input-group">
+                        <label for="especialidad">Especialidad:</label>
+                        <input type="text" id="especialidad" name="especialidad" required />
+                    </div>
 
-            <!-- Requisitos y Beneficios -->
-            <div class="input-group textarea-group">
-                <label for="requisitos">Requisitos:</label>
-                <textarea id="requisitos" name="requisitos"></textarea>
-            </div>
+                    <!-- Requisitos y Beneficios -->
+                    <div class="input-group textarea-group">
+                        <label for="requisitos">Requisitos:</label>
+                        <textarea id="requisitos" name="requisitos"></textarea>
+                    </div>
 
-            <div class="input-group textarea-group">
-                <label for="beneficios">Beneficios:</label>
-                <textarea id="beneficios" name="beneficios"></textarea>
-            </div>
+                    <div class="input-group textarea-group">
+                        <label for="beneficios">Beneficios:</label>
+                        <textarea id="beneficios" name="beneficios"></textarea>
+                    </div>
 
-            <!-- Descripción -->
-            <div class="input-group textarea-group full-width">
-                <label for="descripcion">Descripción del puesto:</label>
-                <textarea id="descripcion" name="descripcion" required></textarea>
-            </div>
+                    <!-- Descripción -->
+                    <div class="input-group textarea-group full-width">
+                        <label for="descripcion">Descripción del puesto:</label>
+                        <textarea id="descripcion" name="descripcion" required></textarea>
+                    </div>
 
-            <button type="submit">Guardar Vacante</button>
-        </form>
-    </section>
-</main>
-
-
-
-
-<!-- Modal Perfil -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Perfil del Usuario</h2>
-        <div class="modal-body">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
-            <p><strong>Nombre:</strong> <span id="userName"></span></p>
-            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
-            <p><strong>Área:</strong> <span id="userArea"></span></p>
-        </div>
+                    <button type="submit">Guardar Vacante</button>
+                </form>
+            </section>
+        </main>
     </div>
-</div>
+</section>
 
 <!-- MODAL DE VISTA PREVIA DE VACANTE -->
 <div class="modal-vista-previa-vacante" id="modalVistaPreviaVacante">
