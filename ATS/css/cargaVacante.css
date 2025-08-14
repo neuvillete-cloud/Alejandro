@@ -355,8 +355,8 @@ nav a:not(:hover)::after {
 }
 
 .foto-cv .preview-img {
-    width: 100px;
-    height: 100px;
+    width: 160px;
+    height: 160px;
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #1E90FF;
