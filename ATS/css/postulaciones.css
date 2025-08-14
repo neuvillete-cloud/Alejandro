@@ -583,11 +583,12 @@ h2 {
     font-size: 2em;
     margin: 0;
 }
-.azul { background-color: #007bff; }
-.verde { background-color: #28a745; }
-.rojo { background-color: #dc3545; }
-.amarillo { background-color: #ffc107; color: black; }
-.morado { background-color: #6f42c1; }
+.azul     { background-color: #3a5a92; } /* Azul acero, combina con #2e3c5c */
+.verde    { background-color: #4e8d7c; } /* Verde grisáceo, suave */
+.rojo     { background-color: #a44c4c; } /* Rojo quemado, elegante */
+.amarillo { background-color: #c9a64d; color: #1b1b1b; } /* Dorado envejecido */
+.morado   { background-color: #6b5ca5; } /* Morado grisáceo */
+
 
 
 .panel-analitico {
@@ -606,7 +607,7 @@ h2 {
 .timeline {
     flex: 1;
     min-width: 300px;
-    background: #009688;
+    background: #394966; /* Azul gris oscuro a juego */
     padding: 15px;
     border-radius: 10px;
 }
