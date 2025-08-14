@@ -299,7 +299,7 @@ nav a:not(:hover)::after {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 9;
-    margin-top: 120px; /* o la cantidad que prefieras */
+    margin: 120px auto 0 auto; /* arriba | horizontal auto | abajo */
 
 }
 
