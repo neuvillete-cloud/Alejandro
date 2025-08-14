@@ -32,7 +32,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <a href="SAprobadas.php">S.Aprobadas</a>
             <a href="SeguimientoAdministrador.php">Seguimiento</a>
             <a href="cargaVacante.php">Carga de Vacantes</a>
-            <a href="Postulaciones.php">Candidatos Postulados</a>
+            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
