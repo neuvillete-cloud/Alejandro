@@ -1,118 +1,119 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php'); // Redirige al login si no está autenticado
-    exit;
-}
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador</title>
-    <!-- Bootstrap CSS -->
-
+    <title>Vacantes en Grammer Automotive</title>
     <link rel="stylesheet" href="css/estilosAdministrador.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="header-left">
-        <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>R.H Admin</h1>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-    </div>
-    <div class="header-right">
-        <div class="user-profile" id="profilePic">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
         </div>
-        <div class="user-name" id="userNameHeader"></div>
-        <div class="profile-dropdown" id="profileDropdown">
-            <a href="#">Ver Perfil</a>
-            <a href="#" id="logout">Cerrar Sesión</a>
-        </div>
+        <nav>
+            <a href="Administrador.php">Inicio</a>
+            <a href="SAprobadas.php">S.Aprobadas</a>
+            <a href="SeguimientoAdministrador.php">Seguimiento</a>
+            <a href="cargaVacante.php">Carga de Vacantes</a>
+            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.php">Perfil</a>
+                        <a href="#">Alertas de empleo</a>
+                        <a href="HistorialUsuario.php">Historial de solicitudes</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
     </div>
 </header>
 
-<!-- Sidebar -->
-<nav class="sidebar" id="sidebar">
-    <ul>
-        <li><a href="Administrador.php">Inicio</a></li>
-        <li><a href="SAprobadas.php">S. Aprobadas</a></li>
-        <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-        <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
-        <li><a href="Postulaciones.php">Candidatos Postulados</a></li>
-    </ul>
-</nav>
+<section class="section-title">
+    <h1>Postulaciones</h1>
+    <img src="imagenes/demanda%20(1).png" alt="Imagen decorativa" class="imagen-banner">
+</section>
 
-<!-- Tabla de Solicitudes -->
-<div class="content">
-    <h2>Solicitudes</h2>
+<section class="area-blanca">
+    <div class="contenido-blanco">
 
-    <!-- Contenedor de botones de exportación -->
-    <div class="export-buttons">
-        <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copiar</button>
-        <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
-        <button id="pdfBtn" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
-    </div>
-    <div class="table-container">
-        <table id="solicitudesTable" class="display">
-            <thead>
-            <tr>
-                <th>Numero de Solicitud</th>
-                <th>Nomina</th>
-                <th>Area</th>
-                <th>Puesto</th>
-                <th>Tipo de Contratacion</th>
-                <th>Nombre</th>
-                <th>Reemplazo</th>
-                <th>Fecha de Solicitud</th>
-                <th>F. Solicitud</th>
-                <th>Estatus</th>
-                <th>Acciones</th> <!-- Nueva columna -->
+        <!-- Tabla de Solicitudes -->
+        <div class="content">
+            <h2>Solicitudes</h2>
 
-            </tr>
-            </thead>
-            <tfoot>
-            <tr style="display:none;">
-                <th>#</th>
-                <th>Nomina</th>
-                <th>Nombre</th>
-                <th>Fecha</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
+            <!-- Contenedor de botones de exportación -->
+            <div class="export-buttons">
+                <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copiar</button>
+                <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
+                <button id="pdfBtn" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
+            </div>
+            <div class="table-container">
+                <table id="solicitudesTable" class="display">
+                    <thead>
+                    <tr>
+                        <th>Numero de Solicitud</th>
+                        <th>Nomina</th>
+                        <th>Area</th>
+                        <th>Puesto</th>
+                        <th>Tipo de Contratacion</th>
+                        <th>Nombre</th>
+                        <th>Reemplazo</th>
+                        <th>Fecha de Solicitud</th>
+                        <th>F. Solicitud</th>
+                        <th>Estatus</th>
+                        <th>Acciones</th> <!-- Nueva columna -->
 
-            </tr>
-            </tfoot>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr style="display:none;">
+                        <th>#</th>
+                        <th>Nomina</th>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
 
-
-<!-- Modal Perfil -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Perfil del Usuario</h2>
-        <div class="modal-body">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
-            <p><strong>Nombre:</strong> <span id="userName"></span></p>
-            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
-            <p><strong>Área:</strong> <span id="userArea"></span></p>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <div id="customEmailModal" class="custom-modal">
     <div class="custom-modal-content">
@@ -131,58 +132,23 @@ if (!isset($_SESSION['NumNomina'])) {
         <button id="sendEmailsBtn">Enviar</button>
     </div>
 </div>
-
-
-
-
 <!-- Scripts -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        // Menú lateral (sidebar)
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-
-        if (menuToggle && sidebar) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-            });
-        }
-
-        // Menú de perfil
-        const userProfile = document.getElementById('profilePic');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (userProfile && profileDropdown) {
-            userProfile.addEventListener('click', () => {
-                profileDropdown.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
-                    profileDropdown.classList.remove('active');
-                }
-            });
-        }
-
-        // Cerrar sesión con fetch
-        const logoutLink = document.getElementById('logout');
-
-        if (logoutLink) {
-            logoutLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                fetch('dao/logout.php', { method: 'POST' })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.href = 'login.php';
-                        } else {
-                            alert('Error al cerrar sesión. Inténtalo nuevamente.');
-                        }
-                    })
-                    .catch(error => console.error('Error al cerrar sesión:', error));
-            });
-        }
-    });
+    const logoutLink = document.getElementById('logout');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('dao/logout.php', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'loginATS.php';
+                    } else {
+                        alert('Error al cerrar sesión. Inténtalo nuevamente.');
+                    }
+                })
+                .catch(error => console.error('Error al cerrar sesión:', error));
+        });
+    }
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
