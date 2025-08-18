@@ -301,7 +301,7 @@ nav a:not(:hover)::after {
 
 /* Contenedor de la tabla */
 .table-container {
-    width: 100%;
+    width: 105%;
     max-width: 1500px;
     margin: 20px auto; /* Más arriba y centrado */
     padding: 20px;
