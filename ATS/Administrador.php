@@ -43,7 +43,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     </div>
                     <div class="dropdown-menu">
                         <a href="perfil.php">Perfil</a>
-                        <a href="#" id="logout">Cerrar sesión</a>
+                        <a href="login.php" id="logout">Cerrar sesión</a>
                     </div>
                 </div>
             <?php else: ?>
