@@ -553,7 +553,7 @@ nav a:not(:hover)::after {
     margin-bottom: 5px;
 }
 .modal-body input[type="email"] {
-    width: 100%;
+    width: 95%;
     padding: 12px;
     border: 1px solid #ced4da;
     border-radius: 8px;
