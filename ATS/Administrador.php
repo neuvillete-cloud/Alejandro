@@ -153,30 +153,31 @@ if (!isset($_SESSION['NumNomina'])) {
             solicitudes.forEach(solicitud => {
                 const estatusClase = solicitud.NombreEstatus.toLowerCase().replace(/\s+/g, '');
                 const cardHTML = `
-                <div class="card-solicitud">
-                    <div class="card-header">
-                        <h3>${solicitud.Puesto}</h3>
-                        <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-body">
-                        <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
-                        <div class="info-item"><strong>Nómina:</strong><div class="valor-con-icono"><i class="fas fa-id-card"></i><span>${solicitud.NumNomina}</span></div></div>
-                        <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
-                        <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
-                        <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
-                        <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
-                        ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}">
-                            <i class="fas fa-times"></i> Rechazar
-                        </button>
-                        <button class="btn-accion aceptar accept-btn" data-id="${solicitud.IdSolicitud}">
-                            <i class="fas fa-check"></i> Aceptar
-                        </button>
-                    </div>
-                </div>`;
+    <div class="card-solicitud">
+        <div class="card-header">
+            <h3>${solicitud.Puesto}</h3>
+            <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
+        </div>
+        <div class="card-contenido">
+            <div class="columna-info">
+                <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
+                <div class="info-item"><strong>Nómina:</strong><div class="valor-con-icono"><i class="fas fa-id-card"></i><span>${solicitud.NumNomina}</span></div></div>
+                <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
+                <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
+                <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
+                <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
+                ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
+            </div>
+            <div class="columna-acciones">
+                <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}">
+                    <i class="fas fa-times"></i> Rechazar
+                </button>
+                <button class="btn-accion aceptar accept-btn" data-id="${solicitud.IdSolicitud}">
+                    <i class="fas fa-check"></i> Aceptar
+                </button>
+            </div>
+        </div>
+    </div>`;
                 contenedor.insertAdjacentHTML('beforeend', cardHTML);
             });
         }

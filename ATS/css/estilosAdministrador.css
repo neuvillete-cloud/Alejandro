@@ -370,22 +370,23 @@ nav a:not(:hover)::after {
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
 }
+
 .card-solicitud .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
+
 .card-solicitud .card-header h3 {
     margin: 0;
     color: #003366;
     font-size: 1.2em;
 }
+
 .card-solicitud .estatus {
     padding: 5px 10px;
     border-radius: 15px;
@@ -393,74 +394,68 @@ nav a:not(:hover)::after {
     font-weight: bold;
     color: #fff;
     text-transform: capitalize;
+    flex-shrink: 0; /* Evita que se encoja si el título es largo */
 }
-.estatus.pendiente, .estatus.enproceso { background-color: #f0ad4e; }
-.estatus.aprobada { background-color: #5cb85c; }
-.estatus.rechazada { background-color: #d9534f; }
-.card-solicitud .card-body {
+
+/* --- NUEVA ESTRUCTURA DE COLUMNAS --- */
+.card-contenido {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.columna-info {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 15px;
+    width: 100%;
 }
+
+.columna-acciones {
+    display: flex;
+    flex-direction: column; /* Apila los botones verticalmente */
+    justify-content: center; /* Centra los botones verticalmente */
+    gap: 10px;
+}
+/* --- FIN DE LA NUEVA ESTRUCTURA --- */
+
 .card-solicitud .info-item {
     font-size: 0.9em;
 }
+
 .card-solicitud .info-item strong {
     display: block;
     color: #555;
     margin-bottom: 3px;
 }
 
-/* === INICIO: BLOQUE FINAL Y DEFINITIVO PARA BOTONES === */
-
-/* Contenedor de los botones (con selector específico) */
-main#contenedorSolicitudes .card-solicitud .card-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-/* Estilo de los botones (con selector específico) */
-main#contenedorSolicitudes .btn-accion {
-    /* Dimensiones y apariencia */
-    padding: 8px 15px;
+/* Estilo de los botones (ahora funciona correctamente) */
+.btn-accion {
+    padding: 10px 20px;
     border-radius: 5px;
     border: none;
-
-    /* Texto e ícono */
     color: white;
     font-weight: bold;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-
-    /* Comportamiento */
     cursor: pointer;
     transition: opacity 0.2s;
-
-    /* --- LA REGLA MÁS IMPORTANTE --- */
-    /* Usamos !important para anular cualquier otra regla conflictiva */
-    flex: none !important;
-    width: auto !important;
-    min-width: 0 !important;
+    width: 150px; /* Ancho fijo para ambos botones */
 }
 
-/* Colores de los botones (también con selector específico para que funcionen) */
-main#contenedorSolicitudes .btn-accion.aceptar {
+.btn-accion.aceptar {
     background-color: #28a745;
 }
 
-main#contenedorSolicitudes .btn-accion.rechazar {
+.btn-accion.rechazar {
     background-color: #dc3545;
 }
 
 .btn-accion:hover {
     opacity: 0.85;
 }
-/* === FIN: BLOQUE FINAL Y DEFINITIVO PARA BOTONES === */
 
 /* Estilos para íconos en tarjetas */
 .valor-con-icono {
