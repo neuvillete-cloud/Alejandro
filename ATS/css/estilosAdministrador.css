@@ -483,6 +483,7 @@ nav a:not(:hover)::after {
     align-items: center;
     gap: 5px;
     transition: opacity 0.2s;
+    flex-grow: 0; /* <-- Añade esta línea */
 }
 .btn-accion.aceptar { background-color: #28a745; }
 .btn-accion.rechazar { background-color: #dc3545; }
