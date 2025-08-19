@@ -413,8 +413,8 @@ nav a:not(:hover)::after {
 
 .columna-acciones {
     display: flex;
-    flex-direction: column; /* Apila los botones verticalmente */
-    justify-content: center; /* Centra los botones verticalmente */
+    align-items: center; /* Centra los botones verticalmente */
+    justify-content: center; /* Centra los botones en el espacio que tengan */
     gap: 10px;
 }
 /* --- FIN DE LA NUEVA ESTRUCTURA --- */
