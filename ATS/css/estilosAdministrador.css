@@ -411,25 +411,24 @@ nav a:not(:hover)::after {
     margin-bottom: 3px;
 }
 
-/* === INICIO: BLOQUE DEFINITIVO PARA BOTONES === */
+/* === INICIO: BLOQUE FINAL Y DEFINITIVO PARA BOTONES === */
 
-/* Contenedor de los botones (con selector más específico) */
+/* Contenedor de los botones (con selector específico) */
 main#contenedorSolicitudes .card-solicitud .card-actions {
     display: flex;
-    justify-content: flex-end; /* Alinea los botones a la derecha */
+    justify-content: flex-end;
     gap: 10px;
     margin-top: 15px;
     padding-top: 15px;
     border-top: 1px solid #eee;
 }
 
-/* Estilo de los botones (con selector más específico) */
+/* Estilo de los botones (con selector específico) */
 main#contenedorSolicitudes .btn-accion {
     /* Dimensiones y apariencia */
     padding: 8px 15px;
     border-radius: 5px;
     border: none;
-    background-color: #6c757d;
 
     /* Texto e ícono */
     color: white;
@@ -441,24 +440,27 @@ main#contenedorSolicitudes .btn-accion {
     /* Comportamiento */
     cursor: pointer;
     transition: opacity 0.2s;
-    flex: none; /* Regla clave: evita que el botón se estire */
-    width: auto; /* Asegura que el ancho sea automático */
-    min-width: 0; /* Resetea cualquier min-width heredado */
+
+    /* --- LA REGLA MÁS IMPORTANTE --- */
+    /* Usamos !important para anular cualquier otra regla conflictiva */
+    flex: none !important;
+    width: auto !important;
+    min-width: 0 !important;
 }
 
-/* No es necesario cambiar los colores */
-.btn-accion.aceptar {
+/* Colores de los botones (también con selector específico para que funcionen) */
+main#contenedorSolicitudes .btn-accion.aceptar {
     background-color: #28a745;
 }
 
-.btn-accion.rechazar {
+main#contenedorSolicitudes .btn-accion.rechazar {
     background-color: #dc3545;
 }
 
 .btn-accion:hover {
     opacity: 0.85;
 }
-/* === FIN: BLOQUE DEFINITIVO PARA BOTONES === */
+/* === FIN: BLOQUE FINAL Y DEFINITIVO PARA BOTONES === */
 
 /* Estilos para íconos en tarjetas */
 .valor-con-icono {
