@@ -618,3 +618,17 @@ nav a:not(:hover)::after {
     line-height: 1;
     color: white;
 }
+
+/* ======================================= */
+/* == Estilos para icono junto al nombre == */
+/* ======================================= */
+
+.valor-con-icono {
+    display: flex;
+    align-items: center; /* Centra verticalmente el ícono con el texto */
+    gap: 8px;            /* Espacio entre el ícono y el nombre */
+}
+
+.valor-con-icono .fa-user {
+    color: #6c757d;      /* Color del ícono, un gris sutil */
+}

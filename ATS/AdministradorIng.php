@@ -170,7 +170,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
                     </div>
                     <div class="card-body">
-                        <div class="info-item"><strong>Solicitante:</strong> ${solicitud.Nombre}</div>
+                        <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
                         <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
                         <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
                         <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
