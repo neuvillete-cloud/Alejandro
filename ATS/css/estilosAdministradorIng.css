@@ -632,3 +632,7 @@ nav a:not(:hover)::after {
 .valor-con-icono .fa-user {
     color: #6c757d;      /* Color del ícono, un gris sutil */
 }
+
+.valor-con-icono .fa-people-arrows {
+    color: #007bff; /* Un color azul para indicar una acción o cambio */
+}

@@ -175,7 +175,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
                         <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
                         <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
-                        ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong> ${solicitud.NombreReemplazo}</div>` : ''}
+                        ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
                     </div>
                     <div class="card-actions">
                         <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}">
