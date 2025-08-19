@@ -625,8 +625,8 @@ nav a:not(:hover)::after {
 
 .valor-con-icono {
     display: flex;
-    align-items: center; /* Centra verticalmente el ícono con el texto */
-    gap: 8px;            /* Espacio entre el ícono y el nombre */
+    align-items: center;
+    gap: 12px; /* <-- Aumentamos el espacio aquí */
 }
 
 .valor-con-icono .fa-user {
