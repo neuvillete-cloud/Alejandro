@@ -90,10 +90,19 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <div id="rejectModal" class="custom-modal">
     <div class="custom-modal-content">
-        <span class="close-reject-modal">&times;</span>
-        <h2>Comentario de Rechazo</h2>
-        <textarea id="rejectComment" placeholder="Escribe el motivo del rechazo aquí..." rows="5" style="width:100%; margin-bottom: 15px;"></textarea>
-        <button id="confirmRejectBtn" class="btn-accion rechazar">Confirmar Rechazo</button>
+        <div class="modal-header">
+            <h2><i class="fas fa-comment-dots"></i> Motivo del Rechazo</h2>
+            <button class="close-reject-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label for="rejectComment">Por favor, proporciona un comentario claro para el solicitante.</label>
+            <textarea id="rejectComment" placeholder="Ej: La vacante se ha puesto en pausa..." rows="5"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmRejectBtn" class="btn-accion rechazar">
+                <i class="fas fa-times-circle"></i> Confirmar Rechazo
+            </button>
+        </div>
     </div>
 </div>
 
