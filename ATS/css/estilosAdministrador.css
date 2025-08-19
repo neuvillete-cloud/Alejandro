@@ -362,7 +362,7 @@ nav a:not(:hover)::after {
     padding-right: 15px;
 }
 
-/* Estilos para las tarjetas de solicitud */
+/* Estilos para las tarjetas de solicitud (Diseño Apilado) */
 .card-solicitud {
     background-color: #fff;
     border: 1px solid #e0e0e0;
@@ -370,15 +370,16 @@ nav a:not(:hover)::after {
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex; /* Usamos flex */
+    flex-direction: column; /* Apilamos los elementos verticalmente */
+    gap: 15px; /* Espacio entre header, body y actions */
 }
 
 .card-solicitud .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
+    padding-bottom: 10px;
 }
 
 .card-solicitud .card-header h3 {
@@ -394,30 +395,16 @@ nav a:not(:hover)::after {
     font-weight: bold;
     color: #fff;
     text-transform: capitalize;
-    flex-shrink: 0; /* Evita que se encoja si el título es largo */
+    flex-shrink: 0;
 }
 
-/* --- NUEVA ESTRUCTURA DE COLUMNAS --- */
-.card-contenido {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.columna-info {
+.card-solicitud .card-body {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 15px;
-    width: 100%;
+    border-top: 1px solid #eee; /* Línea separadora arriba de los datos */
+    padding-top: 15px;
 }
-
-.columna-acciones {
-    display: flex;
-    align-items: center; /* Centra los botones verticalmente */
-    justify-content: center; /* Centra los botones en el espacio que tengan */
-    gap: 10px;
-}
-/* --- FIN DE LA NUEVA ESTRUCTURA --- */
 
 .card-solicitud .info-item {
     font-size: 0.9em;
@@ -429,20 +416,27 @@ nav a:not(:hover)::after {
     margin-bottom: 3px;
 }
 
-/* Estilo de los botones (ahora funciona correctamente) */
+/* Contenedor de los botones */
+.card-solicitud .card-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 10px;
+    border-top: 1px solid #eee; /* Línea separadora arriba de los botones */
+    padding-top: 15px;
+}
+
+/* Estilo de los botones */
 .btn-accion {
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 5px;
     border: none;
     color: white;
     font-weight: bold;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
     cursor: pointer;
-    transition: opacity 0.2s;
-    width: 150px; /* Ancho fijo para ambos botones */
+    transition: background-color 0.2s;
 }
 
 .btn-accion.aceptar {
