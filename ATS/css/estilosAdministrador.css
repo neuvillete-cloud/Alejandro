@@ -411,9 +411,10 @@ nav a:not(:hover)::after {
     margin-bottom: 3px;
 }
 
-/* === INICIO: BLOQUE CORREGIDO PARA BOTONES === */
-/* Contenedor de los botones de la tarjeta */
-.card-solicitud .card-actions {
+/* === INICIO: BLOQUE DEFINITIVO PARA BOTONES === */
+
+/* Contenedor de los botones (con selector más específico) */
+main#contenedorSolicitudes .card-solicitud .card-actions {
     display: flex;
     justify-content: flex-end; /* Alinea los botones a la derecha */
     gap: 10px;
@@ -422,13 +423,13 @@ nav a:not(:hover)::after {
     border-top: 1px solid #eee;
 }
 
-/* Estilo de los botones de Aceptar/Rechazar */
-.btn-accion {
+/* Estilo de los botones (con selector más específico) */
+main#contenedorSolicitudes .btn-accion {
     /* Dimensiones y apariencia */
     padding: 8px 15px;
     border-radius: 5px;
     border: none;
-    background-color: #6c757d; /* Color base por si acaso */
+    background-color: #6c757d;
 
     /* Texto e ícono */
     color: white;
@@ -440,9 +441,12 @@ nav a:not(:hover)::after {
     /* Comportamiento */
     cursor: pointer;
     transition: opacity 0.2s;
-    flex: none; /* La regla clave: evita que el botón se estire */
+    flex: none; /* Regla clave: evita que el botón se estire */
+    width: auto; /* Asegura que el ancho sea automático */
+    min-width: 0; /* Resetea cualquier min-width heredado */
 }
 
+/* No es necesario cambiar los colores */
 .btn-accion.aceptar {
     background-color: #28a745;
 }
@@ -454,7 +458,7 @@ nav a:not(:hover)::after {
 .btn-accion:hover {
     opacity: 0.85;
 }
-/* === FIN: BLOQUE CORREGIDO PARA BOTONES === */
+/* === FIN: BLOQUE DEFINITIVO PARA BOTONES === */
 
 /* Estilos para íconos en tarjetas */
 .valor-con-icono {
