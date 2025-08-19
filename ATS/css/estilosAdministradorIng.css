@@ -546,7 +546,7 @@ nav a:not(:hover)::after {
 }
 
 .modal-body textarea {
-    width: 100%;
+    width: 95%;
     padding: 12px;
     border: 1px solid #ced4da;
     border-radius: 8px;
