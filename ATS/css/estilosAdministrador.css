@@ -496,6 +496,7 @@ nav a:not(:hover)::after {
 }
 .valor-con-icono .fa-user { color: #6c757d; }
 .valor-con-icono .fa-people-arrows { color: #007bff; }
+.valor-con-icono .fa-id-card { color: #20c997; } /* <-- Nueva línea para el ícono de nómina */
 
 /* ================================== */
 /* == Estilos para Modal de Correos  == */
@@ -586,3 +587,4 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 .close-modal:hover { color: #343a40; }
+
