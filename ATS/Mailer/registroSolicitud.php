@@ -10,6 +10,12 @@ use PHPMailer\PHPMailer\Exception;
 
 date_default_timezone_set('America/Mexico_City');
 
+// --- Define aquí los datos de los dos aprobadores fijos ---
+define('APROBADOR1_NOMINA', '00030315'); // <-- REEMPLAZA con la nómina real del Aprobador 1
+define('APROBADOR2_NOMINA', '00030320'); // <-- REEMPLAZA con la nómina real del Aprobador 2
+define('APROBADOR1_EMAIL', 'extern.alejandro.torres@grammer.com'); // <-- REEMPLAZA con el email real
+define('APROBADOR2_EMAIL', 'extern.alejandro.torres@grammer.com'); // <-- REEMPLAZA con el email real
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['nombre'], $_POST['area'], $_POST['puesto'], $_POST['tipo'])) {
         $NumNomina = $_SESSION['NumNomina'] ?? null;
@@ -26,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $FechaSolicitud = date('Y-m-d H:i:s');
         $FolioSolicitud = uniqid('FOLIO-');
-        $IdEstatus = 1;
+        $IdEstatus = 1; // 1 = Pendiente (estado inicial)
 
         $con = new LocalConector();
         $conex = $con->conectar();
@@ -40,62 +46,76 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $row = $resultadoArea->fetch_assoc();
             $IdArea = $row['IdArea'];
 
-            $response = registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, 1);
+            // Llamamos a la función actualizada, pasando los aprobadores
+            $response = registrarSolicitudEnDB(
+                $conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion,
+                $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud,
+                $IdEstatus, 1, APROBADOR1_NOMINA, APROBADOR2_NOMINA
+            );
 
-            // Si la solicitud se registró exitosamente, enviamos correo
+            // Si la solicitud se registró exitosamente, enviamos correo a los aprobadores
             if ($response['status'] == 'success') {
                 $linkAprobacion = "https://grammermx.com/AleTest/ATS/AdministradorIng.php";
 
                 $asunto = "Nueva solicitud registrada - Folio $FolioSolicitud";
                 $mensaje = "
-                <p>Estimado usuario,</p>
-                <p>Se ha generado una nueva solicitud con el folio <strong>$FolioSolicitud</strong>.</p>
-                <p>Nombre del solicitante: <strong>$Nombre</strong></p>
-                <p>Área: <strong>$NombreArea</strong></p>
-                <p>Puesto: <strong>$Puesto</strong></p>
-                <p>Tipo de contratación: <strong>$TipoContratacion</strong></p>
-                <p>Fecha de solicitud: <strong>$FechaSolicitud</strong></p>
-                <p>Puedes aprobar o rechazar la solicitud en el siguiente enlace:</p>
+                <p>Estimados aprobadores,</p>
+                <p>Se ha generado una nueva solicitud con el folio <strong>$FolioSolicitud</strong> que requiere su atención.</p>
+                <p><strong>Solicitante:</strong> $Nombre</p>
+                <p><strong>Área:</strong> $NombreArea</p>
+                <p><strong>Puesto:</strong> $Puesto</p>
+                <p>Por favor, ingrese al sistema para revisar y tomar una decisión.</p>
                 <p>
                     <a href='$linkAprobacion' target='_blank' style='background: #E6F4F9; color: #005195; 
                     padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
                     display: inline-block;'>
-                        Ver Solicitud
+                        Ir al Sistema de Aprobación
                     </a>
                 </p>
                 <p>Saludos,<br>ATS - Grammer</p>";
 
-
-                // Aquí defines a quién quieres enviarlo (puedes cambiarlo por variables si quieres hacerlo dinámico)
-                enviarCorreoNotificacion('destinatario1@tucorreo.com', 'destinatario2@tucorreo.com', '', $asunto, $mensaje);
+                // Enviamos el correo a los emails de los aprobadores definidos arriba
+                enviarCorreoNotificacion(APROBADOR1_EMAIL, APROBADOR2_EMAIL, '', $asunto, $mensaje);
             }
 
         } else {
-            $response = array('status' => 'error', 'message' => 'El área proporcionada no existe.');
+            $response = ['status' => 'error', 'message' => 'El área proporcionada no existe.'];
         }
 
         $conex->close();
     } else {
-        $response = array('status' => 'error', 'message' => 'Datos incompletos.');
+        $response = ['status' => 'error', 'message' => 'Datos incompletos.'];
     }
 } else {
-    $response = array('status' => 'error', 'message' => 'Se requiere método POST.');
+    $response = ['status' => 'error', 'message' => 'Se requiere método POST.'];
 }
 
 echo json_encode($response);
 exit();
 
-function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion)
+// Función actualizada para aceptar y guardar los aprobadores
+function registrarSolicitudEnDB($conex, $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion, $idAprobador1, $idAprobador2)
 {
-    $insertSolicitud = $conex->prepare("INSERT INTO Solicitudes (NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, FechaSolicitud, FolioSolicitud, IdEstatus, IdDescripcion)
-                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $insertSolicitud->bind_param("sissssssii", $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo, $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion);
+    $query = "INSERT INTO Solicitudes (
+                NumNomina, IdArea, Puesto, TipoContratacion, Nombre, NombreReemplazo, 
+                FechaSolicitud, FolioSolicitud, IdEstatus, IdDescripcion, 
+                IdAprobador1, IdAprobador2
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $insertSolicitud = $conex->prepare($query);
+    // Agregamos dos 's' (string) para los nuevos números de nómina de los aprobadores
+    $insertSolicitud->bind_param("sissssssiiss",
+        $NumNomina, $IdArea, $Puesto, $TipoContratacion, $Nombre, $NombreReemplazo,
+        $FechaSolicitud, $FolioSolicitud, $IdEstatus, $IdDescripcion,
+        $idAprobador1, $idAprobador2
+    );
+
     $resultado = $insertSolicitud->execute();
 
     if ($resultado) {
-        return array('status' => 'success', 'message' => 'Solicitud registrada exitosamente', 'folio' => $FolioSolicitud);
+        return ['status' => 'success', 'message' => 'Solicitud registrada exitosamente', 'folio' => $FolioSolicitud];
     } else {
-        return array('status' => 'error', 'message' => 'Error al registrar la solicitud');
+        return ['status' => 'error', 'message' => 'Error al registrar la solicitud: ' . $conex->error];
     }
 }
 
@@ -140,7 +160,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
         $mail->Port = 465;
         $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
 
-        $mail->addAddress($email1);
+        if (!empty($email1)) $mail->addAddress($email1);
         if (!empty($email2)) $mail->addAddress($email2);
         if (!empty($email3)) $mail->addAddress($email3);
 
