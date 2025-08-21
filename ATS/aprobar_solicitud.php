@@ -258,7 +258,7 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
     });
 
     document.querySelector('.close-reject-modal')?.addEventListener('click', () => {
-        document.getElementById('rejectModal').classList.add('remove');
+        document.getElementById('rejectModal').classList.remove('show');
     });
 
     // Lógica de Cerrar Sesión
