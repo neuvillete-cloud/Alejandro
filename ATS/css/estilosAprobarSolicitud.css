@@ -515,7 +515,7 @@ nav a:not(:hover)::after {
     cursor: pointer;
 }
 
-.close-modal:hover { color: #343a40; }
+.close-reject-modal:hover { color: #343a40; }
 /* ======================================================= */
 /* == FIN: BLOQUE DE ESTILOS MEJORADOS PARA DETALLE     == */
 /* ======================================================= */
