@@ -139,6 +139,7 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                 if (data.status === "success" && data.data) {
                     const solicitud = data.data;
 
+                    // Rellenamos los datos (esto se queda igual)
                     document.getElementById("puesto-solicitud").textContent = solicitud.Puesto || "N/A";
                     const estatusSpan = document.getElementById("estatus-solicitud");
                     estatusSpan.textContent = solicitud.NombreEstatus || "Desconocido";
@@ -158,6 +159,20 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                     } else {
                         reemplazoItem.style.display = 'none';
                     }
+
+                    // --- INICIO: LÓGICA AÑADIDA PARA OCULTAR BOTONES ---
+                    // Verificamos la nueva variable que nos envía el PHP
+                    if (data.usuario_ya_voto) {
+                        // Si es 'true', encontramos el contenedor de los botones...
+                        const actionsContainer = document.querySelector('.card-solicitud-detalle .card-actions');
+
+                        // ...y lo reemplazamos con un mensaje de confirmación.
+                        if (actionsContainer) {
+                            actionsContainer.innerHTML = '<p class="mensaje-accion-realizada">Usted ya ha registrado una acción para esta solicitud.</p>';
+                        }
+                    }
+                    // --- FIN: LÓGICA AÑADIDA ---
+
                 } else {
                     document.querySelector(".card-solicitud-detalle").innerHTML = `<p style="text-align:center; color:red;">Error: ${data.message || 'No se encontró la solicitud.'}</p>`;
                 }

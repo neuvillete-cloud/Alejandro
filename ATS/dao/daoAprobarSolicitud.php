@@ -1,62 +1,70 @@
 <?php
-session_start(); // Iniciar sesión
+session_start();
 include_once("ConexionBD.php");
 
-// Verificar si se proporciona el FolioSolicitud
-if (!isset($_GET['folio'])) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Folio de solicitud no especificado'
-    ]);
+header('Content-Type: application/json');
+
+if (!isset($_SESSION['NumNomina'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Acceso denegado.']);
     exit;
 }
+$numNominaActual = $_SESSION['NumNomina'];
 
-$folioSolicitud = $_GET['folio'];
-
-try {
-    // Crear una conexión usando la clase `LocalConector`
+if (isset($_GET['folio'])) {
+    $folio = $_GET['folio'];
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta SQL para obtener la solicitud específica
-    $sql = "SELECT 
-            s.*, 
-            a.NombreArea 
-        FROM Solicitudes s
-        JOIN Area a ON s.IdArea = a.IdArea
-        WHERE s.FolioSolicitud = ?";
-
-
-    $stmt = $conex->prepare($sql);
-    if (!$stmt) {
-        throw new Exception("Error en la preparación de la consulta: " . $conex->error);
+    // --- LÓGICA CORREGIDA ---
+    // 1. Buscamos el NOMBRE COMPLETO del usuario que está en la sesión
+    $nombreCompletoActual = '';
+    $stmtNombre = $conex->prepare("SELECT Nombre FROM Usuario WHERE NumNomina = ?");
+    $stmtNombre->bind_param("s", $numNominaActual);
+    $stmtNombre->execute();
+    $resNombre = $stmtNombre->get_result();
+    if($resNombre->num_rows > 0) {
+        $nombreCompletoActual = $resNombre->fetch_assoc()['Nombre'];
     }
+    $stmtNombre->close();
+    // --- FIN DE LA CORRECCIÓN ---
 
-    // Vincular parámetros y ejecutar la consulta
-    $stmt->bind_param('s', $folioSolicitud);
+    $sql = "SELECT s.*, a.NombreArea, e.NombreEstatus 
+            FROM Solicitudes s
+            JOIN Area a ON s.IdArea = a.IdArea
+            JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+            WHERE s.FolioSolicitud = ?";
+    $stmt = $conex->prepare($sql);
+    $stmt->bind_param("s", $folio);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Verificar si se encontró la solicitud
-    if ($solicitud = $result->fetch_assoc()) {
+    if ($result->num_rows > 0) {
+        $solicitud = $result->fetch_assoc();
+
+        // 2. Verificamos si el NOMBRE COMPLETO ya votó en la tabla Aprobadores
+        $haVotado = false;
+        if (!empty($nombreCompletoActual)) {
+            $stmtCheck = $conex->prepare("SELECT IdAprobador FROM Aprobadores WHERE FolioSolicitud = ? AND Nombre = ?");
+            $stmtCheck->bind_param("ss", $folio, $nombreCompletoActual);
+            $stmtCheck->execute();
+            if ($stmtCheck->get_result()->num_rows > 0) {
+                $haVotado = true;
+            }
+            $stmtCheck->close();
+        }
+
         echo json_encode([
             'status' => 'success',
-            'data' => $solicitud
+            'data' => $solicitud,
+            'usuario_ya_voto' => $haVotado
         ]);
-    } else {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'No se encontró la solicitud con el folio proporcionado'
-        ]);
-    }
 
-    // Cerrar recursos
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'No se encontró la solicitud.']);
+    }
     $stmt->close();
     $conex->close();
-} catch (Exception $e) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Error en la consulta: ' . $e->getMessage()
-    ]);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'No se proporcionó folio.']);
 }
 ?>
