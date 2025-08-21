@@ -1,142 +1,274 @@
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php'); // Redirige al login si no está autenticado
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprobar Solicitud</title>
+    <title>Detalle de Solicitud</title>
     <link rel="stylesheet" href="css/estilosAprobarSolicitud.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="header-left">
-        <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>Aprobar Solicitudes</h1>
+<?php
+// Pasamos el NumNomina de la sesión a una variable de JavaScript para usarla en las aprobaciones
+echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomina']) . "';</script>";
+?>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
+        </div>
+        <nav>
+            <a href="Administrador.php">Inicio</a>
+            <a href="SAprobadas.php">S.Aprobadas</a>
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.php">Perfil</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
     </div>
 </header>
 
-<!-- Contenedor central tipo "hoja" -->
-<main class="contenedor-solicitud">
-    <h2>Detalles de la Solicitud</h2>
+<section class="section-title">
+    <h1>Solicitudes de Personal</h1>
+    <img src="imagenes/demanda%20(1).png" alt="Imagen decorativa" class="imagen-banner">
+</section>
 
-    <!-- Contenedor de solicitud (ahora incluye el encabezado) -->
-    <div class="solicitud">
-        <!-- Encabezado ahora dentro de .solicitud -->
-        <div class="encabezado">
-            <img src="imagenes/Grammer_Logo_Original_Blue_sRGB_screen_transparent.png" alt="Icono de solicitud" class="solicitud-imagen">
-            <h3>Información General</h3>
-            <span class="fecha">Fecha: <span id="fecha"></span></span>
-        </div>
+<section class="area-blanca">
+    <div class="contenido-blanco">
 
-        <!-- Datos con líneas -->
-        <div class="datos">
-            <div class="dato">
-                <label>Nombre del Solicitante:</label>
-                <span class="linea" id="nombre"></span>
-            </div>
-            <div class="dato">
-                <label>Área:</label>
-                <span class="linea" id="area"></span>
-            </div>
-        </div>
+        <h2 class="titulo-detalle">Detalles de la Solicitud</h2>
 
-        <div class="datos">
-            <div class="dato">
-                <label>Puesto:</label>
-                <span class="linea" id="puesto"></span>
+        <div class="card-solicitud-detalle">
+            <div class="card-header">
+                <h3 id="puesto-solicitud">Cargando...</h3>
+                <span class="estatus" id="estatus-solicitud"></span>
             </div>
-            <div class="dato">
-                <label>Tipo de Contratacion:</label>
-                <span class="linea" id="tipo"></span>
+            <div class="card-body">
+                <div class="info-item" id="nombre-solicitante"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>Cargando...</span></div></div>
+                <div class="info-item" id="nomina-solicitante"><strong>Nómina:</strong><div class="valor-con-icono"><i class="fas fa-id-card"></i><span>Cargando...</span></div></div>
+                <div class="info-item" id="area-solicitud"><strong>Área:</strong><span>Cargando...</span></div>
+                <div class="info-item" id="folio-solicitud"><strong>Folio:</strong><span>Cargando...</span></div>
+                <div class="info-item" id="tipo-contratacion"><strong>Contratación:</strong><span>Cargando...</span></div>
+                <div class="info-item" id="fecha-solicitud"><strong>Fecha Solicitud:</strong><span>Cargando...</span></div>
+                <div class="info-item" id="reemplazo-solicitud" style="display: none;"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span></span></div></div>
+            </div>
+            <div class="card-actions">
+                <button id="btn-rechazar" class="btn-accion rechazar">
+                    <i class="fas fa-times"></i> Rechazar
+                </button>
+                <button id="btn-aceptar" class="btn-accion aceptar">
+                    <i class="fas fa-check"></i> Aceptar
+                </button>
             </div>
         </div>
-
-        <div class="datos">
-            <div class="dato">
-                <label>Nombre de la persona a reemplazar:</label>
-                <span class="linea" id="NombreReemplazo"></span>
-            </div>
-        </div>
-
-        <div class="datos">
-            <div class="dato">
-                <label>Fecha de Solicitud:</label>
-                <span class="linea" id="FechaSolicitud"></span>
-            </div>
-        </div>
-
-        <div class="datos">
-            <div class="dato">
-                <label>Folio de la Solicitud:</label>
-                <span class="linea" id="FolioSolicitud"></span>
-            </div>
-        </div>
-
-
-
     </div>
+</section>
 
-    <!-- Contenedor de los botones -->
-    <div class="botones-solicitud">
-        <button class="boton boton-cancelar">Cancelar</button>
-        <button class="boton boton-aceptar">Aceptar</button>
-    </div>
-</main>
-
-<!-- Modal para aprobación/rechazo -->
-<div id="modalAprobacion" class="modal">
-    <div class="modal-contenido">
-        <h2>Aprobar o Rechazar Solicitud</h2>
-        <label for="nombreAprobador">Nombre del Aprobador:</label>
-        <input type="text" id="nombreAprobador" placeholder="Ingrese su nombre">
-
-        <label for="accion">Acción:</label>
-        <select id="accion">
-            <option value="">Seleccione una opción</option>
-            <option value="aprobar">Aprobar</option>
-            <option value="rechazar">Rechazar</option>
-        </select>
-
-        <label for="comentario">Comentario:</label>
-        <textarea id="comentario" placeholder="ingresa un comentario"></textarea>
-
-        <div class="modal-botones">
-            <button id="cerrarModal" class="boton-modal-cerrar">Cancelar</button>
-            <button id="confirmarAccion" class="boton-modal-confirmar">Confirmar</button>
+<div id="rejectModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-comment-dots"></i> Motivo del Rechazo</h2>
+            <button class="close-reject-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label for="rejectComment">Por favor, proporciona un comentario claro para el solicitante.</label>
+            <textarea id="rejectComment" placeholder="Ej: La vacante se ha puesto en pausa..." rows="5"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmRejectBtn" class="btn-accion rechazar">
+                <i class="fas fa-times-circle"></i> Confirmar Rechazo
+            </button>
         </div>
     </div>
 </div>
 
-<script>
-    // Script para agregar la fecha actual
-    document.getElementById("fecha").textContent = new Date().toLocaleDateString();
-</script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const accionSelect = document.getElementById("accion");
-        const comentarioLabel = document.querySelector("label[for='comentario']");
-        const comentarioTextarea = document.getElementById("comentario");
+        let folioActual = null;
+        const urlParams = new URLSearchParams(window.location.search);
+        folioActual = urlParams.get("folio");
 
-        // Ocultar el campo de comentario al inicio
-        comentarioLabel.style.display = "none";
-        comentarioTextarea.style.display = "none";
+        if (folioActual) {
+            obtenerSolicitud(folioActual);
+        } else {
+            document.querySelector(".card-solicitud-detalle").innerHTML = `<p style="text-align:center; color:red;">No se proporcionó un folio de solicitud.</p>`;
+        }
 
-        // Agregar evento para detectar cambios en el select
-        accionSelect.addEventListener("change", function () {
-            if (accionSelect.value === "rechazar") {
-                comentarioLabel.style.display = "block";
-                comentarioTextarea.style.display = "block";
-            } else {
-                comentarioLabel.style.display = "none";
-                comentarioTextarea.style.display = "none";
+        document.getElementById('btn-aceptar').addEventListener('click', () => {
+            handleAceptar(folioActual);
+        });
+
+        document.getElementById('btn-rechazar').addEventListener('click', () => {
+            handleRechazar();
+        });
+    });
+
+    function obtenerSolicitud(folio) {
+        fetch(`dao/daoAprobarSolicitud.php?folio=${folio}`)
+            .then(response => {
+                if (!response.ok) throw new Error('La respuesta del servidor no fue exitosa.');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success" && data.data) {
+                    const solicitud = data.data;
+
+                    document.getElementById("puesto-solicitud").textContent = solicitud.Puesto || "N/A";
+                    const estatusSpan = document.getElementById("estatus-solicitud");
+                    estatusSpan.textContent = solicitud.NombreEstatus || "Desconocido";
+                    estatusSpan.className = 'estatus ' + (solicitud.NombreEstatus || '').toLowerCase().replace(/\s+/g, '');
+
+                    document.querySelector("#nombre-solicitante .valor-con-icono span").textContent = solicitud.Nombre || "N/A";
+                    document.querySelector("#nomina-solicitante .valor-con-icono span").textContent = solicitud.NumNomina || "N/A";
+                    document.querySelector("#area-solicitud span").textContent = solicitud.NombreArea || "N/A";
+                    document.querySelector("#folio-solicitud span").textContent = solicitud.FolioSolicitud || "N/A";
+                    document.querySelector("#tipo-contratacion span").textContent = solicitud.TipoContratacion || "N/A";
+                    document.querySelector("#fecha-solicitud span").textContent = solicitud.FechaSolicitud || "N/A";
+
+                    const reemplazoItem = document.getElementById("reemplazo-solicitud");
+                    if (solicitud.NombreReemplazo) {
+                        reemplazoItem.style.display = 'block';
+                        document.querySelector("#reemplazo-solicitud .valor-con-icono span").textContent = solicitud.NombreReemplazo;
+                    } else {
+                        reemplazoItem.style.display = 'none';
+                    }
+                } else {
+                    document.querySelector(".card-solicitud-detalle").innerHTML = `<p style="text-align:center; color:red;">Error: ${data.message || 'No se encontró la solicitud.'}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error("Error al cargar la solicitud:", error);
+                document.querySelector(".card-solicitud-detalle").innerHTML = `<p style="text-align:center; color:red;">Hubo un error al cargar los datos. Por favor, intente más tarde.</p>`;
+            });
+    }
+
+    function handleAceptar(folio) {
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: `¿Deseas APROBAR la solicitud con folio: ${folio}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, aprobar",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const formData = new URLSearchParams();
+                formData.append("folio", folio);
+                formData.append("accion", 'aprobar');
+                formData.append("num_nomina_aprobador", currentUserNomina);
+
+                try {
+                    // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU SCRIPT PHP
+                    const response = await fetch('dao/daoProcesarDecision.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const jsonResponse = await response.json();
+
+                    if (jsonResponse.success) {
+                        Swal.fire("Aprobado", "La solicitud fue aprobada con éxito.", "success").then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire("Error", jsonResponse.message || "No se pudo aprobar la solicitud.", "error");
+                    }
+                } catch (error) {
+                    Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+                }
+            }
+        });
+    }
+
+    function handleRechazar() {
+        document.getElementById('rejectComment').value = '';
+        document.getElementById('rejectModal').classList.add('show');
+    }
+
+    document.getElementById('confirmRejectBtn').addEventListener('click', () => {
+        const comentario = document.getElementById('rejectComment').value.trim();
+        if (!comentario) {
+            Swal.fire("Atención", "Debes ingresar un comentario para rechazar.", "warning");
+            return;
+        }
+        document.getElementById('rejectModal').classList.remove('show');
+
+        const folio = new URLSearchParams(window.location.search).get("folio");
+
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: `¿Deseas RECHAZAR la solicitud con folio: ${folio}? Esta acción es final.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, rechazar",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const formData = new URLSearchParams();
+                formData.append("folio", folio);
+                formData.append("accion", 'rechazar');
+                formData.append("comentario", comentario);
+                formData.append("num_nomina_aprobador", currentUserNomina);
+
+                try {
+                    // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU SCRIPT PHP
+                    const response = await fetch('dao/daoProcesarDecision.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const jsonResponse = await response.json();
+
+                    if (jsonResponse.success) {
+                        Swal.fire("Rechazado", "La solicitud ha sido rechazada con éxito.", "success").then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud.", "error");
+                    }
+                } catch (error) {
+                    Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
+                }
             }
         });
     });
 
+    document.querySelector('.close-reject-modal')?.addEventListener('click', () => {
+        document.getElementById('rejectModal').classList.add('remove');
+    });
+
+    // Lógica de Cerrar Sesión
+    document.getElementById('logout')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch('dao/logout.php', { method: 'POST' })
+            .then(response => {
+                if (response.ok) window.location.href = 'login.php';
+            });
+    });
 </script>
-<script src="js/aprobarSoli.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
