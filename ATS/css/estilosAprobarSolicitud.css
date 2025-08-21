@@ -411,3 +411,54 @@ nav a:not(:hover)::after {
     color: #6c757d;
     cursor: pointer;
 }
+
+/* ================================================= */
+/* == ESTILOS FALTANTES PARA BOTONES E ÍCONOS == */
+/* ================================================= */
+
+/* --- Estilos para los Botones de Acción --- */
+.btn-accion {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre el ícono y el texto del botón */
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 150px;
+}
+
+.btn-accion.aceptar {
+    background-color: #28a745; /* Verde */
+}
+
+.btn-accion.rechazar {
+    background-color: #dc3545; /* Rojo */
+}
+
+.btn-accion:hover {
+    opacity: 0.85;
+}
+
+
+/* --- Estilos para Íconos en la Tarjeta de Detalle --- */
+.valor-con-icono {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Espacio entre el ícono y el texto del dato */
+}
+
+/* Colores específicos para cada ícono */
+.valor-con-icono .fa-user {
+    color: #6c757d; /* Gris */
+}
+.valor-con-icono .fa-id-card {
+    color: #20c997; /* Verde azulado */
+}
+.valor-con-icono .fa-people-arrows {
+    color: #007bff; /* Azul */
+}
