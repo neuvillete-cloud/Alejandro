@@ -413,7 +413,7 @@ nav a:not(:hover)::after {
     border-color: #dc3545;
 }
 
-/* Íconos en la tarjeta - más sutiles */
+/* Íconos en la tarjeta - con colores individuales */
 .valor-con-icono {
     display: flex;
     align-items: center;
@@ -423,11 +423,21 @@ nav a:not(:hover)::after {
 
 .valor-con-icono i {
     font-size: 1.1em;
-    color: #adb5bd; /* Un único color gris para todos los íconos */
+    /* Quitamos el color gris general de aquí */
     width: 20px;
     text-align: center;
 }
 
+/* Y agregamos los colores específicos de nuevo */
+.valor-con-icono .fa-user {
+    color: #6c757d;
+}
+.valor-con-icono .fa-id-card {
+    color: #20c997;
+}
+.valor-con-icono .fa-people-arrows {
+    color: #007bff;
+}
 
 /* --- 4. Modal (con buen estilo) --- */
 .custom-modal {
