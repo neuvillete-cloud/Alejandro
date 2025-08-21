@@ -269,97 +269,97 @@ nav a:not(:hover)::after {
 }
 
 /* ======================================================= */
-/* == INICIO: BLOQUE DE ESTILOS MEJORADOS PARA DETALLE  == */
+/* == INICIO: BLOQUE DE ESTILOS CON DISEÑO EJECUTIVO   == */
 /* ======================================================= */
 
-/* --- 1. Título con diseño moderno --- */
+/* --- 1. Tipografía y Título Ejecutivo --- */
 .titulo-detalle {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Tipografía más moderna */
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: #1a253c; /* Color oscuro casi negro */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 2.2rem; /* Ligeramente más pequeño y refinado */
+    font-weight: 600;
+    color: #2c3e50; /* Tono de carbón, más suave que el negro puro */
     text-align: center;
-    margin-bottom: 40px;
-    padding-bottom: 10px;
-    border-bottom: 3px solid;
-    border-image: linear-gradient(to right, #3b8ac9, #99d0e9) 1; /* Borde con degradado */
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dfe4ea; /* Línea separadora delgada y sólida */
 }
 
-/* --- 2. Tarjeta con diseño premium --- */
+/* --- 2. Tarjeta con Diseño Limpio y Profesional --- */
 .card-solicitud-detalle {
-    background: linear-gradient(to bottom right, #ffffff, #f7f9fc); /* Fondo con degradado sutil */
-    border: none; /* Quitamos el borde simple */
-    border-radius: 15px; /* Bordes más redondeados */
-    padding: 40px;
+    background-color: #ffffff; /* Blanco puro, sin degradados */
+    border: 1px solid #e9ecef; /* Borde muy sutil para definir la tarjeta */
+    border-radius: 8px; /* Bordes menos redondeados, más nítidos */
+    padding: 35px 40px;
     margin: 0 auto;
     max-width: 900px;
-    box-shadow: 0 10px 30px rgba(0, 51, 102, 0.15); /* Sombra más pronunciada y suave */
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.08); /* Sombra mucho más sutil */
+    transition: box-shadow 0.3s ease;
 }
 
 .card-solicitud-detalle:hover {
-    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
-    box-shadow: 0 15px 40px rgba(0, 51, 102, 0.2);
+    box-shadow: 0 6px 16px rgba(44, 62, 80, 0.12); /* Sombra ligeramente más fuerte al pasar el mouse */
 }
 
 /* Encabezado de la tarjeta */
 .card-solicitud-detalle .card-header {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Mejor alineación vertical */
+    align-items: center;
     padding-bottom: 15px;
-    border-bottom: 1px solid #e9ecef; /* Línea separadora más sutil */
+    border-bottom: 1px solid #e9ecef;
 }
 
 .card-solicitud-detalle .card-header h3 {
     margin: 0;
-    color: #063962; /* Azul corporativo */
-    font-size: 1.8em;
+    color: #2c3e50;
+    font-size: 1.6em;
     font-weight: 600;
 }
 
-/* Estatus de la solicitud */
 .card-solicitud-detalle .estatus {
-    font-size: 0.9em;
-    padding: 8px 16px;
+    font-size: 0.85em;
+    padding: 6px 14px;
     font-weight: 700;
-    border-radius: 20px; /* Estatus tipo píldora */
+    border-radius: 6px; /* Estatus más rectangular */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* Estatus de la solicitud - colores */
+/* Estatus de la solicitud - colores sólidos */
 .estatus.pendiente, .estatus.enproceso, .estatus.aprobadoparcialmente {
-    background-color: #f0ad4e;
+    background-color: #f0ad4e; color: #fff;
 }
 .estatus.aprobada {
-    background-color: #5cb85c;
+    background-color: #28a745; color: #fff;
 }
 .estatus.rechazada {
-    background-color: #d9534f;
+    background-color: #dc3545; color: #fff;
 }
 
-/* Cuerpo de la tarjeta */
+/* Cuerpo de la tarjeta - Diseño minimalista */
 .card-solicitud-detalle .card-body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px; /* Mayor espaciado */
-    border-top: none; /* Ya no necesitamos la línea aquí */
-    padding-top: 0;
+    gap: 0 25px; /* Solo espacio horizontal, no vertical */
+    border-top: none;
+    padding-top: 10px;
 }
 
 .card-solicitud-detalle .info-item {
-    background-color: #f8f9fa; /* Fondo ligero para cada dato */
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 4px solid #3b8ac9; /* Acento de color a la izquierda */
+    background-color: transparent; /* Sin fondo de color */
+    padding: 12px 0;
+    border-bottom: 1px solid #f2f2f2; /* Líneas separadoras muy tenues */
+    border-left: none; /* Sin acento de color */
+}
+
+.card-solicitud-detalle .info-item:last-child {
+    border-bottom: none; /* Quitamos la última línea para un look limpio */
 }
 
 .card-solicitud-detalle .info-item strong {
     font-size: 0.8em;
-    color: #6c757d; /* Color de la etiqueta más suave */
-    margin-bottom: 8px;
+    color: #868e96; /* Tono de gris para la etiqueta */
+    margin-bottom: 6px;
     display: block;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -367,8 +367,8 @@ nav a:not(:hover)::after {
 
 .card-solicitud-detalle .info-item,
 .card-solicitud-detalle .info-item span {
-    font-size: 1.05em; /* Tamaño de letra del dato ligeramente más grande */
-    color: #212529; /* Color del texto más oscuro */
+    font-size: 1em;
+    color: #343a40; /* Color principal del texto */
 }
 
 /* Contenedor de los botones */
@@ -378,48 +378,42 @@ nav a:not(:hover)::after {
     gap: 15px;
     border-top: 1px solid #e9ecef;
     padding-top: 25px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-/* --- 3. Botones y íconos (con mejoras) --- */
+/* --- 3. Botones con Estilo Sólido y Profesional --- */
 .btn-accion {
-    padding: 12px 25px;
-    border-radius: 8px;
-    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    border: 1px solid transparent; /* Borde transparente para mantener el tamaño */
     color: white;
-    font-weight: bold;
-    font-size: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    width: 160px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    width: auto; /* Ancho automático */
+    box-shadow: none; /* Sin sombras */
 }
 
 .btn-accion:hover {
-    transform: translateY(-3px); /* Efecto de presionar */
+    filter: brightness(92%); /* Efecto de oscurecer al pasar el mouse */
 }
 
 .btn-accion.aceptar {
-    background: linear-gradient(45deg, #28a745, #218838);
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-}
-.btn-accion.aceptar:hover {
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+    background-color: #28a745;
+    border-color: #28a745;
 }
 
 .btn-accion.rechazar {
-    background: linear-gradient(45deg, #dc3545, #c82333);
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-}
-.btn-accion.rechazar:hover {
-    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+    background-color: #dc3545;
+    border-color: #dc3545;
 }
 
-/* Íconos en la tarjeta */
+/* Íconos en la tarjeta - más sutiles */
 .valor-con-icono {
     display: flex;
     align-items: center;
@@ -428,14 +422,11 @@ nav a:not(:hover)::after {
 }
 
 .valor-con-icono i {
-    font-size: 1.2em;
+    font-size: 1.1em;
+    color: #adb5bd; /* Un único color gris para todos los íconos */
     width: 20px;
     text-align: center;
 }
-
-.valor-con-icono .fa-user { color: #6c757d; }
-.valor-con-icono .fa-id-card { color: #20c997; }
-.valor-con-icono .fa-people-arrows { color: #007bff; }
 
 
 /* --- 4. Modal (con buen estilo) --- */
