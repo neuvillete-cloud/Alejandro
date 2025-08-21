@@ -185,7 +185,7 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
 
                 try {
                     // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU SCRIPT PHP
-                    const response = await fetch('dao/daoProcesarDecision.php', {
+                    const response = await fetch('dao/daoAprobacionS.php', {
                         method: 'POST',
                         body: formData
                     });
