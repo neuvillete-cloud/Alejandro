@@ -12,15 +12,20 @@ header('Content-Type: application/json; charset=UTF-8');
 
 if (isset($_POST['id']) && isset($_POST['email1'])) {
     $idSolicitud = $_POST['id'];
-    $email1 = $_POST['email1'];
-    $email2 = $_POST['email2'] ?? '';
-    $email3 = $_POST['email3'] ?? '';
+    $email1 = trim($_POST['email1']);
+    $email2 = trim($_POST['email2'] ?? '');
+    $email3 = trim($_POST['email3'] ?? '');
 
-    // Conexión usando LocalConector
+    // --- PASO 1: Contamos cuántos correos válidos se proporcionaron ---
+    $aprobadoresRequeridos = 0;
+    if (!empty($email1)) { $aprobadoresRequeridos++; }
+    if (!empty($email2)) { $aprobadoresRequeridos++; }
+    if (!empty($email3)) { $aprobadoresRequeridos++; }
+    // --- FIN DEL PASO 1 ---
+
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Obtener el folio de la solicitud
     $stmt = $conex->prepare("SELECT FolioSolicitud FROM Solicitudes WHERE IdSolicitud = ?");
     $stmt->bind_param("i", $idSolicitud);
     $stmt->execute();
@@ -35,39 +40,46 @@ if (isset($_POST['id']) && isset($_POST['email1'])) {
     $folio = $fila['FolioSolicitud'];
     $stmt->close();
 
-    // Generar enlace de aprobación
     $linkAprobacion = "https://grammermx.com/AleTest/ATS/aprobar_solicitud.php?folio=$folio";
-
-    // Enviar correo
-    $asunto = "Solicitud Pendiente de Aprobación";
+    $asunto = "Solicitud Pendiente de Aprobación - Folio $folio";
     $mensaje = "
-    <p>Estimado usuario,</p>
-    <p>Se ha generado una nueva solicitud con el folio <strong>$folio</strong>.</p>
-    <p>Puedes aprobar o rechazar la solicitud en el siguiente enlace:</p>
-    
+    <p>Estimado Aprobador,</p>
+    <p>Se ha generado una nueva solicitud con el folio <strong>$folio</strong> que requiere su decisión.</p>
+    <p>Por favor, ingrese al siguiente enlace para revisarla:</p>
     <p>
-        <a href='$linkAprobacion' target='_blank' style='background: #E6F4F9; color: #005195; 
+        <a href='$linkAprobacion' target='_blank' style='background: #005195; color: #FFFFFF; 
         padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
         display: inline-block;'>
-            Ver Solicitud
+            Revisar Solicitud
         </a>
     </p>
-
-    <p>Saludos,<br>ATS - Grammer</p>
-";
+    <p>Saludos,<br>ATS - Grammer</p>";
 
     $correoResponse = enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje);
 
     if ($correoResponse['status'] === 'success') {
-        echo json_encode(["status" => "success", "message" => "Correo enviado correctamente."]);
+        // --- PASO 2: Si los correos se enviaron, actualizamos la solicitud en la BD ---
+        $updateStmt = $conex->prepare("UPDATE Solicitudes SET AprobadoresRequeridos = ? WHERE IdSolicitud = ?");
+        $updateStmt->bind_param("ii", $aprobadoresRequeridos, $idSolicitud);
+
+        if ($updateStmt->execute()) {
+            echo json_encode(["status" => "success", "message" => "Correos enviados y solicitud actualizada correctamente."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Los correos se enviaron, pero hubo un error al actualizar la solicitud."]);
+        }
+        $updateStmt->close();
+        // --- FIN DEL PASO 2 ---
+
     } else {
         echo json_encode(["status" => "error", "message" => "Error al enviar el correo: " . $correoResponse['message']]);
     }
+
+    $conex->close();
+
 } else {
     echo json_encode(["status" => "error", "message" => "ID de solicitud y primer correo son obligatorios."]);
 }
 
-// Función para enviar correos
 function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) {
     $contenido = "
     <html>
@@ -108,7 +120,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
         $mail->Port = 465;
         $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
 
-        $mail->addAddress($email1);
+        if (!empty($email1)) $mail->addAddress($email1);
         if (!empty($email2)) $mail->addAddress($email2);
         if (!empty($email3)) $mail->addAddress($email3);
 
@@ -116,7 +128,7 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
         $mail->addBCC('extern.alejandro.torres@grammer.com');
 
         $mail->isHTML(true);
-        $mail->CharSet = 'UTF-8';  // **CORRECCIÓN PRINCIPAL**
+        $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
         $mail->Body = $contenido;
 
@@ -130,5 +142,3 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje) 
     }
 }
 ?>
-
-
