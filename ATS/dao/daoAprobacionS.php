@@ -74,9 +74,10 @@ function registrarDecisionAprobador($conex, $NumNomina, $IdEstatus, $FolioSolici
     $insertAprobacion->bind_param("siss", $nombreCompletoAprobador, $IdEstatus, $FolioSolicitud, $Comentario);
 
     if ($insertAprobacion->execute()) {
-        return ['status' => 'success', 'message' => "Acción registrada con éxito."];
+        return ['success' => true, 'message' => "Acción registrada con éxito."];
     } else {
-        return ['status' => 'error', 'message' => 'Error al registrar la acción: ' . $insertAprobacion->error];
+        // CAMBIO: 'status' -> 'success', 'error' -> false
+        return ['success' => false, 'message' => 'Error al registrar la acción: ' . $insertAprobacion->error];
     }
 }
 ?>
