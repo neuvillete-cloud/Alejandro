@@ -24,6 +24,10 @@ document.getElementById('loginformulario').addEventListener('submit', function (
     formData.append('NumNomina', NumNomina);
     formData.append('Contrasena', Contrasena);
 
+    // --- LÍNEA NUEVA ---
+    // Añadimos la URL de redirección que está en el campo oculto del formulario
+    formData.append('redirect_url', document.getElementById('redirect_url').value);
+
     fetch('dao/daoLogin.php', {
         method: 'POST',
         body: formData
@@ -38,7 +42,8 @@ document.getElementById('loginformulario').addEventListener('submit', function (
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
-                    window.location.href = data.redirect; // Redirigir según la respuesta del PHP
+                    // Redirigir a la URL que nos devuelva el PHP
+                    window.location.href = data.redirect;
                 });
             } else {
                 Swal.fire({

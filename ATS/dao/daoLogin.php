@@ -1,58 +1,64 @@
 <?php
-session_start(); // Iniciar sesión
+session_start();
 include_once("ConexionBD.php");
 
+header('Content-Type: application/json'); // Es bueno ponerlo al principio
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Obtener los datos del formulario
     $NumNomina = $_POST['NumNomina'];
     $Contrasena = $_POST['Contrasena'];
+    // Obtenemos la URL de redirección que enviamos desde el JS
+    $redirectUrl = $_POST['redirect_url'] ?? '';
 
-    // Verificar las credenciales del usuario
-    $response = validarCredenciales($NumNomina, $Contrasena);
+    $response = validarCredenciales($NumNomina, $Contrasena, $redirectUrl);
     echo json_encode($response);
     exit();
 } else {
-    $response = array('status' => 'error', 'message' => 'Método no permitido. Solo se permite POST.');
+    $response = ['status' => 'error', 'message' => 'Método no permitido.'];
     echo json_encode($response);
     exit();
 }
 
-// Función para validar las credenciales
-function validarCredenciales($NumNomina, $Contrasena) {
+function validarCredenciales($NumNomina, $Contrasena, $redirectUrl) {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta para verificar si el usuario existe
     $stmt = $conex->prepare("SELECT * FROM Usuario WHERE NumNomina = ? AND Contrasena = ?");
     $stmt->bind_param("ss", $NumNomina, $Contrasena);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
-    // Verificar si el usuario existe
     if ($resultado->num_rows > 0) {
-        $usuario = $resultado->fetch_assoc(); // Obtener los datos del usuario
-        // Guardar la nómina y rol en la sesión
+        $usuario = $resultado->fetch_assoc();
         $_SESSION['NumNomina'] = $NumNomina;
         $_SESSION['Nombre'] = $usuario['Nombre'];
-        $_SESSION['Rol'] = $usuario['IdRol']; // Suponiendo que el campo del rol en la tabla se llama 'IdRol'
+        $_SESSION['Rol'] = $usuario['IdRol'];
 
-        // Retornar éxito y redireccionar dependiendo del rol
-        if ($usuario['IdRol'] == 1) {
-            $response = array('status' => 'success', 'redirect' => 'Administrador.php');
-        } elseif ($usuario['IdRol'] == 2) {
-            $response = array('status' => 'success', 'redirect' => 'Solicitante.php');
-        } elseif ($usuario['IdRol'] == 3) {
-            $response = array('status' => 'success', 'redirect' => 'AdministradorIng.php');
+        // --- LÓGICA DE REDIRECCIÓN MEJORADA ---
+        // Si recibimos una URL de destino, la usamos como prioridad.
+        if (!empty($redirectUrl)) {
+            $response = ['status' => 'success', 'redirect' => $redirectUrl];
         } else {
-            $response = array('status' => 'error', 'message' => 'Rol no reconocido.');
+            // Si no hay URL de destino, usamos la lógica de roles como antes.
+            if ($usuario['IdRol'] == 1) {
+                $response = ['status' => 'success', 'redirect' => 'Administrador.php'];
+            } elseif ($usuario['IdRol'] == 2) {
+                $response = ['status' => 'success', 'redirect' => 'Solicitante.php'];
+            } elseif ($usuario['IdRol'] == 3) {
+                $response = ['status' => 'success', 'redirect' => 'AdministradorIng.php'];
+            } else {
+                $response = ['status' => 'error', 'message' => 'Rol no reconocido.'];
+            }
         }
+        // --- FIN DE LA LÓGICA MEJORADA ---
+
     } else {
-        $response = array('status' => 'error', 'message' => 'Usuario no encontrado o credenciales incorrectas.');
+        $response = ['status' => 'error', 'message' => 'Usuario no encontrado o credenciales incorrectas.'];
     }
 
-    // Cerrar la conexión
     $stmt->close();
     $conex->close();
 
     return $response;
 }
+?>

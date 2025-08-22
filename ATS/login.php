@@ -16,6 +16,7 @@
     </header>
     <div class="login-form">
         <form id="loginformulario">
+            <input type="hidden" id="redirect_url" name="redirect_url" value="<?= htmlspecialchars($_GET['redirect_url'] ?? '') ?>">
             <label for="NumNomina">Número de Nómina</label>
             <input type="text" id="NumNomina" name="NumNomina" placeholder="Ingrese su número de nómina" required>
 

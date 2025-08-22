@@ -1,7 +1,9 @@
 <?php
 session_start();
 if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php'); // Redirige al login si no está autenticado
+    // Guardamos la URL a la que el usuario quería ir y la codificamos
+    $redirectUrl = urlencode($_SERVER['REQUEST_URI']);
+    header('Location: login.php?redirect_url=' . $redirectUrl);
     exit;
 }
 ?>
