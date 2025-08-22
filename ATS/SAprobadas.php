@@ -154,20 +154,29 @@ if (!isset($_SESSION['NumNomina'])) {
                 { "data": "IdSolicitud" },
                 { "data": "NombreSolicitante" },
                 { "data": "NombreArea" },
-                { "data": "NombreAprobador" },
+                // La columna "NombreAprobador" ya no es necesaria con este enfoque.
+                // Si deseas eliminarla, también quita el <th> correspondiente en el HTML.
+                // Por ahora la dejamos pero puedes cambiarla por otro dato si quieres.
                 { "data": "FolioSolicitud" },
-                { "data": "NombreEstatus" },
+                { "data": "FolioSolicitud" }, // Duplicado para mantener el número de columnas, puedes ajustarlo.
+
+                // --- CAMBIO CLAVE 1: Usamos el nuevo estado calculado ---
+                { "data": "EstadoFinalCalculado" },
+
                 {
-                    "data": null,
+                    "data": null, // Columna de Acciones
+                    "orderable": false, // Para que no se pueda ordenar por esta columna
                     "render": function (data, type, row) {
-                        if (row.NombreEstatus === "Aprobado") { // Ajusta "Aprobado" según tu base de datos
+                        // --- CAMBIO CLAVE 2: La condición ahora es mucho más confiable ---
+                        if (row.EstadoFinalCalculado === "Completamente Aprobado") {
                             return `
                         <button class="btn btn-primary btn-sm go-to-page-btn">
                             <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
                         </button>
                         `;
                         } else {
-                            return ''; // No mostrar nada si no está aprobado
+                            // Si no está completamente aprobado, mostramos un distintivo informativo
+                            return '<span class="badge bg-info text-dark">En Proceso</span>';
                         }
                     }
                 }
