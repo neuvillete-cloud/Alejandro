@@ -52,7 +52,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <section class="section-title">
     <h1>Historial de Solicitudes</h1>
-    <img src="imagenes/solicitudes-de-empleo.png" alt="Imagen decorativa" class="imagen-banner">
+    <img src="imagenes/solicitud.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
