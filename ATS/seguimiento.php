@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Solicitud | ATS Grammer</title>
+    <title>Seguimiento | ATS Grammer</title>
     <link rel="stylesheet" href="css/estilosSeguimiento.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -52,7 +52,7 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 
 <section class="section-title">
-    <h1>Nueva Solicitud de Personal</h1>
+    <h1>Seguimiento de tu Solicitud</h1>
     <img src="imagenes/solicitudes-de-empleo.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
