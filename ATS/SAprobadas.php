@@ -1,15 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vacantes en Grammer Automotive</title>
-    <link rel="stylesheet" href="css/estilosSAprobadas.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-</head>
-<body>
-
 <?php
 session_start();
 if (!isset($_SESSION['NumNomina'])) {
@@ -17,6 +5,17 @@ if (!isset($_SESSION['NumNomina'])) {
     exit;
 }
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes Aprobadas</title>
+    <link rel="stylesheet" href="css/estilosSAprobadas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+</head>
+<body>
 
 <header>
     <div class="header-container">
@@ -62,11 +61,8 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-        <!-- Tabla de Solicitudes -->
         <div class="content">
             <h2>Solicitudes Aprobadas y en Proceso</h2>
-
-            <!-- Contenedor de botones de exportación -->
             <div class="export-buttons">
                 <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copiar</button>
                 <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
@@ -74,30 +70,18 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
             <div class="table-container">
                 <table id="solicitudesTable" class="display">
+
                     <thead>
                     <tr>
-                        <th>IdSolicitud</th>
-                        <th>Nombre</th>
-                        <th>Area</th>
-                        <th>Nombre Aprobador</th>
-                        <th>FolioSolicitud</th>
-                        <th>Estatus</th> <!-- Nueva columna -->
+                        <th>ID</th>
+                        <th>Solicitante</th>
+                        <th>Área</th>
+                        <th>Folio</th>
+                        <th>Estado del Proceso</th>
                         <th>Acciones</th>
-
                     </tr>
                     </thead>
-                    <tfoot>
-                    <tr style="display:none;">
-                        <th>#</th>
-                        <th>Nomina</th>
-                        <th>Nombre</th>
-                        <th>Pregunta</th>
-                        <th>Pregunta</th>
-                        <th>Pregunta</th>
-                        <th>Pregunta</th>
 
-                    </tr>
-                    </tfoot>
                     <tbody>
                     </tbody>
                 </table>
@@ -106,7 +90,14 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </section>
 
-<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const logoutLink = document.getElementById('logout');
     if (logoutLink) {
@@ -123,26 +114,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 .catch(error => console.error('Error al cerrar sesión:', error));
         });
     }
-</script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap JS (Asegúrate de incluirlo) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/SheetJS/0.17.1/xlsx.full.min.js"></script>
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- jsPDF AutoTable -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-
-<!-- SheetJS (para exportar a Excel) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-
-<script src="js/funcionamientoModal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
     $(document).ready(function () {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
@@ -150,32 +122,21 @@ if (!isset($_SESSION['NumNomina'])) {
                 "url": 'https://grammermx.com/AleTest/ATS/dao/daoSAprobadas.php',
                 "dataSrc": "data"
             },
+
+            // COLUMNAS CORREGIDAS
             "columns": [
                 { "data": "IdSolicitud" },
                 { "data": "NombreSolicitante" },
                 { "data": "NombreArea" },
-                // La columna "NombreAprobador" ya no es necesaria con este enfoque.
-                // Si deseas eliminarla, también quita el <th> correspondiente en el HTML.
-                // Por ahora la dejamos pero puedes cambiarla por otro dato si quieres.
                 { "data": "FolioSolicitud" },
-                { "data": "FolioSolicitud" }, // Duplicado para mantener el número de columnas, puedes ajustarlo.
-
-                // --- CAMBIO CLAVE 1: Usamos el nuevo estado calculado ---
                 { "data": "EstadoFinalCalculado" },
-
                 {
-                    "data": null, // Columna de Acciones
-                    "orderable": false, // Para que no se pueda ordenar por esta columna
+                    "data": null,
+                    "orderable": false,
                     "render": function (data, type, row) {
                         if (row.EstadoFinalCalculado === "Completamente Aprobado") {
-                            return `
-                                <button class="btn btn-primary btn-sm go-to-page-btn">
-                                    <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
-                                </button>
-                            `;
-                                            } else if (row.EstadoFinalCalculado === "Vacante Creada") {
-                            // --- LÍNEA NUEVA ---
-                            // Si la vacante ya fue creada, mostramos un mensaje de éxito.
+                            return `<button class="btn btn-primary btn-sm go-to-page-btn" data-id="${row.IdSolicitud}"><i class="fas fa-external-link-alt"></i> Ir a Seguimiento</button>`;
+                        } else if (row.EstadoFinalCalculado === "Vacante Creada") {
                             return '<span class="badge bg-success">Vacante Creada</span>';
                         } else {
                             return '<span class="badge bg-secondary">En Proceso</span>';
@@ -183,6 +144,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     }
                 }
             ],
+
             "dom": 'lfrtip',
             "pageLength": 3,
             "language": {
@@ -195,23 +157,9 @@ if (!isset($_SESSION['NumNomina'])) {
                     "next": "Siguiente",
                     "previous": "Anterior"
                 }
-            },
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "loadingRecords": "Cargando...",
-            "deferRender": true,
-            "search": {
-                "regex": true,
-                "caseInsensitive": false
             }
         });
 
-        // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
         $('.dataTables_filter input').on('keyup', function () {
             tabla.search(this.value).draw();
         });
