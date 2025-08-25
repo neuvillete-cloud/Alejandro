@@ -1,19 +1,44 @@
-
 <?php
-session_start(); // Iniciar sesión
+session_start();
 include_once("ConexionBD.php");
 
+header('Content-Type: application/json'); // Es buena práctica definir el header al inicio
+
 try {
-    // Crear una conexión usando la clase `LocalConector`
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta para obtener los folios que SOLO tengan estatus 1 (Aprobado)
+    // --- CONSULTA ÚNICA Y MEJORADA ---
+    // Esta consulta hace todo el trabajo en un solo paso.
     $sql = "
-        SELECT FolioSolicitud
-        FROM Aprobadores
-        GROUP BY FolioSolicitud
-        HAVING COUNT(DISTINCT IdEstatus) = 1 AND MAX(IdEstatus) = 4
+        SELECT 
+            s.*, 
+            ar.NombreArea
+        FROM 
+            Solicitudes s
+        JOIN 
+            Area ar ON s.IdArea = ar.IdArea
+        WHERE
+            -- Condición 1: El conteo de aprobaciones (Estatus 5) debe ser igual o mayor al requerido.
+            (
+                SELECT COUNT(*) 
+                FROM Aprobadores a 
+                WHERE a.FolioSolicitud = s.FolioSolicitud AND a.IdEstatus = 5
+            ) >= s.AprobadoresRequeridos
+            
+            AND
+
+            -- Condición 2: El conteo de rechazos (Estatus 3) debe ser exactamente CERO.
+            (
+                SELECT COUNT(*) 
+                FROM Aprobadores a 
+                WHERE a.FolioSolicitud = s.FolioSolicitud AND a.IdEstatus = 3
+            ) = 0
+            
+            AND
+
+            -- Condición 3: Asegurarnos de que el campo de requeridos tenga un valor válido.
+            s.AprobadoresRequeridos > 0;
     ";
 
     $stmt = $conex->prepare($sql);
@@ -23,46 +48,9 @@ try {
 
     $stmt->execute();
     $result = $stmt->get_result();
-    $foliosAprobados = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $foliosAprobados[] = $row['FolioSolicitud'];
-    }
+    $solicitudes = $result->fetch_all(MYSQLI_ASSOC); // Obtener todos los resultados de una vez
 
     $stmt->close();
-
-    $solicitudes = [];
-
-    if (!empty($foliosAprobados)) {
-        // Construcción de placeholders dinámicos para la consulta segura
-        $placeholders = implode(',', array_fill(0, count($foliosAprobados), '?'));
-
-        // Consulta para obtener las solicitudes aprobadas con NombreArea
-        $sqlSolicitudes = "
-            SELECT s.*, a.NombreArea
-            FROM Solicitudes s
-            JOIN Area a ON s.IdArea = a.IdArea
-            WHERE s.FolioSolicitud IN ($placeholders)
-        ";
-
-        $stmtSolicitudes = $conex->prepare($sqlSolicitudes);
-        if (!$stmtSolicitudes) {
-            throw new Exception("Error en la preparación de la consulta: " . $conex->error);
-        }
-
-        // Crear array con los tipos de datos (s = string)
-        $types = str_repeat('s', count($foliosAprobados));
-        $stmtSolicitudes->bind_param($types, ...$foliosAprobados);
-        $stmtSolicitudes->execute();
-        $resultSolicitudes = $stmtSolicitudes->get_result();
-
-        while ($row = $resultSolicitudes->fetch_assoc()) {
-            $solicitudes[] = $row;
-        }
-
-        $stmtSolicitudes->close();
-    }
-
     $conex->close();
 
     // Devolver respuesta JSON
@@ -70,6 +58,7 @@ try {
         'status' => 'success',
         'data' => $solicitudes
     ]);
+
 } catch (Exception $e) {
     echo json_encode([
         'status' => 'error',
