@@ -18,8 +18,19 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta SQL para obtener todas las columnas de la tabla Solicitudes del usuario
-    $sql = "SELECT * FROM Solicitudes WHERE NumNomina = ?";
+    // --- CONSULTA MODIFICADA CON JOIN ---
+    // Unimos Solicitudes con Area para obtener NombreArea
+    $sql = "
+        SELECT 
+            s.*, 
+            a.NombreArea 
+        FROM 
+            Solicitudes s
+        JOIN 
+            Area a ON s.IdArea = a.IdArea
+        WHERE 
+            s.NumNomina = ?
+    ";
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
