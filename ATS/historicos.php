@@ -1,15 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Solicitud | ATS Grammer</title>
-    <link rel="stylesheet" href="css/estilosHistoricos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-</head>
-<body>
-
 <?php
 session_start();
 if (!isset($_SESSION['NumNomina'])) {
@@ -17,6 +5,16 @@ if (!isset($_SESSION['NumNomina'])) {
     exit;
 }
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Solicitudes | ATS Grammer</title>
+    <link rel="stylesheet" href="css/estilosHistoricos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
 
 <header>
     <div class="header-container">
@@ -53,212 +51,142 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 
 <section class="section-title">
-    <h1>Nueva Solicitud de Personal</h1>
+    <h1>Historial de Solicitudes</h1>
     <img src="imagenes/solicitudes-de-empleo.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-
-        <!-- Tabla de Solicitudes -->
-        <div class="content">
-            <h2>Mis Solicitudes</h2>
-            <div class="table-container">
-                <table id="solicitudesTable" class="display">
-                    <thead>
-                    <tr>
-                        <th>IdSolicitud</th>
-                        <th>NumNomina</th>
-                        <th>IdArea</th>
-                        <th>Puesto</th>
-                        <th>TipoContratacion</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr style="display:none;">
-                        <th>#</th>
-                        <th>Nomina</th>
-                        <th>Nombre</th>
-                        <th>Fecha</th>
-                        <th>Pregunta</th>
-                        <th>Pregunta</th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    </tbody>
-                </table>
+        <div class="filtros-container">
+            <div class="campo-filtro">
+                <i class="fas fa-search"></i>
+                <input type="text" id="filtroPuesto" placeholder="Buscar por puesto o folio...">
             </div>
+            <div class="campo-filtro">
+                <i class="fas fa-briefcase"></i>
+                <select id="filtroTipo">
+                    <option value="">Todos los Tipos</option>
+                    <option value="Nuevo Puesto">Nuevo Puesto</option>
+                    <option value="Reemplazo">Reemplazo</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="cards-container" class="cards-grid">
+            <div class="loader-container">
+                <div class="loader"></div>
+                <p>Cargando tus solicitudes...</p>
+            </div>
+        </div>
+        <div id="no-results" class="no-results-message" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>No se encontraron solicitudes que coincidan con tu búsqueda.</p>
         </div>
     </div>
 </section>
 
-<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const cardsContainer = document.getElementById('cards-container');
+        const filtroPuesto = document.getElementById('filtroPuesto');
+        const filtroTipo = document.getElementById('filtroTipo');
+        const noResultsMessage = document.getElementById('no-results');
+        let todasLasSolicitudes = []; // Guardaremos todas las solicitudes aquí
 
-        // Cerrar sesión con fetch
+        function renderizarTarjetas(solicitudes) {
+            cardsContainer.innerHTML = ''; // Limpiar el contenedor
+            if (solicitudes.length === 0) {
+                noResultsMessage.style.display = 'block';
+                return;
+            }
+            noResultsMessage.style.display = 'none';
+
+            solicitudes.forEach(solicitud => {
+                // Mapear el ID de estatus a un texto y clase CSS
+                let estatusInfo = getEstatusInfo(solicitud.IdEstatus);
+
+                const cardHTML = `
+                    <div class="solicitud-card" data-puesto="${solicitud.Puesto.toLowerCase()}" data-folio="${solicitud.FolioSolicitud.toLowerCase()}" data-tipo="${solicitud.TipoContratacion}">
+                        <div class="card-header">
+                            <h3>${solicitud.Puesto}</h3>
+                            <span class="estatus ${estatusInfo.clase}">${estatusInfo.texto}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-item"><i class="fas fa-id-card"></i><strong>Folio:</strong> <span>${solicitud.FolioSolicitud}</span></div>
+                            <div class="info-item"><i class="fas fa-building"></i><strong>Área:</strong> <span>${solicitud.NombreArea}</span></div>
+                            <div class="info-item"><i class="fas fa-briefcase"></i><strong>Tipo:</strong> <span>${solicitud.TipoContratacion}</span></div>
+                            <div class="info-item"><i class="fas fa-calendar-alt"></i><strong>Fecha:</strong> <span>${solicitud.FechaSolicitud}</span></div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="seguimiento.php?folio=${solicitud.FolioSolicitud}" class="btn-ver-mas">Ver Progreso</a>
+                        </div>
+                    </div>
+                `;
+                cardsContainer.innerHTML += cardHTML;
+            });
+        }
+
+        function getEstatusInfo(idEstatus) {
+            const id = parseInt(idEstatus);
+            switch (id) {
+                case 1: return { texto: 'Enviada', clase: 'enviada' };
+                case 2: return { texto: 'Aprob. Gerencia', clase: 'aprobada' };
+                case 3: return { texto: 'Rechazada', clase: 'rechazada' };
+                case 4: return { texto: 'Aprob. Parcial', clase: 'parcial' };
+                case 5: return { texto: 'Aprobada', clase: 'aprobada' };
+                case 10: return { texto: 'Vacante Creada', clase: 'vacante-creada' };
+                default: return { texto: 'Desconocido', clase: 'desconocido' };
+            }
+        }
+
+        function filtrarTarjetas() {
+            const textoBusqueda = filtroPuesto.value.toLowerCase();
+            const tipoSeleccionado = filtroTipo.value;
+
+            const solicitudesFiltradas = todasLasSolicitudes.filter(solicitud => {
+                const puestoCoincide = solicitud.Puesto.toLowerCase().includes(textoBusqueda);
+                const folioCoincide = solicitud.FolioSolicitud.toLowerCase().includes(textoBusqueda);
+                const tipoCoincide = tipoSeleccionado === "" || solicitud.TipoContratacion === tipoSeleccionado;
+
+                return (puestoCoincide || folioCoincide) && tipoCoincide;
+            });
+
+            renderizarTarjetas(solicitudesFiltradas);
+        }
+
+        // Cargar las solicitudes al iniciar la página
+        fetch('dao/daoSoli.php') // ⚠️ Reemplaza con la ruta correcta a tu PHP
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.data) {
+                    todasLasSolicitudes = data.data;
+                    renderizarTarjetas(todasLasSolicitudes);
+                } else {
+                    cardsContainer.innerHTML = '<p class="error-message">No se pudieron cargar tus solicitudes.</p>';
+                }
+            })
+            .catch(error => {
+                console.error("Error al cargar las solicitudes:", error);
+                cardsContainer.innerHTML = '<p class="error-message">Error de conexión al servidor.</p>';
+            });
+
+        // Eventos para los filtros
+        filtroPuesto.addEventListener('keyup', filtrarTarjetas);
+        filtroTipo.addEventListener('change', filtrarTarjetas);
+
+        // --- Lógica de Logout ---
         const logoutLink = document.getElementById('logout');
-
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 fetch('dao/logout.php', { method: 'POST' })
                     .then(response => {
-                        if (response.ok) {
-                            window.location.href = 'login.php';
-                        } else {
-                            alert('Error al cerrar sesión. Inténtalo nuevamente.');
-                        }
-                    })
-                    .catch(error => console.error('Error al cerrar sesión:', error));
+                        if (response.ok) window.location.href = 'login.php';
+                    });
             });
         }
     });
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/SheetJS/0.17.1/xlsx.full.min.js"></script>
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- jsPDF AutoTable -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-
-<!-- SheetJS (para exportar a Excel) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-
-<script src="js/funcionamientoModal.js"></script>
-<script>
-    $(document).ready(function () {
-        var tabla = $('#solicitudesTable').DataTable({
-            "responsive": true,
-            "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSoli.php',
-                "dataSrc": "data"
-            },
-            "columns": [
-                { "data": "IdSolicitud" },
-                { "data": "NumNomina" },
-                { "data": "IdArea" },
-                { "data": "Puesto" },
-                { "data": "TipoContratacion" },
-                {
-                    "data": null,
-                    "defaultContent": '<button class="btn btn-secondary copy-btn"><i class="fas fa-copy"></i></button>' +
-                        '<button class="btn btn-danger pdf-btn"><i class="fas fa-file-pdf"></i></button>' +
-                        '<button class="btn btn-success excel-btn"><i class="fas fa-file-excel"></i></button>'
-                }
-            ],
-            "initComplete": function () {
-                this.api().columns().every(function () {
-                    var that = this;
-                    $('input', this.footer()).on('keyup change', function () {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-                });
-            },
-            "dom": 'lfrtip', // Agrega la barra de búsqueda
-            "pageLength": 5,
-            lengthMenu: [
-                [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, -1],
-                [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, "All"]
-            ],
-            "language": {
-                "search": "Buscar:",
-                "lengthMenu": "Mostrar _MENU_ registros por página",
-                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "paginate": {
-                    "first": "Primero",
-                    "last": "Último",
-                    "next": "Siguiente",
-                    "previous": "Anterior"
-                }
-            },
-            "buttons": [
-                {
-                    extend: 'copyHtml5',
-                    text: '<i class="fas fa-copy"></i> Copiar',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btn btn-secondary'
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fas fa-file-excel"></i> Excel',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btn btn-success'
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="fas fa-file-pdf"></i> PDF',
-                    exportOptions: { columns: ':visible' },
-                    className: 'btn btn-danger',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL'
-                }
-            ],
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "loadingRecords": "Cargando...",
-            "deferRender": true,
-            "search": {
-                "regex": true,
-                "caseInsensitive": false
-            }
-        });
-
-        // 🔹 Solución para hacer funcionar la barra de búsqueda global correctamente
-        $('.dataTables_filter input').on('keyup', function () {
-            tabla.search(this.value).draw();
-        });
-
-        // Copiar tabla
-        $('#solicitudesTable tbody').on('click', '.copy-btn', function () {
-            const table = document.querySelector('#solicitudesTable');
-            const range = document.createRange();
-            range.selectNode(table);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            alert('Tabla copiada al portapapeles');
-        });
-
-        // Exportar a PDF
-        $('#solicitudesTable tbody').on('click', '.pdf-btn', function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.autoTable({ html: '#solicitudesTable' }); // Asegúrate de que autoTable esté disponible
-            doc.save('solicitudes.pdf');
-        });
-
-        // Exportar a Excel
-        $('#solicitudesTable tbody').on('click', '.excel-btn', function () {
-            const table = document.querySelector('#solicitudesTable');
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
-            XLSX.writeFile(wb, 'solicitudes.xlsx');
-        });
-
-        $('#sear').on('keyup', function () {
-            tabla.search(this.value).draw();
-        });
-
-        $('.dataTables_filter input').on('keyup', function () {
-            console.log("Valor de búsqueda:", this.value); // Verifica si el valor se captura correctamente
-            tabla.search(this.value).draw();
-        });
-
-    });
-
-
 </script>
 </body>
 </html>
