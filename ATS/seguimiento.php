@@ -28,7 +28,7 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="Solicitante.php">Nueva Solicitud</a>
-            <a href="seguimiento.php">Seguimiento</a>
+            <a href="#">Seguimiento</a>
             <a href="historicos.php">Historial de Solicitudes</a>
             <a href="seleccionFinal.php">Candidatos Finales</a>
 
