@@ -228,8 +228,8 @@ if (!isset($_SESSION['NumNomina'])) {
 
         <div class="footer-column">
             <h3>Contacto</h3>
-            <p><i class="fas fa-map-marker-alt"></i> Av. de las Fuentes, Querétaro, México</p>
-            <p><i class="fas fa-phone"></i> +52 (442) 123 4567</p>
+            <p><i class="fas fa-map-marker-alt"></i> Av. de la Luz #24 Col. satélite , Querétaro, Mexico</p>
+            <p><i class="fas fa-phone"></i> +52 (442) 238 4460</p>
             <div class="social-icons">
                 <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
