@@ -1,126 +1,101 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php'); // Redirige al login si no está autenticado
-    exit;
-}
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Históricos</title>
+    <title>Nueva Solicitud | ATS Grammer</title>
     <link rel="stylesheet" href="css/estilosHistoricos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="header-left">
-        <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>Solicitudes</h1>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-    </div>
-    <div class="header-right">
-        <div class="user-profile" id="profilePic">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
         </div>
-        <div class="user-name" id="userNameHeader"></div>
-        <div class="profile-dropdown" id="profileDropdown">
-            <a href="#">Ver Perfil</a>
-            <a href="#" id="logout">Cerrar Sesión</a>
-        </div>
+        <nav>
+            <a href="#">Nueva Solicitud</a>
+            <a href="seguimiento.php">Seguimiento</a>
+            <a href="historicos.php">Historial de Solicitudes</a>
+            <a href="seleccionFinal.php">Candidatos Finales</a>
+
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.php">Perfil</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
     </div>
 </header>
 
-<!-- Sidebar -->
-<nav class="sidebar active" id="sidebar">
-    <ul>
-        <li><a href="Solicitante.php" >Inicio</a></li>
-        <li><a href="seguimiento.php">Seguimiento</a></li>
-        <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
-        <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
-    </ul>
-</nav>
+<section class="section-title">
+    <h1>Nueva Solicitud de Personal</h1>
+    <img src="imagenes/solicitudes-de-empleo.png" alt="Imagen decorativa" class="imagen-banner">
+</section>
 
-<!-- Tabla de Solicitudes -->
-<div class="content">
-    <h2>Mis Solicitudes</h2>
-    <div class="table-container">
-        <table id="solicitudesTable" class="display">
-            <thead>
-            <tr>
-                <th>IdSolicitud</th>
-                <th>NumNomina</th>
-                <th>IdArea</th>
-                <th>Puesto</th>
-                <th>TipoContratacion</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tfoot>
-            <tr style="display:none;">
-                <th>#</th>
-                <th>Nomina</th>
-                <th>Nombre</th>
-                <th>Fecha</th>
-                <th>Pregunta</th>
-                <th>Pregunta</th>
-            </tr>
-            </tfoot>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
+<section class="area-blanca">
+    <div class="contenido-blanco">
 
-
-<!-- Modal Perfil -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Perfil del Usuario</h2>
-        <div class="modal-body">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
-            <p><strong>Nombre:</strong> <span id="userName"></span></p>
-            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
-            <p><strong>Área:</strong> <span id="userArea"></span></p>
+        <!-- Tabla de Solicitudes -->
+        <div class="content">
+            <h2>Mis Solicitudes</h2>
+            <div class="table-container">
+                <table id="solicitudesTable" class="display">
+                    <thead>
+                    <tr>
+                        <th>IdSolicitud</th>
+                        <th>NumNomina</th>
+                        <th>IdArea</th>
+                        <th>Puesto</th>
+                        <th>TipoContratacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr style="display:none;">
+                        <th>#</th>
+                        <th>Nomina</th>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Pregunta</th>
+                        <th>Pregunta</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
-        // Menú lateral (sidebar)
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-
-        if (menuToggle && sidebar) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-            });
-        }
-
-        // Menú de perfil
-        const userProfile = document.getElementById('profilePic');
-        const profileDropdown = document.getElementById('profileDropdown');
-
-        if (userProfile && profileDropdown) {
-            userProfile.addEventListener('click', () => {
-                profileDropdown.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
-                    profileDropdown.classList.remove('active');
-                }
-            });
-        }
 
         // Cerrar sesión con fetch
         const logoutLink = document.getElementById('logout');
