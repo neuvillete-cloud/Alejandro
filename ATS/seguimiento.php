@@ -200,5 +200,47 @@ if (!isset($_SESSION['NumNomina'])) {
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<footer class="main-footer">
+    <div class="footer-container">
+
+        <div class="footer-column">
+            <div class="logo">
+                <img src="imagenes/logo_blanco.png" alt="Logo Grammer Blanco" class="logo-img">
+                <div class="logo-texto">
+                    <h1>Grammer</h1>
+                    <span>Automotive</span>
+                </div>
+            </div>
+            <p class="footer-about">
+                Sistema de Seguimiento de Candidatos (ATS) para la gestión de talento y requisiciones de personal.
+            </p>
+        </div>
+
+        <div class="footer-column">
+            <h3>Enlaces Rápidos</h3>
+            <ul class="footer-links">
+                <li><a href="Administrador.php">Inicio</a></li>
+                <li><a href="SAprobadas.php">Solicitudes Aprobadas</a></li>
+                <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
+                <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-column">
+            <h3>Contacto</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Av. de las Fuentes, Querétaro, México</p>
+            <p><i class="fas fa-phone"></i> +52 (442) 123 4567</p>
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+    </div>
+    <div class="sub-footer">
+        <p>&copy; <?= date('Y') ?> Grammer Automotive de México. Todos los derechos reservados.</p>
+    </div>
+</footer>
 </body>
 </html>
