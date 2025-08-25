@@ -66,8 +66,8 @@ if (!isset($_SESSION['NumNomina'])) {
                 <i class="fas fa-briefcase"></i>
                 <select id="filtroTipo">
                     <option value="">Todos los Tipos</option>
-                    <option value="Nuevo Puesto">Nuevo Puesto</option>
-                    <option value="Reemplazo">Reemplazo</option>
+                    <option value="nuevo">Nuevo Puesto</option>
+                    <option value="reemplazo">Reemplazo</option>
                 </select>
             </div>
         </div>
@@ -92,10 +92,10 @@ if (!isset($_SESSION['NumNomina'])) {
         const filtroPuesto = document.getElementById('filtroPuesto');
         const filtroTipo = document.getElementById('filtroTipo');
         const noResultsMessage = document.getElementById('no-results');
-        let todasLasSolicitudes = []; // Guardaremos todas las solicitudes aquí
+        let todasLasSolicitudes = [];
 
         function renderizarTarjetas(solicitudes) {
-            cardsContainer.innerHTML = ''; // Limpiar el contenedor
+            cardsContainer.innerHTML = '';
             if (solicitudes.length === 0) {
                 noResultsMessage.style.display = 'block';
                 return;
@@ -103,7 +103,6 @@ if (!isset($_SESSION['NumNomina'])) {
             noResultsMessage.style.display = 'none';
 
             solicitudes.forEach(solicitud => {
-                // Mapear el ID de estatus a un texto y clase CSS
                 let estatusInfo = getEstatusInfo(solicitud.IdEstatus);
 
                 const cardHTML = `
@@ -142,12 +141,15 @@ if (!isset($_SESSION['NumNomina'])) {
 
         function filtrarTarjetas() {
             const textoBusqueda = filtroPuesto.value.toLowerCase();
-            const tipoSeleccionado = filtroTipo.value;
+            const tipoSeleccionado = filtroTipo.value; // Ya viene en minúsculas desde el HTML
 
             const solicitudesFiltradas = todasLasSolicitudes.filter(solicitud => {
                 const puestoCoincide = solicitud.Puesto.toLowerCase().includes(textoBusqueda);
                 const folioCoincide = solicitud.FolioSolicitud.toLowerCase().includes(textoBusqueda);
-                const tipoCoincide = tipoSeleccionado === "" || solicitud.TipoContratacion === tipoSeleccionado;
+
+                // --- LÍNEA CORREGIDA ---
+                // Comparamos los datos de la BD (en minúsculas) con el valor del filtro
+                const tipoCoincide = tipoSeleccionado === "" || solicitud.TipoContratacion.toLowerCase() === tipoSeleccionado;
 
                 return (puestoCoincide || folioCoincide) && tipoCoincide;
             });
@@ -155,8 +157,7 @@ if (!isset($_SESSION['NumNomina'])) {
             renderizarTarjetas(solicitudesFiltradas);
         }
 
-        // Cargar las solicitudes al iniciar la página
-        fetch('dao/daoSoli.php') // ⚠️ Reemplaza con la ruta correcta a tu PHP
+        fetch('dao/daoSoli.php')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success' && data.data) {
@@ -171,11 +172,9 @@ if (!isset($_SESSION['NumNomina'])) {
                 cardsContainer.innerHTML = '<p class="error-message">Error de conexión al servidor.</p>';
             });
 
-        // Eventos para los filtros
         filtroPuesto.addEventListener('keyup', filtrarTarjetas);
         filtroTipo.addEventListener('change', filtrarTarjetas);
 
-        // --- Lógica de Logout ---
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
