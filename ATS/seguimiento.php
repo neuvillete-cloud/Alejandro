@@ -1,86 +1,68 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php'); // Redirige al login si no está autenticado
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seguimiento - Porcentajes</title>
+    <title>Nueva Solicitud | ATS Grammer</title>
     <link rel="stylesheet" href="css/estilosSeguimiento.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-<header class="header">
-    <div class="header-left">
-        <img src="imagenes/grammer.png" alt="Icono de Solicitudes" class="header-icon">
-        <h1>Solicitudes</h1>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-    </div>
-    <div class="header-right">
-        <div class="user-profile" id="profilePic">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario">
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
         </div>
-        <div class="user-name" id="userNameHeader"></div>
-        <div class="profile-dropdown" id="profileDropdown">
-            <a href="#">Ver Perfil</a>
-            <a href="#" id="logout">Cerrar Sesión</a>
-        </div>
+        <nav>
+            <a href="#">Nueva Solicitud</a>
+            <a href="seguimiento.php">Seguimiento</a>
+            <a href="historicos.php">Historial de Solicitudes</a>
+            <a href="seleccionFinal.php">Candidatos Finales</a>
+
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.php">Perfil</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
     </div>
 </header>
-<nav class="sidebar" id="sidebar">
-    <ul>
-        <li><a href="Solicitante.php" >Inicio</a></li>
-        <li><a href="seguimiento.php">Seguimiento</a></li>
-        <li><a href="historicos.php" id="historicosLink">Históricos</a></li>
-        <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
-    </ul>
-</nav>
-<h1>Seguimiento de Progreso</h1>
-<div class="progress-container">
-    <div class="circle">
-        <svg>
-            <circle cx="50" cy="50" r="45"></circle>
-            <circle cx="50" cy="50" r="45" class="progress"></circle>
-        </svg>
-        <div class="percentage">0%</div>
-        <div class="circle-label">RH</div>
-    </div>
-    <div class="circle">
-        <svg>
-            <circle cx="50" cy="50" r="45"></circle>
-            <circle cx="50" cy="50" r="45" class="progress"></circle>
-        </svg>
-        <div class="percentage">0%</div>
-        <div class="circle-label">Gerentes</div>
-    </div>
-    <div class="circle">
-        <svg>
-            <circle cx="50" cy="50" r="45"></circle>
-            <circle cx="50" cy="50" r="45" class="progress"></circle>
-        </svg>
-        <div class="percentage">0%</div>
-        <div class="circle-label">Aprobado</div>
-    </div>
-</div>
 
+<section class="section-title">
+    <h1>Nueva Solicitud de Personal</h1>
+    <img src="imagenes/solicitudes-de-empleo.png" alt="Imagen decorativa" class="imagen-banner">
+</section>
 
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Perfil del Usuario</h2>
-        <div class="modal-body">
-            <img src="https://grammermx.com/Fotos/<?php echo $_SESSION['NumNomina']; ?>.png" alt="Foto de Usuario" class="user-photo">
-            <p><strong>Nombre:</strong> <span id="userName"></span></p>
-            <p><strong>Número de Nómina:</strong> <span id="userNumNomina"></span></p>
-            <p><strong>Área:</strong> <span id="userArea"></span></p>
-        </div>
+<section class="area-blanca">
+    <div class="contenido-blanco" id="seguimiento-container">
+        <div class="loader"></div>
+        <p class="loading-text">Cargando estado de tu última solicitud...</p>
     </div>
-</div>
+</section>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const percentages = [75, 50, 90]; // Porcentajes a llenar
@@ -115,45 +97,95 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Manejo del cambio de tipo de solicitud
-        const tipoSelect = document.getElementById('tipo');
-        const reemplazoFields = document.getElementById('reemplazoFields');
 
-        if (tipoSelect) {
-            tipoSelect.addEventListener('change', () => {
-                reemplazoFields.style.display = tipoSelect.value === 'reemplazo' ? 'block' : 'none';
-            });
+        // Función para cargar y mostrar el estado de la solicitud
+        function cargarEstadoSolicitud() {
+            const container = document.getElementById('seguimiento-container');
+
+            fetch('dao/daoEstadoSolicitud.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Si se encontró una solicitud, dibujamos la línea de tiempo
+                        const solicitud = data.data;
+                        dibujarTimeline(container, solicitud);
+                    } else if (data.status === 'not_found') {
+                        container.innerHTML = `<h2>Aún no tienes solicitudes</h2><p>${data.message}</p>`;
+                    } else {
+                        container.innerHTML = `<h2>Error</h2><p>${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    container.innerHTML = `<h2>Error</h2><p>No se pudo conectar con el servidor.</p>`;
+                });
         }
 
-        // Menú lateral (sidebar)
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
+        // Función que crea el HTML de la línea de tiempo
+        function dibujarTimeline(container, solicitud) {
+            const estatusId = parseInt(solicitud.IdEstatus);
 
-        if (menuToggle && sidebar) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-            });
-        }
+            // Definimos los pasos y sus estados
+            const pasos = [
+                { id: 1, label: 'Enviada', icon: 'fa-paper-plane' },
+                { id: 4, label: 'Aprob. Parcial', icon: 'fa-user-check' },
+                { id: 2, label: 'Aprob. Gerencia', icon: 'fa-users' },
+                { id: 10, label: 'Vacante Creada', icon: 'fa-bullhorn' }
+            ];
 
-        // Menú de perfil
-        const userProfile = document.getElementById('profilePic');
-        const profileDropdown = document.getElementById('profileDropdown');
+            let timelineHTML = `
+                <h2>Seguimiento de tu última solicitud</h2>
+                <p class="folio-solicitud">Folio: ${solicitud.FolioSolicitud}</p>
+                <div class="timeline">
+            `;
 
-        if (userProfile && profileDropdown) {
-            userProfile.addEventListener('click', () => {
-                profileDropdown.classList.toggle('active');
-            });
+            let haSidoRechazado = (estatusId === 3);
+            let pasoActivoEncontrado = false;
 
-            document.addEventListener('click', (e) => {
-                if (!profileDropdown.contains(e.target) && !userProfile.contains(e.target)) {
-                    profileDropdown.classList.remove('active');
+            pasos.forEach((paso, index) => {
+                let claseEstado = '';
+
+                if (haSidoRechazado) {
+                    claseEstado = 'rejected';
+                } else {
+                    if (pasoActivoEncontrado) {
+                        claseEstado = ''; // Pasos futuros quedan en gris
+                    } else if (estatusId === paso.id) {
+                        claseEstado = 'active'; // El paso actual
+                        pasoActivoEncontrado = true;
+                    } else {
+                        // Suponemos que si el estatus actual es mayor que el del paso, ya se completó
+                        // Esta lógica simple funciona si los IDs de estatus son secuenciales en el proceso.
+                        // Ej: si el estatus es 4, el paso 1 se marca como completado.
+                        // ¡IMPORTANTE! Ajusta esta lógica si tus IDs de estatus no siguen el flujo del proceso.
+                        const flujoDeEstatus = [1, 4, 2, 10];
+                        const indiceActual = flujoDeEstatus.indexOf(estatusId);
+                        const indicePaso = flujoDeEstatus.indexOf(paso.id);
+
+                        if (indiceActual > indicePaso) {
+                            claseEstado = 'completed';
+                        }
+                    }
                 }
+
+                timelineHTML += `
+                    <div class="timeline-step ${claseEstado}">
+                        <div class="icon"><i class="fas ${paso.icon}"></i></div>
+                        <div class="label">${paso.label}</div>
+                    </div>
+                `;
             });
+
+            timelineHTML += `</div>`;
+            container.innerHTML = timelineHTML;
         }
 
-        // Cerrar sesión con fetch
-        const logoutLink = document.getElementById('logout');
+        // --- INICIAR TODO ---
+        cargarEstadoSolicitud();
 
+
+        // --- CÓDIGO DE LOGOUT (sin cambios) ---
+        const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -161,17 +193,12 @@ if (!isset($_SESSION['NumNomina'])) {
                     .then(response => {
                         if (response.ok) {
                             window.location.href = 'login.php';
-                        } else {
-                            alert('Error al cerrar sesión. Inténtalo nuevamente.');
                         }
-                    })
-                    .catch(error => console.error('Error al cerrar sesión:', error));
+                    });
             });
         }
-
     });
 </script>
-<script src="js/funcionamientoModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
