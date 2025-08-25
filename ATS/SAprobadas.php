@@ -167,16 +167,18 @@ if (!isset($_SESSION['NumNomina'])) {
                     "data": null, // Columna de Acciones
                     "orderable": false, // Para que no se pueda ordenar por esta columna
                     "render": function (data, type, row) {
-                        // --- CAMBIO CLAVE 2: La condición ahora es mucho más confiable ---
                         if (row.EstadoFinalCalculado === "Completamente Aprobado") {
                             return `
-                        <button class="btn btn-primary btn-sm go-to-page-btn">
-                            <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
-                        </button>
-                        `;
+                                <button class="btn btn-primary btn-sm go-to-page-btn">
+                                    <i class="fas fa-external-link-alt"></i> Ir a Seguimiento
+                                </button>
+                            `;
+                                            } else if (row.EstadoFinalCalculado === "Vacante Creada") {
+                            // --- LÍNEA NUEVA ---
+                            // Si la vacante ya fue creada, mostramos un mensaje de éxito.
+                            return '<span class="badge bg-success">Vacante Creada</span>';
                         } else {
-                            // Si no está completamente aprobado, mostramos un distintivo informativo
-                            return '<span class="badge bg-info text-dark">En Proceso</span>';
+                            return '<span class="badge bg-secondary">En Proceso</span>';
                         }
                     }
                 }
