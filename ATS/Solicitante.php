@@ -28,9 +28,9 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="#">Nueva Solicitud</a>
-            <a href="SAprobadas.php">S.Aprobadas</a>
-            <a href="SeguimientoAdministrador.php">Seguimiento</a>
-            <a href="Postulaciones.php">Candidatos Postulados</a>
+            <a href="seguimiento.php">Seguimiento</a>
+            <a href="historicos.php">Historial de Solicitudes</a>
+            <a href="seleccionFinal.php">Candidatos Finales</a>
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
