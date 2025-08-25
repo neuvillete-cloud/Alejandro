@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $fechaHoraActual = date('Y-m-d');
-    $idEstatus = 1;
+    $idEstatus = 1; // Estatus para la vacante nueva, no para la solicitud
 
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -113,42 +113,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($stmt->execute()) {
-        // Obtener el FolioSolicitud correspondiente al IdSolicitud
-        $stmtFolio = $conex->prepare("SELECT FolioSolicitud FROM Solicitudes WHERE IdSolicitud = ?");
-        $stmtFolio->bind_param("i", $idSolicitud);
-        $stmtFolio->execute();
-        $resultFolio = $stmtFolio->get_result();
+        // --- CAMBIO APLICADO ---
+        // Después de crear la vacante, actualizamos la solicitud original al estatus "Vacante Creada".
 
-        if ($resultFolio->num_rows > 0) {
-            $rowFolio = $resultFolio->fetch_assoc();
-            $folioSolicitud = $rowFolio['FolioSolicitud'];
-            $stmtFolio->close();
+        $nuevoEstatusSolicitud = 10; // Usamos el ID 10 como se solicitó
+        $stmtUpdate = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
+        $stmtUpdate->bind_param("ii", $nuevoEstatusSolicitud, $idSolicitud);
 
-            // Actualizar IdEstatus en la tabla Aprobadores
-            $nuevoEstatus = 5; // Puedes cambiar este valor según el flujo deseado
-            $stmtUpdate = $conex->prepare("UPDATE Aprobadores SET IdEstatus = ? WHERE FolioSolicitud = ?");
-            $stmtUpdate->bind_param("is", $nuevoEstatus, $folioSolicitud);
-
-            if ($stmtUpdate->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'Vacante guardada y estatus actualizado correctamente']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Vacante guardada pero error al actualizar el estatus: ' . $stmtUpdate->error]);
-            }
-
-            $stmtUpdate->close();
+        if ($stmtUpdate->execute()) {
+            echo json_encode(['status' => 'success', 'message' => 'Vacante guardada y solicitud actualizada correctamente']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Vacante guardada pero no se encontró el FolioSolicitud']);
+            echo json_encode(['status' => 'warning', 'message' => 'Vacante guardada, pero no se pudo actualizar el estado de la solicitud original.']);
         }
+        $stmtUpdate->close();
+        // --- FIN DEL CAMBIO ---
 
-        $conex->close();
     } else {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Error al guardar en la base de datos: ' . $stmt->error
+            'message' => 'Error al guardar la vacante: ' . $stmt->error
         ]);
     }
 
     $stmt->close();
+    $conex->close();
+
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Se requiere método POST']);
 }
+?>
