@@ -239,6 +239,7 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
     <div class="sub-footer">
         <p>&copy; <?= date('Y') ?> Grammer Automotive de México. Todos los derechos reservados.</p>
+        <p class="developer-credit">Desarrollado con <i class="fas fa-heart"></i> por Alejandro Torres Jimenez</p>
     </div>
 </footer>
 </body>

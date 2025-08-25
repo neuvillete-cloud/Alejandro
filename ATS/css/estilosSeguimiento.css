@@ -504,3 +504,14 @@ nav a:not(:hover)::after {
 .sub-footer p {
     margin: 0;
 }
+
+.developer-credit {
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+.developer-credit .fa-heart {
+    color: #e74c3c; /* Un color rojo para el corazón */
+}
