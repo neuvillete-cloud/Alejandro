@@ -114,7 +114,7 @@ nav a:not(:hover)::after {
 }
 
 .section-title {
-    background-color:	#3b8ac9a3;
+    background-color:   #3b8ac9a3;
     padding: 100px 20px;
     min-height: 170px;
     display: flex;
@@ -122,6 +122,7 @@ nav a:not(:hover)::after {
     justify-content: center;
     text-align: center;
     flex-direction: column;
+    position: relative;
 }
 
 .section-title h1 {
@@ -149,6 +150,7 @@ nav a:not(:hover)::after {
     background-color: transparent;
     font-size: 18px;
     padding-bottom: 10px;
+    position: relative;
 }
 
 .user-menu::after {
@@ -205,10 +207,6 @@ nav a:not(:hover)::after {
     background-color: #007BFF;
 }
 
-.user-info {
-    position: relative;
-}
-
 .user-info::after {
     content: '';
     position: absolute;
@@ -233,7 +231,6 @@ nav a:not(:hover)::after {
     background-color: #fff;
     padding: 80px 20px;
     min-height: 500px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .contenido-blanco {
@@ -241,93 +238,6 @@ nav a:not(:hover)::after {
     margin: 0 auto;
     font-size: 16px;
     color: #333;
-}
-
-.buscador-vacantes {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Contenedor de formulario */
-.form-container {
-    background-color: #E6F4F9;
-    color: #333333;
-    padding: 60px 80px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 600px;
-    z-index: 10;
-    text-align: center;
-}
-
-.form-container h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #1E3A8A;
-}
-
-.form-container label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 16px;
-    color: #333333;
-}
-
-.form-container input,
-.form-container select {
-    width: 100%;
-    padding: 14px 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f5f5f5;
-    font-size: 14px;
-    color: #333333;
-}
-
-.form-container input::placeholder {
-    color: #999999;
-}
-
-.form-container select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
-    cursor: pointer;
-}
-
-.form-container .btn-submit {
-    width: 100%;
-    padding: 14px;
-    background-color: #1E90FF;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.form-container .btn-submit:hover {
-    background-color: #4682B4;
-}
-
-/* Formulario cuando se expande */
-.form-container.expanded {
-    min-height: 800px; /* Ajusta según el contenido */
-    padding-bottom: 100px; /* Asegura suficiente espacio inferior */
-}
-
-/* Evitar que el formulario se superponga con otros elementos */
-body {
-    padding-top: 70px; /* Asegura que el formulario no toque la barra superior */
-}
-
-.section-title {
-    position: relative;
 }
 
 .imagen-banner {
@@ -357,5 +267,115 @@ body {
     color: white;
 }
 
+/* ================================================= */
+/* == INICIO: ESTILOS MODERNOS PARA FORMULARIO    == */
+/* ================================================= */
 
+/* --- Contenedor Principal del Formulario --- */
+.form-container {
+    background-color: #ffffff; /* Fondo blanco limpio */
+    color: #333;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra más suave y profesional */
+    max-width: 600px; /* Ancho máximo mantenido */
+    margin: 0 auto; /* Centrar el formulario en la página */
+    text-align: left; /* Alineamos el texto a la izquierda */
+}
 
+.form-container h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #1a253c; /* Azul oscuro corporativo */
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 20px;
+}
+
+/* Usamos un grid para un espaciado consistente */
+#solicitudForm {
+    display: grid;
+    gap: 20px;
+}
+
+/* --- Etiquetas (Labels) --- */
+.form-container label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4b5563; /* Gris oscuro */
+    margin-bottom: 5px; /* Menos espacio, el grid ya lo maneja */
+}
+
+/* --- Campos de Entrada (Inputs) y Select --- */
+.form-container input,
+.form-container select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #d1d5db; /* Borde gris claro */
+    border-radius: 8px;
+    background-color: #f9fafb; /* Fondo casi blanco */
+    font-size: 1rem;
+    color: #111827;
+    box-sizing: border-box; /* Importante para el padding */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-container input::placeholder {
+    color: #9ca3af;
+}
+
+/* --- Estado :focus para Inputs (Efecto al hacer clic) --- */
+.form-container input:focus,
+.form-container select:focus {
+    outline: none;
+    border-color: #3b82f6; /* Borde azul al seleccionar */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* Anillo de foco */
+}
+
+/* Personalización de la flecha del select */
+.form-container select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.7rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em;
+}
+
+/* --- Contenedor dinámico del Reemplazo --- */
+#reemplazoFields {
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border: 1px dashed #d1d5db;
+}
+
+/* --- Botón de Envío --- */
+.form-container .btn-submit {
+    width: 100%;
+    padding: 15px;
+    background-color: #063962; /* Azul corporativo del header */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacio para el ícono */
+}
+
+.form-container .btn-submit:hover {
+    background-color: #084c81; /* Un poco más claro al pasar el mouse */
+    transform: translateY(-2px); /* Efecto de elevación */
+}
+
+/* ================================================= */
+/* == FIN: ESTILOS MODERNOS PARA FORMULARIO       == */
+/* ================================================= */

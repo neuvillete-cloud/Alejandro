@@ -86,7 +86,9 @@ if (!isset($_SESSION['NumNomina'])) {
                         <input type="text" id="reemplazoNombre" name="reemplazoNombre" placeholder="Ingresa el nombre del reemplazo">
                     </div>
 
-                    <button type="submit" class="btn-submit">Registrar</button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Registrar Solicitud
+                    </button>
                 </form>
             </section>
         </main>
