@@ -19,18 +19,15 @@ if (!isset($_SESSION['NumNomina'])) {
 <header>
 </header>
 
-<section class="profile-header">
-    <div class="header-content">
-        <div class="avatar-container">
-            <i class="fas fa-user-shield"></i>
-        </div>
-        <div class="user-info-header">
-            <h1 id="headerNombre">Cargando...</h1>
-            <p id="headerRol">Cargando rol...</p>
-        </div>
+<section class="section-title">
+    <div class="perfil-icono">
+        <img src="imagenes/perfil.png" alt="Ícono de Perfil" class="imagen-banner">
+    </div>
+    <div class="perfil-texto">
+        <span>MI PERFIL</span>
+        <h1 id="headerNombre">Cargando...</h1>
     </div>
 </section>
-
 <main class="profile-main-content">
     <div class="profile-grid">
         <div class="profile-card">
@@ -91,18 +88,14 @@ if (!isset($_SESSION['NumNomina'])) {
             .then(data => {
                 if (data.status === 'success') {
                     const usuario = data.data;
-                    // Rellenar cabecera
                     document.getElementById('headerNombre').textContent = usuario.Nombre;
-                    document.getElementById('headerRol').textContent = usuario.NombreRol;
-                    // Rellenar tarjeta de info de cuenta
                     document.getElementById('infoNombre').textContent = usuario.Nombre;
                     document.getElementById('infoNomina').textContent = usuario.NumNomina;
                     document.getElementById('infoCorreo').textContent = usuario.Correo;
-                    // Rellenar tarjeta de info laboral
                     document.getElementById('infoRol').textContent = usuario.NombreRol;
                     document.getElementById('infoArea').textContent = usuario.NombreArea;
                 } else {
-                    alert(data.message); // O mostrar un mensaje más amigable
+                    alert(data.message);
                 }
             })
             .catch(error => {
@@ -110,7 +103,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 alert("No se pudo cargar la información del perfil.");
             });
 
-        // --- Lógica de Logout ---
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
