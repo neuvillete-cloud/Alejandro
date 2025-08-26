@@ -17,6 +17,36 @@ if (!isset($_SESSION['NumNomina'])) {
 <body>
 
 <header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
+        </div>
+        <nav>
+            <a href="#">Nueva Solicitud</a>
+            <a href="seguimiento.php">Seguimiento</a>
+            <a href="historicos.php">Historial de Solicitudes</a>
+
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfilUsuarios.php">Perfil</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
+    </div>
 </header>
 
 <section class="section-title">
@@ -26,7 +56,6 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-
         <div class="profile-container">
 
             <aside class="profile-sidebar">
@@ -70,7 +99,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     </div>
                 </div>
             </main>
-
         </div>
     </div>
 </section>
