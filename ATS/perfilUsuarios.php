@@ -26,11 +26,32 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
         </div>
         <nav>
-            <a href="Solicitante.php">Nueva Solicitud</a>
-            <a href="seguimiento.php">Seguimiento</a>
-            <a href="historicos.php">Historial de Solicitudes</a>
-            <a href="seleccionFinal.php">Candidatos Finales</a>
 
+            <?php
+            // Verificamos si la variable de Rol existe en la sesión
+            if (isset($_SESSION['Rol'])) {
+
+                // Si el Rol es 1 (Administrador)
+                if ($_SESSION['Rol'] == 1) {
+                    ?>
+                    <a href="Administrador.php">Inicio</a>
+                    <a href="SAprobadas.php">S.Aprobadas</a>
+                    <a href="SeguimientoAdministrador.php">Seguimiento</a>
+                    <a href="cargaVacante.php">Carga de Vacantes</a>
+                    <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+                    <?php
+                    // Si el Rol es 2 (Solicitante)
+                } elseif ($_SESSION['Rol'] == 2) {
+                    ?>
+                    <a href="Solicitante.php">Nueva Solicitud</a>
+                    <a href="seguimiento.php">Seguimiento</a>
+                    <a href="historicos.php">Historial de Solicitudes</a>
+                    <a href="seleccionFinal.php">Candidatos Finales</a>
+                    <?php
+                }
+                // Aquí podrías añadir más 'elseif' para otros roles en el futuro
+            }
+            ?>
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
                     <div class="user-info">
@@ -39,7 +60,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a href="#">Perfil</a>
+                        <a href="perfilUsuarios.php">Perfil</a>
                         <a href="#" id="logout">Cerrar sesión</a>
                     </div>
                 </div>
@@ -62,9 +83,9 @@ if (!isset($_SESSION['NumNomina'])) {
             <aside class="profile-sidebar">
                 <div class="avatar-display">
                     <img
-                        src="https://grammermx.com/Fotos/<?php echo htmlspecialchars($_SESSION['NumNomina']); ?>.png"
-                        alt="Foto de Perfil"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                            src="https://grammermx.com/Fotos/<?php echo htmlspecialchars($_SESSION['NumNomina']); ?>.png"
+                            alt="Foto de Perfil"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                     >
                     <i class="fas fa-user-shield" style="display: none;"></i>
                 </div>
@@ -109,21 +130,16 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </section>
 
-
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Este script obtiene los datos del usuario y los pone en el nuevo layout
         fetch('dao/daoPerfilUsuario.php')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
                     const usuario = data.data;
-                    // Rellenar barra lateral
                     document.getElementById('infoNombre').textContent = usuario.Nombre;
                     document.getElementById('infoCorreo').textContent = usuario.Correo;
                     document.getElementById('infoRol').textContent = usuario.NombreRol;
-                    // Rellenar detalles principales
                     document.getElementById('infoNombreCompleto').textContent = usuario.Nombre;
                     document.getElementById('infoNomina').textContent = usuario.NumNomina;
                     document.getElementById('infoArea').textContent = usuario.NombreArea;
@@ -136,7 +152,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 alert("No se pudo cargar la información del perfil.");
             });
 
-        // Lógica para cerrar sesión
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
