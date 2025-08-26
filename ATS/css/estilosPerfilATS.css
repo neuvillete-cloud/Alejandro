@@ -267,132 +267,140 @@ nav a:not(:hover)::after {
     color: white;
 }
 
-/* Encabezado del Perfil */
-.profile-header {
-    background-color: #1a253c; /* Azul oscuro */
-    color: #fff;
-    padding: 40px 0;
-    margin-top: 80px; /* Ajusta según la altura de tu header fijo */
+/* ========================================================== */
+/* == INICIO: ESTILOS PARA EL PERFIL DE DOS COLUMNAS       == */
+/* ========================================================== */
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 300px 1fr; /* Columna lateral de 300px y el resto para el contenido */
+    gap: 40px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-.header-content {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 25px;
+
+/* --- Barra Lateral Izquierda --- */
+.profile-sidebar {
+    text-align: center;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
 }
-.avatar-container {
-    flex-shrink: 0;
-    width: 100px;
-    height: 100px;
+
+.avatar-display {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px auto;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #063962;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
-    border: 3px solid #fff;
-}
-.user-info-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
-    font-weight: 700;
-}
-.user-info-header p {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #d1d5db;
+    font-size: 4rem;
 }
 
-/* Contenido Principal */
-.profile-main-content {
-    width: 80%;
-    margin: 40px auto;
-}
-.profile-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-}
-
-/* Tarjetas de Perfil */
-.profile-card {
-    background-color: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    overflow: hidden;
-}
-.card-header {
-    background-color: #f9fafb;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e5e7eb;
-}
-.card-header h3 {
+.profile-sidebar h2 { /* infoNombre */
     margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.5rem;
     color: #1a253c;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.card-header h3 i {
-    color: #3b82f6;
-}
-.card-body {
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
 }
 
-/* Filas de Información */
-.info-row {
-    display: flex;
-    flex-direction: column;
-}
-.info-label {
-    font-size: 0.85rem;
+.profile-sidebar p { /* infoCorreo */
+    margin: 5px 0 20px 0;
     color: #6b7280;
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.profile-sidebar hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.sidebar-info {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+.sidebar-info strong {
+    display: block;
     margin-bottom: 5px;
 }
-.info-value {
-    font-size: 1rem;
-    color: #111827;
-    font-weight: 500;
+.sidebar-info span { /* infoRol */
+    display: inline-block;
+    background-color: #e0e7ff;
+    color: #3b82f6;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
 }
 
-/* Tarjeta de Acciones */
-.card-acciones .card-body {
+/* --- Contenido Principal Derecho --- */
+.profile-details {
+    padding: 10px;
+}
+
+.details-section {
+    margin-bottom: 40px;
+}
+
+.details-section h3 {
+    font-size: 1.25rem;
+    color: #1a253c;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Lista de Definiciones (dl, dt, dd) */
+.details-section dl {
+    margin: 0;
+}
+.details-section dt {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.details-section dd {
+    font-size: 1rem;
+    color: #111827;
+    margin-left: 0;
+    margin-bottom: 20px;
+    background-color: #f9fafb;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.acciones-container {
+    display: flex;
     gap: 15px;
 }
 .btn-accion {
-    width: 100%;
-    padding: 12px;
+    padding: 12px 25px;
     border-radius: 8px;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     border: 1px solid transparent;
     transition: all 0.2s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
 }
-.btn-primario {
-    background-color: #063962;
-    color: #fff;
-}
-.btn-primario:hover {
-    background-color: #084c81;
-}
-.btn-secundario {
-    background-color: #fff;
-    color: #063962;
-    border-color: #063962;
-}
-.btn-secundario:hover {
-    background-color: #f0f4f8;
+.btn-primario { background-color: #063962; color: #fff; }
+.btn-primario:hover { background-color: #084c81; }
+.btn-secundario { background-color: #fff; color: #063962; border-color: #063962; }
+.btn-secundario:hover { background-color: #f0f4f8; }
+
+
+/* --- Diseño Responsivo --- */
+@media (max-width: 992px) {
+    .profile-container {
+        grid-template-columns: 1fr; /* Las columnas se apilan en pantallas pequeñas */
+    }
 }
