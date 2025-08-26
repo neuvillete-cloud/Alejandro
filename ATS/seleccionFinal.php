@@ -180,7 +180,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         } else {
                             const ext = data.RutaCV.split('.').pop().toLowerCase();
                             if (ext === 'pdf') {
-                                modalCvViewer.innerHTML = `<iframe src="${data.RutaCV}" width="100%" height="500px" style="border:none;"></iframe>`;
+                                modalCvViewer.innerHTML = `<iframe src="${data.RutaCV}#view=FitH" width="100%" height="500px" style="border:none;"></iframe>`;
                             } else {
                                 modalCvViewer.innerHTML = `<p>El formato del archivo (${ext}) no se puede previsualizar.</p><a href="${data.RutaCV}" target="_blank" class="btn btn-primary">Descargar CV</a>`;
                             }
