@@ -301,8 +301,19 @@ nav a:not(:hover)::after {
     align-items: center;
     justify-content: center;
     font-size: 4rem;
+    overflow: hidden; /* Muy importante para que la imagen no se salga del círculo */
+    position: relative;
 }
 
+.avatar-display img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Escala la imagen para llenar el espacio sin deformarla */
+}
+
+.avatar-display i {
+    display: flex; /* Para que el ícono de respaldo se muestre si es necesario */
+}
 .profile-sidebar h2 { /* infoNombre */
     margin: 0;
     font-size: 1.5rem;

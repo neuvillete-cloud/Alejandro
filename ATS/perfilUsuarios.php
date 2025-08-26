@@ -60,7 +60,12 @@ if (!isset($_SESSION['NumNomina'])) {
 
             <aside class="profile-sidebar">
                 <div class="avatar-display">
-                    <i class="fas fa-user-shield"></i>
+                    <img
+                        src="https://grammermx.com/Fotos/<?php echo htmlspecialchars($_SESSION['NumNomina']); ?>.png"
+                        alt="Foto de Perfil"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    >
+                    <i class="fas fa-user-shield" style="display: none;"></i>
                 </div>
                 <h2 id="infoNombre">Cargando...</h2>
                 <p id="infoCorreo">Cargando...</p>
