@@ -382,3 +382,132 @@ nav a:not(:hover)::after {
 .mensaje-vacio i {
     color: #a0aebf;
 }
+
+/* ========================================= */
+/* == ESTILOS PARA EL MODAL DE CV         == */
+/* ========================================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s 0.3s;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 800px; /* Ancho máximo del modal */
+    max-height: 90vh; /* Altura máxima */
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1a253c;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #9ca3af;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #1a253c;
+}
+
+.modal-body {
+    padding: 25px;
+    overflow-y: auto; /* Permite scroll si el contenido es muy alto */
+}
+
+.modal-body h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1a253c;
+}
+
+.cv-viewer iframe {
+    width: 100%;
+    height: 50vh; /* Altura del visor de PDF */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 20px 25px;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.btn-accion {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-accion.aprobar {
+    background-color: #28a745;
+    color: white;
+}
+.btn-accion.aprobar:hover {
+    background-color: #218838;
+}
+
+.btn-accion.rechazar {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-accion.rechazar:hover {
+    background-color: #c82333;
+}
