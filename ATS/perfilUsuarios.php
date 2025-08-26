@@ -39,7 +39,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a href="perfilUsuarios.php">Perfil</a>
+                        <a href="#">Perfil</a>
                         <a href="#" id="logout">Cerrar sesión</a>
                     </div>
                 </div>
