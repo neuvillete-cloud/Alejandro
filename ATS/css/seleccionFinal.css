@@ -267,186 +267,107 @@ nav a:not(:hover)::after {
     color: white;
 }
 
-.go-to-page-btn {
-    background-color: #007bff; /* Azul brillante */
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-}
+/* ================================================= */
+/* == INICIO: ESTILOS PARA TARJETAS DE CANDIDATOS == */
+/* ================================================= */
 
-.go-to-page-btn i {
-    margin-right: 5px; /* Espaciado entre el icono y el texto */
-}
-
-.go-to-page-btn:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
-}
-
-.go-to-page-btn:active {
-    background-color: #004494; /* Azul aún más oscuro al hacer clic */
-    transform: scale(0.98); /* Pequeño efecto de clic */
-}
-
-.ver-detalles-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: #1e88e5;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.ver-detalles-btn:hover {
-    background-color: #1565c0;
-    transform: scale(1.03);
-    text-decoration: none;
-}
-
-.ver-detalles-btn i {
-    font-size: 16px;
-}
-
-/* Estructura general */
-.cards-container {
-    width: 150% !important;
-    max-width: 1500px !important;
-    margin: 30px auto !important;
-    font-size: 16px !important;
-    padding-right: 400px;
-}
-
-
-.cards-header,
-.candidato-card {
+.candidatos-grid-container {
     display: grid;
-    grid-template-columns: 20% 20% 30% 15% 30%;
-    font-size: 16px;
-    padding: 16px 20px;
-    align-items: center;
-}
-
-.cards-header {
-    background: linear-gradient(135deg, #2e3c5c, rgba(0, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
-    font-weight: bold;
-    color: #ffffff;
-    border-bottom: 1px solid white;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
 }
 
 .candidato-card {
-    background-color: #8bbce4;         /* Azul pastel claro para las tarjetas */
-    border-bottom: 1px solid white;  /* División suave */
-    transition: background 0.2s ease;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Para que los bordes redondeados se apliquen bien */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .candidato-card:hover {
-    background-color: #A0C4E0;         /* Azul pastel ligeramente más oscuro al hacer hover */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-
-
-/* Columna Nombre con ícono */
-.col-nombre {
+.card-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    padding: 20px;
 }
 
-.card-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #1E90FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.avatar {
     flex-shrink: 0;
-}
-
-.card-icon i {
-    font-size: 28px;
-    color: white;
-}
-
-.col-icono {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #e0e7ff;
+    color: #3b82f6;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
 }
 
-
-.nombre-texto {
-    font-size: 16px;
-    color: white;
-    word-break: break-word;
+.info .nombre-candidato {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1a253c;
 }
 
-/* Columnas generales */
-.col {
-    padding: 10px 12px;
-    overflow-wrap: break-word;
-    color: white;
+.info .vacante-aplicada {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
 }
 
-/* Botón "Ver Detalles" */
-.col-acciones a.ver-detalles-btn {
-    background-color: #007bff;
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.estatus {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+/* Colores de los estatus */
+.estatus-aprobado { background-color: #dcfce7; color: #166534; }
+.estatus-rechazado { background-color: #fee2e2; color: #991b1b; }
+.estatus-recibido { background-color: #ffedd5; color: #9a3412; }
+.estatus-default { background-color: #e5e7eb; color: #4b5563; }
+
+
+.btn-ver-detalles {
+    background-color: #063962;
     color: #fff;
-    padding: 8px 14px;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
     text-decoration: none;
-    font-size: 15px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+.btn-ver-detalles:hover {
+    background-color: #084c81;
+    color: #fff;
 }
 
-.col-acciones a.ver-detalles-btn:hover {
-    background-color: #0056b3;
-}
-
-.col-estatus span {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-weight: bold;
-    color: white;
-    display: inline-block;
-    font-size: 16px;
-}
-
-/* Colores por estatus */
-.estatus-aprobado {
-    background-color: #4CAF50; /* Verde */
-}
-
-.estatus-rechazado {
-    background-color: #F44336; /* Rojo */
-}
-
-.estatus-recibido {
-    background-color: #FF9800; /* Naranja */
-}
-
-.estatus-default {
-    background-color: #888888; /* Gris */
-}
-
-
-
-.titulo-candidatos h2 {
-    margin-top: 20px; /* Súbelo más si quieres */
-    margin-bottom: 20px;
-    text-align: left; /* opcional */
-    color: white;
-}
-
+/* Mensaje para cuando no hay candidatos */
 .mensaje-vacio {
     background-color: #f0f4f8;
     border: 2px dashed #a0aebf;
@@ -456,8 +377,8 @@ nav a:not(:hover)::after {
     margin: 40px auto;
     max-width: 600px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    text-align: center;
 }
 .mensaje-vacio i {
     color: #a0aebf;
 }
-
