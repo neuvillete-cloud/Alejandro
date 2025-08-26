@@ -156,7 +156,7 @@ if (!isset($_SESSION['NumNomina'])) {
             fetch('dao/logout.php', { method: 'POST' })
                 .then(response => {
                     if (response.ok) {
-                        window.location.href = 'loginATS.php';
+                        window.location.href = 'login.php';
                     } else {
                         alert('Error al cerrar sesión. Inténtalo nuevamente.');
                     }
