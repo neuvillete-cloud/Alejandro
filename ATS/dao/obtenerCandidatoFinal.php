@@ -6,6 +6,23 @@ date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
+// --- INICIO: Bloque nuevo para obtener áreas ---
+if (isset($_GET['action']) && $_GET['action'] === 'get_areas') {
+    $stmt = $conn->prepare("SELECT DISTINCT NombreArea FROM Area ORDER BY NombreArea ASC");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $areas = [];
+    while ($row = $res->fetch_assoc()) {
+        $areas[] = $row['NombreArea'];
+    }
+    echo json_encode($areas, JSON_UNESCAPED_UNICODE);
+    $stmt->close();
+    $conn->close();
+    exit; // Importante para no continuar con el resto del script
+}
+// --- FIN: Bloque nuevo ---
+
+
 // Autocompletado: títulos de vacante
 if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'titulo' && !empty($_GET['q'])) {
     $termino = "%" . trim($_GET['q']) . "%";
@@ -148,3 +165,4 @@ while ($row = $result->fetch_assoc()) {
 
 echo json_encode($candidatos, JSON_UNESCAPED_UNICODE);
 $conn->close();
+?>
