@@ -7,18 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnBuscar = document.getElementById('btn-buscar');
 
     let todosLosCandidatos = []; // Almacenamos todos los candidatos aquí para un filtrado rápido
-    let filtrosActivos = {};
 
     // --- 1. Cargar Áreas Dinámicamente ---
     function cargarAreas() {
-        // Usamos tu PHP existente, pero le pedimos una acción diferente
         fetch('dao/obtenerCandidatoFinal.php?action=get_areas')
             .then(response => response.json())
             .then(areas => {
                 if (Array.isArray(areas)) {
                     areas.forEach(area => {
                         const option = document.createElement('option');
-                        option.value = area; // El valor será el nombre del área
+                        option.value = area;
                         option.textContent = area;
                         filtroArea.appendChild(option);
                     });
@@ -34,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 if (Array.isArray(data)) {
                     todosLosCandidatos = data;
-                    renderizarCandidatos(todosLosCandidatos); // Mostramos todos al principio
+                    renderizarCandidatos(todosLosCandidatos);
                 }
             })
             .catch(error => {
@@ -43,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // --- 3. Función de Renderizado con Nuevo Diseño de Tarjeta ---
+    // --- 3. Función de Renderizado (SIN el botón Contratar) ---
     function renderizarCandidatos(candidatos) {
         contenedorCandidatos.innerHTML = "";
         if (candidatos.length === 0) {
@@ -100,12 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <a href="#" class="btn-contratar" data-id="${candidato.IdPostulacion}">
-                        <i class="fas fa-file-signature"></i> Contratar
-                    </a>
-                </div>
-            `;
+            `; // Se ha eliminado la sección <div class="card-footer">...</div>
             contenedorCandidatos.appendChild(card);
         });
     }
@@ -137,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
         campoVacante.value = "";
         campoCandidato.value = "";
         filtroArea.value = "";
-        aplicarFiltros(); // Re-renderiza con todos los candidatos
+        aplicarFiltros();
     });
 
     // --- Inicialización de la Página ---
