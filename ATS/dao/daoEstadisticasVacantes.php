@@ -1,5 +1,5 @@
 <?php
-include_once("../ConexionBD.php"); // Asegúrate de que la ruta sea correcta
+include_once("ConexionBD.php"); // Asegúrate de que la ruta sea correcta
 
 header('Content-Type: application/json');
 
