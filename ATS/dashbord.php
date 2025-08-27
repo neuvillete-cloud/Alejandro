@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Solicitud | ATS Grammer</title>
-    <link rel="stylesheet" href="css/estilosSolicitante.css">
+    <title>Estadísticas de Vacantes | ATS Grammer</title>
+    <link rel="stylesheet" href="css/estilosEstadisticas.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -52,8 +52,8 @@ if (!isset($_SESSION['NumNomina'])) {
 </header>
 
 <section class="section-title">
-    <h1>Nueva Solicitud de Personal</h1>
-    <img src="imagenes/solicitudes-de-empleo.png" alt="Imagen decorativa" class="imagen-banner">
+    <h1>Panel de Vacantes<</h1>
+    <img src="imagenes/analitica.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">

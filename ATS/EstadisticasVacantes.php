@@ -1,10 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php');
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,12 +9,52 @@ if (!isset($_SESSION['NumNomina'])) {
 </head>
 <body>
 
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
+
 <header>
+    <div class="header-container">
+        <div class="logo">
+            <img src="imagenes/logo_blanco.png" alt="Logo Grammer" class="logo-img">
+            <div class="logo-texto">
+                <h1>Grammer</h1>
+                <span>Automotive</span>
+            </div>
+        </div>
+        <nav>
+            <a href="#">Nueva Solicitud</a>
+            <a href="seguimiento.php">Seguimiento</a>
+            <a href="historicos.php">Historial de Solicitudes</a>
+            <a href="seleccionFinal.php">Candidatos Finales</a>
+
+            <?php if (isset($_SESSION['Nombre'])): ?>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['Nombre']) ?></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfilUsuarios.php">Perfil</a>
+                        <a href="#" id="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php">Inicio de sesión</a>
+            <?php endif; ?>
+        </nav>
+    </div>
 </header>
 
 <section class="section-title">
-    <h1>Panel de Vacantes</h1>
-    <img src="imagenes/analitica.png" alt="Imagen decorativa"> </section>
+    <h1>Panel de Vacantes<</h1>
+    <img src="imagenes/analitica.png" alt="Imagen decorativa" class="imagen-banner">
+</section>
 
 <section class="area-blanca">
     <div class="contenido-blanco">
@@ -30,8 +63,7 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </section>
 
-<footer class="main-footer">
-</footer>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
