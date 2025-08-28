@@ -183,6 +183,15 @@ nav > a:not(:hover)::after,
     background-color: #007BFF;
 }
 
+
+.user-info i.fas.fa-user-circle {
+    font-size: 20px;
+}
+
+.user-info i.fas.fa-chevron-down {
+    font-size: 12px;
+}
+
 .area-blanca {
     background-color: #fff;
     padding: 80px 20px;
