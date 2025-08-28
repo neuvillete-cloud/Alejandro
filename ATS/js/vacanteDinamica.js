@@ -71,13 +71,13 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarVacantes(1);
     });
 
+    // --- Lógica de Autocompletado (sin cambios) ---
     campoBusqueda.addEventListener("input", () => {
         const texto = campoBusqueda.value.trim();
         if (texto.length < 2) {
             sugerenciasContainer.style.display = "none";
             return;
         }
-
         fetch(`dao/busquedaSugerencias.php?q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
@@ -100,18 +100,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 sugerenciasContainer.style.display = "block";
             });
     });
-
     campoBusqueda.addEventListener("blur", () => {
         setTimeout(() => sugerenciasContainer.style.display = "none", 200);
     });
-
     campoUbicacion.addEventListener("input", () => {
         const texto = campoUbicacion.value.trim();
         if (texto.length < 2) {
             sugerenciasUbicacionContainer.style.display = "none";
             return;
         }
-
         fetch(`dao/busquedaUbicaciones.php?q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
@@ -134,14 +131,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 sugerenciasUbicacionContainer.style.display = "block";
             });
     });
-
     campoUbicacion.addEventListener("blur", () => {
         setTimeout(() => sugerenciasUbicacionContainer.style.display = "none", 200);
     });
 
     cargarVacantes(1);
 });
-
 
 function cargarVacantes(pagina) {
     const limite = 5;
@@ -200,16 +195,15 @@ function cargarVacantes(pagina) {
                     vistoHTML = `<span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
                 }
 
+                // --- CAMBIO APLICADO AQUÍ ---
+                // Se eliminó el <span> con la clase .vistas
                 item.innerHTML = `
                     <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
                     <h3>${vacante.Titulo}</h3>
                     <p>${vacante.Sueldo || "Sueldo no mostrado"}</p>
                     <ul>${beneficiosList}</ul>
                     <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-                    <p class="ubicacion">
-                        ${vacante.Ciudad}, ${vacante.Estado}
-                        <span class="vistas"><i class="fas fa-eye"></i> ${vacante.Visitas}</span>
-                    </p>
+                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
                 `;
 
                 item.addEventListener("click", () => {
@@ -217,7 +211,7 @@ function cargarVacantes(pagina) {
                     item.classList.add("activa");
                     mostrarDetalle(vacante);
 
-                    // Siempre notificamos al servidor. El PHP decidirá si es una nueva visita para la SESIÓN.
+                    // La lógica para registrar la vista sigue funcionando, pero ya no se muestra.
                     const formData = new FormData();
                     formData.append('id', vacante.IdVacante);
                     fetch('dao/registrarVista.php', {
@@ -225,13 +219,11 @@ function cargarVacantes(pagina) {
                         body: formData
                     }).catch(error => console.error('Error al registrar vista:', error));
 
-                    // Actualizamos localStorage solo para el texto "Vista recientemente".
                     const vacantesVistasStorage = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
                     if (!vacantesVistasStorage.includes(vacante.IdVacante)) {
                         vacantesVistasStorage.push(vacante.IdVacante);
                         localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistasStorage));
 
-                        // Actualizamos el texto visualmente sin recargar
                         const fechaP = item.querySelector(".fecha");
                         if (!fechaP.querySelector(".reciente")) {
                             const span = document.createElement("span");
@@ -246,6 +238,7 @@ function cargarVacantes(pagina) {
 
             if (primerItem) primerItem.click();
 
+            // Lógica de paginación (sin cambios)
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
             const btnPrev = document.createElement("button");
