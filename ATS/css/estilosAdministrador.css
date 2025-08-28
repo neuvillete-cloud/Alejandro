@@ -33,8 +33,7 @@ nav {
     padding-right: 1px;
 }
 
-/* Se aplica el estilo a los enlaces y a los activadores de menú */
-nav > a, .dropdown-toggle {
+nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -45,11 +44,30 @@ nav > a, .dropdown-toggle {
 
 /* --- INICIO DE CAMBIOS --- */
 
-/* 1. SE ELIMINAN LAS REGLAS ANTIGUAS E INCORRECTAS PARA LA BARRA SEPARADORA */
-/* Las reglas 'nav a:last-of-type' y 'nav a:last-of-type::before' han sido eliminadas. */
+/* 1. SE ELIMINA ESTA REGLA QUE CAUSABA LA BARRA DUPLICADA */
+/* nav a:last-of-type { ... } */
+/* nav a:last-of-type::before { ... } */
 
-/* 2. SE HACE EL SELECTOR DE LA BARRA DE ANIMACIÓN MÁS ESPECÍFICO Y SE AÑADE EL DEL USER-INFO */
-nav > a::after, .dropdown-toggle::after, .user-info::after {
+
+/* 2. El user-menu ahora tiene el padding y la barra, como ya lo tenías configurado */
+.user-menu {
+    position: relative;
+    display: inline-block;
+    padding-left: 15px;
+}
+
+.user-menu::before {
+    content: "|";
+    position: absolute;
+    left: -10px;
+    color: white;
+    font-size: 18px;
+    transform: scaleY(2);
+    display: inline-block;
+}
+
+/* 3. Se ajusta el selector de la barra de animación para que incluya al nuevo submenú */
+nav > a::after, .dropdown-toggle::after {
     content: '';
     position: absolute;
     left: 0;
@@ -61,17 +79,17 @@ nav > a::after, .dropdown-toggle::after, .user-info::after {
     transition: width 0.3s ease-in-out;
 }
 
-/* 3. SE HACE EL SELECTOR DE LA ANIMACIÓN MÁS ESPECÍFICO Y SE AÑADEN LOS DE LOS MENÚS */
-nav > a:hover::after,
-.nav-item.dropdown:hover > .dropdown-toggle::after,
-.user-menu:hover .user-info::after {
+/* Se ajusta el activador de la animación para el enlace normal */
+nav > a:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
-
-nav > a:not(:hover):after,
-.nav-item.dropdown:not(:hover) > .dropdown-toggle::after,
-.user-menu:not(:hover) .user-info::after {
+nav > a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
+
+/* Se AÑADE el activador de la animación para el nuevo submenú */
+.nav-item.dropdown:hover > .dropdown-toggle::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
 }
 
 /* --- FIN DE CAMBIOS --- */
@@ -134,25 +152,10 @@ nav > a:not(:hover):after,
     padding-top: 60px;
 }
 
-/* --- INICIO DE CAMBIOS EN USER-MENU PARA LA BARRA SEPARADORA --- */
 .user-menu {
     position: relative;
     display: inline-block;
-    padding-left: 25px; /* Espacio para la barra */
 }
-
-/* La nueva barra separadora, aplicada antes del menú de usuario */
-.user-menu::before {
-    content: "|";
-    position: absolute;
-    left: -10px; /* Posición original */
-    color: white;
-    font-size: 18px;
-    transform: scaleY(2); /* Tamaño/escala original */
-    /* El centrado vertical lo hereda del 'align-items: center' del nav */
-}
-/* --- FIN DE CAMBIOS EN USER-MENU --- */
-
 
 .user-info {
     color: white;
@@ -222,7 +225,26 @@ nav > a:not(:hover):after,
     background-color: #007BFF;
 }
 
-/* El resto de tu CSS original se mantiene intacto */
+.user-info::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -34px;
+    width: 0;
+    height: 4px;
+    background: #99d0e9;
+    transform-origin: left;
+    transition: width 0.3s ease-in-out;
+}
+
+.user-info:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+
+.user-info:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
+
 .area-blanca {
     background-color: #fff;
     padding: 80px 20px;
@@ -699,22 +721,19 @@ nav > a:not(:hover):after,
     color: #e74c3c; /* Un color rojo para el corazón */
 }
 
-/* --- BLOQUE DE CÓDIGO AÑADIDO PARA EL NUEVO SUBMENÚ --- */
+/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
 .nav-item.dropdown {
     position: relative;
 }
-
 .dropdown-toggle {
     display: flex;
     align-items: center;
     gap: 6px;
 }
-
 .dropdown-toggle .fa-chevron-down {
     font-size: 0.8em;
     transition: transform 0.3s ease;
 }
-
 .dropdown-menu-nav {
     display: none;
     position: absolute;
@@ -728,7 +747,6 @@ nav > a:not(:hover):after,
     z-index: 1001;
     overflow: hidden;
 }
-
 .dropdown-menu-nav a {
     color: #fff;
     padding: 12px 20px;
@@ -738,15 +756,12 @@ nav > a:not(:hover):after,
     border-bottom: 1px solid #1f3b77;
     transition: background-color 0.2s ease;
 }
-
 .dropdown-menu-nav a:last-child {
     border-bottom: none;
 }
-
 .dropdown-menu-nav a:hover {
     background-color: #007BFF;
 }
-
 .nav-item.dropdown::after {
     content: "";
     position: absolute;
@@ -755,11 +770,9 @@ nav > a:not(:hover):after,
     width: 100%;
     height: 40px;
 }
-
 .nav-item.dropdown:hover .dropdown-menu-nav {
     display: block;
 }
-
 .nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
     transform: rotate(180deg);
 }
