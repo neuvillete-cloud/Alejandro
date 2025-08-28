@@ -38,8 +38,9 @@ if (!isset($_SESSION['NumNomina'])) {
                     <a href="cargaVacante.php">Cargar/Editar Vacantes</a>
                 </div>
             </div>
-            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
             <a href="Postulaciones.php">Candidatos Postulados</a>
+            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
