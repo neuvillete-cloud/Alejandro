@@ -145,11 +145,11 @@ nav > a:not(:hover):after,
 .user-menu::before {
     content: "|";
     position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%) scaleY(1.5);
+    left: -10px; /* Posición original */
     color: white;
     font-size: 18px;
+    transform: scaleY(2); /* Tamaño/escala original */
+    /* El centrado vertical lo hereda del 'align-items: center' del nav */
 }
 /* --- FIN DE CAMBIOS EN USER-MENU --- */
 
