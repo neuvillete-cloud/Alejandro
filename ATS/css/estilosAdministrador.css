@@ -33,7 +33,8 @@ nav {
     padding-right: 1px;
 }
 
-nav a {
+/* Se aplica el estilo a los enlaces y a los activadores de menú */
+nav > a, .dropdown-toggle {
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -42,22 +43,13 @@ nav a {
     padding-bottom: 10px;
 }
 
-nav a:last-of-type {
-    position: relative;
-    padding-left: 15px;
-}
+/* --- INICIO DE CAMBIOS --- */
 
-nav a:last-of-type::before {
-    content: "|";
-    position: absolute;
-    left: -10px;
-    color: white;
-    font-size: 18px;
-    transform: scaleY(2);
-    display: inline-block;
-}
+/* 1. SE ELIMINAN LAS REGLAS ANTIGUAS E INCORRECTAS PARA LA BARRA SEPARADORA */
+/* Las reglas 'nav a:last-of-type' y 'nav a:last-of-type::before' han sido eliminadas. */
 
-nav > a::after {
+/* 2. SE HACE EL SELECTOR DE LA BARRA DE ANIMACIÓN MÁS ESPECÍFICO Y SE AÑADE EL DEL USER-INFO */
+nav > a::after, .dropdown-toggle::after, .user-info::after {
     content: '';
     position: absolute;
     left: 0;
@@ -69,13 +61,21 @@ nav > a::after {
     transition: width 0.3s ease-in-out;
 }
 
-nav a:hover::after {
+/* 3. SE HACE EL SELECTOR DE LA ANIMACIÓN MÁS ESPECÍFICO Y SE AÑADEN LOS DE LOS MENÚS */
+nav > a:hover::after,
+.nav-item.dropdown:hover > .dropdown-toggle::after,
+.user-menu:hover .user-info::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
 
-nav a:not(:hover)::after {
+nav > a:not(:hover):after,
+.nav-item.dropdown:not(:hover) > .dropdown-toggle::after,
+.user-menu:not(:hover) .user-info::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
+
+/* --- FIN DE CAMBIOS --- */
+
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
@@ -134,10 +134,25 @@ nav a:not(:hover)::after {
     padding-top: 60px;
 }
 
+/* --- INICIO DE CAMBIOS EN USER-MENU PARA LA BARRA SEPARADORA --- */
 .user-menu {
     position: relative;
     display: inline-block;
+    padding-left: 25px; /* Espacio para la barra */
 }
+
+/* La nueva barra separadora, aplicada antes del menú de usuario */
+.user-menu::before {
+    content: "|";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(1.5);
+    color: white;
+    font-size: 18px;
+}
+/* --- FIN DE CAMBIOS EN USER-MENU --- */
+
 
 .user-info {
     color: white;
@@ -207,26 +222,7 @@ nav a:not(:hover)::after {
     background-color: #007BFF;
 }
 
-.user-info::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -34px;
-    width: 0;
-    height: 4px;
-    background: #99d0e9;
-    transform-origin: left;
-    transition: width 0.3s ease-in-out;
-}
-
-.user-info:hover::after {
-    animation: smooth-infinite-bar 0.8s linear forwards;
-}
-
-.user-info:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards;
-}
-
+/* El resto de tu CSS original se mantiene intacto */
 .area-blanca {
     background-color: #fff;
     padding: 80px 20px;
@@ -703,31 +699,25 @@ nav a:not(:hover)::after {
     color: #e74c3c; /* Un color rojo para el corazón */
 }
 
-/* --- ESTILOS CORREGIDOS PARA EL SUBMENÚ DE NAVEGACIÓN --- */
-
-/* Contenedor principal del item con submenú */
+/* --- BLOQUE DE CÓDIGO AÑADIDO PARA EL NUEVO SUBMENÚ --- */
 .nav-item.dropdown {
     position: relative;
 }
 
-/* El enlace principal que activa el submenú */
 .dropdown-toggle {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-/* La flechita */
 .dropdown-toggle .fa-chevron-down {
     font-size: 0.8em;
     transition: transform 0.3s ease;
 }
 
-/* El contenedor del submenú (oculto por defecto) */
 .dropdown-menu-nav {
     display: none;
     position: absolute;
-    /* CAMBIO 1: Posición ajustada para que quede como el menú de perfil */
     top: calc(100% + 34px);
     left: 0;
     background-color: #063962;
@@ -739,7 +729,6 @@ nav a:not(:hover)::after {
     overflow: hidden;
 }
 
-/* Estilo de los enlaces dentro del submenú */
 .dropdown-menu-nav a {
     color: #fff;
     padding: 12px 20px;
@@ -758,30 +747,19 @@ nav a:not(:hover)::after {
     background-color: #007BFF;
 }
 
-/* --- LA MAGIA DEL HOVER --- */
-
-/* CAMBIO 2: Se añade el "puente" invisible para que el menú no desaparezca */
 .nav-item.dropdown::after {
     content: "";
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
-    height: 40px; /* Altura del puente invisible */
-    z-index: 1;
+    height: 40px;
 }
 
-/* Cuando pasas el cursor sobre el contenedor principal... */
 .nav-item.dropdown:hover .dropdown-menu-nav {
-    display: block; /* ...el submenú se hace visible. */
+    display: block;
 }
 
-/* Para que la animación de la línea también se active al pasar por el contenedor */
-.nav-item.dropdown:hover > .dropdown-toggle::after {
-    animation: smooth-infinite-bar 0.8s linear forwards;
-}
-
-/* Gira la flecha cuando el menú está activo */
 .nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
     transform: rotate(180deg);
 }
