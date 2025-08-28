@@ -328,33 +328,37 @@ if (!isset($_SESSION['NumNomina'])) {
             document.getElementById("previewBeneficios").textContent = form.beneficios.value;
             document.getElementById("previewDescripcion").textContent = form.descripcion.value;
 
+            // --- LÓGICA DE IMAGEN CORREGIDA ---
             const file = form.imagen.files[0];
             if (file) {
+                // Si el usuario seleccionó un archivo NUEVO, lo leemos y lo mostramos
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById("previewImagenVacante").src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             } else {
-                document.getElementById("previewImagenVacante").src = "#";
+                // Si no hay archivo nuevo, usamos la imagen que ya está visible en el formulario.
+                const existingImageSrc = document.getElementById('preview').src;
+                // Evitamos mostrar el '#' si no hay imagen
+                if (existingImageSrc && !existingImageSrc.endsWith('#')) {
+                    document.getElementById("previewImagenVacante").src = existingImageSrc;
+                } else {
+                    document.getElementById("previewImagenVacante").src = ""; // O una imagen por defecto
+                    document.getElementById("previewImagenVacante").alt = "No se ha subido una imagen";
+                }
             }
 
             modal.style.display = "flex";
         });
 
-        cerrarBtn.addEventListener("click", () => {
+        cerrarBtn.addEventListener("click", () => modal.style.display = "none");
+        cancelarBtn.addEventListener("click", () => modal.style.display = "none");
+
+        // El botón de confirmar en el modal es manejado por js/vacante.js
+        document.getElementById("confirmarGuardarVacante").addEventListener("click", () => {
             modal.style.display = "none";
         });
-
-        cancelarBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-
-        confirmarBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-            // No se hace submit tradicional aquí porque vacante.js ya lo maneja con fetch
-        });
-
 
         window.addEventListener("click", (e) => {
             if (e.target === modal) {
