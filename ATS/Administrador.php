@@ -27,9 +27,17 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="Administrador.php">Inicio</a>
-            <a href="SAprobadas.php">S.Aprobadas</a>
-            <a href="SeguimientoAdministrador.php">Seguimiento</a>
-            <a href="cargaVacante.php">Carga de Vacantes</a>
+
+            <div class="nav-item dropdown">
+                <a href="SAprobadas.php" class="dropdown-toggle">
+                    Vacantes <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu-nav">
+                    <a href="SAprobadas.php">Solicitudes Aprobadas</a>
+                    <a href="SeguimientoAdministrador.php">Seguimiento de Postulantes</a>
+                    <a href="cargaVacante.php">Cargar/Editar Vacantes</a>
+                </div>
+            </div>
             <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
 
             <?php if (isset($_SESSION['Nombre'])): ?>

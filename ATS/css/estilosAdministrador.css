@@ -702,3 +702,70 @@ nav a:not(:hover)::after {
 .developer-credit .fa-heart {
     color: #e74c3c; /* Un color rojo para el corazón */
 }
+
+/* --- ESTILOS PARA EL NUEVO SUBMENÚ DE NAVEGACIÓN --- */
+
+/* Contenedor principal del item con submenú */
+.nav-item.dropdown {
+    position: relative; /* Clave para que el submenú se posicione correctamente */
+}
+
+/* El enlace principal que activa el submenú */
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Espacio entre el texto y la flecha */
+}
+
+/* La flechita */
+.dropdown-toggle .fa-chevron-down {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+/* El contenedor del submenú (oculto por defecto) */
+.dropdown-menu-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 24px); /* Lo posiciona debajo del enlace principal con un pequeño espacio */
+    left: 0;
+    background-color: #063962; /* Mismo color del header */
+    border: 2px solid #99d0e9;
+    border-radius: 6px;
+    min-width: 250px; /* Ancho mínimo del submenú */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1001; /* Asegura que esté por encima de otros elementos */
+    overflow: hidden;
+}
+
+/* Estilo de los enlaces dentro del submenú */
+.dropdown-menu-nav a {
+    color: #fff;
+    padding: 12px 20px;
+    display: block; /* Para que cada enlace ocupe su propia línea */
+    text-decoration: none;
+    font-size: 16px;
+    border-bottom: 1px solid #1f3b77;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-menu-nav a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu-nav a:hover {
+    background-color: #007BFF; /* Color al pasar el cursor */
+}
+
+
+/* --- LA MAGIA DEL HOVER --- */
+
+/* Cuando pasas el cursor sobre el contenedor principal... */
+.nav-item.dropdown:hover .dropdown-menu-nav {
+    display: block; /* ...el submenú se hace visible. */
+}
+
+/* Gira la flecha cuando el menú está activo */
+.nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
+    transform: rotate(180deg);
+}
