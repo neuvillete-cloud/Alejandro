@@ -694,3 +694,16 @@ nav a:not(:hover)::after {
 .campo-ubicacion {
     position: relative;
 }
+
+/* Estilo para el contador de vistas */
+.vistas {
+    display: inline-block;
+    margin-left: 15px;
+    color: #6b7280;
+    font-size: 0.9em;
+}
+
+.vistas i {
+    margin-right: 5px;
+    color: #9ca3af;
+}

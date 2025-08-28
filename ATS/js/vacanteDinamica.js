@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoUbicacion = document.querySelector(".campo-ubicacion input");
     const btnBuscar = document.querySelector(".btn-buscar");
 
-    // Seleccionamos los UL ya existentes del HTML
     const sugerenciasContainer = document.querySelector(".campo-busqueda .historial-busquedas");
     const sugerenciasUbicacionContainer = document.querySelector(".campo-ubicacion .historial-ubicaciones");
 
@@ -72,7 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarVacantes(1);
     });
 
-    // Autocompletado búsqueda
     campoBusqueda.addEventListener("input", () => {
         const texto = campoBusqueda.value.trim();
         if (texto.length < 2) {
@@ -84,12 +82,10 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(res => res.json())
             .then(sugerencias => {
                 sugerenciasContainer.innerHTML = "";
-
                 if (sugerencias.length === 0) {
                     sugerenciasContainer.style.display = "none";
                     return;
                 }
-
                 sugerencias.forEach(s => {
                     const li = document.createElement("li");
                     li.textContent = s;
@@ -101,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                     sugerenciasContainer.appendChild(li);
                 });
-
                 sugerenciasContainer.style.display = "block";
             });
     });
@@ -110,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => sugerenciasContainer.style.display = "none", 200);
     });
 
-    // Autocompletado ubicación
     campoUbicacion.addEventListener("input", () => {
         const texto = campoUbicacion.value.trim();
         if (texto.length < 2) {
@@ -122,12 +116,10 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(res => res.json())
             .then(sugerencias => {
                 sugerenciasUbicacionContainer.innerHTML = "";
-
                 if (sugerencias.length === 0) {
                     sugerenciasUbicacionContainer.style.display = "none";
                     return;
                 }
-
                 sugerencias.forEach(s => {
                     const li = document.createElement("li");
                     li.textContent = s;
@@ -139,7 +131,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                     sugerenciasUbicacionContainer.appendChild(li);
                 });
-
                 sugerenciasUbicacionContainer.style.display = "block";
             });
     });
@@ -172,7 +163,6 @@ function cargarVacantes(pagina) {
             const totalPaginas = Math.ceil(total / limite);
 
             const lista = document.querySelector(".lista-vacantes");
-            const detalle = document.querySelector(".detalle-vacante");
             const contenedorPaginacion = document.querySelector(".contenedor-paginacion");
 
             lista.innerHTML = "";
@@ -189,7 +179,6 @@ function cargarVacantes(pagina) {
                 mensaje.style.display = "none";
                 detalleContenido.style.display = "block";
             }
-
 
             const vacantesVistas = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
             let primerItem = null;
@@ -217,45 +206,52 @@ function cargarVacantes(pagina) {
                     <p>${vacante.Sueldo || "Sueldo no mostrado"}</p>
                     <ul>${beneficiosList}</ul>
                     <p class="empresa">Grammer Automotive, S.A. de C.V.</p>
-                    <p class="ubicacion">${vacante.Ciudad}, ${vacante.Estado}</p>
+                    <p class="ubicacion">
+                        ${vacante.Ciudad}, ${vacante.Estado}
+                        <span class="vistas"><i class="fas fa-eye"></i> ${vacante.Visitas}</span>
+                    </p>
                 `;
 
                 item.addEventListener("click", () => {
                     document.querySelectorAll(".vacante-item").forEach(el => el.classList.remove("activa"));
                     item.classList.add("activa");
-
                     mostrarDetalle(vacante);
 
                     if (!vacantesVistas.includes(vacante.IdVacante)) {
+                        const formData = new FormData();
+                        formData.append('id', vacante.IdVacante);
+                        fetch('dao/registrarVista.php', {
+                            method: 'POST',
+                            body: formData
+                        }).catch(error => console.error('Error al registrar vista:', error));
+
                         vacantesVistas.push(vacante.IdVacante);
                         localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistas));
-                    }
 
-                    const fechaP = item.querySelector(".fecha");
-                    if (!fechaP.querySelector(".reciente")) {
-                        const span = document.createElement("span");
-                        span.classList.add("reciente");
-                        span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
-                        fechaP.appendChild(document.createTextNode(" • "));
-                        fechaP.appendChild(span);
+                        const fechaP = item.querySelector(".fecha");
+                        if (!fechaP.querySelector(".reciente")) {
+                            const span = document.createElement("span");
+                            span.classList.add("reciente");
+                            span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
+                            fechaP.appendChild(document.createTextNode(" • "));
+                            fechaP.appendChild(span);
+                        }
                     }
                 });
 
                 lista.appendChild(item);
             });
 
-            if (primerItem) primerItem.click(); // Auto click para mostrar detalles
+            if (primerItem) primerItem.click();
 
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
-
             const btnPrev = document.createElement("button");
             btnPrev.textContent = "<";
             btnPrev.className = "btn-pagina";
             btnPrev.disabled = paginaActual === 1;
             btnPrev.addEventListener("click", () => cargarVacantes(paginaActual - 1));
             paginacion.appendChild(btnPrev);
-
             for (let i = 1; i <= totalPaginas; i++) {
                 const btn = document.createElement("button");
                 btn.textContent = i;
@@ -264,14 +260,12 @@ function cargarVacantes(pagina) {
                 btn.addEventListener("click", () => cargarVacantes(i));
                 paginacion.appendChild(btn);
             }
-
             const btnNext = document.createElement("button");
             btnNext.textContent = ">";
             btnNext.className = "btn-pagina";
             btnNext.disabled = paginaActual === totalPaginas;
             btnNext.addEventListener("click", () => cargarVacantes(paginaActual + 1));
             paginacion.appendChild(btnNext);
-
             contenedorPaginacion.appendChild(paginacion);
         });
 }
