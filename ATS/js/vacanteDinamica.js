@@ -3,6 +3,30 @@ let filtroBusqueda = "";
 let filtroUbicacion = "";
 
 document.addEventListener("DOMContentLoaded", function () {
+    // --- LÓGICA DE PREVISUALIZACIÓN ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const previewId = urlParams.get('preview');
+
+    // Nueva función para desactivar visualmente los filtros
+    function desactivarFiltros() {
+        const buscador = document.querySelector(".buscador-vacantes");
+        if (buscador) {
+            // Añadimos una clase para aplicar estilos CSS
+            buscador.classList.add('modo-preview');
+
+            // Seleccionamos todos los elementos interactivos y los deshabilitamos
+            const elementos = buscador.querySelectorAll('input, select, button');
+            elementos.forEach(el => el.disabled = true);
+        }
+    }
+
+    // Si encontramos un ID de preview en la URL, activamos el modo preview
+    if (previewId) {
+        desactivarFiltros();
+    }
+
+    // --- FIN LÓGICA DE PREVISUALIZACIÓN ---
+
     const salario = document.getElementById('filtro-salario');
     const fecha = document.getElementById('filtro-fecha');
     const modalidad = document.getElementById('filtro-modalidad');
@@ -71,13 +95,13 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarVacantes(1);
     });
 
-    // --- Lógica de Autocompletado (sin cambios) ---
     campoBusqueda.addEventListener("input", () => {
         const texto = campoBusqueda.value.trim();
         if (texto.length < 2) {
             sugerenciasContainer.style.display = "none";
             return;
         }
+
         fetch(`dao/busquedaSugerencias.php?q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
@@ -100,15 +124,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 sugerenciasContainer.style.display = "block";
             });
     });
+
     campoBusqueda.addEventListener("blur", () => {
         setTimeout(() => sugerenciasContainer.style.display = "none", 200);
     });
+
     campoUbicacion.addEventListener("input", () => {
         const texto = campoUbicacion.value.trim();
         if (texto.length < 2) {
             sugerenciasUbicacionContainer.style.display = "none";
             return;
         }
+
         fetch(`dao/busquedaUbicaciones.php?q=${encodeURIComponent(texto)}`)
             .then(res => res.json())
             .then(sugerencias => {
@@ -131,6 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 sugerenciasUbicacionContainer.style.display = "block";
             });
     });
+
     campoUbicacion.addEventListener("blur", () => {
         setTimeout(() => sugerenciasUbicacionContainer.style.display = "none", 200);
     });
@@ -138,16 +166,24 @@ document.addEventListener("DOMContentLoaded", function () {
     cargarVacantes(1);
 });
 
+
 function cargarVacantes(pagina) {
     const limite = 5;
-    const params = new URLSearchParams({ pagina, limite });
+    let params;
 
-    for (let key in filtrosSeleccionados) {
-        params.append(key, filtrosSeleccionados[key]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const previewId = urlParams.get('preview');
+
+    if (previewId) {
+        params = new URLSearchParams({ preview_id: previewId });
+    } else {
+        params = new URLSearchParams({ pagina, limite });
+        for (let key in filtrosSeleccionados) {
+            params.append(key, filtrosSeleccionados[key]);
+        }
+        if (filtroBusqueda) params.append('busqueda', filtroBusqueda);
+        if (filtroUbicacion) params.append('ubicacion', filtroUbicacion);
     }
-
-    if (filtroBusqueda) params.append('busqueda', filtroBusqueda);
-    if (filtroUbicacion) params.append('ubicacion', filtroUbicacion);
 
     fetch(`dao/daoVacanteDinamica.php?${params.toString()}`)
         .then(response => response.json())
@@ -195,8 +231,6 @@ function cargarVacantes(pagina) {
                     vistoHTML = `<span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
                 }
 
-                // --- CAMBIO APLICADO AQUÍ ---
-                // Se eliminó el <span> con la clase .vistas
                 item.innerHTML = `
                     <p class="fecha">${vacante.FechaPublicacion} ${vistoHTML}</p>
                     <h3>${vacante.Titulo}</h3>
@@ -211,7 +245,6 @@ function cargarVacantes(pagina) {
                     item.classList.add("activa");
                     mostrarDetalle(vacante);
 
-                    // La lógica para registrar la vista sigue funcionando, pero ya no se muestra.
                     const formData = new FormData();
                     formData.append('id', vacante.IdVacante);
                     fetch('dao/registrarVista.php', {
@@ -238,7 +271,6 @@ function cargarVacantes(pagina) {
 
             if (primerItem) primerItem.click();
 
-            // Lógica de paginación (sin cambios)
             const paginacion = document.createElement("div");
             paginacion.classList.add("paginacion-vacantes");
             const btnPrev = document.createElement("button");
@@ -274,6 +306,19 @@ function textoAListasHTML(texto) {
 }
 
 function mostrarDetalle(vacante) {
+    const btnPostularme = document.querySelector(".btn-postularme");
+    const urlParams = new URLSearchParams(window.location.search);
+    const previewId = urlParams.get('preview');
+
+    if (previewId) {
+        btnPostularme.style.display = 'none';
+    } else {
+        btnPostularme.style.display = 'block';
+        btnPostularme.onclick = () => {
+            window.location.href = `postularme.php?id=${vacante.IdVacante}`;
+        };
+    }
+
     document.getElementById("imagenVacante").src = vacante.Imagen || "imagenes/default.jpg";
     document.querySelector(".detalle-vacante .fecha").textContent = vacante.FechaPublicacion;
     document.querySelector(".detalle-vacante h2").textContent = vacante.Titulo;
@@ -284,10 +329,6 @@ function mostrarDetalle(vacante) {
 
     document.querySelector(".detalle-vacante .descripcion").innerHTML =
         `${textoSueldo}<strong>Grammer Automotive, S.A. de C.V.</strong> en ${vacante.Ciudad}, ${vacante.Estado}`;
-
-    document.querySelector(".btn-postularme").onclick = () => {
-        window.location.href = `postularme.php?id=${vacante.IdVacante}`;
-    };
 
     document.getElementById("previewArea").textContent = vacante.Area;
     document.getElementById("previewescolaridad").textContent = vacante.Escolaridad;

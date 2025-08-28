@@ -118,7 +118,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         </div>
                         <div class="acciones-container">
                             <a href="#" class="btn-accion btn-editar"><i class="fas fa-pencil-alt"></i> Editar</a>
-                            <a href="#" class="btn-accion btn-visualizar"><i class="fas fa-eye"></i> Visualizar</a>
+                            <a href="vacantes.php?preview=${vacante.IdVacante}" target="_blank" class="btn-accion btn-visualizar"><i class="fas fa-eye"></i> Visualizar</a>
                         </div>
                     </div>
                 </div>

@@ -695,15 +695,9 @@ nav a:not(:hover)::after {
     position: relative;
 }
 
-/* Estilo para el contador de vistas */
-.vistas {
-    display: inline-block;
-    margin-left: 15px;
-    color: #6b7280;
-    font-size: 0.9em;
-}
-
-.vistas i {
-    margin-right: 5px;
-    color: #9ca3af;
+/* --- Estilos para el modo de previsualización --- */
+.buscador-vacantes.modo-preview {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none; /* Bloquea cualquier clic o interacción con el panel */
 }

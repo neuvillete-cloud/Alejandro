@@ -6,6 +6,52 @@ date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
+// --- INICIO: Bloque nuevo para modo de previsualización ---
+if (isset($_GET['preview_id']) && !empty($_GET['preview_id'])) {
+    $previewId = intval($_GET['preview_id']);
+
+    $sql = "SELECT V.*, A.NombreArea FROM Vacantes V 
+            INNER JOIN Area A ON V.IdArea = A.IdArea
+            WHERE V.IdVacante = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $previewId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $vacante = $result->fetch_assoc();
+
+    // Adaptamos la respuesta para que coincida con la estructura esperada por el JS
+    $vacantes = [];
+    if ($vacante) {
+        $vacantes[] = [
+            'IdVacante'      => $vacante['IdVacante'],
+            'Visitas'        => $vacante['Visitas'],
+            'Titulo'         => $vacante['TituloVacante'],
+            'Ciudad'         => $vacante['Ciudad'],
+            'Estado'         => $vacante['Estado'],
+            'Sueldo'         => $vacante['Sueldo'],
+            'Requisitos'     => $vacante['Requisitos'],
+            'Beneficios'     => $vacante['Beneficios'],
+            'Descripcion'    => $vacante['Descripcion'],
+            'Area'           => $vacante['NombreArea'],
+            'Escolaridad'    => $vacante['EscolaridadMinima'],
+            'Idioma'         => $vacante['Idioma'],
+            'Especialidad'   => $vacante['Especialidad'],
+            'Horario'        => $vacante['Horario'],
+            'EspacioTrabajo' => $vacante['EspacioTrabajo'],
+            'FechaPublicacion' => calcularTiempoTranscurrido($vacante['Fecha']),
+            'Imagen'         => $vacante['Imagen']
+        ];
+    }
+
+    echo json_encode(['vacantes' => $vacantes, 'total' => 1, 'pagina' => 1, 'limite' => 1]);
+    $stmt->close();
+    $conn->close();
+    exit; // Importante: detenemos el script aquí
+}
+// --- FIN: Bloque nuevo ---
+
+
 // Parámetros de paginación
 $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
 $limite = isset($_GET['limite']) ? intval($_GET['limite']) : 5;
@@ -76,23 +122,10 @@ $whereSQL = "WHERE " . implode(" AND ", $condiciones);
 
 // Consulta principal
 $sql = "SELECT SQL_CALC_FOUND_ROWS 
-            V.IdVacante, 
-            V.TituloVacante, 
-            V.Ciudad, 
-            V.Estado, 
-            V.Sueldo, 
-            V.Requisitos, 
-            V.Beneficios, 
-            V.Descripcion, 
-            A.NombreArea, 
-            V.EscolaridadMinima, 
-            V.Idioma, 
-            V.Especialidad, 
-            V.Horario, 
-            V.EspacioTrabajo, 
-            V.Fecha, 
-            V.Imagen,
-            V.Visitas  -- <--- CAMBIO APLICADO AQUÍ
+            V.IdVacante, V.TituloVacante, V.Ciudad, V.Estado, V.Sueldo, 
+            V.Requisitos, V.Beneficios, V.Descripcion, A.NombreArea, 
+            V.EscolaridadMinima, V.Idioma, V.Especialidad, V.Horario, 
+            V.EspacioTrabajo, V.Fecha, V.Imagen, V.Visitas
         FROM Vacantes V
         INNER JOIN Area A ON V.IdArea = A.IdArea
         $whereSQL
@@ -106,7 +139,7 @@ $vacantes = [];
 while ($row = $resultado->fetch_assoc()) {
     $vacantes[] = [
         'IdVacante'      => $row['IdVacante'],
-        'Visitas'        => $row['Visitas'], // <--- CAMBIO APLICADO AQUÍ
+        'Visitas'        => $row['Visitas'],
         'Titulo'         => $row['TituloVacante'],
         'Ciudad'         => $row['Ciudad'],
         'Estado'         => $row['Estado'],
