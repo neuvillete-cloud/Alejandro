@@ -39,6 +39,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 </div>
             </div>
             <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+            <a href="Postulaciones.php">Candidatos Postulados</a>
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
