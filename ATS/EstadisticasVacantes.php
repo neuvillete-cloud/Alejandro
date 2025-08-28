@@ -95,7 +95,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
                     <div class="stats-container">
                         <div class="stat-item">
-                            <div class="stat-numero">-</div>
+                            <div class="stat-numero">${vacante.Visitas}</div>
                             <div class="stat-etiqueta">Visitas</div>
                         </div>
                         <div class="stat-item">
@@ -127,7 +127,6 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        // Cargar las estadísticas al iniciar la página
         fetch('dao/daoEstadisticasVacantes.php')
             .then(response => response.json())
             .then(data => {

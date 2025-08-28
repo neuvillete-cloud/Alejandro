@@ -3,18 +3,16 @@ include_once("ConexionBD.php"); // Asegúrate de que la ruta sea correcta
 
 header('Content-Type: application/json');
 
-// --- IDs DE ESTATUS CORREGIDOS SEGÚN TU EXPLICACIÓN ---
-// Estos son los IDs de la tabla Postulaciones.
-define('ID_ESTATUS_POR_REVISAR', 1);     // Cuando un candidato recién se postula.
-define('ID_ESTATUS_SIGUIENTE_FASE', 4); // Candidatos que pasan el primer filtro.
-define('ID_ESTATUS_PARA_CONTRATAR', 9); // El candidato final seleccionado.
-define('ID_ESTATUS_DESCARTADO', 3);     // Candidatos rechazados.
+// IDs de Estatus de la tabla Postulaciones
+define('ID_ESTATUS_POR_REVISAR', 1);
+define('ID_ESTATUS_SIGUIENTE_FASE', 4);
+define('ID_ESTATUS_PARA_CONTRATAR', 9);
+define('ID_ESTATUS_DESCARTADO', 3);
 
 try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Esta consulta obtiene todas las vacantes y calcula las estadísticas para cada una
     $sql = "
         SELECT 
             v.IdVacante,
@@ -22,12 +20,10 @@ try {
             v.Ciudad,
             v.Estado,
             v.Fecha AS FechaCreacion,
-            -- El estatus de la vacante (Activa/Cerrada) viene de la tabla Vacantes
+            v.Visitas, -- <--- CAMBIO 1: SELECCIONAMOS LA COLUMNA DE VISTAS
             (SELECT NombreEstatus FROM Estatus WHERE IdEstatus = v.IdEstatus) AS EstatusVacante,
             
-            -- Contamos las postulaciones para cada categoría usando los IDs correctos
             COUNT(CASE WHEN p.IdEstatus = " . ID_ESTATUS_POR_REVISAR . " THEN 1 END) AS PorRevisar,
-            -- 'Me interesan' ahora cuenta a los que pasaron a la siguiente fase Y al que fue seleccionado
             COUNT(CASE WHEN p.IdEstatus IN (" . ID_ESTATUS_SIGUIENTE_FASE . ", " . ID_ESTATUS_PARA_CONTRATAR . ") THEN 1 END) AS MeInteresan,
             COUNT(CASE WHEN p.IdEstatus = " . ID_ESTATUS_DESCARTADO . " THEN 1 END) AS Descartados
             
@@ -46,6 +42,7 @@ try {
     $result = $stmt->get_result();
     $vacantes = $result->fetch_all(MYSQLI_ASSOC);
 
+    // CAMBIO 2: El array de respuesta ya contendrá 'Visitas' para cada vacante
     echo json_encode(['status' => 'success', 'data' => $vacantes]);
 
     $stmt->close();
