@@ -1,14 +1,69 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("vacanteForm");
     const confirmarBtn = document.getElementById("confirmarGuardarVacante");
+    const idVacanteInput = document.getElementById("idVacante");
 
+    // --- LÓGICA DE EDICIÓN ---
+    const params = new URLSearchParams(window.location.search);
+    const idVacanteAEditar = params.get("edit");
+
+    if (idVacanteAEditar) {
+        // --- MODO EDICIÓN ---
+        document.querySelector(".section-title h1").textContent = "Editar Vacante";
+        document.querySelector(".formulario-vacante h2").textContent = "Editar Vacante Existente";
+
+        // Pedimos los datos de la vacante al servidor
+        fetch(`dao/daoVacante.php?id=${idVacanteAEditar}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('La vacante no fue encontrada o hubo un error en el servidor.');
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.status === 'success') {
+                    const vacante = result.data;
+
+                    // Rellenamos el formulario con los datos recibidos
+                    idVacanteInput.value = vacante.IdVacante;
+                    form.titulo.value = vacante.TituloVacante;
+                    form.area.value = vacante.NombreArea;
+                    form.tipo.value = vacante.TipoContrato;
+                    form.horario.value = vacante.Horario;
+                    form.sueldo.value = vacante.Sueldo;
+                    form.escolaridad.value = vacante.EscolaridadMinima;
+                    form.pais.value = vacante.Pais;
+                    form.estado.value = vacante.Estado;
+                    form.ciudad.value = vacante.Ciudad;
+                    form.espacio.value = vacante.EspacioTrabajo;
+                    form.idioma.value = vacante.Idioma;
+                    form.especialidad.value = vacante.Especialidad;
+                    form.requisitos.value = vacante.Requisitos;
+                    form.beneficios.value = vacante.Beneficios;
+                    form.descripcion.value = vacante.Descripcion;
+
+                    // Mostramos la imagen existente
+                    if (vacante.Imagen) {
+                        document.getElementById('preview').src = vacante.Imagen;
+                        document.getElementById('preview').style.display = 'block';
+                        document.querySelector('#drop-area .placeholder-text').style.display = 'none';
+                    }
+                } else {
+                    Swal.fire('Error', result.message, 'error').then(() => {
+                        window.location.href = "EstadisticasVacantes.php";
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error de Carga', error.message, 'error');
+            });
+    }
+
+    // --- LÓGICA DE GUARDADO MEJORADA CON VERIFICACIÓN ---
     confirmarBtn.addEventListener("click", function (e) {
         e.preventDefault();
-
-        // Desactivar botón para evitar doble clic
         confirmarBtn.disabled = true;
 
-        // Validar campos obligatorios
         const camposObligatorios = [
             { campo: form.titulo, nombre: "Título del puesto" },
             { campo: form.area, nombre: "Área / Departamento" },
@@ -18,8 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
             { campo: form.estado, nombre: "Estado / Provincia" },
             { campo: form.ciudad, nombre: "Ciudad" },
             { campo: form.espacio, nombre: "Espacio de trabajo" },
-            { campo: form.idioma, nombre: "Idioma" },
-            { campo: form.especialidad, nombre: "Especialidad" },
             { campo: form.descripcion, nombre: "Descripción del puesto" },
         ];
 
@@ -31,112 +84,84 @@ document.addEventListener("DOMContentLoaded", () => {
                     text: `Por favor, completa el campo: ${item.nombre}`,
                 });
                 item.campo.focus();
-                confirmarBtn.disabled = false; // Reactivar si hay error
+                confirmarBtn.disabled = false;
                 return;
             }
         }
 
-        // Obtener IdSolicitud desde la URL
-        const params = new URLSearchParams(window.location.search);
-        const idSolicitud = params.get("idSolicitud");
+        // Función interna para enviar los datos del formulario
+        function guardarDatos() {
+            const formData = new FormData(form);
 
-        if (!idSolicitud) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error crítico',
-                text: 'No se encontró el IdSolicitud en la URL.',
-            });
-            confirmarBtn.disabled = false;
-            return;
+            // Si es una nueva vacante, añadimos el IdSolicitud
+            if (!idVacanteAEditar) {
+                const idSolicitud = params.get("idSolicitud");
+                formData.append("IdSolicitud", idSolicitud);
+            }
+
+            fetch("dao/daoVacante.php", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'Vacante guardada correctamente.',
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            window.location.href = "EstadisticasVacantes.php";
+                        });
+                    } else {
+                        Swal.fire('Error al guardar', data.message, 'error');
+                        confirmarBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error de red', error.message, 'error');
+                    confirmarBtn.disabled = false;
+                });
         }
 
-        // Verificar si ya existe vacante para ese IdSolicitud
-        fetch(`dao/verificarVacante.php?idSolicitud=${idSolicitud}`)
-            .then(response => response.json())
-            .then(result => {
-                if (result.existe) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Vacante ya registrada',
-                        text: 'Ya se ha registrado una vacante para esta solicitud.',
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                        window.location.href = "SeguimientoAdministrador.php";
-                    });
-                    return;
-                }
-
-                // Si no existe vacante, proceder a guardar
-                const formData = new FormData();
-                formData.append("titulo", form.titulo.value);
-                formData.append("area", form.area.value);
-                formData.append("tipo", form.tipo.value);
-                formData.append("horario", form.horario.value);
-                formData.append("sueldo", form.sueldo.value);
-                formData.append("escolaridad", form.escolaridad.value);
-                formData.append("pais", form.pais.value);
-                formData.append("estado", form.estado.value);
-                formData.append("ciudad", form.ciudad.value);
-                formData.append("espacio", form.espacio.value);
-                formData.append("idioma", form.idioma.value);
-                formData.append("especialidad", form.especialidad.value);
-                formData.append("requisitos", form.requisitos.value);
-                formData.append("beneficios", form.beneficios.value);
-                formData.append("descripcion", form.descripcion.value);
-                formData.append("IdSolicitud", idSolicitud);
-
-                const imagen = form.imagen.files[0];
-                if (imagen) {
-                    formData.append("imagen", imagen);
-                }
-
-                fetch("dao/daoVacante.php", {
-                    method: "POST",
-                    body: formData
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Error en la respuesta del servidor");
-                        }
-                        return response.json(); // Cambiado de .text() a .json()
-                    })
-                    .then(data => {
-                        if (data.status === "success") {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Vacante guardada correctamente',
-                                showConfirmButton: false,
-                                timer: 2000
-                            }).then(() => {
-                                window.location.href = "SeguimientoAdministrador.php";
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error al guardar',
-                                text: data.message || 'Ocurrió un error desconocido',
-                            });
-                            confirmarBtn.disabled = false;
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error de red o servidor',
-                            text: error.message,
-                        });
-                        confirmarBtn.disabled = false;
-                    });
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al verificar',
-                    text: 'No se pudo verificar si ya existe una vacante.',
-                });
+        // --- FLUJO PRINCIPAL AL HACER CLIC EN GUARDAR ---
+        if (idVacanteAEditar) {
+            // Si estamos editando, guardamos directamente sin verificar.
+            guardarDatos();
+        } else {
+            // Si estamos creando, primero verificamos si ya existe.
+            const idSolicitud = params.get("idSolicitud");
+            if (!idSolicitud) {
+                Swal.fire('Error crítico', 'No se encontró el IdSolicitud en la URL para crear la vacante.', 'error');
                 confirmarBtn.disabled = false;
-            });
+                return;
+            }
+
+            // REINTEGRADO: Verificación de vacante existente
+            fetch(`dao/verificarVacante.php?idSolicitud=${idSolicitud}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.existe) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Vacante ya registrada',
+                            text: 'Ya se ha registrado una vacante para esta solicitud.',
+                            showConfirmButton: false,
+                            timer: 2500
+                        }).then(() => {
+                            window.location.href = "EstadisticasVacantes.php";
+                        });
+                    } else {
+                        // Si no existe, procedemos a guardar
+                        guardarDatos();
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error de verificación', 'No se pudo verificar si ya existe una vacante.', 'error');
+                    confirmarBtn.disabled = false;
+                });
+        }
     });
 });
-

@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vacantes en Grammer Automotive</title>
-    <link rel="stylesheet" href="css/cargaVacante.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-
 <?php
 session_start();
 if (!isset($_SESSION['NumNomina'])) {
@@ -16,6 +5,16 @@ if (!isset($_SESSION['NumNomina'])) {
     exit;
 }
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Vacantes | ATS Grammer</title>
+    <link rel="stylesheet" href="css/cargaVacante.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
 
 <header>
     <div class="header-container">
@@ -59,24 +58,23 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-        <!-- Contenido Principal -->
         <main class="vacante-container">
             <section class="formulario-vacante">
                 <h2>Cargar Nueva Vacante</h2>
                 <form id="vacanteForm" class="form-cv-layout grid-cv">
-                    <!-- FOTO -->
+
+                    <input type="hidden" id="idVacante" name="idVacante">
+
                     <div class="foto-cv" id="drop-area">
                         <img id="preview" class="preview-img" src="#" alt="Preview" />
                         <span class="placeholder-text">Haz clic o arrastra tu imagen aquí</span>
                         <input type="file" id="imagen" name="imagen" accept="image/*" />
                     </div>
 
-                    <!-- Fila 1 -->
                     <div class="input-group titulo-full">
                         <label for="titulo">Título del puesto:</label>
                         <input type="text" id="titulo" name="titulo" required />
                     </div>
-
 
                     <div class="input-group">
                         <label for="area">Área / Departamento:</label>
@@ -98,14 +96,13 @@ if (!isset($_SESSION['NumNomina'])) {
                         </select>
                     </div>
 
-
-                    <!-- Fila 2 -->
                     <div class="input-group">
                         <label for="tipo">Tipo de contrato:</label>
                         <select id="tipo" name="tipo">
                             <option value="Tiempo completo">Tiempo completo</option>
                             <option value="Medio tiempo">Medio tiempo</option>
                             <option value="Temporal">Temporal</option>
+                            <option value="Becario/Prácticas">Becario/Prácticas</option>
                         </select>
                     </div>
 
@@ -114,15 +111,21 @@ if (!isset($_SESSION['NumNomina'])) {
                         <input type="text" id="horario" name="horario" />
                     </div>
 
-                    <!-- Fila 3 -->
                     <div class="input-group">
                         <label for="sueldo">Sueldo:</label>
                         <input type="text" id="sueldo" name="sueldo" />
                     </div>
 
                     <div class="input-group">
-                        <label for="escolaridad">Escolaridad Minima:</label>
-                        <input type="text" id="escolaridad" name="escolaridad" required />
+                        <label for="escolaridad">Escolaridad Mínima:</label>
+                        <select id="escolaridad" name="escolaridad" required>
+                            <option value="">Selecciona escolaridad</option>
+                            <option value="Secundaria">Secundaria</option>
+                            <option value="Preparatoria">Preparatoria</option>
+                            <option value="Técnico">Técnico</option>
+                            <option value="Licenciatura">Licenciatura</option>
+                            <option value="Maestría">Maestría</option>
+                        </select>
                     </div>
 
                     <div class="input-group">
@@ -130,7 +133,6 @@ if (!isset($_SESSION['NumNomina'])) {
                         <input type="text" id="pais" name="pais" required />
                     </div>
 
-                    <!-- Fila 4 -->
                     <div class="input-group">
                         <label for="estado">Estado / Provincia:</label>
                         <input type="text" id="estado" name="estado" required />
@@ -143,7 +145,12 @@ if (!isset($_SESSION['NumNomina'])) {
 
                     <div class="input-group">
                         <label for="espacio">Espacio de trabajo:</label>
-                        <input type="text" id="espacio" name="espacio" required />
+                        <select id="espacio" name="espacio" required>
+                            <option value="">Selecciona modalidad</option>
+                            <option value="Presencial">Presencial</option>
+                            <option value="Remoto">Desde casa</option>
+                            <option value="Híbrido">Híbrido</option>
+                        </select>
                     </div>
 
                     <div class="input-group">
@@ -156,7 +163,6 @@ if (!isset($_SESSION['NumNomina'])) {
                         <input type="text" id="especialidad" name="especialidad" required />
                     </div>
 
-                    <!-- Requisitos y Beneficios -->
                     <div class="input-group textarea-group">
                         <label for="requisitos">Requisitos:</label>
                         <textarea id="requisitos" name="requisitos"></textarea>
@@ -167,7 +173,6 @@ if (!isset($_SESSION['NumNomina'])) {
                         <textarea id="beneficios" name="beneficios"></textarea>
                     </div>
 
-                    <!-- Descripción -->
                     <div class="input-group textarea-group full-width">
                         <label for="descripcion">Descripción del puesto:</label>
                         <textarea id="descripcion" name="descripcion" required></textarea>
@@ -465,4 +470,3 @@ if (!isset($_SESSION['NumNomina'])) {
 </footer>
 </body>
 </html>
-

@@ -117,7 +117,7 @@ if (!isset($_SESSION['NumNomina'])) {
                             Creada el ${fechaCreacion} | ID: ${vacante.IdVacante}
                         </div>
                         <div class="acciones-container">
-                            <a href="#" class="btn-accion btn-editar"><i class="fas fa-pencil-alt"></i> Editar</a>
+                            <a href="cargaVacante.php?edit=${vacante.IdVacante}" class="btn-accion btn-editar"><i class="fas fa-pencil-alt"></i> Editar</a>
                             <a href="vacantes.php?preview=${vacante.IdVacante}" target="_blank" class="btn-accion btn-visualizar"><i class="fas fa-eye"></i> Visualizar</a>
                         </div>
                     </div>
