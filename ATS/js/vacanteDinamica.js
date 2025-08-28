@@ -189,7 +189,7 @@ function cargarVacantes(pagina) {
                 item.setAttribute("data-id", vacante.IdVacante);
                 if (index === 0) primerItem = item;
 
-                const beneficiosList = vacante.Beneficios
+                const beneficiosList = (vacante.Beneficios || "")
                     .split(/\n+/)
                     .filter(b => b.trim() !== "")
                     .map(b => `<li>${b.trim()}</li>`)
@@ -217,23 +217,25 @@ function cargarVacantes(pagina) {
                     item.classList.add("activa");
                     mostrarDetalle(vacante);
 
-                    if (!vacantesVistas.includes(vacante.IdVacante)) {
-                        const formData = new FormData();
-                        formData.append('id', vacante.IdVacante);
-                        fetch('dao/registrarVista.php', {
-                            method: 'POST',
-                            body: formData
-                        }).catch(error => console.error('Error al registrar vista:', error));
+                    // Siempre notificamos al servidor. El PHP decidirá si es una nueva visita para la SESIÓN.
+                    const formData = new FormData();
+                    formData.append('id', vacante.IdVacante);
+                    fetch('dao/registrarVista.php', {
+                        method: 'POST',
+                        body: formData
+                    }).catch(error => console.error('Error al registrar vista:', error));
 
-                        vacantesVistas.push(vacante.IdVacante);
-                        localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistas));
+                    // Actualizamos localStorage solo para el texto "Vista recientemente".
+                    const vacantesVistasStorage = JSON.parse(localStorage.getItem('vacantesVistas')) || [];
+                    if (!vacantesVistasStorage.includes(vacante.IdVacante)) {
+                        vacantesVistasStorage.push(vacante.IdVacante);
+                        localStorage.setItem('vacantesVistas', JSON.stringify(vacantesVistasStorage));
 
+                        // Actualizamos el texto visualmente sin recargar
                         const fechaP = item.querySelector(".fecha");
                         if (!fechaP.querySelector(".reciente")) {
                             const span = document.createElement("span");
-                            span.classList.add("reciente");
-                            span.innerHTML = `<i class="fas fa-check-circle"></i> Vista recientemente.`;
-                            fechaP.appendChild(document.createTextNode(" • "));
+                            span.innerHTML = ` • <span class="reciente"><i class="fas fa-check-circle"></i> Vista recientemente.</span>`;
                             fechaP.appendChild(span);
                         }
                     }
@@ -290,10 +292,9 @@ function mostrarDetalle(vacante) {
     document.querySelector(".detalle-vacante .descripcion").innerHTML =
         `${textoSueldo}<strong>Grammer Automotive, S.A. de C.V.</strong> en ${vacante.Ciudad}, ${vacante.Estado}`;
 
-    document.querySelector(".btn-postularme").addEventListener("click", () => {
+    document.querySelector(".btn-postularme").onclick = () => {
         window.location.href = `postularme.php?id=${vacante.IdVacante}`;
-    });
-
+    };
 
     document.getElementById("previewArea").textContent = vacante.Area;
     document.getElementById("previewescolaridad").textContent = vacante.Escolaridad;
@@ -306,22 +307,19 @@ function mostrarDetalle(vacante) {
     document.getElementById("previewBeneficios").innerHTML = textoAListasHTML(vacante.Beneficios);
     document.getElementById("previewDescripcion").innerHTML = vacante.Descripcion.replace(/\n/g, '<br>');
 
-    if (typeof usuario !== "undefined") {
+    if (typeof usuario !== "undefined" && usuario !== null) {
         mostrarCompatibilidad(vacante, usuario);
+    } else {
+        const compatDiv = document.querySelector(".compatibilidad");
+        compatDiv.innerHTML = `<p style="font-size: 0.9em; color: #666;">Inicia sesión para ver tu compatibilidad con esta vacante.</p>`;
     }
 }
 
 function mostrarCompatibilidad(vacante, usuario) {
     const compatDiv = document.querySelector(".compatibilidad");
-    if (!usuario) {
-        compatDiv.innerHTML = `<p>Inicia sesión para ver tu compatibilidad con esta vacante.</p>`;
-        return;
-    }
-
     const checks = [];
-
     let sueldoOk = false;
-    if (vacante.Sueldo && !isNaN(usuario.sueldoEsperado)) {
+    if (vacante.Sueldo && usuario.sueldoEsperado && !isNaN(usuario.sueldoEsperado)) {
         const sueldoVacante = parseInt(vacante.Sueldo.replace(/\D/g, '')) || 0;
         sueldoOk = usuario.sueldoEsperado <= sueldoVacante;
     }
@@ -330,7 +328,6 @@ function mostrarCompatibilidad(vacante, usuario) {
         compatible: sueldoOk,
         mensaje: sueldoOk ? "Entras en el rango" : "Fuera de tu expectativa"
     });
-
     const ubicacionVacante = normalizarTexto(`${vacante.Ciudad} ${vacante.Estado}`);
     const ubicacionUsuario = normalizarTexto(usuario.ubicacion);
     const ubicacionOk = ubicacionVacante.includes(ubicacionUsuario);
@@ -339,35 +336,27 @@ function mostrarCompatibilidad(vacante, usuario) {
         compatible: ubicacionOk,
         mensaje: ubicacionOk ? "Estás en el lugar correcto" : "Fuera de tu zona"
     });
-
-    const escOk = vacante.Escolaridad.toLowerCase().includes(usuario.escolaridad.toLowerCase());
+    const escOk = vacante.Escolaridad && usuario.escolaridad ? vacante.Escolaridad.toLowerCase().includes(usuario.escolaridad.toLowerCase()) : false;
     checks.push({
         label: "Educación",
         compatible: escOk,
         mensaje: escOk ? "Cumples con lo necesario" : "Nivel diferente al requerido"
     });
-
-    const areaOk = vacante.Area.toLowerCase().includes(usuario.area.toLowerCase());
+    const areaOk = vacante.Area && usuario.area ? vacante.Area.toLowerCase().includes(usuario.area.toLowerCase()) : false;
     checks.push({
         label: "Área",
         compatible: areaOk,
         mensaje: areaOk ? "Compatible con el puesto" : "No coincide tu área"
     });
-
     compatDiv.innerHTML = checks.map(check => `
         <div class="${check.compatible ? '' : 'no-compatible'}">
-            <i class="fas ${check.compatible ? 'fa-check-circle' : 'fa-sad-tear'}"></i>
+            <i class="fas ${check.compatible ? 'fa-check-circle' : 'fa-times-circle'}"></i>
             ${check.label} <span>${check.mensaje}</span>
         </div>
     `).join('');
 }
 
 function normalizarTexto(texto) {
-    return texto
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/,/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
+    if (!texto) return "";
+    return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/,/g, "").replace(/\s+/g, " ").trim();
 }
