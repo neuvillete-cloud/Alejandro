@@ -81,6 +81,19 @@ if (!isset($_SESSION['NumNomina'])) {
                     day: '2-digit', month: '2-digit', year: 'numeric'
                 });
 
+                // --- LÓGICA PARA EL ESTATUS PERSONALIZADO ---
+                let estatusTexto = vacante.EstatusVacante; // Texto por defecto
+                let estatusClase = ''; // Clase CSS para el color
+
+                if (vacante.IdEstatus == 1) {
+                    estatusTexto = 'Abierta';
+                    estatusClase = 'estatus-abierta';
+                } else if (vacante.IdEstatus == 11) {
+                    estatusTexto = 'Cerrada';
+                    estatusClase = 'estatus-cerrada';
+                }
+                // --- FIN DE LA LÓGICA ---
+
                 const cardHTML = `
                 <div class="vacante-card">
                     <div class="card-header">
@@ -89,7 +102,7 @@ if (!isset($_SESSION['NumNomina'])) {
                             <p class="ubicacion-vacante">${vacante.Ciudad}, ${vacante.Estado}</p>
                         </div>
                         <div class="estatus-vacante">
-                            <span class="stat-etiqueta">${vacante.EstatusVacante}</span>
+                            <span class="etiqueta-estatus ${estatusClase}">${estatusTexto}</span>
                         </div>
                     </div>
 

@@ -1,9 +1,8 @@
 <?php
-include_once("ConexionBD.php"); // Asegúrate de que la ruta sea correcta
+include_once("ConexionBD.php");
 
 header('Content-Type: application/json');
 
-// IDs de Estatus de la tabla Postulaciones
 define('ID_ESTATUS_POR_REVISAR', 1);
 define('ID_ESTATUS_SIGUIENTE_FASE', 4);
 define('ID_ESTATUS_PARA_CONTRATAR', 9);
@@ -20,7 +19,8 @@ try {
             v.Ciudad,
             v.Estado,
             v.Fecha AS FechaCreacion,
-            v.Visitas, -- <--- CAMBIO 1: SELECCIONAMOS LA COLUMNA DE VISTAS
+            v.Visitas,
+            v.IdEstatus, -- <--- CAMBIO AÑADIDO AQUÍ
             (SELECT NombreEstatus FROM Estatus WHERE IdEstatus = v.IdEstatus) AS EstatusVacante,
             
             COUNT(CASE WHEN p.IdEstatus = " . ID_ESTATUS_POR_REVISAR . " THEN 1 END) AS PorRevisar,
@@ -42,7 +42,6 @@ try {
     $result = $stmt->get_result();
     $vacantes = $result->fetch_all(MYSQLI_ASSOC);
 
-    // CAMBIO 2: El array de respuesta ya contendrá 'Visitas' para cada vacante
     echo json_encode(['status' => 'success', 'data' => $vacantes]);
 
     $stmt->close();
