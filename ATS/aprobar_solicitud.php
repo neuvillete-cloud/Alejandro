@@ -33,8 +33,7 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             </div>
         </div>
         <nav>
-            <a href="Administrador.php">Inicio</a>
-            <a href="SAprobadas.php">S.Aprobadas</a>
+
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
                     <div class="user-info">
