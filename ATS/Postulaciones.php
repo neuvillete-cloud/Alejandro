@@ -85,49 +85,6 @@ if (!isset($_SESSION['NumNomina'])) {
 </section>
 
 <section class="area-blanca">
-    <!-- 📊 TARJETAS DE ESTADÍSTICAS -->
-    <div class="kpi-container">
-        <div class="kpi-card azul">
-            <i class="fas fa-users kpi-icon"></i>
-            <h3>Total Postulaciones</h3>
-            <p id="totalPostulaciones">0</p>
-        </div>
-        <div class="kpi-card verde">
-            <i class="fas fa-check-circle kpi-icon"></i>
-            <h3>Aprobadas</h3>
-            <p id="totalAprobadas">0</p>
-        </div>
-        <div class="kpi-card rojo">
-            <i class="fas fa-times-circle kpi-icon"></i>
-            <h3>Rechazadas</h3>
-            <p id="totalRechazadas">0</p>
-        </div>
-        <div class="kpi-card morado">
-            <i class="fas fa-user-check kpi-icon"></i>
-            <h3>Seleccionados</h3>
-            <p id="totalSeleccionados">0</p>
-        </div>
-
-        <div class="kpi-card amarillo">
-            <i class="fas fa-hourglass-half kpi-icon"></i>
-            <h3>Pendientes</h3>
-            <p id="totalPendientes">0</p>
-        </div>
-
-    </div>
-
-    <!-- 📈 GRÁFICO Y TIMELINE -->
-    <div class="panel-analitico">
-        <div class="grafico">
-            <canvas id="estatusChart"></canvas>
-        </div>
-        <div class="timeline">
-            <h3>Actividad Reciente</h3>
-            <ul id="actividadLista">
-                <!-- Se llena con JS -->
-            </ul>
-        </div>
-    </div>
 
     <div class="contenido-blanco">
 <!-- Tabla de Solicitudes -->
