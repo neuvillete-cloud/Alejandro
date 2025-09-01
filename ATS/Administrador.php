@@ -53,7 +53,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 </a>
                 <div class="dropdown-menu-nav">
                     <a href="EstadisticasVacantes.php">Panel de Vacantes</a>
-                    <a href="pagina_reporte_2.php">Mi Reporte 2</a>
+                    <a href="dashbord.php">Dashboard de Reclutamiento</a>
                 </div>
             </div>
 
