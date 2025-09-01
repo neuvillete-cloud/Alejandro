@@ -122,7 +122,9 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
             <div id="area-container" class="chart-container">
                 <h2>Postulaciones por Área</h2>
-                <canvas id="chart-area"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="chart-area"></canvas>
+                </div>
             </div>
             <div id="actividad-container" class="chart-container">
                 <h2>Actividad Reciente (Últimos 15 días)</h2>
