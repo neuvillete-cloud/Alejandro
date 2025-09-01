@@ -37,8 +37,7 @@ session_start();
                     </div>
                     <div class="dropdown-menu">
                         <a href="#">Perfil</a>
-                        <a href="#">Alertas de empleo</a>
-                        <a href="#">Historial de solicitudes</a>
+                        <a href="HistorialUsuario.php">Historial de solicitudes</a>
                         <a href="#" id="logout">Cerrar sesión</a>
                     </div>
                 </div>
