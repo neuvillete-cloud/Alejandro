@@ -710,3 +710,177 @@ form input:focus {
 .btn-rechazar:hover {
     background-color: #ffe5e5;
 }
+
+
+/* ========================================= */
+/* == ESTILOS PARA EL FOOTER              == */
+/* ========================================= */
+
+.main-footer {
+    background-color: #063962; /* Mismo azul oscuro del header */
+    color: #e0e0e0; /* Un blanco un poco más suave */
+    padding: 60px 0 0 0;
+    font-family: Arial, sans-serif;
+}
+
+.footer-container {
+    width: 80%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Diseño de columnas responsivo */
+    gap: 40px; /* Espacio entre columnas */
+    padding-bottom: 40px;
+}
+
+.footer-column .logo {
+    margin-bottom: 20px;
+}
+
+.footer-column h3 {
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+/* Línea decorativa debajo de los títulos del footer */
+.footer-column h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background-color: #99d0e9; /* Mismo color de acento del header */
+}
+
+.footer-about {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+    padding-left: 5px;
+}
+
+.footer-column p {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-icons {
+    margin-top: 20px;
+}
+
+.social-icons a {
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin-right: 20px;
+    transition: transform 0.3s ease, color 0.3s ease;
+    display: inline-block; /* Necesario para la transformación */
+}
+
+.social-icons a:hover {
+    transform: scale(1.2);
+    color: #99d0e9;
+}
+
+.sub-footer {
+    background-color: #042a4a; /* Un tono de azul aún más oscuro */
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9rem;
+    border-top: 1px solid #1f3b77;
+}
+
+.sub-footer p {
+    margin: 0;
+}
+
+.developer-credit {
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+.developer-credit .fa-heart {
+    color: #e74c3c; /* Un color rojo para el corazón */
+}
+
+/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
+.nav-item.dropdown {
+    position: relative;
+}
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.dropdown-toggle .fa-chevron-down {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+.dropdown-menu-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 34px);
+    left: 0;
+    background-color: #063962;
+    border: 2px solid #99d0e9;
+    border-radius: 6px;
+    min-width: 250px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1001;
+    overflow: hidden;
+}
+.dropdown-menu-nav a {
+    color: #fff;
+    padding: 12px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+    border-bottom: 1px solid #1f3b77;
+    transition: background-color 0.2s ease;
+}
+.dropdown-menu-nav a:last-child {
+    border-bottom: none;
+}
+.dropdown-menu-nav a:hover {
+    background-color: #007BFF;
+}
+.nav-item.dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+.nav-item.dropdown:hover .dropdown-menu-nav {
+    display: block;
+}
+.nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
+    transform: rotate(180deg);
+}
