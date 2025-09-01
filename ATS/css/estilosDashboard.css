@@ -1,0 +1,433 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #140c33;
+    color: white;
+    overflow-x: hidden;
+}
+
+header {
+    background-color: #063962;
+    padding: 20px 0;
+    border-bottom: 3px solid transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.header-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding-right: 1px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+/* --- INICIO DE CAMBIOS --- */
+
+/* 1. SE ELIMINA ESTA REGLA QUE CAUSABA LA BARRA DUPLICADA */
+/* nav a:last-of-type { ... } */
+/* nav a:last-of-type::before { ... } */
+
+
+/* 2. El user-menu ahora tiene el padding y la barra, como ya lo tenías configurado */
+.user-menu {
+    position: relative;
+    display: inline-block;
+    padding-left: 15px;
+}
+
+.user-menu::before {
+    content: "|";
+    position: absolute;
+    left: -10px;
+    color: white;
+    font-size: 18px;
+    transform: scaleY(2);
+    display: inline-block;
+}
+
+/* 3. Se ajusta el selector de la barra de animación para que incluya al nuevo submenú */
+nav > a::after, .dropdown-toggle::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -34px;
+    width: 0;
+    height: 4px;
+    background: #99d0e9;
+    transform-origin: left;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Se ajusta el activador de la animación para el enlace normal */
+nav > a:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+nav > a:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
+
+/* Se AÑADE el activador de la animación para el nuevo submenú */
+.nav-item.dropdown:hover > .dropdown-toggle::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+
+/* --- FIN DE CAMBIOS --- */
+
+
+@keyframes smooth-infinite-bar {
+    0% { width: 0%; transform: translateX(0); }
+    50% { width: 100%; transform: translateX(0); }
+    100% { width: 100%; transform: translateX(0); }
+}
+
+@keyframes smooth-infinite-bar-out {
+    0% { width: 100%; transform: translateX(0); }
+    100% { width: 0%; transform: translateX(0); }
+}
+
+.logo h1 {
+    font-size: 28px;
+    margin: 0;
+    line-height: 1;
+}
+
+.logo span {
+    display: block;
+    font-size: 25px;
+    line-height: 1;
+}
+
+@media(max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+}
+
+.section-title {
+    background-color:   #3b8ac9a3;
+    padding: 100px 20px;
+    min-height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.section-title h1 {
+    font-size: 60px;
+    color: white;
+    margin: 0;
+    font-weight: bold;
+    padding-right: 670px;
+    padding-top: 60px;
+}
+
+.user-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.user-info {
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    border-radius: 6px;
+    background-color: transparent;
+    font-size: 18px;
+    padding-bottom: 10px;
+    position: relative;
+}
+
+.user-menu::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 1;
+}
+
+.user-menu:hover .dropdown-menu {
+    display: block;
+}
+
+.user-info i.fas.fa-user-circle {
+    font-size: 20px;
+}
+
+.user-info i.fas.fa-chevron-down {
+    font-size: 12px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 34px);
+    left: 15px;
+    background-color: #063962;
+    border: 2px solid #99d0e9;
+    border-radius: 6px;
+    min-width: 220px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1002;
+    overflow: hidden;
+}
+
+.dropdown-menu a {
+    color: #fff;
+    padding: 12px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid #1f3b77;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-menu a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: #007BFF;
+}
+
+.user-info::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -34px;
+    width: 0;
+    height: 4px;
+    background: #99d0e9;
+    transform-origin: left;
+    transition: width 0.3s ease-in-out;
+}
+
+.user-info:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+
+.user-info:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
+
+.area-blanca {
+    background-color: #fff;
+    padding: 80px 20px;
+    min-height: 500px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.contenido-blanco {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 16px;
+    color: #333;
+}
+
+.imagen-banner {
+    position: absolute;
+    top: 60%;
+    right: 2rem;
+    transform: translateY(-50%);
+    max-height: 200px;
+    width: auto;
+    padding-right: 265px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.logo-texto h1, .logo-texto span {
+    margin: 0;
+    line-height: 1;
+    color: white;
+}
+
+/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
+.nav-item.dropdown {
+    position: relative;
+}
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.dropdown-toggle .fa-chevron-down {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+.dropdown-menu-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 34px);
+    left: 0;
+    background-color: #063962;
+    border: 2px solid #99d0e9;
+    border-radius: 6px;
+    min-width: 250px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1001;
+    overflow: hidden;
+}
+.dropdown-menu-nav a {
+    color: #fff;
+    padding: 12px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+    border-bottom: 1px solid #1f3b77;
+    transition: background-color 0.2s ease;
+}
+.dropdown-menu-nav a:last-child {
+    border-bottom: none;
+}
+.dropdown-menu-nav a:hover {
+    background-color: #007BFF;
+}
+.nav-item.dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+.nav-item.dropdown:hover .dropdown-menu-nav {
+    display: block;
+}
+.nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* --- Contenedor Principal del Dashboard --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+}
+
+/* --- Tarjetas KPI (Indicadores Clave) --- */
+.kpi-card {
+    grid-column: span 3; /* Ocupa 3 de 12 columnas */
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.kpi-icon {
+    font-size: 2.5rem;
+    padding: 16px;
+    border-radius: 50%;
+    color: #fff;
+}
+.icon-vacantes { background-color: #3b82f6; }
+.icon-postulaciones { background-color: #8b5cf6; }
+.icon-nuevas { background-color: #10b981; }
+.icon-contratados { background-color: #f59e0b; }
+
+.kpi-info h3 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #111827;
+}
+.kpi-info p {
+    margin: 0;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+/* --- Contenedores de Gráficas y Tablas --- */
+.chart-container {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.chart-container h2 {
+    margin-top: 0;
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 16px;
+}
+
+/* Tamaños de los contenedores en la cuadrícula */
+#embudo-container { grid-column: span 4; }
+#area-container { grid-column: span 8; }
+#actividad-container { grid-column: span 7; }
+#top-vacantes-container { grid-column: span 5; }
+
+/* Estilos para la tabla */
+.tabla-top-vacantes {
+    width: 100%;
+    border-collapse: collapse;
+}
+.tabla-top-vacantes th, .tabla-top-vacantes td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.tabla-top-vacantes th {
+    color: #6b7280;
+}
+.tabla-top-vacantes td:last-child {
+    font-weight: bold;
+    text-align: right;
+}
+
+/* Responsividad */
+@media (max-width: 1200px) {
+    .kpi-card { grid-column: span 6; }
+    #embudo-container { grid-column: span 12; }
+    #area-container { grid-column: span 12; }
+}
+@media (max-width: 768px) {
+    .kpi-card { grid-column: span 12; }
+    #actividad-container { grid-column: span 12; }
+    #top-vacantes-container { grid-column: span 12; }
+}
