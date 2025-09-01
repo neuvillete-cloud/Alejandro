@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grammer Automotive</title>
     <link rel="stylesheet" href="css/indexAts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
 <header>
@@ -373,10 +375,10 @@
         <div class="footer-column">
             <h3>Enlaces Rápidos</h3>
             <ul class="footer-links">
-                <li><a href="Administrador.php">Inicio</a></li>
-                <li><a href="SAprobadas.php">Solicitudes Aprobadas</a></li>
-                <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-                <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
+                <li><a href="indexAts.php">Inicio</a></li>
+                <li><a href="aboutUs.php">Acerca de Nosotros</a></li>
+                <li><a href="practicantes.php">Escuela de Talentos</a></li>
+                <li><a href="inclusionDiversidad.php">Inclusion y Diversidad</a></li>
             </ul>
         </div>
 
