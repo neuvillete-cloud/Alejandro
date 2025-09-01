@@ -170,18 +170,99 @@ header .global {
     100% { transform: translateX(0); }
 }
 
+.sidebar.expanded .sidebar-content {
+    display: block;
+}
+
+.main-content {
+    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
+    transition: margin-left 0.3s ease;
+    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
+}
+
+.sidebar.expanded + .main-content {
+    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
+}
+
+
+/* --- ESTILOS PARA EL NUEVO CONTENIDO DEL SIDEBAR --- */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre enlaces */
+    padding-top: 80px; /* Espacio desde la parte superior */
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre el ícono y el texto */
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+
+    /* Ocultos por defecto para la animación */
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.sidebar-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav a i {
+    width: 20px; /* Alinea los íconos */
+    text-align: center;
+}
+
+
+/* --- LA NUEVA ANIMACIÓN --- */
+/* Eliminamos la animación de los íconos originales */
 .sidebar.bounce .top-icon,
 .sidebar.bounce .middle-icon,
 .sidebar.bounce .bottom-icon {
-    animation: bounceContent 0.6s ease-in-out;
+    animation: none;
 }
 
-/* Opcional: que los íconos se alineen a la izquierda cuando se expanda */
-.sidebar.expanded .top-icon,
-.sidebar.expanded .middle-icon,
-.sidebar.expanded .bottom-icon {
-    align-self: flex-start;
-    margin-left: 30px;
+/* Definimos una animación de entrada con rebote más atractiva */
+@keyframes slideInBounce {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    60% {
+        transform: translateX(10px);
+        opacity: 1;
+    }
+    80% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Aplicamos la nueva animación a los enlaces cuando el sidebar se expande */
+.sidebar.expanded .sidebar-nav a {
+    animation: slideInBounce 0.6s forwards ease-out;
+}
+
+/* Efecto escalonado para cada enlace */
+.sidebar.expanded .sidebar-nav a:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.sidebar.expanded .sidebar-nav a:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.sidebar.expanded .sidebar-nav a:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.sidebar.expanded .sidebar-nav a:nth-child(4) {
+    animation-delay: 0.4s;
 }
 
 .program-description {

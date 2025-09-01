@@ -39,7 +39,24 @@
 
         <!-- Contenido adicional que se muestra solo al expandir -->
         <div class="sidebar-content">
-            <!-- Aquí puedes meter el contenido que aparece cuando se expande -->
+            <nav class="sidebar-nav">
+                <a href="indexAts.php">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="aboutUs.php">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Acerca de Nosotros</span>
+                </a>
+                <a href="practicantes.php">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Escuela de Talentos</span>
+                </a>
+                <a href="inclusionDiversidad.php">
+                    <i class="fas fa-users"></i>
+                    <span>Inclusión y Diversidad</span>
+                </a>
+            </nav>
         </div>
     </aside>
 
