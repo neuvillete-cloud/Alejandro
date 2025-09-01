@@ -206,10 +206,10 @@ if (!isset($_SESSION['NumNomina'])) {
         <div class="footer-column">
             <h3>Enlaces Rápidos</h3>
             <ul class="footer-links">
-                <li><a href="Administrador.php">Inicio</a></li>
-                <li><a href="SAprobadas.php">Solicitudes Aprobadas</a></li>
-                <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
-                <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
+                <li><a href="Solicitante.php">Inicio</a></li>
+                <li><a href="seguimiento.php">Seguimiento</a></li>
+                <li><a href="historicos.php">Historial de Solicitudes</a></li>
+                <li><a href="seleccionFinal.php">Candidatos Finales</a></li>
             </ul>
         </div>
 
