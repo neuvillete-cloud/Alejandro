@@ -39,10 +39,11 @@ if (!isset($_SESSION['NumNomina'])) {
                 </div>
             </div>
             <div class="nav-item dropdown">
-                <a href="Postulaciones.php" class="dropdown-toggle">
-                    Candidatos Postulados <i class="fas fa-chevron-down"></i>
+                <a href="#" class="dropdown-toggle">
+                    Progreso en los candidatos <i class="fas fa-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu-nav">
+                    <a href="Postulaciones.php">Candidatos Postulados</a>
                     <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
                 </div>
             </div>
