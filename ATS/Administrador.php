@@ -29,7 +29,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <a href="Administrador.php">Inicio</a>
 
             <div class="nav-item dropdown">
-                <a href="SAprobadas.php" class="dropdown-toggle">
+                <a href="#" class="dropdown-toggle">
                     Seguimiento de la vacante <i class="fas fa-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu-nav">
