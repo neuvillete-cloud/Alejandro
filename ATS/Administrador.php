@@ -38,8 +38,8 @@ if (!isset($_SESSION['NumNomina'])) {
                     <a href="cargaVacante.php">Cargar/Editar Vacantes</a>
                 </div>
             </div>
-            <a href="Postulaciones.php">Candidatos Postulados</a>
-            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+            <a href="Postulaciones.php">C. Postulados</a>
+            <a href="candidatoSeleccionado.php">C. Seleccionados</a>
             <div class="nav-item dropdown">
                 <a href="#" class="dropdown-toggle">
                     Dashboard <i class="fas fa-chevron-down"></i>
