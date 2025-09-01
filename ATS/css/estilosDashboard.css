@@ -433,8 +433,8 @@ nav > a:not(:hover)::after {
 }
 
 /* --- Ajuste para Gráfica con Scroll --- */
-#area-container .chart-wrapper {
+.chart-container .chart-wrapper {
     position: relative;
-    height: 400px; /* Altura máxima fija para la gráfica */
+    height: 400px; /* Altura máxima fija para la gráfica y tablas */
     overflow-y: auto; /* Muestra un scroll si el contenido es más alto */
 }

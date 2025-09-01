@@ -118,7 +118,9 @@ if (!isset($_SESSION['NumNomina'])) {
 
             <div id="embudo-container" class="chart-container">
                 <h2>Embudo de Reclutamiento</h2>
-                <canvas id="chart-funnel"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="chart-funnel"></canvas>
+                </div>
             </div>
             <div id="area-container" class="chart-container">
                 <h2>Postulaciones por Área</h2>
@@ -128,15 +130,18 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
             <div id="actividad-container" class="chart-container">
                 <h2>Actividad Reciente (Últimos 15 días)</h2>
-                <canvas id="chart-activity"></canvas>
+                <div class="chart-wrapper">
+                    <canvas id="chart-activity"></canvas>
+                </div>
             </div>
             <div id="top-vacantes-container" class="chart-container">
                 <h2>Top 5 Vacantes con más Postulantes</h2>
-                <table class="tabla-top-vacantes">
-                    <thead><tr><th>Puesto</th><th>Postulantes</th></tr></thead>
-                    <tbody id="tabla-top-vacantes-body"></tbody>
-                </table>
-            </div>
+                <div class="chart-wrapper">
+                    <table class="tabla-top-vacantes">
+                        <thead><tr><th>Puesto</th><th>Postulantes</th></tr></thead>
+                        <tbody id="tabla-top-vacantes-body"></tbody>
+                    </table>
+                </div>
         </div>
     </div>
 </section>
