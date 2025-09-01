@@ -40,6 +40,15 @@ if (!isset($_SESSION['NumNomina'])) {
             </div>
             <a href="Postulaciones.php">Candidatos Postulados</a>
             <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle">
+                    Dashboard <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu-nav">
+                    <a href="EstadisticasVacantes.php">Panel de Vacantes</a>
+                    <a href="pagina_reporte_2.php">Mi Reporte 2</a>
+                </div>
+            </div>
 
 
             <?php if (isset($_SESSION['Nombre'])): ?>
