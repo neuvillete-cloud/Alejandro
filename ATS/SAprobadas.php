@@ -28,10 +28,36 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="Administrador.php">Inicio</a>
-            <a href="SAprobadas.php">S.Aprobadas</a>
-            <a href="SeguimientoAdministrador.php">Seguimiento</a>
-            <a href="cargaVacante.php">Carga de Vacantes</a>
-            <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+
+            <div class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle">
+                    Seguimiento de la vacante <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu-nav">
+                    <a href="SAprobadas.php">Solicitudes Aprobadas</a>
+                    <a href="SeguimientoAdministrador.php">Seguimiento de Postulantes</a>
+                    <a href="cargaVacante.php">Cargar/Editar Vacantes</a>
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle">
+                    Progreso en los candidatos <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu-nav">
+                    <a href="Postulaciones.php">Candidatos Postulados</a>
+                    <a href="candidatoSeleccionado.php">Candidatos Seleccionados</a>
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle">
+                    Dashboard <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu-nav">
+                    <a href="EstadisticasVacantes.php">Panel de Vacantes</a>
+                    <a href="dashbord.php">Dashboard de Reclutamiento</a>
+                </div>
+            </div>
+
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
