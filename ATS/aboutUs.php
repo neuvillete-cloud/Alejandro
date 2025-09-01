@@ -39,7 +39,20 @@
 
         <!-- Contenido adicional que se muestra solo al expandir -->
         <div class="sidebar-content">
-            <!-- Aquí puedes meter el contenido que aparece cuando se expande -->
+            <nav class="sidebar-nav">
+                <a href="pagina1.php">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="pagina2.php">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Vacantes</span>
+                </a>
+                <a href="pagina3.php">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Candidatos</span>
+                </a>
+            </nav>
         </div>
     </aside>
 
