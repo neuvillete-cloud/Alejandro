@@ -40,17 +40,21 @@
         <!-- Contenido adicional que se muestra solo al expandir -->
         <div class="sidebar-content">
             <nav class="sidebar-nav">
-                <a href="pagina1.php">
+                <a href="indexAts.php">
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
                 </a>
-                <a href="pagina2.php">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Vacantes</span>
+                <a href="aboutUs.php">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Acerca de Nosotros</span>
                 </a>
-                <a href="pagina3.php">
-                    <i class="fas fa-user-friends"></i>
-                    <span>Candidatos</span>
+                <a href="practicantes.php">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Escuela de Talentos</span>
+                </a>
+                <a href="inclusionDiversidad.php">
+                    <i class="fas fa-users"></i>
+                    <span>Inclusión y Diversidad</span>
                 </a>
             </nav>
         </div>
