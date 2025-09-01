@@ -227,6 +227,21 @@ if (!isset($_SESSION['NumNomina'])) {
             });
     });
 </script>
+<script>
+    const logoutLink = document.getElementById('logout');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('dao/logout.php', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'login.php';
+                    }
+                })
+                .catch(error => console.error('Error al cerrar sesión:', error));
+        });
+    }
+</script>
 <footer class="main-footer">
     <div class="footer-container">
 
