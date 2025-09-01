@@ -148,7 +148,7 @@ nav > a:not(:hover)::after {
     color: white;
     margin: 0;
     font-weight: bold;
-    padding-right: 670px;
+    padding-right: 530px;
     padding-top: 60px;
 }
 
