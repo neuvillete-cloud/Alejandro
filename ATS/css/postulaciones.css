@@ -42,12 +42,21 @@ nav a {
     padding-bottom: 10px;
 }
 
-nav a:last-of-type {
+/* --- INICIO DE CAMBIOS --- */
+
+/* 1. SE ELIMINA ESTA REGLA QUE CAUSABA LA BARRA DUPLICADA */
+/* nav a:last-of-type { ... } */
+/* nav a:last-of-type::before { ... } */
+
+
+/* 2. El user-menu ahora tiene el padding y la barra, como ya lo tenías configurado */
+.user-menu {
     position: relative;
+    display: inline-block;
     padding-left: 15px;
 }
 
-nav a:last-of-type::before {
+.user-menu::before {
     content: "|";
     position: absolute;
     left: -10px;
@@ -57,7 +66,8 @@ nav a:last-of-type::before {
     display: inline-block;
 }
 
-nav > a::after {
+/* 3. Se ajusta el selector de la barra de animación para que incluya al nuevo submenú */
+nav > a::after, .dropdown-toggle::after {
     content: '';
     position: absolute;
     left: 0;
@@ -69,13 +79,21 @@ nav > a::after {
     transition: width 0.3s ease-in-out;
 }
 
-nav a:hover::after {
+/* Se ajusta el activador de la animación para el enlace normal */
+nav > a:hover::after {
+    animation: smooth-infinite-bar 0.8s linear forwards;
+}
+nav > a:not(:hover)::after {
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
+}
+
+/* Se AÑADE el activador de la animación para el nuevo submenú */
+.nav-item.dropdown:hover > .dropdown-toggle::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
 
-nav a:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards;
-}
+/* --- FIN DE CAMBIOS --- */
+
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
@@ -114,7 +132,7 @@ nav a:not(:hover)::after {
 }
 
 .section-title {
-    background-color:	#3b8ac9a3;
+    background-color:   #3b8ac9a3;
     padding: 100px 20px;
     min-height: 170px;
     display: flex;
@@ -122,6 +140,7 @@ nav a:not(:hover)::after {
     justify-content: center;
     text-align: center;
     flex-direction: column;
+    position: relative;
 }
 
 .section-title h1 {
@@ -149,6 +168,7 @@ nav a:not(:hover)::after {
     background-color: transparent;
     font-size: 18px;
     padding-bottom: 10px;
+    position: relative;
 }
 
 .user-menu::after {
@@ -177,7 +197,7 @@ nav a:not(:hover)::after {
     display: none;
     position: absolute;
     top: calc(100% + 34px);
-    left: 0;
+    left: 15px;
     background-color: #063962;
     border: 2px solid #99d0e9;
     border-radius: 6px;
@@ -203,10 +223,6 @@ nav a:not(:hover)::after {
 
 .dropdown-menu a:hover {
     background-color: #007BFF;
-}
-
-.user-info {
-    position: relative;
 }
 
 .user-info::after {
@@ -241,25 +257,6 @@ nav a:not(:hover)::after {
     margin: 0 auto;
     font-size: 16px;
     color: #333;
-}
-
-.buscador-vacantes {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.fila-superior {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-}
-
-
-
-.section-title {
-    position: relative;
 }
 
 .imagen-banner {
@@ -783,4 +780,60 @@ h2 {
 
 .developer-credit .fa-heart {
     color: #e74c3c; /* Un color rojo para el corazón */
+}
+
+/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
+.nav-item.dropdown {
+    position: relative;
+}
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.dropdown-toggle .fa-chevron-down {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+.dropdown-menu-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 34px);
+    left: 0;
+    background-color: #063962;
+    border: 2px solid #99d0e9;
+    border-radius: 6px;
+    min-width: 250px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1001;
+    overflow: hidden;
+}
+.dropdown-menu-nav a {
+    color: #fff;
+    padding: 12px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+    border-bottom: 1px solid #1f3b77;
+    transition: background-color 0.2s ease;
+}
+.dropdown-menu-nav a:last-child {
+    border-bottom: none;
+}
+.dropdown-menu-nav a:hover {
+    background-color: #007BFF;
+}
+.nav-item.dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+.nav-item.dropdown:hover .dropdown-menu-nav {
+    display: block;
+}
+.nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
+    transform: rotate(180deg);
 }
