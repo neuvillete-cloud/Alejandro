@@ -30,7 +30,7 @@ if (!isset($_SESSION['NumNomina'])) {
 
             <div class="nav-item dropdown">
                 <a href="SAprobadas.php" class="dropdown-toggle">
-                    Vacantes <i class="fas fa-chevron-down"></i>
+                    Seguimiento de la vacante <i class="fas fa-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu-nav">
                     <a href="SAprobadas.php">Solicitudes Aprobadas</a>
