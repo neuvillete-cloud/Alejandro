@@ -23,10 +23,10 @@ session_start();
             </div>
         </div>
         <nav>
-            <a href="#">Buscar empleos</a>
+            <a href="indexAts.php">Buscar empleos</a>
             <a href="aboutUs.php">Acerca de nosotros</a>
             <a href="practicantes.php">Escuela de Talentos</a>
-            <a href="#">Inclusión y diversidad</a>
+            <a href="inclusionDiversidad.php">Inclusión y diversidad</a>
 
             <?php if (isset($_SESSION['NombreCandidato'])): ?>
                 <div class="user-menu">
