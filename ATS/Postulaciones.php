@@ -175,64 +175,6 @@ if (!isset($_SESSION['NumNomina'])) {
             default: return 'estatus-default';
         }
     }
-
-    // Helpers para KPIs/Gráfico/Timeline
-    let estatusChart = null;
-
-    function kpisDesdeArray(arr) {
-        const total = arr.length;
-        let aprobadas = 0, rechazadas = 0, pendientes = 0, seleccionados = 0;
-        arr.forEach(d => {
-            const s = String(d.NombreEstatus || '').toLowerCase();
-            if (s === 'aprobado') aprobadas++;
-            else if (s === 'rechazado') rechazadas++;
-            else if (s === 'seleccionado') seleccionados++; // Nuevo estatus
-            else pendientes++;
-        });
-        return { total, aprobadas, rechazadas, pendientes, seleccionados };
-    }
-
-
-    function actualizarGrafico({ aprobadas, rechazadas, pendientes, seleccionados }) {
-        const ctx = document.getElementById('estatusChart');
-        if (!ctx) return;
-
-        if (!estatusChart) {
-            estatusChart = new Chart(ctx, {
-                type: 'bar', // cambio a barras
-                data: {
-                    labels: ['Aprobadas', 'Rechazadas', 'Pendientes', 'Seleccionados'],
-                    datasets: [{
-                        label: 'Cantidad de postulaciones',
-                        data: [aprobadas, rechazadas, pendientes, seleccionados],
-                        backgroundColor: ['#28A745', '#DC3545', '#FFC107', '#6f42c1']
-                    }]
-                },
-                options: {
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        } else {
-            estatusChart.data.datasets[0].data = [aprobadas, rechazadas, pendientes, seleccionados];
-            estatusChart.update();
-        }
-    }
-
-
-    function llenarTimeline(arr) {
-        const lista = document.getElementById('actividadLista');
-        if (!lista) return;
-        lista.innerHTML = '';
-        arr.slice(0, 5).forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${item.NombreCandidato}</strong> - ${item.NombreEstatus} (${item.FechaPostulacion})`;
-            lista.appendChild(li);
-        });
-    }
-
     $(document).ready(function () {
         var tabla = $('#solicitudesTable').DataTable({
             "responsive": true,
@@ -296,22 +238,7 @@ if (!isset($_SESSION['NumNomina'])) {
             tabla.search(this.value).draw();
         });
 
-        // 📌 KPIs/Gráfico/Timeline al terminar de cargar AJAX
-        tabla.on('xhr.dt', function (e, settings, json) {
-            if (!json || !json.data) return;
-            const k = kpisDesdeArray(json.data);
-            pintarKpis(k);
-            actualizarGrafico(k);
-            llenarTimeline(json.data);
-        });
 
-        // 📌 Actualizar KPIs/Gráfico con los datos filtrados/buscados
-        tabla.on('draw.dt', function () {
-            const datosFiltrados = tabla.rows({ search: 'applied' }).data().toArray();
-            const k = kpisDesdeArray(datosFiltrados);
-            pintarKpis(k);
-            actualizarGrafico(k);
-        });
 
         // Funcionalidad de botones
         $('#copyBtn').on('click', function () {
@@ -347,68 +274,6 @@ if (!isset($_SESSION['NumNomina'])) {
         $('#solicitudesTable tbody').on('click', '.go-to-page-btn', function () {
             window.location.href = 'SeguimientoAdministrador.php';
         });
-
-        // 📌 Función para animar el conteo de KPIs
-        function animarContador(element, final) {
-            let inicio = 0;
-            const duracion = 1000; // 1 segundo
-            const incremento = final / (duracion / 16);
-            function actualizar() {
-                inicio += incremento;
-                if (inicio >= final) {
-                    element.textContent = final;
-                } else {
-                    element.textContent = Math.floor(inicio);
-                    requestAnimationFrame(actualizar);
-                }
-            }
-            actualizar();
-        }
-
-// 📌 Modificar pintarKpis para incluir animación
-        function pintarKpis({ total, aprobadas, rechazadas, pendientes, seleccionados }) {
-            animarContador(document.getElementById('totalPostulaciones'), total);
-            animarContador(document.getElementById('totalAprobadas'), aprobadas);
-            animarContador(document.getElementById('totalRechazadas'), rechazadas);
-            animarContador(document.getElementById('totalPendientes'), pendientes);
-            animarContador(document.getElementById('totalSeleccionados'), seleccionados); // nuevo
-
-            document.querySelectorAll('.kpi-icon').forEach((icon, index) => {
-                setTimeout(() => {
-                    icon.classList.remove('pop');
-                    void icon.offsetWidth;
-                    icon.classList.add('pop');
-                }, index * 150);
-            });
-        }
-
-
-
-// 📌 Animar timeline al aparecer
-        function llenarTimeline(arr) {
-            const lista = document.getElementById('actividadLista');
-            if (!lista) return;
-            lista.innerHTML = '';
-
-            arr.slice(0, 5).forEach((item, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${item.NombreCandidato}</strong> - ${item.NombreEstatus} (${item.FechaPostulacion})`;
-                lista.appendChild(li);
-
-                setTimeout(() => {
-                    li.classList.add('visible');
-                }, index * 200); // Retraso entre elementos
-            });
-        }
-
-// 📌 Activar animación inicial del gráfico Chart.js
-        if (estatusChart) {
-            estatusChart.options.animation = {
-                animateRotate: true,
-                animateScale: true
-            };
-        }
-
     });
 </script>
 <footer class="main-footer">
