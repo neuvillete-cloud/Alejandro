@@ -27,7 +27,7 @@
         </form>
     </div>
     <footer class="login-footer">
-        <p><a href="recuperarContrasena.php">¿Olvidaste tu contraseña?</a></p>
+        <p><a href="solicitar_recuperacion.php">¿Olvidaste tu contraseña?</a></p>
     </footer>
 </div>
 <script src="js/login.js"></script>
