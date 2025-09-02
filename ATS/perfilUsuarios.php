@@ -122,8 +122,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     <h3>Acciones de la Cuenta</h3>
                     <div class="acciones-container">
                         <button class="btn-accion btn-primario"><i class="fas fa-edit"></i> Editar Información</button>
-                        <button class="btn-accion btn-secundario"><i class="fas fa-key"></i> Cambiar Contraseña</button>
-                    </div>
+                        <a href="solicitar_recuperacion.php" class="btn-accion btn-secundario"><i class="fas fa-key"></i> Cambiar Contraseña</a>                    </div>
                 </div>
             </main>
         </div>
