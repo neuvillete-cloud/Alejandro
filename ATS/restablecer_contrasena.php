@@ -8,7 +8,6 @@ if (isset($_GET['token'])) {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Verificar si el token existe, es válido y no ha expirado
     $stmt = $conex->prepare("SELECT * FROM RestablecerContrasena WHERE Token = ? AND TokenValido = 1 AND Expira >= NOW()");
     $stmt->bind_param("s", $token);
     $stmt->execute();
@@ -36,9 +35,13 @@ if (isset($_GET['token'])) {
         .error { color: #dc3545; }
 
         /* --- ESTILOS PARA EL MEDIDOR DE CONTRASEÑA --- */
-        #strength-meter-container { width: 100%; height: 8px; background-color: #e5e7eb; border-radius: 4px; margin-top: -10px; margin-bottom: 5px; overflow: hidden; }
+        #strength-meter-container { width: 100%; height: 8px; background-color: #e5e7eb; border-radius: 4px; margin-top: -10px; overflow: hidden; }
         #strength-meter-bar { height: 100%; width: 0; border-radius: 4px; transition: width 0.3s ease, background-color 0.3s ease; }
-        #strength-meter-text { font-size: 0.85rem; font-weight: 600; text-align: left; height: 1.2em; }
+
+        /* CAMBIO 1: Se ajustan los márgenes para reducir el espacio */
+        #strength-meter-text { font-size: 0.85rem; font-weight: 600; text-align: left; height: 1.2em; margin-top: 5px; margin-bottom: 5px; }
+        .requirements-text { font-size: 0.8rem; color: #6b7280; text-align: left; margin-top: 0; margin-bottom: 20px; }
+
         .strength-weak { color: #dc3545; }
         .strength-medium { color: #fd7e14; }
         .strength-strong { color: #198754; }
@@ -58,6 +61,10 @@ if (isset($_GET['token'])) {
             </div>
             <p id="strength-meter-text"></p>
 
+            <p class="requirements-text">
+                Debe contener mayúscula, número y símbolo.
+            </p>
+
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Nueva Contraseña" required>
             <button type="submit">Guardar nueva contraseña</button>
         </form>
@@ -70,6 +77,7 @@ if (isset($_GET['token'])) {
 <script>
     <?php if ($token_valido): ?>
     document.addEventListener('DOMContentLoaded', function() {
+        // El script de JS no necesita cambios, solo el HTML y CSS
         const passwordInput = document.getElementById('password');
         const strengthBar = document.getElementById('strength-meter-bar');
         const strengthText = document.getElementById('strength-meter-text');
@@ -91,22 +99,23 @@ if (isset($_GET['token'])) {
             if (password.length === 0) return results;
 
             if (password.length >= 8) score++;
-            if (/[a-z]/.test(password)) score++;
-            if (/[A-Z]/.test(password)) score++;
-            if (/[0-9]/.test(password)) score++;
-            if (/[^a-zA-Z0-9]/.test(password)) score++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++; // Mayúsculas y minúsculas
+            if (/[0-9]/.test(password)) score++; // Números
+            if (/[^a-zA-Z0-9]/.test(password)) score++; // Símbolos
 
+            // Puntuación ajustada
             switch (score) {
                 case 1:
+                    results = { text: 'Débil', width: '25%', color: '#dc3545', className: 'strength-weak' };
+                    break;
                 case 2:
-                    results = { text: 'Débil', width: '33%', color: '#dc3545', className: 'strength-weak' };
+                    results = { text: 'Media', width: '50%', color: '#fd7e14', className: 'strength-medium' };
                     break;
                 case 3:
-                case 4:
-                    results = { text: 'Media', width: '66%', color: '#fd7e14', className: 'strength-medium' };
+                    results = { text: 'Fuerte', width: '75%', color: '#198754', className: 'strength-strong' };
                     break;
-                case 5:
-                    results = { text: 'Fuerte', width: '100%', color: '#198754', className: 'strength-strong' };
+                case 4:
+                    results = { text: 'Muy Fuerte', width: '100%', color: '#198754', className: 'strength-strong' };
                     break;
                 default:
                     results = { text: 'Muy Débil', width: '10%', color: '#dc3545', className: 'strength-weak' };
