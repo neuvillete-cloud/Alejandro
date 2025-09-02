@@ -402,6 +402,7 @@ nav a:not(:hover)::after {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    text-decoration: none; /* <--- AÑADE ESTA LÍNEA */
 }
 .btn-primario { background-color: #063962; color: #fff; }
 .btn-primario:hover { background-color: #084c81; }
