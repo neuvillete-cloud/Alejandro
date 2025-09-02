@@ -25,7 +25,7 @@ if (isset($_GET['token'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restablecer Contraseña | ATS Grammer</title>
-    <style> /* Mismos estilos que la página de solicitud */
+    <style>
         body { font-family: Arial, sans-serif; background-color: #f4f7fc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .reset-container { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
         .reset-container h1 { color: #063962; margin-bottom: 20px; }
@@ -34,6 +34,14 @@ if (isset($_GET['token'])) {
         .reset-container button { width: 100%; padding: 12px; background-color: #063962; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
         .reset-container button:hover { background-color: #084c81; }
         .error { color: #dc3545; }
+
+        /* --- ESTILOS PARA EL MEDIDOR DE CONTRASEÑA --- */
+        #strength-meter-container { width: 100%; height: 8px; background-color: #e5e7eb; border-radius: 4px; margin-top: -10px; margin-bottom: 5px; overflow: hidden; }
+        #strength-meter-bar { height: 100%; width: 0; border-radius: 4px; transition: width 0.3s ease, background-color 0.3s ease; }
+        #strength-meter-text { font-size: 0.85rem; font-weight: 600; text-align: left; height: 1.2em; }
+        .strength-weak { color: #dc3545; }
+        .strength-medium { color: #fd7e14; }
+        .strength-strong { color: #198754; }
     </style>
 </head>
 <body>
@@ -44,6 +52,12 @@ if (isset($_GET['token'])) {
         <form id="resetForm">
             <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
             <input type="password" id="password" name="password" placeholder="Nueva Contraseña" required>
+
+            <div id="strength-meter-container">
+                <div id="strength-meter-bar"></div>
+            </div>
+            <p id="strength-meter-text"></p>
+
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmar Nueva Contraseña" required>
             <button type="submit">Guardar nueva contraseña</button>
         </form>
@@ -55,37 +69,81 @@ if (isset($_GET['token'])) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     <?php if ($token_valido): ?>
-    document.getElementById('resetForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const password = document.getElementById('password').value;
-        const confirm_password = document.getElementById('confirm_password').value;
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strength-meter-bar');
+        const strengthText = document.getElementById('strength-meter-text');
 
-        if (password !== confirm_password) {
-            Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
-            return;
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            const result = checkPasswordStrength(password);
+
+            strengthText.textContent = result.text;
+            strengthText.className = result.className;
+            strengthBar.style.width = result.width;
+            strengthBar.style.backgroundColor = result.color;
+        });
+
+        function checkPasswordStrength(password) {
+            let score = 0;
+            let results = { text: '', width: '0%', color: 'transparent', className: '' };
+
+            if (password.length === 0) return results;
+
+            if (password.length >= 8) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+            switch (score) {
+                case 1:
+                case 2:
+                    results = { text: 'Débil', width: '33%', color: '#dc3545', className: 'strength-weak' };
+                    break;
+                case 3:
+                case 4:
+                    results = { text: 'Media', width: '66%', color: '#fd7e14', className: 'strength-medium' };
+                    break;
+                case 5:
+                    results = { text: 'Fuerte', width: '100%', color: '#198754', className: 'strength-strong' };
+                    break;
+                default:
+                    results = { text: 'Muy Débil', width: '10%', color: '#dc3545', className: 'strength-weak' };
+                    break;
+            }
+            return results;
         }
 
-        const formData = new FormData(this);
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
 
-        fetch('dao/updatePassword.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Contraseña actualizada!',
-                        text: 'Tu contraseña ha sido cambiada con éxito.',
-                        confirmButtonText: 'Iniciar Sesión'
-                    }).then(() => {
-                        window.location.href = 'login.php'; // Redirigir al login
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            });
+            if (password !== confirm_password) {
+                Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+                return;
+            }
+
+            const formData = new FormData(this);
+
+            fetch('dao/updatePassword.php', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Contraseña actualizada!',
+                            text: 'Tu contraseña ha sido cambiada con éxito.',
+                            confirmButtonText: 'Iniciar Sesión'
+                        }).then(() => {
+                            window.location.href = 'login.php';
+                        });
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                });
+        });
     });
     <?php endif; ?>
 </script>
