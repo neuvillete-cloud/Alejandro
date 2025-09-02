@@ -593,3 +593,16 @@ nav > a:not(:hover)::after {
 .nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
     transform: rotate(180deg);
 }
+
+/* --- Efecto Hover para Botones --- */
+.btn-primary:hover, .btn-success:hover {
+    opacity: 0.85; /* Hacemos el botón ligeramente transparente */
+    transform: translateY(-2px); /* Lo movemos un poco hacia arriba */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* Le damos una sombra más pronunciada */
+}
+
+/* También le daremos a los botones una transición suave */
+.card-actions .btn {
+    /* ... (tus estilos existentes) ... */
+    transition: all 0.2s ease-in-out; /* Añade esta línea a tu regla .btn */
+}
