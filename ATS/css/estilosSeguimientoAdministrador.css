@@ -420,6 +420,74 @@ nav > a:not(:hover)::after {
 .btn-primary { background-color: #0d6efd; }
 .btn-success { background-color: #198754; }
 
+/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
+.nav-item.dropdown {
+    position: relative;
+}
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.dropdown-toggle .fa-chevron-down {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+.dropdown-menu-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 34px);
+    left: 0;
+    background-color: #063962;
+    border: 2px solid #99d0e9;
+    border-radius: 6px;
+    min-width: 250px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    z-index: 1001;
+    overflow: hidden;
+}
+.dropdown-menu-nav a {
+    color: #fff;
+    padding: 12px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+    border-bottom: 1px solid #1f3b77;
+    transition: background-color 0.2s ease;
+}
+.dropdown-menu-nav a:last-child {
+    border-bottom: none;
+}
+.dropdown-menu-nav a:hover {
+    background-color: #007BFF;
+}
+.nav-item.dropdown::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+.nav-item.dropdown:hover .dropdown-menu-nav {
+    display: block;
+}
+.nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* --- Efecto Hover para Botones --- */
+.btn-primary:hover, .btn-success:hover {
+    opacity: 0.85; /* Hacemos el botón ligeramente transparente */
+    transform: translateY(-2px); /* Lo movemos un poco hacia arriba */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* Le damos una sombra más pronunciada */
+}
+
+/* También le daremos a los botones una transición suave */
+.card-actions .btn {
+    /* ... (tus estilos existentes) ... */
+    transition: all 0.2s ease-in-out; /* Añade esta línea a tu regla .btn */
+}
 
 /* ========================================= */
 /* == ESTILOS PARA EL FOOTER              == */
@@ -536,73 +604,4 @@ nav > a:not(:hover)::after {
 
 .developer-credit .fa-heart {
     color: #e74c3c; /* Un color rojo para el corazón */
-}
-
-/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
-.nav-item.dropdown {
-    position: relative;
-}
-.dropdown-toggle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.dropdown-toggle .fa-chevron-down {
-    font-size: 0.8em;
-    transition: transform 0.3s ease;
-}
-.dropdown-menu-nav {
-    display: none;
-    position: absolute;
-    top: calc(100% + 34px);
-    left: 0;
-    background-color: #063962;
-    border: 2px solid #99d0e9;
-    border-radius: 6px;
-    min-width: 250px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    z-index: 1001;
-    overflow: hidden;
-}
-.dropdown-menu-nav a {
-    color: #fff;
-    padding: 12px 20px;
-    display: block;
-    text-decoration: none;
-    font-size: 16px;
-    border-bottom: 1px solid #1f3b77;
-    transition: background-color 0.2s ease;
-}
-.dropdown-menu-nav a:last-child {
-    border-bottom: none;
-}
-.dropdown-menu-nav a:hover {
-    background-color: #007BFF;
-}
-.nav-item.dropdown::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: 40px;
-}
-.nav-item.dropdown:hover .dropdown-menu-nav {
-    display: block;
-}
-.nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
-    transform: rotate(180deg);
-}
-
-/* --- Efecto Hover para Botones --- */
-.btn-primary:hover, .btn-success:hover {
-    opacity: 0.85; /* Hacemos el botón ligeramente transparente */
-    transform: translateY(-2px); /* Lo movemos un poco hacia arriba */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* Le damos una sombra más pronunciada */
-}
-
-/* También le daremos a los botones una transición suave */
-.card-actions .btn {
-    /* ... (tus estilos existentes) ... */
-    transition: all 0.2s ease-in-out; /* Añade esta línea a tu regla .btn */
 }
