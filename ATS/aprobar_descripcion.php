@@ -174,7 +174,7 @@ if (isset($_GET['token'])) {
                     formData.append('accion', 'aprobar');
                     formData.append('token', token);
 
-                    fetch('dao/procesarAprobacion.php', { method: 'POST', body: formData })
+                    fetch('https://grammermx.com/Mailer/procesarAprobacion.php', { method: 'POST', body: formData })
                         .then(res => res.json())
                         .then(data => {
                             if (data.status === 'success') {
@@ -204,7 +204,7 @@ if (isset($_GET['token'])) {
                     formData.append('accion', 'rechazar');
                     formData.append('token', token);
 
-                    fetch('dao/procesarAprobacion.php', { method: 'POST', body: formData })
+                    fetch('https://grammermx.com/Mailer/procesarAprobacion.php', { method: 'POST', body: formData })
                         .then(res => res.json())
                         .then(data => {
                             if (data.status === 'success') {
