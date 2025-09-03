@@ -270,7 +270,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 formData.append('documento', fileInput.files[0]);
                 formData.append('idSolicitud', id);
 
-                fetch('dao/daoSubirDescripciones.php', { method: 'POST', body: formData })
+                fetch('https://grammermx.com/Mailer/daoSubirDescripciones.php', { method: 'POST', body: formData })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
