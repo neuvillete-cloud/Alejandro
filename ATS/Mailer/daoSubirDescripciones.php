@@ -121,14 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
 }
 
 
-// --- FUNCIÓN DE ENVÍO DE CORREO (ESTÉTICA MEJORADA) ---
+
+// --- FUNCIÓN DE ENVÍO DE CORREO (VERSIÓN COMPATIBLE CON OUTLOOK) ---
 function enviarCorreoAprobacion($email, $link) {
-    // Para poder usar la variable $url_sitio que está fuera de la función
     global $url_sitio;
 
     $asunto = "Acción Requerida: Aprobación de Descripción de Puesto";
-    $logoUrl = $url_sitio . '/imagenes/logo_blanco.png'; // Ruta completa al logo
+    $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
 
+    // Este es el nuevo HTML, construido con tablas para máxima compatibilidad
     $contenidoHTML = "
     <!DOCTYPE html>
     <html lang='es'>
@@ -136,43 +137,52 @@ function enviarCorreoAprobacion($email, $link) {
         <meta charset='UTF-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>$asunto</title>
-        <style>
-            body { margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif; }
-            .email-container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-            .email-header { background-color: #005195; padding: 30px; text-align: center; }
-            .email-header img { max-width: 150px; }
-            .email-body { padding: 40px; color: #333333; line-height: 1.6; text-align: left; }
-            .email-body h2 { color: #005195; margin-top: 0; }
-            .email-body p { font-size: 16px; margin: 10px 0; }
-            .email-body .button-container { text-align: center; margin: 30px 0; }
-            .email-body .button { background-color: #0d6efd; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; }
-            .email-footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
-        </style>
     </head>
-    <body>
-        <div class='email-container'>
-            <div class='email-header'>
-                <img src='$logoUrl' alt='Logo Grammer'>
-            </div>
-            <div class='email-body'>
-                <h2>Revisión Pendiente</h2>
-                <p>Hola,</p>
-                <p>El administrador ha subido una descripción de puesto para una de tus solicitudes y requiere tu revisión para continuar con el proceso.</p>
-                <div class='button-container'>
-                    <a href='$link' target='_blank' class='button'>Revisar Descripción</a>
-                </div>
-                <p>Por favor, haz clic en el botón para ver el documento y aprobarlo o rechazarlo.</p>
-                <p>Saludos cordiales,<br><strong>Sistema ATS - Grammer</strong></p>
-            </div>
-            <div class='email-footer'>
-                <p>&copy; " . date('Y') . " Grammer Automotive de México. Este es un correo automatizado.</p>
-            </div>
-        </div>
+    <body style='margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif;'>
+        <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+            <tr>
+                <td style='padding: 20px 0;'>
+                    <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+                        <tr>
+                            <td align='center' style='background-color: #005195; padding: 30px;'>
+                                <img src='$logoUrl' alt='Logo Grammer' width='150' style='display: block;'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 40px 30px; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;'>
+                                <h2 style='color: #005195; margin-top: 0;'>Revisión Pendiente</h2>
+                                <p>Hola,</p>
+                                <p>El administrador ha subido una descripción de puesto para una de tus solicitudes y requiere tu revisión para continuar con el proceso.</p>
+                                <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+                                    <tr>
+                                        <td align='center' style='padding: 20px 0;'>
+                                            <table border='0' cellpadding='0' cellspacing='0'>
+                                                <tr>
+                                                    <td align='center' style='background-color: #0d6efd; border-radius: 8px;'>
+                                                        <a href='$link' target='_blank' style='font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; display: inline-block; font-weight: bold;'>Revisar Descripción</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p>Por favor, haz clic en el botón para ver el documento y aprobarlo o rechazarlo.</p>
+                                <p>Saludos cordiales,<br><strong>Sistema ATS - Grammer</strong></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align='center' style='background-color: #f8f9fa; padding: 20px; font-size: 12px; color: #6c757d; font-family: Arial, sans-serif;'>
+                                <p style='margin: 0;'>&copy; " . date('Y') . " Grammer Automotive de México. Este es un correo automatizado.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </body>
     </html>";
 
     $mail = new PHPMailer(true);
-
     try {
         // --- TU CONFIGURACIÓN DE HOSTINGER ---
         $mail->isSMTP();
