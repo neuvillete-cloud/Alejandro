@@ -2,7 +2,7 @@
 include_once("dao/ConexionBD.php");
 
 // --- CONFIGURACIÓN IMPORTANTE ---
-// Asegúrate que esta sea la URL base de tu proyecto
+// Esta URL base se usará para construir la ruta correcta si es necesario.
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
 $token_valido = false;
@@ -15,7 +15,6 @@ if (isset($_GET['token'])) {
         $con = new LocalConector();
         $conex = $con->conectar();
 
-        // 1. Validar el token y obtener el IdSolicitud
         $stmtToken = $conex->prepare("SELECT IdSolicitud FROM AprobacionDescripcion WHERE Token = ? AND TokenValido = 1 AND Estatus = 'pendiente'");
         $stmtToken->bind_param("s", $token);
         $stmtToken->execute();
@@ -24,7 +23,6 @@ if (isset($_GET['token'])) {
         if ($resultToken->num_rows > 0) {
             $idSolicitud = $resultToken->fetch_assoc()['IdSolicitud'];
 
-            // 2. Con el IdSolicitud, obtener los datos de la solicitud y la URL completa del archivo
             $stmtSol = $conex->prepare("
                 SELECT s.Puesto, d.ArchivoDescripcion 
                 FROM Solicitudes s 
@@ -71,8 +69,6 @@ if (isset($_GET['token'])) {
         #formRechazo textarea { width: 95%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 15px; font-family: Arial, sans-serif; font-size: 1rem; }
         #formRechazo input[type="file"] { margin-bottom: 15px; display: block; }
         #formRechazo button { background-color: #0d6efd; color: white; }
-
-        /* Estilos para la tabla de Excel previsualizada */
         .excel-sheet-title { margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
         #excel-viewer table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
         #excel-viewer th, #excel-viewer td { border: 1px solid #ddd; padding: 6px; text-align: left; vertical-align: top; }
@@ -84,13 +80,21 @@ if (isset($_GET['token'])) {
 <div class="container">
     <?php if ($token_valido): ?>
         <h1>Revisión de Descripción de Puesto</h1>
-        <p>Por favor, revisa la descripción para el puesto de <strong><?= htmlspecialchars($datos_solicitud['Puesto']) ?></strong> que subió el administrador.</p>
+        <p>Por favor, revisa la descripción para el puesto de <strong><?= htmlspecialchars($datos_solicitud['Puesto']) ?></strong>.</p>
 
         <div id="excel-viewer" class="document-viewer">
             <p>Cargando previsualización del archivo...</p>
         </div>
 
-        <a class="download-link" href="<?= htmlspecialchars($datos_solicitud['ArchivoDescripcion']) ?>" target="_blank">Descargar Archivo Original de Excel</a>
+        <?php
+        $nombre_archivo = $datos_solicitud['ArchivoDescripcion'];
+        $url_completa_archivo = $nombre_archivo;
+
+        if (strpos($nombre_archivo, 'http') !== 0) {
+            $url_completa_archivo = $url_sitio . "/descripciones/" . rawurlencode($nombre_archivo);
+        }
+        ?>
+        <a class="download-link" href="<?= htmlspecialchars($url_completa_archivo) ?>" target="_blank">Descargar Archivo Original de Excel</a>
 
         <div class="acciones">
             <button id="btnAprobar" class="btn btn-aprobar"><i class="fas fa-check"></i> Aprobar</button>
@@ -117,7 +121,7 @@ if (isset($_GET['token'])) {
 <script>
     <?php if ($token_valido): ?>
     document.addEventListener('DOMContentLoaded', function() {
-        const fileUrl = "<?= htmlspecialchars($datos_solicitud['ArchivoDescripcion']) ?>";
+        const fileUrl = "<?= htmlspecialchars($url_completa_archivo) ?>";
         const viewer = document.getElementById('excel-viewer');
 
         async function displayExcelFile(url) {
@@ -128,17 +132,15 @@ if (isset($_GET['token'])) {
                 }
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
-
                 let allSheetsHTML = '';
                 workbook.SheetNames.forEach(sheetName => {
                     const worksheet = workbook.Sheets[sheetName];
                     const htmlTable = XLSX.utils.sheet_to_html(worksheet, {header: 1, raw: false});
                     allSheetsHTML += `<h2 class="excel-sheet-title">${sheetName}</h2>` + htmlTable;
                 });
-
                 viewer.innerHTML = allSheetsHTML;
             } catch (error) {
-                viewer.innerHTML = '<p style="color: red;">No se pudo cargar la previsualización. Es posible que el archivo haya sido eliminado o la URL sea incorrecta. Por favor, descarga el archivo para revisarlo.</p>';
+                viewer.innerHTML = '<p style="color: red;">No se pudo cargar la previsualización. Verifica que el archivo exista en el servidor. Por favor, descarga el archivo para revisarlo.</p>';
             }
         }
 
