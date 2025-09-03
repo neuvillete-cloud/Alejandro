@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,14 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php');
-    exit;
-}
-?>
 
 <header>
     <div class="header-container">
@@ -57,7 +56,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     <a href="dashbord.php">Dashboard de Reclutamiento</a>
                 </div>
             </div>
-
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
@@ -113,18 +111,28 @@ if (!isset($_SESSION['NumNomina'])) {
     document.addEventListener('DOMContentLoaded', function () {
         const cardsContainer = document.getElementById('cards-container');
         const searchInput = document.getElementById('search-input');
-        let todasLasSolicitudes = []; // Caché para guardar los datos
+        let todasLasSolicitudes = [];
 
         function cargarDatos() {
             cardsContainer.innerHTML = '<p>Cargando solicitudes...</p>';
             fetch('dao/daoSolicitudesAprobadas.php')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    if (data.error) {
+                        cardsContainer.innerHTML = `<p style="color: red;">Error del servidor: ${data.error}</p>`;
+                        return;
+                    }
                     todasLasSolicitudes = data.data || [];
                     renderizarCards(todasLasSolicitudes);
                 })
                 .catch(error => {
-                    cardsContainer.innerHTML = '<p>Error al cargar los datos.</p>';
+                    cardsContainer.innerHTML = '<p>Error de conexión al cargar los datos. Revisa la consola para más detalles.</p>';
+                    console.error('Fetch Error:', error);
                 });
         }
 
@@ -147,7 +155,7 @@ if (!isset($_SESSION['NumNomina'])) {
                         estatusHTML = '<span class="estatus-tag estatus-accion">Acción Requerida</span>';
                         actionsHTML = `
                         <div class="file-upload-wrapper">
-                            <input type="file" class="file-upload-hidden" id="file-${solicitud.IdSolicitud}" accept=".pdf,.doc,.docx">
+                            <input type="file" class="file-upload-hidden" id="file-${solicitud.IdSolicitud}" accept=".pdf,.doc,.docx,.xls,.xlsx">
                             <label for="file-${solicitud.IdSolicitud}" class="btn file-upload-label">
                                 <i class="fas fa-paperclip"></i> Seleccionar Archivo
                             </label>
@@ -171,7 +179,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     `;
                         break;
                     default:
-                        actionsHTML = '<p>Estatus desconocido.</p>';
+                        actionsHTML = `<p>Estatus desconocido (${solicitud.IdEstatus}).</p>`;
                 }
 
                 card.innerHTML = `
@@ -188,24 +196,20 @@ if (!isset($_SESSION['NumNomina'])) {
                     <div class="info-item"><strong>ID Solicitud:</strong> <span>${solicitud.IdSolicitud}</span></div>
                 </div>
                 <div class="card-actions" data-id="${solicitud.IdSolicitud}">
-                    <input type="file" class="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx">
-                    <button class="btn btn-primary upload-btn">
-                        <i class="fas fa-upload"></i> Subir Descripción
-                    </button>
+                    ${actionsHTML}
                 </div>
             `;
                 cardsContainer.appendChild(card);
             });
         }
 
-        // --- 3. LÓGICA DE BÚSQUEDA ---
         searchInput.addEventListener('input', function() {
             const termino = this.value.toLowerCase();
             const solicitudesFiltradas = todasLasSolicitudes.filter(s => {
-                return s.Puesto.toLowerCase().includes(termino) ||
-                    s.NombreArea.toLowerCase().includes(termino) ||
-                    s.Nombre.toLowerCase().includes(termino) ||
-                    s.FolioSolicitud.toLowerCase().includes(termino);
+                return (s.Puesto && s.Puesto.toLowerCase().includes(termino)) ||
+                    (s.NombreArea && s.NombreArea.toLowerCase().includes(termino)) ||
+                    (s.Nombre && s.Nombre.toLowerCase().includes(termino)) ||
+                    (s.FolioSolicitud && s.FolioSolicitud.toLowerCase().includes(termino));
             });
             renderizarCards(solicitudesFiltradas);
         });
@@ -238,14 +242,14 @@ if (!isset($_SESSION['NumNomina'])) {
                 formData.append('documento', fileInput.files[0]);
                 formData.append('idSolicitud', id);
 
-                fetch('https://grammermx.com/Mailer/daoSubirDescripciones.php', { method: 'POST', body: formData })
+                fetch('dao/daoSubirDescripciones.php', { method: 'POST', body: formData })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
                             Swal.fire("Éxito", data.message, "success");
-                            cargarDatos(); // Recargamos para que la tarjeta cambie de estado
+                            cargarDatos();
                         } else {
-                            Swal.fire("Error", data.message, "error");
+                            Swal.fire("Error", data.message || "No se pudo subir el archivo.", "error");
                         }
                     });
             }
@@ -299,7 +303,6 @@ if (!isset($_SESSION['NumNomina'])) {
             }
         }
 
-        // Script de logout
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
