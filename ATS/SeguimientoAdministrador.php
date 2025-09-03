@@ -153,14 +153,9 @@ if (!isset($_SESSION['NumNomina'])) {
                 switch (parseInt(solicitud.IdEstatus, 10)) {
                     case 2: // 'Aprobada': El admin debe subir la descripción
                         estatusHTML = '<span class="estatus-tag estatus-accion">Acción Requerida</span>';
+                        // --- ESTILO DE BOTÓN REVERTIDO ---
                         actionsHTML = `
-                        <div class="file-upload-wrapper">
-                            <input type="file" class="file-upload-hidden" id="file-${solicitud.IdSolicitud}" accept=".pdf,.doc,.docx,.xls,.xlsx">
-                            <label for="file-${solicitud.IdSolicitud}" class="btn file-upload-label">
-                                <i class="fas fa-paperclip"></i> Seleccionar Archivo
-                            </label>
-                            <span class="file-name-display">Ningún archivo</span>
-                        </div>
+                        <input type="file" class="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx">
                         <button class="btn btn-primary upload-btn">
                             <i class="fas fa-upload"></i> Subir para Aprobar
                         </button>
@@ -214,16 +209,7 @@ if (!isset($_SESSION['NumNomina'])) {
             renderizarCards(solicitudesFiltradas);
         });
 
-        cardsContainer.addEventListener('change', function(e) {
-            if (e.target.classList.contains('file-upload-hidden')) {
-                const fileNameDisplay = e.target.parentElement.querySelector('.file-name-display');
-                if (e.target.files.length > 0) {
-                    fileNameDisplay.textContent = e.target.files[0].name;
-                } else {
-                    fileNameDisplay.textContent = 'Ningún archivo';
-                }
-            }
-        });
+        // Se elimina el 'change' listener que ya no se necesita
 
         cardsContainer.addEventListener('click', function(e) {
             const button = e.target.closest('button');
@@ -233,7 +219,8 @@ if (!isset($_SESSION['NumNomina'])) {
             const id = actionsContainer.dataset.id;
 
             if (button.classList.contains('upload-btn')) {
-                const fileInput = actionsContainer.querySelector('.file-upload-hidden');
+                // Se ajusta el selector para encontrar el input de archivo visible
+                const fileInput = actionsContainer.querySelector('.file-upload');
                 if (fileInput.files.length === 0) {
                     Swal.fire("Atención", "Selecciona un archivo antes de subir.", "warning");
                     return;
