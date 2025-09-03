@@ -11,7 +11,6 @@ $error_mensaje = 'Este enlace de aprobación no es válido, ya ha sido utilizado
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
-
     try {
         $con = new LocalConector();
         $conex = $con->conectar();
@@ -23,8 +22,7 @@ if (isset($_GET['token'])) {
         $resultToken = $stmtToken->get_result();
 
         if ($resultToken->num_rows > 0) {
-            $filaToken = $resultToken->fetch_assoc();
-            $idSolicitud = $filaToken['IdSolicitud'];
+            $idSolicitud = $resultToken->fetch_assoc()['IdSolicitud'];
 
             // 2. Con el IdSolicitud, obtener los datos de la solicitud y el nombre del archivo
             $stmtSol = $conex->prepare("
@@ -55,11 +53,13 @@ if (isset($_GET['token'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Descripción de Puesto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f7fc; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
-        .container { background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 800px; padding: 40px; }
-        h1 { color: #063962; border-bottom: 2px solid #063962; padding-bottom: 10px; }
-        .document-viewer { border: 1px solid #ddd; border-radius: 8px; margin: 20px 0; }
+        .container { background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 900px; padding: 40px; }
+        h1, h2 { color: #063962; }
+        h1 { border-bottom: 2px solid #063962; padding-bottom: 10px; }
+        .document-viewer { border: 1px solid #ddd; border-radius: 8px; margin: 20px 0; padding: 20px; overflow-x: auto; max-height: 600px; }
         .download-link { display: block; text-align: center; margin-bottom: 30px; font-weight: bold; color: #063962; }
         .acciones { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; }
         .btn { padding: 12px 25px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; }
@@ -71,6 +71,13 @@ if (isset($_GET['token'])) {
         #formRechazo textarea { width: 95%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 15px; font-family: Arial, sans-serif; font-size: 1rem; }
         #formRechazo input[type="file"] { margin-bottom: 15px; display: block; }
         #formRechazo button { background-color: #0d6efd; color: white; }
+
+        /* Estilos para la tabla de Excel previsualizada */
+        .excel-sheet-title { margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        #excel-viewer table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
+        #excel-viewer th, #excel-viewer td { border: 1px solid #ddd; padding: 6px; text-align: left; vertical-align: top; }
+        #excel-viewer th { background-color: #f2f2f2; font-weight: bold; }
+        #excel-viewer tr:nth-child(even) { background-color: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -79,13 +86,14 @@ if (isset($_GET['token'])) {
         <h1>Revisión de Descripción de Puesto</h1>
         <p>Por favor, revisa la descripción para el puesto de <strong><?= htmlspecialchars($datos_solicitud['Puesto']) ?></strong> que subió el administrador.</p>
 
+        <div id="excel-viewer" class="document-viewer">
+            <p>Cargando previsualización del archivo...</p>
+        </div>
+
         <?php
         $url_completa_archivo = $url_sitio . "/descripciones/" . rawurlencode($datos_solicitud['ArchivoDescripcion']);
         ?>
-
-        <iframe class="document-viewer" src="https://docs.google.com/gview?url=<?= $url_completa_archivo ?>&embedded=true" width="100%" height="500px"></iframe>
-
-        <a class="download-link" href="<?= $url_completa_archivo ?>" target="_blank">¿Problemas para visualizar? Descarga el archivo aquí</a>
+        <a class="download-link" href="<?= $url_completa_archivo ?>" target="_blank">Descargar Archivo Original de Excel</a>
 
         <div class="acciones">
             <button id="btnAprobar" class="btn btn-aprobar"><i class="fas fa-check"></i> Aprobar</button>
@@ -98,7 +106,7 @@ if (isset($_GET['token'])) {
             <p>Por favor, indica por qué se rechaza y sube la versión correcta del documento.</p>
             <form id="rechazoForm">
                 <textarea id="comentarios" name="comentarios" placeholder="Escribe tus comentarios aquí..." required></textarea>
-                <input type="file" id="archivoCorrecto" name="archivoCorrecto" accept=".pdf,.doc,.docx" required>
+                <input type="file" id="archivoCorrecto" name="archivoCorrecto" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
                 <button type="submit" class="btn">Enviar Correcciones</button>
             </form>
         </div>
@@ -112,6 +120,35 @@ if (isset($_GET['token'])) {
 <script>
     <?php if ($token_valido): ?>
     document.addEventListener('DOMContentLoaded', function() {
+        const fileUrl = "<?= $url_completa_archivo ?>";
+        const viewer = document.getElementById('excel-viewer');
+
+        // Función mejorada para mostrar TODAS las hojas del Excel
+        async function displayExcelFile(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                let allSheetsHTML = '';
+                // Iteramos sobre cada hoja del libro de Excel
+                workbook.SheetNames.forEach(sheetName => {
+                    const worksheet = workbook.Sheets[sheetName];
+                    const htmlTable = XLSX.utils.sheet_to_html(worksheet, {header: 1, raw: false});
+
+                    // Añadimos un título para cada hoja
+                    allSheetsHTML += `<h2 class="excel-sheet-title">${sheetName}</h2>` + htmlTable;
+                });
+
+                viewer.innerHTML = allSheetsHTML;
+            } catch (error) {
+                viewer.innerHTML = '<p style="color: red;">No se pudo cargar la previsualización. Por favor, descarga el archivo para revisarlo.</p>';
+            }
+        }
+
+        displayExcelFile(fileUrl);
+
+        // El resto de tu JavaScript para los botones
         const token = "<?= htmlspecialchars($token) ?>";
         const btnAprobar = document.getElementById('btnAprobar');
         const btnRechazar = document.getElementById('btnRechazar');
@@ -120,8 +157,8 @@ if (isset($_GET['token'])) {
 
         btnRechazar.addEventListener('click', () => {
             formRechazo.style.display = 'block';
-            btnRechazar.style.display = 'none'; // Oculta el botón de rechazar
-            btnAprobar.style.display = 'none'; // Oculta el botón de aprobar
+            btnRechazar.style.display = 'none';
+            btnAprobar.style.display = 'none';
         });
 
         btnAprobar.addEventListener('click', () => {
