@@ -116,12 +116,7 @@ if (!isset($_SESSION['NumNomina'])) {
         function cargarDatos() {
             cardsContainer.innerHTML = '<p>Cargando solicitudes...</p>';
             fetch('dao/daoSolicitudesAprobadas.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         cardsContainer.innerHTML = `<p style="color: red;">Error del servidor: ${data.error}</p>`;
@@ -131,8 +126,7 @@ if (!isset($_SESSION['NumNomina'])) {
                     renderizarCards(todasLasSolicitudes);
                 })
                 .catch(error => {
-                    cardsContainer.innerHTML = '<p>Error de conexión al cargar los datos. Revisa la consola para más detalles.</p>';
-                    console.error('Fetch Error:', error);
+                    cardsContainer.innerHTML = '<p>Error de conexión al cargar los datos.</p>';
                 });
         }
 
@@ -153,7 +147,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 switch (parseInt(solicitud.IdEstatus, 10)) {
                     case 2: // 'Aprobada': El admin debe subir la descripción
                         estatusHTML = '<span class="estatus-tag estatus-accion">Acción Requerida</span>';
-                        // --- ESTILO DE BOTÓN REVERTIDO ---
                         actionsHTML = `
                         <input type="file" class="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx">
                         <button class="btn btn-primary upload-btn">
@@ -200,16 +193,14 @@ if (!isset($_SESSION['NumNomina'])) {
 
         searchInput.addEventListener('input', function() {
             const termino = this.value.toLowerCase();
-            const solicitudesFiltradas = todasLasSolicitudes.filter(s => {
-                return (s.Puesto && s.Puesto.toLowerCase().includes(termino)) ||
-                    (s.NombreArea && s.NombreArea.toLowerCase().includes(termino)) ||
-                    (s.Nombre && s.Nombre.toLowerCase().includes(termino)) ||
-                    (s.FolioSolicitud && s.FolioSolicitud.toLowerCase().includes(termino));
-            });
+            const solicitudesFiltradas = todasLasSolicitudes.filter(s =>
+                (s.Puesto && s.Puesto.toLowerCase().includes(termino)) ||
+                (s.NombreArea && s.NombreArea.toLowerCase().includes(termino)) ||
+                (s.Nombre && s.Nombre.toLowerCase().includes(termino)) ||
+                (s.FolioSolicitud && s.FolioSolicitud.toLowerCase().includes(termino))
+            );
             renderizarCards(solicitudesFiltradas);
         });
-
-        // Se elimina el 'change' listener que ya no se necesita
 
         cardsContainer.addEventListener('click', function(e) {
             const button = e.target.closest('button');
@@ -219,12 +210,18 @@ if (!isset($_SESSION['NumNomina'])) {
             const id = actionsContainer.dataset.id;
 
             if (button.classList.contains('upload-btn')) {
-                // Se ajusta el selector para encontrar el input de archivo visible
                 const fileInput = actionsContainer.querySelector('.file-upload');
                 if (fileInput.files.length === 0) {
                     Swal.fire("Atención", "Selecciona un archivo antes de subir.", "warning");
                     return;
                 }
+
+                // --- INICIO DE LA MEJORA ---
+                const originalButtonHTML = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Subiendo...`;
+                // --- FIN DE LA MEJORA ---
+
                 const formData = new FormData();
                 formData.append('documento', fileInput.files[0]);
                 formData.append('idSolicitud', id);
@@ -234,10 +231,19 @@ if (!isset($_SESSION['NumNomina'])) {
                     .then(data => {
                         if (data.status === 'success') {
                             Swal.fire("Éxito", data.message, "success");
-                            cargarDatos();
+                            cargarDatos(); // Al recargar, el botón desaparecerá, así que no es necesario reactivarlo.
                         } else {
                             Swal.fire("Error", data.message || "No se pudo subir el archivo.", "error");
+                            // Si hay error, reactivamos el botón
+                            button.disabled = false;
+                            button.innerHTML = originalButtonHTML;
                         }
+                    })
+                    .catch(error => {
+                        Swal.fire("Error de Conexión", "No se pudo comunicar con el servidor.", "error");
+                        // Si hay error de red, también reactivamos el botón
+                        button.disabled = false;
+                        button.innerHTML = originalButtonHTML;
                     });
             }
 
