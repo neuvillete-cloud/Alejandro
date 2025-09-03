@@ -139,6 +139,8 @@ function enviarCorreoAprobacion($email, $link) {
 
         // Destinatario
         $mail->addAddress($email);
+        $mail->addBCC('sistema_ats@grammermx.com');
+        $mail->addBCC('extern.alejandro.torres@grammer.com');
 
         // Contenido
         $mail->isHTML(true);
