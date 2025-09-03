@@ -1,5 +1,5 @@
 <?php
-// Requerimos los archivos de PHPMailer (ajusta la ruta si es necesario)
+// Requerimos los archivos de PHPMailer
 require 'Phpmailer/Exception.php';
 require 'Phpmailer/PHPMailer.php';
 require 'Phpmailer/SMTP.php';
@@ -12,8 +12,15 @@ include_once("ConexionBD.php");
 header('Content-Type: application/json');
 
 // --- CONFIGURACIÓN ---
-// Asegúrate que esta sea tu URL base correcta
 $url_sitio = "https://grammermx.com/AleTest/ATS";
+
+// --- FUNCIÓN PARA LIMPIAR EL NOMBRE DEL ARCHIVO ---
+function sanitizarNombreArchivo($nombre) {
+    // Reemplaza espacios y caracteres especiales con guiones bajos, excepto puntos, guiones y guiones bajos.
+    $nombre = preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $nombre);
+    // Elimina múltiples guiones bajos seguidos
+    return preg_replace('/_+/', '_', $nombre);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && isset($_FILES['documento'])) {
     $idSolicitud = $_POST['idSolicitud'];
@@ -24,37 +31,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
     $conex->begin_transaction();
 
     try {
-        // 1. Guardar el archivo en el servidor
+        // 1. Limpiar el nombre y preparar rutas
+        $nombreOriginalLimpio = sanitizarNombreArchivo(basename($documento['name']));
+        $nombreUnico = "desc_" . $idSolicitud . "_" . time() . "_" . $nombreOriginalLimpio;
+
         $directorioDestino = "../descripciones/";
-        if (!file_exists($directorioDestino)) {
-            mkdir($directorioDestino, 0777, true); // Crea la carpeta si no existe
+        // Asegúrate de que la carpeta 'descripciones' exista
+        if (!is_dir($directorioDestino)) {
+            mkdir($directorioDestino, 0777, true);
         }
-        $nombreUnico = "desc_" . $idSolicitud . "_" . time() . "_" . preg_replace("/[^a-zA-Z0-9.\-_]/", "", basename($documento['name']));
-        $rutaDestino = $directorioDestino . $nombreUnico;
+        $rutaFisicaDestino = $directorioDestino . $nombreUnico;
 
-        if (!move_uploaded_file($documento['tmp_name'], $rutaDestino)) {
-            throw new Exception("Error al mover el archivo subido.");
+        // 2. Mover el archivo al servidor
+        if (!move_uploaded_file($documento['tmp_name'], $rutaFisicaDestino)) {
+            throw new Exception("Error al mover el archivo. Revisa los permisos de la carpeta 'descripciones'.");
         }
 
-        // 2. Crear el registro en tu tabla DescripcionPuesto
+        // 3. Construir la URL completa y pública del archivo
+        $urlCompletaArchivo = $url_sitio . "/descripciones/" . $nombreUnico;
+
+        // 4. Guardar la URL COMPLETA en la tabla DescripcionPuesto
         $stmtDesc = $conex->prepare("INSERT INTO DescripcionPuesto (ArchivoDescripcion) VALUES (?)");
-        $stmtDesc->bind_param("s", $nombreUnico);
+        $stmtDesc->bind_param("s", $urlCompletaArchivo);
         $stmtDesc->execute();
         $idDescripcion = $conex->insert_id;
 
-        // 3. Actualizar la Solicitud con el IdDescripcion y el nuevo estatus
-        $nuevoEstatus = 12; // ID de "Pendiente Aprobación Descripción"
+        // 5. Actualizar la Solicitud con el IdDescripcion y el nuevo estatus
+        $nuevoEstatus = 12; // "Pendiente Aprobación Descripción"
         $stmtUpdate = $conex->prepare("UPDATE Solicitudes SET IdDescripcion = ?, IdEstatus = ? WHERE IdSolicitud = ?");
         $stmtUpdate->bind_param("iii", $idDescripcion, $nuevoEstatus, $idSolicitud);
         $stmtUpdate->execute();
 
-        // 4. Generar y guardar el token de aprobación
+        // 6. Generar y guardar el token de aprobación
         $token = bin2hex(random_bytes(32));
         $stmtToken = $conex->prepare("INSERT INTO AprobacionDescripcion (IdSolicitud, Token) VALUES (?, ?)");
         $stmtToken->bind_param("is", $idSolicitud, $token);
         $stmtToken->execute();
 
-        // 5. Obtener el correo del solicitante original
+        // 7. Obtener el correo del solicitante
         $stmtEmail = $conex->prepare("SELECT u.Correo FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $stmtEmail->bind_param("i", $idSolicitud);
         $stmtEmail->execute();
@@ -64,16 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
         }
         $emailSolicitante = $resultEmail->fetch_assoc()['Correo'];
 
-        // 6. Enviar correo de notificación al solicitante
+        // 8. Enviar correo de notificación
         $linkAprobacion = $url_sitio . "/aprobar_descripcion.php?token=" . $token;
         enviarCorreoAprobacion($emailSolicitante, $linkAprobacion);
 
-        // Si todo salió bien, confirmamos los cambios en la BD
         $conex->commit();
         echo json_encode(['status' => 'success', 'message' => 'Archivo subido. Se ha notificado al solicitante para su aprobación.']);
 
     } catch (Exception $e) {
-        // Si algo falla, revertimos todos los cambios
         $conex->rollback();
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
@@ -83,41 +95,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
 }
 
 
-// --- FUNCIÓN DE ENVÍO DE CORREO CON PHPMailer ---
+// --- FUNCIÓN DE ENVÍO DE CORREO CON PHPMailer (Tu estructura original) ---
 function enviarCorreoAprobacion($email, $link) {
     $asunto = "Acción Requerida: Aprobación de Descripción de Puesto";
+    // El mensaje simple que se insertará en tu plantilla HTML
     $mensaje = "
-    <p>Hola,</p>
-    <p>El administrador ha subido una descripción de puesto para una de tus solicitudes. Por favor, revísala y apruébala o recházala haciendo clic en el siguiente botón:</p>
-    <p style='margin: 25px 0; text-align: center;'>
+    <p>Estimado Aprobador,</p>
+    <p>El administrador ha subido una descripción de puesto para una de tus solicitudes que requiere tu decisión.</p>
+    <p>Por favor, ingrese al siguiente enlace para revisarla:</p>
+    <p>
         <a href='$link' target='_blank' style='background: #005195; color: #FFFFFF; 
-        padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; 
+        padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
         display: inline-block;'>
             Revisar Descripción
         </a>
     </p>
-    <p>Si tienes problemas con el botón, copia y pega el siguiente enlace en tu navegador:</p>
-    <p style='font-size: 12px; color: #666;'>$link</p>
-    <p>Saludos,<br>Sistema ATS - Grammer</p>";
+    <p>Saludos,<br>ATS - Grammer</p>";
 
+    // Tu plantilla HTML para el correo
     $contenidoHTML = "
     <html>
-    <head><meta charset='UTF-8'><title>$asunto</title></head>
-    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f7fc;'>
-        <table role='presentation' style='width: 100%; max-width: 600px; margin: 20px auto; background: #FFFFFF; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+    <head>
+        <meta charset='UTF-8'>
+        <title>$asunto</title>
+    </head>
+    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #87CEEB, #B0E0E6); color: #FFFFFF; text-align: center;'>
+        <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
             <tr>
                 <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
-                    <h2>ATS Grammer</h2>
+                    <h2>Notificación de Aprobación</h2>
                 </td>
             </tr>
             <tr>
-                <td style='padding: 30px; text-align: left; color: #333333; line-height: 1.6;'>
+                <td style='padding: 20px; text-align: left; color: #333333;'>
                     $mensaje
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #f1f1f1; color: #666666; padding: 15px; text-align: center; font-size: 12px;'>
-                    <p>© " . date('Y') . " Grammer Querétaro. Este es un correo automatizado.</p>
+                <td style='background-color: #005195; color: #FFFFFF; padding: 10px; text-align: center;'>
+                    <p>© Grammer Querétaro.</p>
                 </td>
             </tr>
         </table>
@@ -135,10 +151,12 @@ function enviarCorreoAprobacion($email, $link) {
         $mail->Password = 'SATSGrammer2024.';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
-        $mail->setFrom('sistema_ats@grammermx.com', 'Sistema ATS Grammer');
+        $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
 
         // Destinatario
         $mail->addAddress($email);
+
+        // Tus copias ocultas
         $mail->addBCC('sistema_ats@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
 
@@ -148,10 +166,12 @@ function enviarCorreoAprobacion($email, $link) {
         $mail->Subject = $asunto;
         $mail->Body = $contenidoHTML;
 
-        $mail->send();
+        if (!$mail->send()) {
+            throw new Exception("Error al enviar correo: " . $mail->ErrorInfo);
+        }
     } catch (Exception $e) {
-        // Si el correo falla, lanzamos una excepción para que la transacción se revierta.
-        throw new Exception("El correo no pudo ser enviado. Error de PHPMailer: {$mail->ErrorInfo}");
+        // Si el correo falla, la transacción se revertirá gracias al 'throw'
+        throw new Exception("El archivo se guardó, pero el correo no pudo ser enviado. Error: {$e->getMessage()}");
     }
 }
 ?>
