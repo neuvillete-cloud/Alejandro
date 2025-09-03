@@ -2,6 +2,7 @@
 include_once("dao/ConexionBD.php");
 
 // --- CONFIGURACIÓN IMPORTANTE ---
+// Asegúrate que esta sea la URL base de tu proyecto
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
 $token_valido = false;
@@ -14,6 +15,7 @@ if (isset($_GET['token'])) {
         $con = new LocalConector();
         $conex = $con->conectar();
 
+        // 1. Validar el token y obtener el IdSolicitud
         $stmtToken = $conex->prepare("SELECT IdSolicitud FROM AprobacionDescripcion WHERE Token = ? AND TokenValido = 1 AND Estatus = 'pendiente'");
         $stmtToken->bind_param("s", $token);
         $stmtToken->execute();
@@ -22,6 +24,7 @@ if (isset($_GET['token'])) {
         if ($resultToken->num_rows > 0) {
             $idSolicitud = $resultToken->fetch_assoc()['IdSolicitud'];
 
+            // 2. Con el IdSolicitud, obtener los datos de la solicitud y la URL completa del archivo
             $stmtSol = $conex->prepare("
                 SELECT s.Puesto, d.ArchivoDescripcion 
                 FROM Solicitudes s 
@@ -87,10 +90,7 @@ if (isset($_GET['token'])) {
             <p>Cargando previsualización del archivo...</p>
         </div>
 
-        <?php
-        $url_completa_archivo = $url_sitio . "/descripciones/" . rawurlencode($datos_solicitud['ArchivoDescripcion']);
-        ?>
-        <a class="download-link" href="<?= $url_completa_archivo ?>" target="_blank">Descargar Archivo Original de Excel</a>
+        <a class="download-link" href="<?= htmlspecialchars($datos_solicitud['ArchivoDescripcion']) ?>" target="_blank">Descargar Archivo Original de Excel</a>
 
         <div class="acciones">
             <button id="btnAprobar" class="btn btn-aprobar"><i class="fas fa-check"></i> Aprobar</button>
@@ -117,29 +117,28 @@ if (isset($_GET['token'])) {
 <script>
     <?php if ($token_valido): ?>
     document.addEventListener('DOMContentLoaded', function() {
-        const fileUrl = "<?= $url_completa_archivo ?>";
+        const fileUrl = "<?= htmlspecialchars($datos_solicitud['ArchivoDescripcion']) ?>";
         const viewer = document.getElementById('excel-viewer');
 
-        // Función mejorada para mostrar TODAS las hojas del Excel
         async function displayExcelFile(url) {
             try {
                 const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error de red: ${response.statusText}`);
+                }
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
 
                 let allSheetsHTML = '';
-                // Iteramos sobre cada hoja del libro de Excel
                 workbook.SheetNames.forEach(sheetName => {
                     const worksheet = workbook.Sheets[sheetName];
                     const htmlTable = XLSX.utils.sheet_to_html(worksheet, {header: 1, raw: false});
-
-                    // Añadimos un título para cada hoja
                     allSheetsHTML += `<h2 class="excel-sheet-title">${sheetName}</h2>` + htmlTable;
                 });
 
                 viewer.innerHTML = allSheetsHTML;
             } catch (error) {
-                viewer.innerHTML = '<p style="color: red;">No se pudo cargar la previsualización. Por favor, descarga el archivo para revisarlo.</p>';
+                viewer.innerHTML = '<p style="color: red;">No se pudo cargar la previsualización. Es posible que el archivo haya sido eliminado o la URL sea incorrecta. Por favor, descarga el archivo para revisarlo.</p>';
             }
         }
 
