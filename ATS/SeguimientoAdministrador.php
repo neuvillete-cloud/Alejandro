@@ -1,10 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php');
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,6 +8,14 @@ if (!isset($_SESSION['NumNomina'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+?>
 
 <header>
     <div class="header-container">
@@ -30,17 +31,17 @@ if (!isset($_SESSION['NumNomina'])) {
 
             <div class="nav-item dropdown">
                 <a href="#" class="dropdown-toggle">
-                    Vacantes <i class="fas fa-chevron-down"></i>
+                    Seguimiento de la vacante <i class="fas fa-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu-nav">
                     <a href="SAprobadas.php">Solicitudes Aprobadas</a>
-                    <a href="EstadisticasVacantes.php">Estadísticas de Vacantes</a>
-                    <a href="cargaVacante.php">Cargar/Editar Vacante</a>
+                    <a href="SeguimientoAdministrador.php">Seguimiento de Postulantes</a>
+                    <a href="cargaVacante.php">Cargar/Editar Vacantes</a>
                 </div>
             </div>
             <div class="nav-item dropdown">
                 <a href="#" class="dropdown-toggle">
-                    Candidatos <i class="fas fa-chevron-down"></i>
+                    Progreso en los candidatos <i class="fas fa-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu-nav">
                     <a href="Postulaciones.php">Candidatos Postulados</a>
@@ -52,9 +53,11 @@ if (!isset($_SESSION['NumNomina'])) {
                     Dashboard <i class="fas fa-chevron-down"></i>
                 </a>
                 <div class="dropdown-menu-nav">
-                    <a href="Dashboard.php">Dashboard de Reclutamiento</a>
+                    <a href="EstadisticasVacantes.php">Panel de Vacantes</a>
+                    <a href="dashbord.php">Dashboard de Reclutamiento</a>
                 </div>
             </div>
+
 
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
@@ -75,10 +78,8 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </header>
 <section class="section-title">
-    <h1>Solicitudes Aprobadas</h1>
-    <p style="color: white; max-width: 800px; margin-top: 10px;">
-        Aquí se listan las solicitudes que requieren una descripción de puesto. Sube el archivo para iniciar el proceso de aprobación con el solicitante.
-    </p>
+    <h1>Descripciones</h1>
+    <img src="imagenes/apoyo.png" alt="Imagen decorativa" class="imagen-banner">
 </section>
 
 <section class="area-blanca">
@@ -102,45 +103,7 @@ if (!isset($_SESSION['NumNomina'])) {
     </div>
 </section>
 
-<footer class="main-footer">
-    <div class="footer-container">
-        <div class="footer-column">
-            <div class="logo">
-                <img src="imagenes/logo_blanco.png" alt="Logo Grammer Blanco" class="logo-img">
-                <div class="logo-texto">
-                    <h1>Grammer</h1>
-                    <span>Automotive</span>
-                </div>
-            </div>
-            <p class="footer-about">
-                Sistema de Seguimiento de Candidatos (ATS) para la gestión de talento y requisiciones de personal.
-            </p>
-        </div>
-        <div class="footer-column">
-            <h3>Enlaces Rápidos</h3>
-            <ul class="footer-links">
-                <li><a href="Administrador.php">Inicio</a></li>
-                <li><a href="SAprobadas.php">Solicitudes Aprobadas</a></li>
-                <li><a href="EstadisticasVacantes.php">Estadísticas</a></li>
-                <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
-            </ul>
-        </div>
-        <div class="footer-column">
-            <h3>Contacto</h3>
-            <p><i class="fas fa-map-marker-alt"></i> Av. de la Luz #24 Col. satélite , Querétaro, Mexico</p>
-            <p><i class="fas fa-phone"></i> +52 (442) 238 4460</p>
-            <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </div>
-    <div class="sub-footer">
-        <p>&copy; <?= date('Y') ?> Grammer Automotive de México. Todos los derechos reservados.</p>
-        <p class="developer-credit">Desarrollado por Alejandro Torres</p>
-    </div>
-</footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -150,7 +113,7 @@ if (!isset($_SESSION['NumNomina'])) {
     document.addEventListener('DOMContentLoaded', function () {
         const cardsContainer = document.getElementById('cards-container');
         const searchInput = document.getElementById('search-input');
-        let todasLasSolicitudes = [];
+        let todasLasSolicitudes = []; // Caché para guardar los datos
 
         function cargarDatos() {
             cardsContainer.innerHTML = '<p>Cargando solicitudes...</p>';
@@ -222,15 +185,20 @@ if (!isset($_SESSION['NumNomina'])) {
                 <div class="card-body">
                     <div class="info-item"><strong>Solicitante:</strong> <span>${solicitud.Nombre}</span></div>
                     <div class="info-item"><strong>Área:</strong> <span>${solicitud.NombreArea}</span></div>
+                    <div class="info-item"><strong>ID Solicitud:</strong> <span>${solicitud.IdSolicitud}</span></div>
                 </div>
                 <div class="card-actions" data-id="${solicitud.IdSolicitud}">
-                    ${actionsHTML}
+                    <input type="file" class="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx">
+                    <button class="btn btn-primary upload-btn">
+                        <i class="fas fa-upload"></i> Subir Descripción
+                    </button>
                 </div>
             `;
                 cardsContainer.appendChild(card);
             });
         }
 
+        // --- 3. LÓGICA DE BÚSQUEDA ---
         searchInput.addEventListener('input', function() {
             const termino = this.value.toLowerCase();
             const solicitudesFiltradas = todasLasSolicitudes.filter(s => {
@@ -346,5 +314,47 @@ if (!isset($_SESSION['NumNomina'])) {
         cargarDatos();
     });
 </script>
+<footer class="main-footer">
+    <div class="footer-container">
+
+        <div class="footer-column">
+            <div class="logo">
+                <img src="imagenes/logo_blanco.png" alt="Logo Grammer Blanco" class="logo-img">
+                <div class="logo-texto">
+                    <h1>Grammer</h1>
+                    <span>Automotive</span>
+                </div>
+            </div>
+            <p class="footer-about">
+                Sistema de Seguimiento de Candidatos (ATS) para la gestión de talento y requisiciones de personal.
+            </p>
+        </div>
+
+        <div class="footer-column">
+            <h3>Enlaces Rápidos</h3>
+            <ul class="footer-links">
+                <li><a href="Administrador.php">Inicio</a></li>
+                <li><a href="SAprobadas.php">Solicitudes Aprobadas</a></li>
+                <li><a href="SeguimientoAdministrador.php">Seguimiento</a></li>
+                <li><a href="cargaVacante.php">Carga de Vacantes</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-column">
+            <h3>Contacto</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Av. de la Luz #24 Col. satélite , Querétaro, Mexico</p>
+            <p><i class="fas fa-phone"></i> +52 (442) 238 4460</p>
+            <div class="social-icons">
+                <a href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiA6MqY0KaPAxUmlGoFHX01AXwQFnoECD0QAQ&url=https%3A%2F%2Fwww.facebook.com%2Fgrammermexico%2F%3Flocale%3Des_LA&usg=AOvVaw1Jg2xRElzuIF1PIZ6Ip_Ms&opi=89978449" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://mx.linkedin.com/company/grammer-automotive-puebla-s-a-de-c-v-" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/grammerqro/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>            </div>
+        </div>
+
+    </div>
+    <div class="sub-footer">
+        <p>&copy; <?= date('Y') ?> Grammer Automotive de México. Todos los derechos reservados.</p>
+        <p class="developer-credit">Desarrollado con <i class="fas fa-heart"></i> por Alejandro Torres Jimenez</p>
+    </div>
+</footer>
 </body>
 </html>
