@@ -12,6 +12,7 @@ include_once("ConexionBD.php");
 header('Content-Type: application/json');
 
 // --- CONFIGURACIÓN ---
+// URL pública base (como en tu ejemplo que funciona)
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
 // --- FUNCIÓN PARA LIMPIAR EL NOMBRE DEL ARCHIVO ---
@@ -31,44 +32,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
     $conex->begin_transaction();
 
     try {
-        // 1. Limpiar el nombre y preparar rutas
+        // 1. Limpiar el nombre del archivo
         $nombreOriginalLimpio = sanitizarNombreArchivo(basename($documento['name']));
         $nombreUnico = "desc_" . $idSolicitud . "_" . time() . "_" . $nombreOriginalLimpio;
 
-        $directorioDestino = "../descripciones/";
-        // Asegúrate de que la carpeta 'descripciones' exista
-        if (!is_dir($directorioDestino)) {
-            mkdir($directorioDestino, 0777, true);
-        }
-        $rutaFisicaDestino = $directorioDestino . $nombreUnico;
+        // 2. Definir la RUTA LOCAL RELATIVA para guardar en el servidor
+        $rutaLocal = "../descripciones/" . $nombreUnico;
 
-        // 2. Mover el archivo al servidor
-        if (!move_uploaded_file($documento['tmp_name'], $rutaFisicaDestino)) {
+        // 3. Definir la RUTA PÚBLICA COMPLETA para guardar en la base de datos
+        $rutaPublica = $url_sitio . "/descripciones/" . $nombreUnico;
+
+        // Asegurarse de que la carpeta de destino exista
+        if (!is_dir('../descripciones')) {
+            mkdir('../descripciones', 0777, true);
+        }
+
+        // 4. Mover el archivo al servidor usando la RUTA LOCAL
+        if (!move_uploaded_file($documento['tmp_name'], $rutaLocal)) {
             throw new Exception("Error al mover el archivo. Revisa los permisos de la carpeta 'descripciones'.");
         }
 
-        // 3. Construir la URL completa y pública del archivo
-        $urlCompletaArchivo = $url_sitio . "/descripciones/" . $nombreUnico;
-
-        // 4. Guardar la URL COMPLETA en la tabla DescripcionPuesto
+        // 5. Guardar la RUTA PÚBLICA en la tabla DescripcionPuesto
         $stmtDesc = $conex->prepare("INSERT INTO DescripcionPuesto (ArchivoDescripcion) VALUES (?)");
-        $stmtDesc->bind_param("s", $urlCompletaArchivo);
+        $stmtDesc->bind_param("s", $rutaPublica);
         $stmtDesc->execute();
         $idDescripcion = $conex->insert_id;
 
-        // 5. Actualizar la Solicitud con el IdDescripcion y el nuevo estatus
+        // 6. Actualizar la Solicitud con el IdDescripcion y el nuevo estatus
         $nuevoEstatus = 12; // "Pendiente Aprobación Descripción"
         $stmtUpdate = $conex->prepare("UPDATE Solicitudes SET IdDescripcion = ?, IdEstatus = ? WHERE IdSolicitud = ?");
         $stmtUpdate->bind_param("iii", $idDescripcion, $nuevoEstatus, $idSolicitud);
         $stmtUpdate->execute();
 
-        // 6. Generar y guardar el token de aprobación
+        // 7. Generar y guardar el token de aprobación
         $token = bin2hex(random_bytes(32));
         $stmtToken = $conex->prepare("INSERT INTO AprobacionDescripcion (IdSolicitud, Token) VALUES (?, ?)");
         $stmtToken->bind_param("is", $idSolicitud, $token);
         $stmtToken->execute();
 
-        // 7. Obtener el correo del solicitante
+        // 8. Obtener el correo del solicitante
         $stmtEmail = $conex->prepare("SELECT u.Correo FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $stmtEmail->bind_param("i", $idSolicitud);
         $stmtEmail->execute();
@@ -78,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
         }
         $emailSolicitante = $resultEmail->fetch_assoc()['Correo'];
 
-        // 8. Enviar correo de notificación
+        // 9. Enviar correo de notificación
         $linkAprobacion = $url_sitio . "/aprobar_descripcion.php?token=" . $token;
         enviarCorreoAprobacion($emailSolicitante, $linkAprobacion);
 
