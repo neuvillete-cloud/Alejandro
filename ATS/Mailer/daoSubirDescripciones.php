@@ -1,8 +1,8 @@
 <?php
 // Requerimos los archivos de PHPMailer
-require '../Phpmailer/Exception.php';
-require '../Phpmailer/PHPMailer.php';
-require '../Phpmailer/SMTP.php';
+require 'Phpmailer/Exception.php';
+require 'Phpmailer/PHPMailer.php';
+require 'Phpmailer/SMTP.php';
 
 // Usamos las clases de PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
