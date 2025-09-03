@@ -1,7 +1,5 @@
 <?php
 // --- INICIO: MODO DE DEPURACIÓN ---
-// Estas líneas nos mostrarán cualquier error de PHP en detalle.
-// Puedes borrarlas cuando todo funcione correctamente.
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -123,46 +121,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
 }
 
 
-// --- FUNCIÓN DE ENVÍO DE CORREO CON PHPMailer (Tu estructura original) ---
+// --- FUNCIÓN DE ENVÍO DE CORREO (ESTÉTICA MEJORADA) ---
 function enviarCorreoAprobacion($email, $link) {
+    // Para poder usar la variable $url_sitio que está fuera de la función
+    global $url_sitio;
+
     $asunto = "Acción Requerida: Aprobación de Descripción de Puesto";
-    $mensaje = "
-    <p>Estimado Aprobador,</p>
-    <p>El administrador ha subido una descripción de puesto para una de tus solicitudes que requiere tu decisión.</p>
-    <p>Por favor, ingrese al siguiente enlace para revisarla:</p>
-    <p>
-        <a href='$link' target='_blank' style='background: #005195; color: #FFFFFF; 
-        padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
-        display: inline-block;'>
-            Revisar Descripción
-        </a>
-    </p>
-    <p>Saludos,<br>ATS - Grammer</p>";
+    $logoUrl = $url_sitio . '/imagenes/logo_blanco.png'; // Ruta completa al logo
 
     $contenidoHTML = "
-    <html>
+    <!DOCTYPE html>
+    <html lang='es'>
     <head>
         <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>$asunto</title>
+        <style>
+            body { margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif; }
+            .email-container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+            .email-header { background-color: #005195; padding: 30px; text-align: center; }
+            .email-header img { max-width: 150px; }
+            .email-body { padding: 40px; color: #333333; line-height: 1.6; text-align: left; }
+            .email-body h2 { color: #005195; margin-top: 0; }
+            .email-body p { font-size: 16px; margin: 10px 0; }
+            .email-body .button-container { text-align: center; margin: 30px 0; }
+            .email-body .button { background-color: #0d6efd; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; }
+            .email-footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
+        </style>
     </head>
-    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #87CEEB, #B0E0E6); color: #FFFFFF; text-align: center;'>
-        <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
-            <tr>
-                <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
-                    <h2>Notificación de Aprobación</h2>
-                </td>
-            </tr>
-            <tr>
-                <td style='padding: 20px; text-align: left; color: #333333;'>
-                    $mensaje
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #005195; color: #FFFFFF; padding: 10px; text-align: center;'>
-                    <p>© Grammer Querétaro.</p>
-                </td>
-            </tr>
-        </table>
+    <body>
+        <div class='email-container'>
+            <div class='email-header'>
+                <img src='$logoUrl' alt='Logo Grammer'>
+            </div>
+            <div class='email-body'>
+                <h2>Revisión Pendiente</h2>
+                <p>Hola,</p>
+                <p>El administrador ha subido una descripción de puesto para una de tus solicitudes y requiere tu revisión para continuar con el proceso.</p>
+                <div class='button-container'>
+                    <a href='$link' target='_blank' class='button'>Revisar Descripción</a>
+                </div>
+                <p>Por favor, haz clic en el botón para ver el documento y aprobarlo o rechazarlo.</p>
+                <p>Saludos cordiales,<br><strong>Sistema ATS - Grammer</strong></p>
+            </div>
+            <div class='email-footer'>
+                <p>&copy; " . date('Y') . " Grammer Automotive de México. Este es un correo automatizado.</p>
+            </div>
+        </div>
     </body>
     </html>";
 
