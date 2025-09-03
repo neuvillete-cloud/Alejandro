@@ -2,7 +2,6 @@
 include_once("dao/ConexionBD.php");
 
 // --- CONFIGURACIÓN IMPORTANTE ---
-// Asegúrate que esta sea la URL base de tu proyecto
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
 $token_valido = false;
@@ -15,7 +14,6 @@ if (isset($_GET['token'])) {
         $con = new LocalConector();
         $conex = $con->conectar();
 
-        // 1. Validar el token y obtener el IdSolicitud
         $stmtToken = $conex->prepare("SELECT IdSolicitud FROM AprobacionDescripcion WHERE Token = ? AND TokenValido = 1 AND Estatus = 'pendiente'");
         $stmtToken->bind_param("s", $token);
         $stmtToken->execute();
@@ -24,7 +22,6 @@ if (isset($_GET['token'])) {
         if ($resultToken->num_rows > 0) {
             $idSolicitud = $resultToken->fetch_assoc()['IdSolicitud'];
 
-            // 2. Con el IdSolicitud, obtener los datos de la solicitud y el nombre del archivo
             $stmtSol = $conex->prepare("
                 SELECT s.Puesto, d.ArchivoDescripcion 
                 FROM Solicitudes s 
@@ -148,7 +145,6 @@ if (isset($_GET['token'])) {
 
         displayExcelFile(fileUrl);
 
-        // El resto de tu JavaScript para los botones
         const token = "<?= htmlspecialchars($token) ?>";
         const btnAprobar = document.getElementById('btnAprobar');
         const btnRechazar = document.getElementById('btnRechazar');
