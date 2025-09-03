@@ -1,8 +1,8 @@
 <?php
 // Requerimos los archivos de PHPMailer
-require 'Phpmailer/Exception.php';
-require 'Phpmailer/PHPMailer.php';
-require 'Phpmailer/SMTP.php';
+require '../Phpmailer/Exception.php';
+require '../Phpmailer/PHPMailer.php';
+require '../Phpmailer/SMTP.php';
 
 // Usamos las clases de PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
@@ -13,7 +13,7 @@ header('Content-Type: application/json');
 
 // --- CONFIGURACIÓN ---
 // URL pública base (como en tu ejemplo que funciona)
-$url_sitio = "https://grammermx.com/AleTest/ATS/descripcion/";
+$url_sitio = "https://grammermx.com/AleTest/ATS";
 
 // --- FUNCIÓN PARA LIMPIAR EL NOMBRE DEL ARCHIVO ---
 function sanitizarNombreArchivo($nombre) {
@@ -26,6 +26,12 @@ function sanitizarNombreArchivo($nombre) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && isset($_FILES['documento'])) {
     $idSolicitud = $_POST['idSolicitud'];
     $documento = $_FILES['documento'];
+
+    // Verificación de error de subida
+    if ($documento['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['status' => 'error', 'message' => 'Ocurrió un error durante la subida del archivo.']);
+        exit;
+    }
 
     $con = new LocalConector();
     $conex = $con->conectar();
@@ -44,7 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
 
         // Asegurarse de que la carpeta de destino exista
         if (!is_dir('../descripciones')) {
-            mkdir('../descripciones', 0777, true);
+            if (!mkdir('../descripciones', 0775, true)) {
+                throw new Exception("Error fatal: No se pudo crear la carpeta de destino 'descripciones'. Revisa los permisos.");
+            }
         }
 
         // 4. Mover el archivo al servidor usando la RUTA LOCAL
