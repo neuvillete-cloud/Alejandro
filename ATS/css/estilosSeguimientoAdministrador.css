@@ -605,3 +605,11 @@ nav > a:not(:hover)::after {
 .developer-credit .fa-heart {
     color: #e74c3c; /* Un color rojo para el corazón */
 }
+
+/* --- ETIQUETAS DE ESTATUS NUEVAS --- */
+.estatus-tag { padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+.estatus-accion { background-color: #fef2f2; color: #b91c1c; } /* Rojo */
+.estatus-espera { background-color: #fefce8; color: #a16207; } /* Amarillo */
+.estatus-aprobado { background-color: #dcfce7; color: #166534; } /* Verde */
+.status-text { color: #6b7280; font-weight: 500; text-align: center; padding: 10px; }
+.status-text .fas { margin-right: 8px; }
