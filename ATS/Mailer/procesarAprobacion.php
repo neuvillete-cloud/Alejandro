@@ -54,6 +54,9 @@ try {
 
     } elseif ($accion === 'rechazar') {
         // El solicitante RECHAZÓ la descripción
+        if (empty($_POST['comentarios']) || !isset($_FILES['archivoCorrecto'])) {
+            throw new Exception("Faltan comentarios o el archivo corregido.");
+        }
         $comentarios = $_POST['comentarios'];
         $archivoCorrecto = $_FILES['archivoCorrecto'];
 
@@ -81,7 +84,7 @@ try {
         $stmtUpdateAprob->bind_param("i", $idAprobacion);
         $stmtUpdateAprob->execute();
 
-        // Notificar al administrador
+        // Notificar a todos los administradores
         enviarCorreoRechazo($idSolicitud, $comentarios, $rutaDestino, $conex);
     }
 
@@ -95,28 +98,27 @@ try {
 $conex->close();
 
 
-// --- Función para notificar al administrador sobre el rechazo ---
+// --- Función para notificar a TODOS los administradores sobre el rechazo ---
 function enviarCorreoRechazo($idSolicitud, $comentarios, $rutaArchivoAdjunto, $conex) {
-    // Obtenemos el correo del primer administrador que encontremos
-    // Podrías hacer esta lógica más específica si tienes varios admins
-    $resultAdmin = $conex->query("SELECT Correo FROM Usuario WHERE IdRol = 1 LIMIT 1");
-    if($resultAdmin->num_rows > 0) {
-        $emailAdmin = $resultAdmin->fetch_assoc()['Correo'];
-    } else {
-        return; // No hay admin a quien notificar
+    // Obtenemos los correos de TODOS los administradores.
+    $resultAdmin = $conex->query("SELECT Correo FROM Usuario WHERE IdRol = 1");
+
+    if ($resultAdmin->num_rows === 0) {
+        return; // No hay administradores a quienes notificar
     }
 
     $asunto = "Acción Requerida: Descripción de Puesto Rechazada (Solicitud ID: $idSolicitud)";
     $mensaje = "
+    <html><body>
     <p>Hola Administrador,</p>
     <p>El solicitante ha rechazado la descripción de puesto para la solicitud con ID <strong>$idSolicitud</strong>.</p>
     <p><strong>Comentarios del solicitante:</strong></p>
-    <blockquote style='border-left: 4px solid #ccc; padding-left: 15px; margin-left: 0;'>
-        <p><em>" . nl2br(htmlspecialchars($comentarios)) . "</em></p>
+    <blockquote style='border-left: 4px solid #ccc; padding-left: 15px; margin-left: 0; font-style: italic;'>
+        <p>" . nl2br(htmlspecialchars($comentarios)) . "</p>
     </blockquote>
     <p>Se ha adjuntado la versión corregida del documento a este correo.</p>
-    <p>Por favor, revisa el archivo adjunto y vuelve a subir la descripción desde el panel de 'Solicitudes Aprobadas'.</p>
-    ";
+    <p>Por favor, revisa el archivo adjunto y vuelve a subir la descripción desde el panel de 'Solicitudes Aprobadas'. La solicitud ha sido reasignada a este panel.</p>
+    </body></html>";
 
     $mail = new PHPMailer(true);
     try {
@@ -129,18 +131,27 @@ function enviarCorreoRechazo($idSolicitud, $comentarios, $rutaArchivoAdjunto, $c
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
         $mail->setFrom('sistema_ats@grammermx.com', 'Sistema de Aprobaciones ATS');
-        $mail->addAddress($emailAdmin);
-        $mail->addAttachment($rutaArchivoAdjunto); // ¡Adjuntamos el archivo!
+
+        // Se usa un bucle 'while' para añadir cada correo de admin como destinatario.
+        while ($admin = $resultAdmin->fetch_assoc()) {
+            $mail->addAddress($admin['Correo']);
+        }
+
+        // Copias ocultas para el sistema y desarrollador
+        $mail->addBCC('sistema_ats@grammermx.com');
+        $mail->addBCC('extern.alejandro.torres@grammer.com');
+
+        $mail->addAttachment($rutaArchivoAdjunto); // Adjuntamos el archivo corregido
 
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
-        $mail->Body    = $mensaje; // Usamos un mensaje simple, puedes crear una plantilla HTML si quieres
+        $mail->Body    = $mensaje;
 
         $mail->send();
     } catch (Exception $e) {
-        // No detenemos el proceso si el correo falla, pero podríamos registrar el error
+        // No detenemos el proceso si el correo falla, pero podríamos registrar el error en un log
+        // error_log("PHPMailer Error: " . $mail->ErrorInfo);
     }
 }
-
 ?>
