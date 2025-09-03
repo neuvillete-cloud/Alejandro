@@ -1,25 +1,27 @@
 <?php
+// --- INICIO: MODO DE DEPURACIÓN ---
+// Estas líneas nos mostrarán cualquier error de PHP en detalle.
+// Puedes borrarlas cuando todo funcione correctamente.
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// --- FIN: MODO DE DEPURACIÓN ---
+
 // Requerimos los archivos de PHPMailer
 require 'Phpmailer/Exception.php';
 require 'Phpmailer/PHPMailer.php';
 require 'Phpmailer/SMTP.php';
 
-// Usamos las clases de PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 include_once("ConexionBD.php");
 header('Content-Type: application/json');
 
-// --- CONFIGURACIÓN ---
-// URL pública base (como en tu ejemplo que funciona)
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
-// --- FUNCIÓN PARA LIMPIAR EL NOMBRE DEL ARCHIVO ---
 function sanitizarNombreArchivo($nombre) {
-    // Reemplaza espacios y caracteres especiales con guiones bajos, excepto puntos, guiones y guiones bajos.
     $nombre = preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $nombre);
-    // Elimina múltiples guiones bajos seguidos
     return preg_replace('/_+/', '_', $nombre);
 }
 
@@ -27,9 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
     $idSolicitud = $_POST['idSolicitud'];
     $documento = $_FILES['documento'];
 
-    // Verificación de error de subida
+    // --- VERIFICACIÓN INICIAL DEL ARCHIVO ---
     if ($documento['error'] !== UPLOAD_ERR_OK) {
-        echo json_encode(['status' => 'error', 'message' => 'Ocurrió un error durante la subida del archivo.']);
+        $uploadErrors = [
+            UPLOAD_ERR_INI_SIZE   => 'El archivo excede el tamaño máximo permitido por el servidor (php.ini).',
+            UPLOAD_ERR_FORM_SIZE  => 'El archivo excede el tamaño máximo especificado en el formulario HTML.',
+            UPLOAD_ERR_PARTIAL    => 'El archivo fue solo parcialmente subido.',
+            UPLOAD_ERR_NO_FILE    => 'No se subió ningún archivo.',
+            UPLOAD_ERR_NO_TMP_DIR => 'Error del servidor: Falta la carpeta temporal.',
+            UPLOAD_ERR_CANT_WRITE => 'Error del servidor: No se pudo escribir el archivo en el disco.',
+            UPLOAD_ERR_EXTENSION  => 'Una extensión de PHP detuvo la subida del archivo.',
+        ];
+        $mensajeError = $uploadErrors[$documento['error']] ?? 'Ocurrió un error desconocido durante la subida.';
+        echo json_encode(['status' => 'error', 'message' => $mensajeError]);
         exit;
     }
 
@@ -38,47 +50,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
     $conex->begin_transaction();
 
     try {
-        // 1. Limpiar el nombre del archivo
-        $nombreOriginalLimpio = sanitizarNombreArchivo(basename($documento['name']));
-        $nombreUnico = "desc_" . $idSolicitud . "_" . time() . "_" . $nombreOriginalLimpio;
+        // --- CONSTRUCCIÓN DE RUTA A PRUEBA DE BALAS ---
+        // Usamos la ruta absoluta del servidor, la forma más confiable.
+        $directorioDestino = $_SERVER['DOCUMENT_ROOT'] . '/AleTest/ATS/descripciones/';
 
-        // 2. Definir la RUTA LOCAL RELATIVA para guardar en el servidor
-        $rutaLocal = "../descripciones/" . $nombreUnico;
-
-        // 3. Definir la RUTA PÚBLICA COMPLETA para guardar en la base de datos
-        $rutaPublica = $url_sitio . "/descripciones/" . $nombreUnico;
-
-        // Asegurarse de que la carpeta de destino exista
-        if (!is_dir('../descripciones')) {
-            if (!mkdir('../descripciones', 0775, true)) {
-                throw new Exception("Error fatal: No se pudo crear la carpeta de destino 'descripciones'. Revisa los permisos.");
+        // Verificamos si la carpeta existe. Si no, intentamos crearla.
+        if (!is_dir($directorioDestino)) {
+            if (!mkdir($directorioDestino, 0775, true)) {
+                throw new Exception("Error Fatal: No se pudo crear la carpeta de destino 'descripciones'.");
             }
         }
 
-        // 4. Mover el archivo al servidor usando la RUTA LOCAL
-        if (!move_uploaded_file($documento['tmp_name'], $rutaLocal)) {
-            throw new Exception("Error al mover el archivo. Revisa los permisos de la carpeta 'descripciones'.");
+        // Verificamos si tenemos permisos para escribir en la carpeta.
+        if (!is_writable($directorioDestino)) {
+            throw new Exception("Error de Permisos: El servidor no tiene permiso para escribir en la carpeta 'descripciones'. Por favor, desde tu panel de Hostinger, ajusta los permisos de esta carpeta a 775.");
         }
 
-        // 5. Guardar la RUTA PÚBLICA en la tabla DescripcionPuesto
+        // Preparamos el nombre y la ruta final
+        $nombreOriginalLimpio = sanitizarNombreArchivo(basename($documento['name']));
+        $nombreUnico = "desc_" . $idSolicitud . "_" . time() . "_" . $nombreOriginalLimpio;
+        $rutaFisicaDestino = $directorioDestino . $nombreUnico;
+
+        // Movemos el archivo
+        if (!move_uploaded_file($documento['tmp_name'], $rutaFisicaDestino)) {
+            throw new Exception("Falló la subida del archivo. La función move_uploaded_file no pudo completarse. Verifica la ruta de destino.");
+        }
+
+        // Construimos la URL pública para la base de datos
+        $rutaPublica = $url_sitio . "/descripciones/" . $nombreUnico;
+
+        // Guardamos la RUTA PÚBLICA en la base de datos
         $stmtDesc = $conex->prepare("INSERT INTO DescripcionPuesto (ArchivoDescripcion) VALUES (?)");
         $stmtDesc->bind_param("s", $rutaPublica);
         $stmtDesc->execute();
         $idDescripcion = $conex->insert_id;
 
-        // 6. Actualizar la Solicitud con el IdDescripcion y el nuevo estatus
-        $nuevoEstatus = 12; // "Pendiente Aprobación Descripción"
+        // Actualizamos la Solicitud con el IdDescripcion y el nuevo estatus
+        $nuevoEstatus = 12;
         $stmtUpdate = $conex->prepare("UPDATE Solicitudes SET IdDescripcion = ?, IdEstatus = ? WHERE IdSolicitud = ?");
         $stmtUpdate->bind_param("iii", $idDescripcion, $nuevoEstatus, $idSolicitud);
         $stmtUpdate->execute();
 
-        // 7. Generar y guardar el token de aprobación
+        // Generamos y guardamos el token de aprobación
         $token = bin2hex(random_bytes(32));
         $stmtToken = $conex->prepare("INSERT INTO AprobacionDescripcion (IdSolicitud, Token) VALUES (?, ?)");
         $stmtToken->bind_param("is", $idSolicitud, $token);
         $stmtToken->execute();
 
-        // 8. Obtener el correo del solicitante
+        // Obtenemos el correo del solicitante
         $stmtEmail = $conex->prepare("SELECT u.Correo FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $stmtEmail->bind_param("i", $idSolicitud);
         $stmtEmail->execute();
@@ -88,27 +107,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idSolicitud']) && iss
         }
         $emailSolicitante = $resultEmail->fetch_assoc()['Correo'];
 
-        // 9. Enviar correo de notificación
+        // Enviamos el correo de notificación
         $linkAprobacion = $url_sitio . "/aprobar_descripcion.php?token=" . $token;
         enviarCorreoAprobacion($emailSolicitante, $linkAprobacion);
 
         $conex->commit();
-        echo json_encode(['status' => 'success', 'message' => 'Archivo subido. Se ha notificado al solicitante para su aprobación.']);
+        echo json_encode(['status' => 'success', 'message' => 'Archivo subido y solicitante notificado.']);
 
     } catch (Exception $e) {
         $conex->rollback();
+        // Devolvemos el mensaje de error específico que generamos
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
     $conex->close();
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Datos incompletos o método incorrecto.']);
 }
 
 
 // --- FUNCIÓN DE ENVÍO DE CORREO CON PHPMailer (Tu estructura original) ---
 function enviarCorreoAprobacion($email, $link) {
     $asunto = "Acción Requerida: Aprobación de Descripción de Puesto";
-    // El mensaje simple que se insertará en tu plantilla HTML
     $mensaje = "
     <p>Estimado Aprobador,</p>
     <p>El administrador ha subido una descripción de puesto para una de tus solicitudes que requiere tu decisión.</p>
@@ -122,7 +139,6 @@ function enviarCorreoAprobacion($email, $link) {
     </p>
     <p>Saludos,<br>ATS - Grammer</p>";
 
-    // Tu plantilla HTML para el correo
     $contenidoHTML = "
     <html>
     <head>
@@ -162,15 +178,9 @@ function enviarCorreoAprobacion($email, $link) {
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
         $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
-
-        // Destinatario
         $mail->addAddress($email);
-
-        // Tus copias ocultas
         $mail->addBCC('sistema_ats@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
-
-        // Contenido
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
@@ -180,7 +190,6 @@ function enviarCorreoAprobacion($email, $link) {
             throw new Exception("Error al enviar correo: " . $mail->ErrorInfo);
         }
     } catch (Exception $e) {
-        // Si el correo falla, la transacción se revertirá gracias al 'throw'
         throw new Exception("El archivo se guardó, pero el correo no pudo ser enviado. Error: {$e->getMessage()}");
     }
 }
