@@ -3,7 +3,7 @@ include_once("dao/ConexionBD.php");
 
 // --- CONFIGURACIÓN IMPORTANTE ---
 // Esta URL base se usará para construir la ruta correcta si es necesario.
-$url_sitio = "https://grammermx.com/AleTest/ATS/descripciones/";
+$url_sitio = "https://grammermx.com/AleTest/ATS/descripciones";
 
 $token_valido = false;
 $datos_solicitud = null;
