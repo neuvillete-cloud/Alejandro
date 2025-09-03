@@ -13,7 +13,7 @@ header('Content-Type: application/json');
 
 // --- CONFIGURACIÓN ---
 // URL pública base (como en tu ejemplo que funciona)
-$url_sitio = "https://grammermx.com/AleTest/ATS";
+$url_sitio = "https://grammermx.com/AleTest/ATS/descripcion/";
 
 // --- FUNCIÓN PARA LIMPIAR EL NOMBRE DEL ARCHIVO ---
 function sanitizarNombreArchivo($nombre) {
