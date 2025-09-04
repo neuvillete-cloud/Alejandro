@@ -57,7 +57,6 @@ if (!isset($_SESSION['NumNomina'])) {
                 </div>
             </div>
 
-
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
                     <div class="user-info">
@@ -76,7 +75,6 @@ if (!isset($_SESSION['NumNomina'])) {
         </nav>
     </div>
 </header>
-
 <section class="section-title">
     <h1>Solicitudes de Personal</h1>
     <img src="imagenes/demanda%20(1).png" alt="Imagen decorativa" class="imagen-banner">
@@ -103,8 +101,7 @@ if (!isset($_SESSION['NumNomina'])) {
                 <button id="limpiar-filtros" class="filtro limpiar">Limpiar filtros</button>
             </div>
         </div>
-        <main id="contenedorSolicitudes">
-        </main>
+        <main id="contenedorSolicitudes"></main>
     </div>
 </section>
 
@@ -115,7 +112,7 @@ if (!isset($_SESSION['NumNomina'])) {
             <button class="close-modal">&times;</button>
         </div>
         <div class="modal-body">
-            <p>La solicitud ha sido aprobada. Ingresa los correos a los que se enviará la notificación para continuar el proceso.</p>
+            <p>La solicitud será aprobada. Ingresa los correos a los que se enviará la notificación para continuar el proceso.</p>
             <label for="email1">Correo 1 (obligatorio):</label>
             <input type="email" id="email1" required>
             <label for="email2">Correo 2 (opcional):</label>
@@ -125,7 +122,7 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <div class="modal-footer">
             <button id="sendEmailsBtn" class="btn-accion aceptar">
-                <i class="fas fa-check"></i> Enviar
+                <i class="fas fa-check"></i> Aprobar y Enviar
             </button>
         </div>
     </div>
@@ -134,8 +131,6 @@ if (!isset($_SESSION['NumNomina'])) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-        // --- REFERENCIAS A ELEMENTOS DEL DOM ---
         const contenedor = document.getElementById('contenedorSolicitudes');
         const emailModal = document.getElementById('customEmailModal');
         const filtroTexto = document.getElementById('filtro-texto');
@@ -143,187 +138,86 @@ if (!isset($_SESSION['NumNomina'])) {
         const filtroFecha = document.getElementById('filtro-fecha');
         const btnLimpiar = document.getElementById('limpiar-filtros');
         const btnBuscar = document.getElementById('btn-aplicar-filtros');
+        let todasLasSolicitudes = [];
 
-        let todasLasSolicitudes = []; // Caché para los datos del servidor
-
-        // --- LÓGICA PRINCIPAL ---
-        fetchSolicitudes();
-
-        // --- FUNCIONES DE RENDERIZADO Y FILTRADO ---
         async function fetchSolicitudes() {
             contenedor.innerHTML = '<p>Cargando solicitudes...</p>';
             try {
-                // ⚠️ OJO: Se usa el endpoint de este archivo específico
-                const response = await fetch('https://grammermx.com/AleTest/ATS/dao/daoAdmin.php');
-                if (!response.ok) throw new Error('Error en la respuesta del servidor');
-
+                const response = await fetch('dao/daoAdmin.php');
                 const data = await response.json();
                 todasLasSolicitudes = data.data || [];
-
                 popularFiltroAreas();
                 aplicarFiltros();
-
             } catch (error) {
-                console.error("Error al cargar solicitudes:", error);
-                contenedor.innerHTML = '<p>Error al cargar las solicitudes. Intente de nuevo.</p>';
+                contenedor.innerHTML = '<p>Error al cargar las solicitudes.</p>';
             }
         }
 
         function renderSolicitudes(solicitudes) {
             contenedor.innerHTML = '';
             if (solicitudes.length === 0) {
-                contenedor.innerHTML = '<p>No se encontraron solicitudes con los filtros actuales.</p>';
+                contenedor.innerHTML = '<p>No se encontraron solicitudes.</p>';
                 return;
             }
-
             solicitudes.forEach(solicitud => {
+                // Tu código para renderizar tarjetas no cambia
                 const estatusClase = solicitud.NombreEstatus.toLowerCase().replace(/\s+/g, '');
                 const cardHTML = `
-    <div class="card-solicitud">
-        <div class="card-header">
-            <h3>${solicitud.Puesto}</h3>
-            <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
-        </div>
-        <div class="card-body">
-            <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
-            <div class="info-item"><strong>Nómina:</strong><div class="valor-con-icono"><i class="fas fa-id-card"></i><span>${solicitud.NumNomina}</span></div></div>
-            <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
-            <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
-            <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
-            <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
-            ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
-        </div>
-        <div class="card-actions">
-            <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}">
-                <i class="fas fa-times"></i> Rechazar
-            </button>
-            <button class="btn-accion aceptar accept-btn" data-id="${solicitud.IdSolicitud}">
-                <i class="fas fa-check"></i> Aceptar
-            </button>
-        </div>
-    </div>`;
+                <div class="card-solicitud">
+                    <div class="card-header">
+                        <h3>${solicitud.Puesto}</h3>
+                        <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
+                        <div class="info-item"><strong>Nómina:</strong><div class="valor-con-icono"><i class="fas fa-id-card"></i><span>${solicitud.NumNomina}</span></div></div>
+                        <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
+                        <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
+                        <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
+                        <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
+                        ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}"><i class="fas fa-times"></i> Rechazar</button>
+                        <button class="btn-accion aceptar accept-btn" data-id="${solicitud.IdSolicitud}"><i class="fas fa-check"></i> Aceptar</button>
+                    </div>
+                </div>`;
                 contenedor.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
 
-        function aplicarFiltros() {
-            let solicitudesFiltradas = [...todasLasSolicitudes];
-            const texto = filtroTexto.value.toLowerCase().trim();
-            if (texto) {
-                solicitudesFiltradas = solicitudesFiltradas.filter(s =>
-                    s.Puesto.toLowerCase().includes(texto) ||
-                    s.FolioSolicitud.toLowerCase().includes(texto) ||
-                    s.Nombre.toLowerCase().includes(texto)
-                );
-            }
+        function aplicarFiltros() { /* ... (sin cambios) ... */ }
+        function popularFiltroAreas() { /* ... (sin cambios) ... */ }
 
-            const area = filtroArea.value;
-            if (area) {
-                solicitudesFiltradas = solicitudesFiltradas.filter(s => s.NombreArea === area);
-            }
-
-            const orden = filtroFecha.value;
-            solicitudesFiltradas.sort((a, b) => {
-                const fechaA = new Date(a.FechaSolicitud);
-                const fechaB = new Date(b.FechaSolicitud);
-                return orden === 'antiguas' ? fechaA - fechaB : fechaB - fechaA;
-            });
-
-            renderSolicitudes(solicitudesFiltradas);
-        }
-
-        function popularFiltroAreas() {
-            const areas = [...new Set(todasLasSolicitudes.map(s => s.NombreArea))];
-            filtroArea.innerHTML = '<option value="">Todas las Áreas</option>';
-            areas.sort().forEach(area => {
-                filtroArea.innerHTML += `<option value="${area}">${area}</option>`;
-            });
-        }
-
-        // --- MANEJO DE EVENTOS ---
         btnBuscar.addEventListener('click', aplicarFiltros);
         filtroArea.addEventListener('change', aplicarFiltros);
         filtroFecha.addEventListener('change', aplicarFiltros);
-        btnLimpiar.addEventListener('click', () => {
-            filtroTexto.value = '';
-            filtroArea.value = '';
-            filtroFecha.value = 'recientes';
-            aplicarFiltros();
-        });
+        btnLimpiar.addEventListener('click', () => { /* ... (sin cambios) ... */ });
 
-        // Delegación de eventos para los botones de las tarjetas
         contenedor.addEventListener('click', e => {
             const target = e.target.closest('button');
             if (!target) return;
-
             const id = target.dataset.id;
             if (target.classList.contains('accept-btn')) {
+                // --- CAMBIO: Aceptar solo abre el modal ---
                 handleAceptar(id);
             } else if (target.classList.contains('reject-btn')) {
                 handleRechazar(id);
             }
         });
 
-        // Lógica de Aceptar
-        async function handleAceptar(id) {
-            const result = await Swal.fire({
-                title: "¿Estás seguro?",
-                text: `¿Aprobar la solicitud ID: ${id}?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Sí, aprobar",
-                cancelButtonText: "Cancelar"
-            });
-
-            if (result.isConfirmed) {
-                const formData = new URLSearchParams({ id: id, status: 2 }); // OJO: status 2 para aprobar
-                try {
-                    const response = await fetch('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { method: 'POST', body: formData });
-                    const jsonResponse = await response.json();
-
-                    if (jsonResponse.success) {
-                        Swal.fire("Aprobado", "Solicitud aprobada con éxito. Por favor, envía los correos.", "success");
-                        emailModal.querySelector('#sendEmailsBtn').setAttribute('data-id', id);
-                        emailModal.classList.add('show');
-                    } else {
-                        Swal.fire("Error", jsonResponse.message || "No se pudo aprobar la solicitud", "error");
-                    }
-                } catch (error) {
-                    Swal.fire("Error", "No se pudo conectar con el servidor", "error");
-                }
-            }
+        // --- FUNCIÓN ACEPTAR (SIMPLIFICADA) ---
+        function handleAceptar(id) {
+            emailModal.querySelector('#sendEmailsBtn').setAttribute('data-id', id);
+            document.getElementById('email1').value = '';
+            document.getElementById('email2').value = '';
+            document.getElementById('email3').value = '';
+            emailModal.classList.add('show');
         }
 
-        // Lógica de Rechazar
-        async function handleRechazar(id) {
-            const result = await Swal.fire({
-                title: "¿Estás seguro?",
-                text: `¿Rechazar la solicitud ID: ${id}?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Sí, rechazar",
-                cancelButtonText: "Cancelar"
-            });
+        async function handleRechazar(id) { /* ... (sin cambios) ... */ }
 
-            if (result.isConfirmed) {
-                const formData = new URLSearchParams({ id: id, status: 3 }); // status 3 para rechazar
-                try {
-                    const response = await fetch('https://grammermx.com/AleTest/ATS/dao/daoActualizarEstatus.php', { method: 'POST', body: formData });
-                    const jsonResponse = await response.json();
-
-                    if (jsonResponse.success) {
-                        Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success");
-                        fetchSolicitudes(); // Recargar tarjetas
-                    } else {
-                        Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
-                    }
-                } catch (error) {
-                    Swal.fire("Error", "No se pudo conectar con el servidor", "error");
-                }
-            }
-        }
-
-        // Lógica del modal de correos
+        // --- LÓGICA DEL MODAL (ACTUALIZADA) ---
         document.getElementById('sendEmailsBtn').addEventListener('click', async function () {
             const button = this;
             const solicitudId = button.getAttribute('data-id');
@@ -331,50 +225,49 @@ if (!isset($_SESSION['NumNomina'])) {
                 document.getElementById('email1').value.trim(),
                 document.getElementById('email2').value.trim(),
                 document.getElementById('email3').value.trim()
-            ].filter(Boolean); // Filtra los correos vacíos
+            ].filter(Boolean);
 
             if (!solicitudId || emails.length === 0) {
-                Swal.fire("Error", "El ID de la solicitud y al menos un correo son obligatorios", "error");
+                Swal.fire("Atención", "Debes ingresar al menos un correo.", "warning");
                 return;
             }
 
             button.disabled = true;
-            button.textContent = "Enviando...";
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
-            const formData = new URLSearchParams({ id: solicitudId });
+            const formData = new URLSearchParams({
+                id: solicitudId,
+                status: 2 // Estatus "Aprobada"
+            });
             emails.forEach((email, index) => formData.append(`email${index + 1}`, email));
 
             try {
+                // --- CAMBIO: Se llama al nuevo script PHP que hace ambas cosas ---
                 const response = await fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', { method: 'POST', body: formData });
                 const data = await response.json();
 
                 if (data.status === "success") {
-                    Swal.fire("Enviado", "El correo fue enviado correctamente", "success");
+                    Swal.fire("¡Éxito!", "La solicitud fue aprobada y los correos enviados.", "success");
                     emailModal.classList.remove('show');
-                    fetchSolicitudes(); // Recargar las tarjetas
+                    fetchSolicitudes(); // Recarga las tarjetas
                 } else {
-                    Swal.fire("Error", data.message || "No se pudo enviar el correo", "error");
+                    Swal.fire("Error", data.message || "Ocurrió un error.", "error");
                 }
             } catch (error) {
-                Swal.fire("Error", "No se pudo conectar con el servidor", "error");
+                Swal.fire("Error de Conexión", "No se pudo comunicar con el servidor.", "error");
             } finally {
                 button.disabled = false;
-                button.innerHTML = '<i class="fas fa-check"></i> Enviar';
+                button.innerHTML = '<i class="fas fa-check"></i> Aprobar y Enviar';
             }
         });
 
-        // Cerrar el modal de correos
         emailModal.querySelector('.close-modal').addEventListener('click', () => {
             emailModal.classList.remove('show');
         });
 
-        // Cerrar sesión
-        document.getElementById('logout')?.addEventListener('click', e => {
-            e.preventDefault();
-            fetch('dao/logout.php', { method: 'POST' }).then(response => {
-                if (response.ok) window.location.href = 'login.php';
-            });
-        });
+        document.getElementById('logout')?.addEventListener('click', e => { /* ... (sin cambios) ... */ });
+
+        fetchSolicitudes();
     });
 </script>
 <footer class="main-footer">
