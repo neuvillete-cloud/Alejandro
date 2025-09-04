@@ -27,7 +27,6 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="Administrador.php">Inicio</a>
-
             <div class="nav-item dropdown">
                 <a href="#" class="dropdown-toggle">
                     Seguimiento de la vacante <i class="fas fa-chevron-down"></i>
@@ -56,7 +55,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     <a href="dashbord.php">Dashboard de Reclutamiento</a>
                 </div>
             </div>
-
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
                     <div class="user-info">
@@ -91,13 +89,8 @@ if (!isset($_SESSION['NumNomina'])) {
                 <button class="btn-buscar" id="btn-aplicar-filtros">Buscar</button>
             </div>
             <div class="filtros">
-                <select id="filtro-area" class="filtro">
-                    <option value="">Todas las Áreas</option>
-                </select>
-                <select id="filtro-fecha" class="filtro">
-                    <option value="recientes">Más recientes</option>
-                    <option value="antiguas">Más antiguas</option>
-                </select>
+                <select id="filtro-area" class="filtro"><option value="">Todas las Áreas</option></select>
+                <select id="filtro-fecha" class="filtro"><option value="recientes">Más recientes</option><option value="antiguas">Más antiguas</option></select>
                 <button id="limpiar-filtros" class="filtro limpiar">Limpiar filtros</button>
             </div>
         </div>
@@ -121,12 +114,12 @@ if (!isset($_SESSION['NumNomina'])) {
             <input type="email" id="email3">
         </div>
         <div class="modal-footer">
-            <button id="sendEmailsBtn" class="btn-accion aceptar">
-                <i class="fas fa-check"></i> Aprobar y Enviar
-            </button>
+            <button id="sendEmailsBtn" class="btn-accion aceptar"><i class="fas fa-check"></i> Aprobar y Enviar</button>
         </div>
     </div>
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -145,22 +138,22 @@ if (!isset($_SESSION['NumNomina'])) {
             try {
                 const response = await fetch('dao/daoAdmin.php');
                 const data = await response.json();
+                if (data.status === 'error') { throw new Error(data.message); }
                 todasLasSolicitudes = data.data || [];
                 popularFiltroAreas();
                 aplicarFiltros();
             } catch (error) {
-                contenedor.innerHTML = '<p>Error al cargar las solicitudes.</p>';
+                contenedor.innerHTML = `<p style="color: red;"><strong>Error al cargar las solicitudes:</strong> ${error.message}</p>`;
             }
         }
 
         function renderSolicitudes(solicitudes) {
             contenedor.innerHTML = '';
             if (solicitudes.length === 0) {
-                contenedor.innerHTML = '<p>No se encontraron solicitudes.</p>';
+                contenedor.innerHTML = '<p>No se encontraron solicitudes con los filtros actuales.</p>';
                 return;
             }
             solicitudes.forEach(solicitud => {
-                // Tu código para renderizar tarjetas no cambia
                 const estatusClase = solicitud.NombreEstatus.toLowerCase().replace(/\s+/g, '');
                 const cardHTML = `
                 <div class="card-solicitud">
@@ -186,27 +179,58 @@ if (!isset($_SESSION['NumNomina'])) {
             });
         }
 
-        function aplicarFiltros() { /* ... (sin cambios) ... */ }
-        function popularFiltroAreas() { /* ... (sin cambios) ... */ }
+        function aplicarFiltros() {
+            let solicitudesFiltradas = [...todasLasSolicitudes];
+            const texto = filtroTexto.value.toLowerCase().trim();
+            if (texto) {
+                solicitudesFiltradas = solicitudesFiltradas.filter(s =>
+                    (s.Puesto && s.Puesto.toLowerCase().includes(texto)) ||
+                    (s.FolioSolicitud && s.FolioSolicitud.toLowerCase().includes(texto)) ||
+                    (s.Nombre && s.Nombre.toLowerCase().includes(texto))
+                );
+            }
+            const area = filtroArea.value;
+            if (area) {
+                solicitudesFiltradas = solicitudesFiltradas.filter(s => s.NombreArea === area);
+            }
+            const orden = filtroFecha.value;
+            solicitudesFiltradas.sort((a, b) => {
+                const fechaA = new Date(a.FechaSolicitud);
+                const fechaB = new Date(b.FechaSolicitud);
+                return orden === 'antiguas' ? fechaA - fechaB : fechaB - fechaA;
+            });
+            renderSolicitudes(solicitudesFiltradas);
+        }
+
+        function popularFiltroAreas() {
+            const areas = [...new Set(todasLasSolicitudes.map(s => s.NombreArea))];
+            filtroArea.innerHTML = '<option value="">Todas las Áreas</option>';
+            areas.sort().forEach(area => {
+                filtroArea.innerHTML += `<option value="${area}">${area}</option>`;
+            });
+        }
 
         btnBuscar.addEventListener('click', aplicarFiltros);
         filtroArea.addEventListener('change', aplicarFiltros);
         filtroFecha.addEventListener('change', aplicarFiltros);
-        btnLimpiar.addEventListener('click', () => { /* ... (sin cambios) ... */ });
+        btnLimpiar.addEventListener('click', () => {
+            filtroTexto.value = '';
+            filtroArea.value = '';
+            filtroFecha.value = 'recientes';
+            aplicarFiltros();
+        });
 
         contenedor.addEventListener('click', e => {
             const target = e.target.closest('button');
             if (!target) return;
             const id = target.dataset.id;
             if (target.classList.contains('accept-btn')) {
-                // --- CAMBIO: Aceptar solo abre el modal ---
                 handleAceptar(id);
             } else if (target.classList.contains('reject-btn')) {
                 handleRechazar(id);
             }
         });
 
-        // --- FUNCIÓN ACEPTAR (SIMPLIFICADA) ---
         function handleAceptar(id) {
             emailModal.querySelector('#sendEmailsBtn').setAttribute('data-id', id);
             document.getElementById('email1').value = '';
@@ -215,9 +239,32 @@ if (!isset($_SESSION['NumNomina'])) {
             emailModal.classList.add('show');
         }
 
-        async function handleRechazar(id) { /* ... (sin cambios) ... */ }
+        async function handleRechazar(id) {
+            const result = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: `¿Rechazar la solicitud ID: ${id}?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, rechazar",
+                cancelButtonText: "Cancelar"
+            });
+            if (result.isConfirmed) {
+                const formData = new URLSearchParams({ id: id, status: 3 }); // status 3 para rechazar
+                try {
+                    const response = await fetch('dao/daoActualizarEstatus.php', { method: 'POST', body: formData });
+                    const jsonResponse = await response.json();
+                    if (jsonResponse.success) {
+                        Swal.fire("Rechazado", "Solicitud rechazada con éxito", "success");
+                        fetchSolicitudes();
+                    } else {
+                        Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud", "error");
+                    }
+                } catch (error) {
+                    Swal.fire("Error", "No se pudo conectar con el servidor", "error");
+                }
+            }
+        }
 
-        // --- LÓGICA DEL MODAL (ACTUALIZADA) ---
         document.getElementById('sendEmailsBtn').addEventListener('click', async function () {
             const button = this;
             const solicitudId = button.getAttribute('data-id');
@@ -235,21 +282,17 @@ if (!isset($_SESSION['NumNomina'])) {
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
-            const formData = new URLSearchParams({
-                id: solicitudId,
-                status: 2 // Estatus "Aprobada"
-            });
+            const formData = new URLSearchParams({ id: solicitudId, status: 2 });
             emails.forEach((email, index) => formData.append(`email${index + 1}`, email));
 
             try {
                 // --- CAMBIO: Se llama al nuevo script PHP que hace ambas cosas ---
                 const response = await fetch('https://grammermx.com/Mailer/mailerEnvioCorreos.php', { method: 'POST', body: formData });
                 const data = await response.json();
-
                 if (data.status === "success") {
                     Swal.fire("¡Éxito!", "La solicitud fue aprobada y los correos enviados.", "success");
                     emailModal.classList.remove('show');
-                    fetchSolicitudes(); // Recarga las tarjetas
+                    fetchSolicitudes();
                 } else {
                     Swal.fire("Error", data.message || "Ocurrió un error.", "error");
                 }
@@ -265,7 +308,12 @@ if (!isset($_SESSION['NumNomina'])) {
             emailModal.classList.remove('show');
         });
 
-        document.getElementById('logout')?.addEventListener('click', e => { /* ... (sin cambios) ... */ });
+        document.getElementById('logout')?.addEventListener('click', e => {
+            e.preventDefault();
+            fetch('dao/logout.php', { method: 'POST' }).then(response => {
+                if (response.ok) window.location.href = 'login.php';
+            });
+        });
 
         fetchSolicitudes();
     });
