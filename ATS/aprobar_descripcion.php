@@ -2,7 +2,6 @@
 include_once("dao/ConexionBD.php");
 
 // --- CONFIGURACIÓN IMPORTANTE ---
-// Esta URL base se usará para construir la ruta correcta si es necesario.
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
 $token_valido = false;
@@ -64,6 +63,11 @@ if (isset($_GET['token'])) {
         .btn-aprobar { background-color: #198754; color: white; }
         .btn-rechazar { background-color: #dc3545; color: white; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+
+        /* Estilo para botones desactivados */
+        .btn:disabled { opacity: 0.65; cursor: not-allowed; }
+        .btn:disabled:hover { transform: none; box-shadow: none; }
+
         #formRechazo { background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-top: 20px; }
         #formRechazo h3 { margin-top: 0; color: #063962; }
         #formRechazo textarea { width: 95%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 15px; font-family: Arial, sans-serif; font-size: 1rem; }
@@ -89,7 +93,6 @@ if (isset($_GET['token'])) {
         <?php
         $nombre_archivo = $datos_solicitud['ArchivoDescripcion'];
         $url_completa_archivo = $nombre_archivo;
-
         if (strpos($nombre_archivo, 'http') !== 0) {
             $url_completa_archivo = $url_sitio . "/descripciones/" . rawurlencode($nombre_archivo);
         }
@@ -127,9 +130,7 @@ if (isset($_GET['token'])) {
         async function displayExcelFile(url) {
             try {
                 const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Error de red: ${response.statusText}`);
-                }
+                if (!response.ok) { throw new Error(`Error de red: ${response.statusText}`); }
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
                 let allSheetsHTML = '';
@@ -151,6 +152,7 @@ if (isset($_GET['token'])) {
         const btnRechazar = document.getElementById('btnRechazar');
         const formRechazo = document.getElementById('formRechazo');
         const rechazoForm = document.getElementById('rechazoForm');
+        const btnEnviarCorrecciones = rechazoForm.querySelector('button[type="submit"]');
 
         btnRechazar.addEventListener('click', () => {
             formRechazo.style.display = 'block';
@@ -170,6 +172,10 @@ if (isset($_GET['token'])) {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const originalButtonHTML = btnAprobar.innerHTML;
+                    btnAprobar.disabled = true;
+                    btnAprobar.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Procesando...`;
+
                     const formData = new FormData();
                     formData.append('accion', 'aprobar');
                     formData.append('token', token);
@@ -181,7 +187,14 @@ if (isset($_GET['token'])) {
                                 document.querySelector('.container').innerHTML = '<h1>¡Gracias!</h1><p>La descripción ha sido aprobada correctamente. Ya puedes cerrar esta ventana.</p>';
                             } else {
                                 Swal.fire('Error', data.message || 'Ocurrió un error.', 'error');
+                                btnAprobar.disabled = false;
+                                btnAprobar.innerHTML = originalButtonHTML;
                             }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
+                            btnAprobar.disabled = false;
+                            btnAprobar.innerHTML = originalButtonHTML;
                         });
                 }
             });
@@ -200,6 +213,10 @@ if (isset($_GET['token'])) {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if(result.isConfirmed) {
+                    const originalButtonHTML = btnEnviarCorrecciones.innerHTML;
+                    btnEnviarCorrecciones.disabled = true;
+                    btnEnviarCorrecciones.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando...`;
+
                     const formData = new FormData(rechazoForm);
                     formData.append('accion', 'rechazar');
                     formData.append('token', token);
@@ -211,7 +228,14 @@ if (isset($_GET['token'])) {
                                 document.querySelector('.container').innerHTML = '<h1>¡Gracias!</h1><p>Tus correcciones han sido enviadas al administrador. Ya puedes cerrar esta ventana.</p>';
                             } else {
                                 Swal.fire('Error', data.message || 'Ocurrió un error.', 'error');
+                                btnEnviarCorrecciones.disabled = false;
+                                btnEnviarCorrecciones.innerHTML = originalButtonHTML;
                             }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
+                            btnEnviarCorrecciones.disabled = false;
+                            btnEnviarCorrecciones.innerHTML = originalButtonHTML;
                         });
                 }
             });
