@@ -334,7 +334,7 @@ echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const formData = new URLSearchParams();
+                        const formData = new FormData();
                         formData.append("id", rejectSolicitudId);
                         formData.append("status", 3); // 3 = Rechazado
                         formData.append("comentario", comentario);
