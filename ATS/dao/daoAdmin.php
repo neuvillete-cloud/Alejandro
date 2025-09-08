@@ -9,7 +9,7 @@ $currentUserNomina = $_SESSION['NumNomina'] ?? null;
 
 if (!$currentUserNomina) {
     http_response_code(401); // No autorizado
-    echo json_encode(['error' => 'No se ha iniciado sesión o la sesión ha expirado.']);
+    echo json_encode(['status' => 'error', 'message' => 'No se ha iniciado sesión o la sesión ha expirado.']);
     exit;
 }
 
@@ -17,10 +17,12 @@ try {
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    // Consulta base para obtener las solicitudes aprobadas (IdEstatus = 5)
-    // Se añade un JOIN con la tabla Usuario para obtener el nombre del solicitante
+    // --- CONSULTA CORREGIDA ---
+    // Se añaden los campos que faltaban: NumNomina, TipoContratacion, FechaSolicitud, NombreReemplazo
+    // Se filtra por IdEstatus = 5 (Aprobada por Gerentes), que es el estado que esta página debe manejar.
     $sql = "SELECT 
-                s.IdSolicitud, s.Puesto, s.FolioSolicitud, s.IdEstatus,
+                s.IdSolicitud, s.Puesto, s.NumNomina, s.FolioSolicitud, 
+                s.TipoContratacion, s.FechaSolicitud, s.NombreReemplazo, s.EsConfidencial,
                 a.NombreArea, 
                 e.NombreEstatus,
                 u.Nombre 
@@ -28,15 +30,14 @@ try {
             JOIN Area a ON s.IdArea = a.IdArea
             JOIN Estatus e ON s.IdEstatus = e.IdEstatus
             JOIN Usuario u ON s.NumNomina = u.NumNomina
-            WHERE s.IdEstatus = 5";
+            WHERE s.IdEstatus = 5"; // <-- CAMBIO REALIZADO AQUÍ
 
     // --- FILTRO DE CONFIDENCIALIDAD ---
-    // Si el usuario actual NO es la gerente de RRHH, se añade una condición
-    // para que solo pueda ver las solicitudes que NO son confidenciales.
+    // Si el usuario actual NO es la gerente de RRHH, no puede ver las solicitudes confidenciales.
     if ($currentUserNomina !== HR_MANAGER_NOMINA) {
         $sql .= " AND s.EsConfidencial = 0";
     }
-    // Si el usuario es RRHH, no se añade el filtro, por lo que puede ver todo.
+    // La gerente de RRHH ve todo porque no se añade el filtro.
 
     $stmt = $conex->prepare($sql);
     if (!$stmt) {
@@ -50,14 +51,18 @@ try {
     $stmt->close();
     $conex->close();
 
+    // Se devuelve la respuesta en el formato que espera el frontend.
     echo json_encode([
+        'status' => 'success',
         'data' => $solicitudes
     ]);
 
 } catch (Exception $e) {
     http_response_code(500); // Error interno del servidor
     echo json_encode([
-        'error' => 'Error en la consulta a la base de datos: ' . $e->getMessage()
+        'status' => 'error',
+        'message' => 'Error en la consulta a la base de datos: ' . $e->getMessage()
     ]);
 }
 ?>
+
