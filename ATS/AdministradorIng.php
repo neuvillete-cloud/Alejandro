@@ -273,6 +273,14 @@ echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
+                        // --- INICIO DE DEPURACIÓN EN JAVASCRIPT ---
+                        console.log("--- INICIANDO DEPURACIÓN DE ENVÍO ---");
+                        console.log("Valor de 'id':", id);
+                        console.log("Valor de 'status' (fijo):", 2);
+                        console.log("Valor de 'num_nomina' (currentUserNomina):", currentUserNomina);
+                        console.log("Valor de 'approval_type':", approvalType);
+                        console.log("------------------------------------");
+                        // --- FIN DE DEPURACIÓN ---
                         const formData = new URLSearchParams();
                         formData.append("id", id);
                         formData.append("status", 2); // Estatus 2 = Aprobada (decisión)
