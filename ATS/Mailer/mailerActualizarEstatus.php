@@ -13,10 +13,31 @@ use PHPMailer\PHPMailer\Exception;
 define('HR_MANAGER_NOMINA', '00030315'); // Reemplaza con la nómina real de RRHH
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id'], $_POST['status'], $_POST['num_nomina'])) {
-    echo json_encode(["success" => false, "message" => "Error: Faltan parámetros esenciales (id, status, o num_nomina)."]);
+// --- INICIO DE LA MODIFICACIÓN: Verificación de parámetros más detallada ---
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(["success" => false, "message" => "Error: La solicitud debe ser de tipo POST."]);
     exit;
 }
+
+$errors = [];
+if (!isset($_POST['id']) || empty(trim($_POST['id']))) {
+    $errors[] = 'id';
+}
+if (!isset($_POST['status'])) { // El status puede ser 0, por eso no se usa empty()
+    $errors[] = 'status';
+}
+if (!isset($_POST['num_nomina']) || empty(trim($_POST['num_nomina']))) {
+    $errors[] = 'num_nomina';
+}
+
+if (!empty($errors)) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Error: Faltan los siguientes parámetros esenciales o están vacíos: " . implode(', ', $errors) . "."
+    ]);
+    exit;
+}
+// --- FIN DE LA MODIFICACIÓN ---
 
 $idSolicitud = (int)$_POST['id'];
 $decision = (int)$_POST['status']; // 2 para aprobar, 3 para rechazar desde el frontend
@@ -245,3 +266,4 @@ function enviarCorreoOutlook(array $destinatarios, $asunto, $cuerpoMensaje, $log
     }
 }
 ?>
+
