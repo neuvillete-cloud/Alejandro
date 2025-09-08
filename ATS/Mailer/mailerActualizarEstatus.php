@@ -13,9 +13,24 @@ use PHPMailer\PHPMailer\Exception;
 define('HR_MANAGER_NOMINA', '00030315'); // Reemplaza con la nómina real de RRHH
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
-// --- INICIO DE LA MODIFICACIÓN: Verificación de parámetros más detallada ---
+// --- INICIO DE LA MODIFICACIÓN: Verificación de método de solicitud mejorada ---
+// Manejar solicitudes de pre-vuelo (preflight) de CORS
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    // Es una solicitud de exploración del navegador, no debe procesarse.
+    // Simplemente indicamos que aceptamos la solicitud POST real.
+    header("Access-Control-Allow-Origin: *"); // O especifica tu dominio
+    header("Access-Control-Allow-Methods: POST, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
+    exit(0);
+}
+
+// Verificar que la solicitud sea POST, y dar un error más detallado si no lo es.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(["success" => false, "message" => "Error: La solicitud debe ser de tipo POST."]);
+    $method = htmlspecialchars($_SERVER['REQUEST_METHOD']);
+    echo json_encode([
+        "success" => false,
+        "message" => "Error: Se esperaba una solicitud de tipo POST, pero se recibió una de tipo '$method'."
+    ]);
     exit;
 }
 
