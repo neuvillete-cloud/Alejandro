@@ -281,14 +281,14 @@ echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
                         console.log("Valor de 'approval_type':", approvalType);
                         console.log("------------------------------------");
                         // --- FIN DE DEPURACIÓN ---
-                        const formData = new FormData();
+                        const formData = new URLSearchParams();
                         formData.append("id", id);
                         formData.append("status", 2); // Estatus 2 = Aprobada (decisión)
                         formData.append("num_nomina", currentUserNomina);
                         formData.append("approval_type", approvalType);
 
                         // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU NUEVO ARCHIVO PHP DE DOBLE APROBACIÓN
-                        const response = await fetch('https://grammermx.com/Mailer/testeo.php', {
+                        const response = await fetch('https://grammermx.com/Mailer/mailerActualizarEstatus.php', {
                             method: 'POST',
                             body: formData
                         });
@@ -334,7 +334,7 @@ echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const formData = new FormData();
+                        const formData = new URLSearchParams();
                         formData.append("id", rejectSolicitudId);
                         formData.append("status", 3); // 3 = Rechazado
                         formData.append("comentario", comentario);
