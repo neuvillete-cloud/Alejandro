@@ -13,15 +13,22 @@ use PHPMailer\PHPMailer\Exception;
 define('HR_MANAGER_NOMINA', '00030315'); // Reemplaza con la nómina real de RRHH
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id'], $_POST['status'], $_POST['num_nomina'])) {
-    echo json_encode(["success" => false, "message" => "Faltan datos requeridos."]);
+// --- VALIDACIÓN DE DATOS MEJORADA ---
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(["success" => false, "message" => "Error: Se requiere método POST."]);
     exit;
 }
+if (!isset($_POST['id']) || !isset($_POST['status']) || !isset($_POST['num_nomina'])) {
+    echo json_encode(["success" => false, "message" => "Error: Faltan parámetros esenciales (id, status, o num_nomina)."]);
+    exit;
+}
+// --- FIN DE LA VALIDACIÓN ---
 
 $idSolicitud = (int)$_POST['id'];
 $decision = (int)$_POST['status'];
 $numNominaAprobador = trim($_POST['num_nomina']);
 $comentario = trim($_POST['comentario'] ?? '');
+// Si 'approval_type' no se envía (como en el caso del segundo gerente), se asume 'normal'.
 $approvalType = trim($_POST['approval_type'] ?? 'normal');
 
 $con = new LocalConector();
@@ -29,19 +36,22 @@ $conex = $con->conectar();
 $conex->begin_transaction();
 
 try {
+    // 1. OBTENER ESTADO DE LA SOLICITUD
     $stmt = $conex->prepare("SELECT IdAprobador1, IdAprobador2, Aprobacion1, Aprobacion2 FROM Solicitudes WHERE IdSolicitud = ? FOR UPDATE");
     $stmt->bind_param("i", $idSolicitud);
     $stmt->execute();
     $solicitud = $stmt->get_result()->fetch_assoc();
     if (!$solicitud) throw new Exception("No se encontró la solicitud.");
 
+    // 2. DETERMINAR QUIÉN APRUEBA
     $idAprobador1 = $solicitud['IdAprobador1'];
     $idAprobador2 = $solicitud['IdAprobador2'];
     $columnaAprobacion = ($numNominaAprobador == $idAprobador1) ? "Aprobacion1" : (($numNominaAprobador == $idAprobador2) ? "Aprobacion2" : null);
     $otraColumnaAprobacion = ($columnaAprobacion == "Aprobacion1") ? "Aprobacion2" : "Aprobacion1";
     if (!$columnaAprobacion) throw new Exception("No tienes permiso para actuar sobre esta solicitud.");
 
-    $valorDecision = ($decision === 3) ? 0 : 1;
+    // 3. REGISTRAR LA DECISIÓN
+    $valorDecision = ($decision === 3) ? 0 : 1; // 0 para rechazo, 1 para aprobación
     $updateStmt = $conex->prepare("UPDATE Solicitudes SET $columnaAprobacion = ? WHERE IdSolicitud = ?");
     $updateStmt->bind_param("ii", $valorDecision, $idSolicitud);
     $updateStmt->execute();
@@ -49,6 +59,7 @@ try {
     $message = "";
     $nuevoEstadoGeneral = null;
 
+    // 4. LÓGICA DE APROBACIÓN/RECHAZO
     if ($valorDecision === 0) {
         $nuevoEstadoGeneral = 3; // Rechazado
         $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, Comentario = ? WHERE IdSolicitud = ?");
@@ -70,6 +81,7 @@ try {
     }
     $finalStmt->execute();
 
+    // 5. MARCAR COMO CONFIDENCIAL SI APLICA
     if ($numNominaAprobador == HR_MANAGER_NOMINA && $approvalType === 'confidential') {
         $confStmt = $conex->prepare("UPDATE Solicitudes SET EsConfidencial = 1 WHERE IdSolicitud = ?");
         $confStmt->bind_param("i", $idSolicitud);
@@ -77,18 +89,16 @@ try {
         $message .= " La solicitud ha sido marcada como confidencial.";
     }
 
-    // --- LÓGICA DE NOTIFICACIÓN FINAL ---
-    // Si el estado es final (Aprobado o Rechazado), enviamos los correos.
+    // 6. LÓGICA DE NOTIFICACIÓN FINAL
     if ($nuevoEstadoGeneral === 2 || $nuevoEstadoGeneral === 3) {
-        // Obtenemos todos los datos necesarios para los correos
         $infoStmt = $conex->prepare("SELECT s.Puesto, s.EsConfidencial, u.Correo AS CorreoSolicitante FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $infoStmt->bind_param("i", $idSolicitud);
         $infoStmt->execute();
         $infoSolicitud = $infoStmt->get_result()->fetch_assoc();
 
-        if ($nuevoEstadoGeneral === 2) { // APROBADA
+        if ($nuevoEstadoGeneral === 2) {
             enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex);
-        } else { // RECHAZADA
+        } else {
             enviarCorreoRechazoFinal($infoSolicitud, $idSolicitud, $comentario, $conex);
         }
     }
