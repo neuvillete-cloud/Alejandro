@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 formData.append('vacante', vacante);
 
                 try {
-                    const response = await fetch('mailer/mailerOferta.php', { method: 'POST', body: formData });
+                    const response = await fetch('https://grammermx.com/Mailer/mailerOferta.php', { method: 'POST', body: formData });
                     const data = await response.json();
 
                     if (data.status === 'success') {
