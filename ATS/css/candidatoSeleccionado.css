@@ -641,3 +641,52 @@ nav > a:not(:hover)::after {
 .nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
     transform: rotate(180deg);
 }
+
+/* Estilos para el nuevo botón de Enviar Oferta */
+
+.card-footer {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+
+.btn-accion.btn-oferta {
+    background-color: #28a745; /* Un verde de éxito */
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el ícono y el texto */
+}
+
+.btn-accion.btn-oferta:hover {
+    background-color: #218838; /* Un verde un poco más oscuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo para cuando el botón está deshabilitado (mientras se envía el correo) */
+.btn-accion.btn-oferta:disabled {
+    background-color: #5cb85c;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Estilo para cuando el correo ya fue enviado con éxito */
+.btn-accion.btn-oferta.enviado {
+    background-color: #6c757d; /* Un gris neutro */
+    color: white;
+    cursor: default;
+    pointer-events: none; /* Evita que se pueda hacer clic de nuevo */
+}
+
+.btn-accion.btn-oferta.enviado:hover {
+    background-color: #6c757d;
+    box-shadow: none;
+}
