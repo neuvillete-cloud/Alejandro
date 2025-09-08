@@ -88,7 +88,7 @@ try {
         $estadoActualizado = $stmtCheck->get_result()->fetch_assoc();
 
         if ($estadoActualizado['Aprobacion1'] == 1 && $estadoActualizado['Aprobacion2'] == 1) {
-            $nuevoEstadoGeneral = 2; // Estado final: Aprobada
+            $nuevoEstadoGeneral = 5; // Estado final: Aprobada (Cambiado de 2 a 5)
             $message = "¡Aprobación final! La solicitud ha sido aprobada por ambos responsables.";
         } else {
             $nuevoEstadoGeneral = 4; // Estado parcial: Aprobado Parcialmente
@@ -108,14 +108,14 @@ try {
     }
 
     // Enviar correos si el estado es final
-    if ($nuevoEstadoGeneral === 2 || $nuevoEstadoGeneral === 3) {
+    if ($nuevoEstadoGeneral === 5 || $nuevoEstadoGeneral === 3) { // Cambiado de 2 a 5
         $infoStmt = $conex->prepare("SELECT s.Puesto, s.EsConfidencial, u.Correo AS CorreoSolicitante FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $infoStmt->bind_param("i", $idSolicitud);
         $infoStmt->execute();
         $infoSolicitud = $infoStmt->get_result()->fetch_assoc();
 
         if ($infoSolicitud) {
-            if ($nuevoEstadoGeneral === 2) {
+            if ($nuevoEstadoGeneral === 5) { // Cambiado de 2 a 5
                 enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex);
             } else {
                 enviarCorreoRechazoFinal($infoSolicitud, $idSolicitud, $comentario, $conex);
