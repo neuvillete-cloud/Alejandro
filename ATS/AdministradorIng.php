@@ -1,3 +1,19 @@
+<?php
+session_start();
+if (!isset($_SESSION['NumNomina'])) {
+    header('Location: login.php');
+    exit;
+}
+
+// --- CONFIGURACIÓN IMPORTANTE ---
+// Define aquí el número de nómina de la gerente de RRHH.
+// Asegúrate que coincida con uno de los aprobadores fijos.
+define('HR_MANAGER_NOMINA', '00030315');
+
+// Pasamos las nóminas de la sesión y de RRHH a JavaScript.
+echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomina']) . "';</script>";
+echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,17 +24,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
-<?php
-session_start();
-if (!isset($_SESSION['NumNomina'])) {
-    header('Location: login.php');
-    exit;
-}
-
-// Pasamos el NumNomina de la sesión de PHP a una variable de JavaScript.
-echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomina']) . "';</script>";
-?>
 
 <header>
     <div class="header-container">
@@ -101,10 +106,35 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
     </div>
 </div>
 
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-column">
+            <div class="logo">
+                <img src="imagenes/logo_blanco.png" alt="Logo Grammer Blanco" class="logo-img">
+                <div class="logo-texto">
+                    <h1>Grammer</h1>
+                    <span>Automotive</span>
+                </div>
+            </div>
+            <p class="footer-about">
+                Sistema de Seguimiento de Candidatos (ATS) para la gestión de talento y requisiciones de personal.
+            </p>
+        </div>
+        <div class="footer-column">
+            <h3>Contacto</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Av. de la Luz #24 Col. satélite , Querétaro, Mexico</p>
+            <p><i class="fas fa-phone"></i> +52 (442) 238 4460</p>
+        </div>
+    </div>
+    <div class="sub-footer">
+        <p>&copy; <?= date('Y') ?> Grammer Automotive de México. Todos los derechos reservados.</p>
+        <p class="developer-credit">Desarrollado por Alejandro Torres</p>
+    </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-
         let todasLasSolicitudes = [];
         const contenedor = document.getElementById('contenedorSolicitudes');
         const filtroTexto = document.getElementById('filtro-texto');
@@ -137,30 +167,37 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                 return;
             }
             solicitudes.forEach(solicitud => {
+                let actionButtons = '';
+                if (currentUserNomina === hrManagerNomina) {
+                    actionButtons = `
+                        <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}"><i class="fas fa-times"></i> Rechazar</button>
+                        <button class="btn-accion aceptar-normal accept-btn" data-type="normal" data-id="${solicitud.IdSolicitud}"><i class="fas fa-check"></i> Aprobar Normal</button>
+                        <button class="btn-accion aceptar-confidencial" data-type="confidential" data-id="${solicitud.IdSolicitud}"><i class="fas fa-lock"></i> Aprobar Confidencial</button>
+                    `;
+                } else {
+                    actionButtons = `
+                        <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}"><i class="fas fa-times"></i> Rechazar</button>
+                        <button class="btn-accion aceptar accept-btn" data-type="normal" data-id="${solicitud.IdSolicitud}"><i class="fas fa-check"></i> Aceptar</button>
+                    `;
+                }
+
                 const estatusClase = solicitud.NombreEstatus.toLowerCase().replace(/\s+/g, '');
                 const cardHTML = `
-            <div class="card-solicitud">
-                <div class="card-header">
-                    <h3>${solicitud.Puesto}</h3>
-                    <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
-                </div>
-                <div class="card-body">
-                    <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
-                    <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
-                    <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
-                    <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
-                    <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
-                    ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
-                </div>
-                <div class="card-actions">
-                    <button class="btn-accion rechazar reject-btn" data-id="${solicitud.IdSolicitud}">
-                        <i class="fas fa-times"></i> Rechazar
-                    </button>
-                    <button class="btn-accion aceptar accept-btn" data-id="${solicitud.IdSolicitud}">
-                        <i class="fas fa-check"></i> Aceptar
-                    </button>
-                </div>
-            </div>`;
+                <div class="card-solicitud">
+                    <div class="card-header">
+                        <h3>${solicitud.Puesto}</h3>
+                        <span class="estatus ${estatusClase}">${solicitud.NombreEstatus}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item"><strong>Solicitante:</strong><div class="valor-con-icono"><i class="fas fa-user"></i><span>${solicitud.Nombre}</span></div></div>
+                        <div class="info-item"><strong>Área:</strong> ${solicitud.NombreArea}</div>
+                        <div class="info-item"><strong>Folio:</strong> ${solicitud.FolioSolicitud}</div>
+                        <div class="info-item"><strong>Contratación:</strong> ${solicitud.TipoContratacion}</div>
+                        <div class="info-item"><strong>Fecha Solicitud:</strong> ${solicitud.FechaSolicitud}</div>
+                        ${solicitud.NombreReemplazo ? `<div class="info-item"><strong>Reemplaza a:</strong><div class="valor-con-icono"><i class="fas fa-people-arrows"></i><span>${solicitud.NombreReemplazo}</span></div></div>` : ''}
+                    </div>
+                    <div class="card-actions">${actionButtons}</div>
+                </div>`;
                 contenedor.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
@@ -180,11 +217,10 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                 solicitudesFiltradas = solicitudesFiltradas.filter(s => s.NombreArea === area);
             }
             const orden = filtroFecha.value;
-            solicitudesFiltradas.sort((a, b) => {
-                const fechaA = new Date(a.FechaSolicitud);
-                const fechaB = new Date(b.FechaSolicitud);
-                return orden === 'antiguas' ? fechaA - fechaB : fechaB - fechaA;
-            });
+            solicitudesFiltradas.sort((a, b) => new Date(b.FechaSolicitud) - new Date(a.FechaSolicitud));
+            if (orden === 'antiguas') {
+                solicitudesFiltradas.reverse();
+            }
             renderSolicitudes(solicitudesFiltradas);
         }
 
@@ -199,7 +235,6 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             });
         }
 
-        // --- MANEJO DE EVENTOS ---
         btnBuscar.addEventListener('click', aplicarFiltros);
         filtroArea.addEventListener('change', aplicarFiltros);
         filtroFecha.addEventListener('change', aplicarFiltros);
@@ -215,49 +250,47 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             const target = e.target.closest('button');
             if (!target) return;
             const id = target.dataset.id;
-            if (target.classList.contains('accept-btn')) {
-                handleAceptar(id);
+            const type = target.dataset.type;
+            if (target.classList.contains('accept-btn') || target.classList.contains('aceptar-confidencial') || target.classList.contains('aceptar-normal')) {
+                handleAceptar(id, type);
             } else if (target.classList.contains('reject-btn')) {
                 handleRechazar(id);
             }
         });
 
-        // --- LÓGICA DE APROBACIÓN ACTUALIZADA ---
-        function handleAceptar(id) {
+        function handleAceptar(id, approvalType) {
+            let confirmationText = approvalType === 'confidential'
+                ? `¿Marcar como CONFIDENCIAL y aprobar? Solo tú podrás gestionar esta vacante.`
+                : `¿Deseas registrar tu APROBACIÓN para la solicitud ID: ${id}?`;
+
             Swal.fire({
                 title: "¿Estás seguro?",
-                text: `¿Deseas registrar tu APROBACIÓN para la solicitud ID: ${id}?`,
+                text: confirmationText,
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Sí, aprobar",
+                confirmButtonText: "Sí, continuar",
                 cancelButtonText: "Cancelar"
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
                         const formData = new URLSearchParams();
                         formData.append("id", id);
-                        formData.append("status", 5); // 5 significa "Aprobado"
-                        formData.append("num_nomina", currentUserNomina); // <-- DATO AÑADIDO
+                        formData.append("status", 2); // Estatus 2 = Aprobada (decisión)
+                        formData.append("num_nomina", currentUserNomina);
+                        formData.append("approval_type", approvalType);
 
                         // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU NUEVO ARCHIVO PHP DE DOBLE APROBACIÓN
                         const response = await fetch('https://grammermx.com/Mailer/mailerActualizarEstatus.php', {
                             method: 'POST',
                             body: formData
                         });
-
                         const jsonResponse = await response.json();
 
                         if (jsonResponse.success) {
-                            let successMessage = "Tu aprobación ha sido registrada.";
-                            if (jsonResponse.final_status === 5) {
-                                successMessage = "¡Aprobación final! La solicitud ha sido aprobada por ambos responsables.";
-                            } else if (jsonResponse.final_status === 3) {
-                                successMessage = "La solicitud ha sido rechazada.";
-                            }
-                            Swal.fire("Éxito", successMessage, "success");
-                            fetchSolicitudes(); // Recargar la lista de tarjetas
+                            Swal.fire("Éxito", jsonResponse.message, "success");
+                            fetchSolicitudes();
                         } else {
-                            Swal.fire("Error", jsonResponse.message || "No se pudo registrar la aprobación.", "error");
+                            Swal.fire("Error", jsonResponse.message, "error");
                         }
                     } catch (error) {
                         Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
@@ -266,7 +299,6 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             });
         }
 
-        // --- LÓGICA DE RECHAZO ACTUALIZADA ---
         let rejectSolicitudId = null;
         const rejectModal = document.getElementById('rejectModal');
 
@@ -296,21 +328,20 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                     try {
                         const formData = new URLSearchParams();
                         formData.append("id", rejectSolicitudId);
-                        formData.append("status", 3); // 3 significa "Rechazado"
+                        formData.append("status", 3); // 3 = Rechazado
                         formData.append("comentario", comentario);
-                        formData.append("num_nomina", currentUserNomina); // <-- DATO AÑADIDO
+                        formData.append("num_nomina", currentUserNomina);
 
                         // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU NUEVO ARCHIVO PHP DE DOBLE APROBACIÓN
                         const response = await fetch('https://grammermx.com/Mailer/mailerActualizarEstatus.php', {
                             method: 'POST',
                             body: formData
                         });
-
                         const jsonResponse = await response.json();
 
                         if (jsonResponse.success) {
                             Swal.fire("Rechazado", "La solicitud ha sido rechazada con éxito.", "success");
-                            fetchSolicitudes(); // Recargar la lista de tarjetas
+                            fetchSolicitudes();
                         } else {
                             Swal.fire("Error", jsonResponse.message || "No se pudo rechazar la solicitud.", "error");
                         }
@@ -325,7 +356,6 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             rejectModal.classList.remove('show');
         });
 
-        // Lógica de Cerrar Sesión (sin cambios)
         const logoutLink = document.getElementById('logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {

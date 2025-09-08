@@ -1,8 +1,5 @@
 <?php
 header('Content-Type: application/json');
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 include_once("ConexionBD.php");
 require 'Phpmailer/Exception.php';
@@ -12,37 +9,178 @@ require 'Phpmailer/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-/**
- * Función para construir y enviar correos de notificación.
- */
-function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
-{
-    $contenido = "
-    <html>
-    <head>
-        <meta charset='UTF-8'>
-        <title>$asunto</title>
-    </head>
-    <body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #87CEEB, #B0E0E6); color: #FFFFFF; text-align: center;'>
-        <table role='presentation' style='width: 100%; max-width: 600px; margin: auto; background: #FFFFFF; border-radius: 10px; overflow: hidden;'>
-            <tr>
-                <td style='background-color: #005195; padding: 20px; color: #FFFFFF; text-align: center;'>
-                    <h2>Notificación de Solicitud</h2>
-                </td>
-            </tr>
-            <tr>
-                <td style='padding: 20px; text-align: left; color: #333333;'>
-                    $mensaje
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #005195; color: #FFFFFF; padding: 10px; text-align: center;'>
-                    <p>© Grammer Querétaro.</p>
-                </td>
-            </tr>
+// --- CONFIGURACIÓN IMPORTANTE ---
+define('HR_MANAGER_NOMINA', '00030315'); // Reemplaza con la nómina real de RRHH
+$url_sitio = "https://grammermx.com/AleTest/ATS";
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id'], $_POST['status'], $_POST['num_nomina'])) {
+    echo json_encode(["success" => false, "message" => "Faltan datos requeridos."]);
+    exit;
+}
+
+$idSolicitud = (int)$_POST['id'];
+$decision = (int)$_POST['status'];
+$numNominaAprobador = trim($_POST['num_nomina']);
+$comentario = trim($_POST['comentario'] ?? '');
+$approvalType = trim($_POST['approval_type'] ?? 'normal');
+
+$con = new LocalConector();
+$conex = $con->conectar();
+$conex->begin_transaction();
+
+try {
+    $stmt = $conex->prepare("SELECT IdAprobador1, IdAprobador2, Aprobacion1, Aprobacion2 FROM Solicitudes WHERE IdSolicitud = ? FOR UPDATE");
+    $stmt->bind_param("i", $idSolicitud);
+    $stmt->execute();
+    $solicitud = $stmt->get_result()->fetch_assoc();
+    if (!$solicitud) throw new Exception("No se encontró la solicitud.");
+
+    $idAprobador1 = $solicitud['IdAprobador1'];
+    $idAprobador2 = $solicitud['IdAprobador2'];
+    $columnaAprobacion = ($numNominaAprobador == $idAprobador1) ? "Aprobacion1" : (($numNominaAprobador == $idAprobador2) ? "Aprobacion2" : null);
+    $otraColumnaAprobacion = ($columnaAprobacion == "Aprobacion1") ? "Aprobacion2" : "Aprobacion1";
+    if (!$columnaAprobacion) throw new Exception("No tienes permiso para actuar sobre esta solicitud.");
+
+    $valorDecision = ($decision === 3) ? 0 : 1;
+    $updateStmt = $conex->prepare("UPDATE Solicitudes SET $columnaAprobacion = ? WHERE IdSolicitud = ?");
+    $updateStmt->bind_param("ii", $valorDecision, $idSolicitud);
+    $updateStmt->execute();
+
+    $message = "";
+    $nuevoEstadoGeneral = null;
+
+    if ($valorDecision === 0) {
+        $nuevoEstadoGeneral = 3; // Rechazado
+        $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, Comentario = ? WHERE IdSolicitud = ?");
+        $finalStmt->bind_param("isi", $nuevoEstadoGeneral, $comentario, $idSolicitud);
+        $message = "La solicitud ha sido rechazada.";
+    } else {
+        $otraAprobacion = $solicitud[$otraColumnaAprobacion];
+        if ($otraAprobacion == 1) {
+            $nuevoEstadoGeneral = 2; // Aprobada (final)
+            $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
+            $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
+            $message = "¡Aprobación final! La solicitud ha sido aprobada por ambos responsables.";
+        } else {
+            $nuevoEstadoGeneral = 4; // Aprobado Parcialmente
+            $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
+            $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
+            $message = "Tu aprobación ha sido registrada. Aún falta la aprobación del otro gerente.";
+        }
+    }
+    $finalStmt->execute();
+
+    if ($numNominaAprobador == HR_MANAGER_NOMINA && $approvalType === 'confidential') {
+        $confStmt = $conex->prepare("UPDATE Solicitudes SET EsConfidencial = 1 WHERE IdSolicitud = ?");
+        $confStmt->bind_param("i", $idSolicitud);
+        $confStmt->execute();
+        $message .= " La solicitud ha sido marcada como confidencial.";
+    }
+
+    // --- LÓGICA DE NOTIFICACIÓN FINAL ---
+    // Si el estado es final (Aprobado o Rechazado), enviamos los correos.
+    if ($nuevoEstadoGeneral === 2 || $nuevoEstadoGeneral === 3) {
+        // Obtenemos todos los datos necesarios para los correos
+        $infoStmt = $conex->prepare("SELECT s.Puesto, s.EsConfidencial, u.Correo AS CorreoSolicitante FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
+        $infoStmt->bind_param("i", $idSolicitud);
+        $infoStmt->execute();
+        $infoSolicitud = $infoStmt->get_result()->fetch_assoc();
+
+        if ($nuevoEstadoGeneral === 2) { // APROBADA
+            enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex);
+        } else { // RECHAZADA
+            enviarCorreoRechazoFinal($infoSolicitud, $idSolicitud, $comentario, $conex);
+        }
+    }
+
+    $conex->commit();
+    echo json_encode(["success" => true, "message" => $message]);
+
+} catch (Exception $e) {
+    $conex->rollback();
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
+}
+$conex->close();
+
+
+// --- NUEVA FUNCIÓN DE CORREO DE APROBACIÓN FINAL ---
+function enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex) {
+    global $url_sitio;
+    $asunto = "Solicitud Aprobada: " . $infoSolicitud['Puesto'];
+    $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
+    $destinatarios = [];
+
+    // Decidimos a quién notificar
+    if ($infoSolicitud['EsConfidencial'] == 1) {
+        // Si es confidencial, solo a RRHH
+        $stmtHR = $conex->prepare("SELECT Correo FROM Usuario WHERE NumNomina = ?");
+        $stmtHR->bind_param("s", HR_MANAGER_NOMINA);
+        $stmtHR->execute();
+        $destinatarios[] = $stmtHR->get_result()->fetch_assoc()['Correo'];
+    } else {
+        // Si es normal, a todos los administradores
+        $resultAdmin = $conex->query("SELECT Correo FROM Usuario WHERE IdRol = 1");
+        while ($admin = $resultAdmin->fetch_assoc()) {
+            $destinatarios[] = $admin['Correo'];
+        }
+    }
+
+    // Correo para el Administrador o RRHH
+    $mensajeAdmin = "
+        <h2 style='color: #198754; margin-top: 0;'>¡Solicitud Aprobada!</h2>
+        <p>Hola,</p>
+        <p>La solicitud de personal para el puesto <strong>\"" . $infoSolicitud['Puesto'] . "\"</strong> (ID: $idSolicitud) ha sido completamente aprobada y está lista para continuar con el proceso.</p>
+        <p>Puedes iniciar la siguiente fase desde el panel de 'Solicitudes Aprobadas' en el sistema ATS.</p>";
+    enviarCorreoOutlook($destinatarios, $asunto, $mensajeAdmin, $logoUrl);
+
+    // Correo para el Solicitante Original
+    $asuntoSolicitante = "Actualización de tu Solicitud: " . $infoSolicitud['Puesto'];
+    $mensajeSolicitante = "
+        <h2 style='color: #198754; margin-top: 0;'>¡Tu Solicitud fue Aprobada!</h2>
+        <p>Hola,</p>
+        <p>Te informamos que tu solicitud de personal para el puesto <strong>\"" . $infoSolicitud['Puesto'] . "\"</strong> (ID: $idSolicitud) ha sido aprobada.</p>
+        <p>El equipo de Recursos Humanos comenzará con el proceso de reclutamiento. Recibirás más notificaciones a medida que avance el proceso.</p>";
+    enviarCorreoOutlook([$infoSolicitud['CorreoSolicitante']], $asuntoSolicitante, $mensajeSolicitante, $logoUrl);
+}
+
+// --- NUEVA FUNCIÓN DE CORREO DE RECHAZO FINAL ---
+function enviarCorreoRechazoFinal($infoSolicitud, $idSolicitud, $comentario, $conex) {
+    global $url_sitio;
+    $asunto = "Solicitud Rechazada: " . $infoSolicitud['Puesto'];
+    $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
+
+    // Correo para el Solicitante Original
+    $mensajeSolicitante = "
+        <h2 style='color: #dc3545; margin-top: 0;'>Actualización sobre tu Solicitud</h2>
+        <p>Hola,</p>
+        <p>Te informamos que tu solicitud de personal para el puesto <strong>\"" . $infoSolicitud['Puesto'] . "\"</strong> (ID: $idSolicitud) ha sido rechazada.</p>
+        <p><strong>Comentarios del aprobador:</strong></p>
+        <blockquote style='border-left: 4px solid #dddddd; padding-left: 15px; margin-left: 0; font-style: italic;'>
+            <p>" . nl2br(htmlspecialchars($comentario)) . "</p>
+        </blockquote>
+        <p>Si tienes dudas, por favor, contacta directamente con el gerente que realizó la aprobación.</p>";
+    enviarCorreoOutlook([$infoSolicitud['CorreoSolicitante']], $asunto, $mensajeSolicitante, $logoUrl);
+}
+
+// --- FUNCIÓN CENTRAL DE ENVÍO COMPATIBLE CON OUTLOOK ---
+function enviarCorreoOutlook(array $destinatarios, $asunto, $cuerpoMensaje, $logoUrl) {
+    if (empty($destinatarios)) return;
+    $contenidoHTML = "
+    <!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'></head>
+    <body style='margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif;'>
+        <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+            <tr><td style='padding: 20px 0;'>
+                <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+                    <tr><td align='center' style='background-color: #005195; padding: 30px;'><img src='$logoUrl' alt='Logo Grammer' width='150' style='display: block;'></td></tr>
+                    <tr><td style='padding: 40px 30px; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;'>
+                        $cuerpoMensaje
+                        <p>Saludos cordiales,<br><strong>Sistema ATS - Grammer</strong></p>
+                    </td></tr>
+                    <tr><td align='center' style='background-color: #f8f9fa; padding: 20px; font-size: 12px; color: #6c757d;'><p style='margin: 0;'>&copy; " . date('Y') . " Grammer Automotive de México. Este es un correo automatizado.</p></td></tr>
+                </table>
+            </td></tr>
         </table>
-    </body>
-    </html>";
+    </body></html>";
 
     $mail = new PHPMailer(true);
     try {
@@ -53,11 +191,11 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
         $mail->Password = 'SATSGrammer2024.';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
-        $mail->setFrom('sistema_ats@grammermx.com', 'Administración ATS Grammer');
+        $mail->setFrom('sistema_ats@grammermx.com', 'Sistema ATS Grammer');
 
-        if (!empty($email1)) $mail->addAddress($email1);
-        if (!empty($email2)) $mail->addAddress($email2);
-        if (!empty($email3)) $mail->addAddress($email3);
+        foreach($destinatarios as $email) {
+            if (!empty($email)) $mail->addAddress($email);
+        }
 
         $mail->addBCC('sistema_ats@grammermx.com');
         $mail->addBCC('extern.alejandro.torres@grammer.com');
@@ -65,132 +203,11 @@ function enviarCorreoNotificacion($email1, $email2, $email3, $asunto, $mensaje)
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
-        $mail->Body = $contenido;
-
+        $mail->Body = $contenidoHTML;
         $mail->send();
-        return ['status' => 'success'];
     } catch (Exception $e) {
-        return ['status' => 'error', 'message' => $e->getMessage()];
+        // No detenemos el proceso si el correo falla, pero podríamos registrarlo
+        error_log("PHPMailer Error al enviar a " . implode(", ", $destinatarios) . ": " . $mail->ErrorInfo);
     }
 }
-
-// Verificamos que se envíen los datos necesarios desde el frontend
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id'], $_POST['status'], $_POST['num_nomina'])) {
-    echo json_encode(["success" => false, "message" => "Faltan datos requeridos (id, status, num_nomina)."]);
-    exit;
-}
-
-// Recopilamos los datos enviados
-$idSolicitud = (int)$_POST['id'];
-$decision = (int)$_POST['status']; // La decisión del aprobador (5 para aprobar, 3 para rechazar)
-$numNominaAprobador = trim($_POST['num_nomina']);
-$comentario = trim($_POST['comentario'] ?? '');
-$email1 = $_POST['email1'] ?? '';
-$email2 = $_POST['email2'] ?? '';
-$email3 = $_POST['email3'] ?? '';
-
-$con = new LocalConector();
-$conex = $con->conectar();
-if (!$conex) {
-    echo json_encode(["success" => false, "message" => "Error de conexión a la BD."]);
-    exit;
-}
-
-// Iniciamos una transacción para asegurar la integridad de los datos
-$conex->begin_transaction();
-
-try {
-    // 1. OBTENER EL ESTADO ACTUAL DE LA SOLICITUD Y QUIÉNES SON LOS APROBADORES
-    // Nota: Este código asume que tienes columnas 'IdAprobador1' y 'IdAprobador2' en tu tabla Solicitudes.
-    $stmt = $conex->prepare("SELECT IdAprobador1, IdAprobador2, Aprobacion1, Aprobacion2 FROM Solicitudes WHERE IdSolicitud = ? FOR UPDATE");
-    $stmt->bind_param("i", $idSolicitud);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 0) {
-        throw new Exception("No se encontró la solicitud con ID $idSolicitud.");
-    }
-    $solicitud = $result->fetch_assoc();
-    $idAprobador1 = $solicitud['IdAprobador1'];
-    $idAprobador2 = $solicitud['IdAprobador2'];
-
-    // 2. DETERMINAR SI EL USUARIO ES APROBADOR 1 O 2
-    $columnaAprobacion = null;
-    $otraColumnaAprobacion = null;
-    if ($numNominaAprobador == $idAprobador1) {
-        $columnaAprobacion = "Aprobacion1";
-        $otraColumnaAprobacion = "Aprobacion2";
-    } elseif ($numNominaAprobador == $idAprobador2) {
-        $columnaAprobacion = "Aprobacion2";
-        $otraColumnaAprobacion = "Aprobacion1";
-    } else {
-        throw new Exception("No tienes permiso para actuar sobre esta solicitud.");
-    }
-
-    // 3. LÓGICA DE DECISIÓN
-    $nuevoEstadoGeneral = null;
-    $valorDecision = ($decision === 3) ? 0 : 1; // 0 para rechazo, 1 para aprobación
-
-    // Actualizamos la decisión del aprobador actual
-    $updateStmt = $conex->prepare("UPDATE Solicitudes SET $columnaAprobacion = ? WHERE IdSolicitud = ?");
-    $updateStmt->bind_param("ii", $valorDecision, $idSolicitud);
-    $updateStmt->execute();
-
-    // Si es un RECHAZO, la solicitud se rechaza inmediatamente
-    if ($valorDecision === 0) {
-        $nuevoEstadoGeneral = 3; // Estado: Rechazado
-        $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, Comentario = ? WHERE IdSolicitud = ?");
-        $finalStmt->bind_param("isi", $nuevoEstadoGeneral, $comentario, $idSolicitud);
-    }
-    // Si es una APROBACIÓN, verificamos el estado del otro aprobador
-    else {
-        $otraAprobacion = $solicitud[$otraColumnaAprobacion];
-
-        if ($otraAprobacion == 1) { // El otro aprobador ya había aprobado
-            $nuevoEstadoGeneral = 5; // Estado: Aprobado (final)
-            $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
-            $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
-        } else { // El otro aprobador aún no ha aprobado
-            $nuevoEstadoGeneral = 4; // Estado: Aprobado Parcialmente
-            $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
-            $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
-        }
-    }
-    $finalStmt->execute();
-
-    // Si todo fue bien, guardamos los cambios en la base de datos
-    $conex->commit();
-
-    // 4. ENVIAR CORREOS SÓLO EN ESTADOS FINALES (Aprobado o Rechazado)
-    if ($nuevoEstadoGeneral === 5 || $nuevoEstadoGeneral === 3) {
-        // Obtenemos el folio para incluirlo en el correo
-        $folioStmt = $conex->prepare("SELECT FolioSolicitud FROM Solicitudes WHERE IdSolicitud = ?");
-        $folioStmt->bind_param("i", $idSolicitud);
-        $folioStmt->execute();
-        $res = $folioStmt->get_result();
-        $fila = $res->fetch_assoc();
-        $folio = $fila['FolioSolicitud'];
-
-        if ($nuevoEstadoGeneral === 5) {
-            $linkSistema = "https://grammermx.com/AleTest/ATS/Administrador.php";
-            $mensaje = "<p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>aprobada</strong> por ambos responsables.</p><p>Revisa en el sistema o contacta con administración si necesitas más información.</p><p><a href='$linkSistema' target='_blank' style='background: #E6F4F9; color: #005195; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;'>Ir al sistema</a></p><p>Saludos,<br>ATS - Grammer</p>";
-            enviarCorreoNotificacion($email1, $email2, $email3, "Solicitud Aprobada: $folio", $mensaje);
-        } elseif ($nuevoEstadoGeneral === 3) {
-            $mensaje = "<p>Tu solicitud con folio <strong>$folio</strong> ha sido <strong>rechazada</strong>.</p><p>Motivo:</p><blockquote>$comentario</blockquote><p>Para más detalles, acércate a tu administrador.</p><p>Saludos,<br>ATS - Grammer</p>";
-            enviarCorreoNotificacion($email1, $email2, $email3, "Solicitud Rechazada: $folio", $mensaje);
-        }
-    }
-
-    echo json_encode([
-        "success" => true,
-        "message" => "Estado actualizado correctamente.",
-        "final_status" => $nuevoEstadoGeneral
-    ]);
-
-} catch (Exception $e) {
-    // Si algo falla durante el proceso, revertimos todos los cambios
-    $conex->rollback();
-    echo json_encode(["success" => false, "message" => $e->getMessage()]);
-}
-
-$conex->close();
 ?>
