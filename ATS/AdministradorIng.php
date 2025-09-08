@@ -281,7 +281,7 @@ echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
                         console.log("Valor de 'approval_type':", approvalType);
                         console.log("------------------------------------");
                         // --- FIN DE DEPURACIÓN ---
-                        const formData = new URLSearchParams();
+                        const formData = new FormData();
                         formData.append("id", id);
                         formData.append("status", 2); // Estatus 2 = Aprobada (decisión)
                         formData.append("num_nomina", currentUserNomina);
