@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['id'], $_POST['status
 }
 
 $idSolicitud = (int)$_POST['id'];
-$decision = (int)$_POST['status'];
+$decision = (int)$_POST['status']; // 2 para aprobar, 3 para rechazar desde el frontend
 $numNominaAprobador = trim($_POST['num_nomina']);
 $comentario = trim($_POST['comentario'] ?? '');
 $approvalType = trim($_POST['approval_type'] ?? 'normal');
@@ -29,63 +29,103 @@ $conex = $con->conectar();
 $conex->begin_transaction();
 
 try {
-    // --- LÓGICA DE APROBACIÓN (SIN CAMBIOS) ---
+    // 1. Obtener el estado actual de la solicitud y los aprobadores designados
     $stmt = $conex->prepare("SELECT IdAprobador1, IdAprobador2, Aprobacion1, Aprobacion2 FROM Solicitudes WHERE IdSolicitud = ? FOR UPDATE");
     $stmt->bind_param("i", $idSolicitud);
     $stmt->execute();
     $solicitud = $stmt->get_result()->fetch_assoc();
-    if (!$solicitud) throw new Exception("No se encontró la solicitud.");
+
+    if (!$solicitud) {
+        throw new Exception("No se encontró la solicitud con ID: $idSolicitud.");
+    }
 
     $idAprobador1 = $solicitud['IdAprobador1'];
     $idAprobador2 = $solicitud['IdAprobador2'];
-    $columnaAprobacion = ($numNominaAprobador == $idAprobador1) ? "Aprobacion1" : (($numNominaAprobador == $idAprobador2) ? "Aprobacion2" : null);
-    $otraColumnaAprobacion = ($columnaAprobacion == "Aprobacion1") ? "Aprobacion2" : "Aprobacion1";
-    if (!$columnaAprobacion) throw new Exception("No tienes permiso para actuar sobre esta solicitud.");
 
-    $valorDecision = ($decision === 3) ? 0 : 1;
-    $updateStmt = $conex->prepare("UPDATE Solicitudes SET $columnaAprobacion = ? WHERE IdSolicitud = ?");
-    $updateStmt->bind_param("ii", $valorDecision, $idSolicitud);
-    $updateStmt->execute();
+    // 2. Determinar si el usuario actual es un aprobador válido y qué columna le corresponde
+    $columnaAprobacion = null;
+    $otraColumnaAprobacion = null;
+
+    if ($numNominaAprobador == $idAprobador1) {
+        $columnaAprobacion = "Aprobacion1";
+        $otraColumnaAprobacion = "Aprobacion2";
+    } elseif ($numNominaAprobador == $idAprobador2) {
+        $columnaAprobacion = "Aprobacion2";
+        $otraColumnaAprobacion = "Aprobacion1";
+    }
+
+    // --- CAMBIO CLAVE 1: Mensaje de error mejorado ---
+    // Si el usuario no es ninguno de los dos aprobadores, se lanza un error descriptivo.
+    if (!$columnaAprobacion) {
+        throw new Exception("Permiso denegado. Tu nómina ($numNominaAprobador) no corresponde a los aprobadores designados ($idAprobador1, $idAprobador2).");
+    }
 
     $message = "";
     $nuevoEstadoGeneral = null;
 
-    if ($valorDecision === 0) {
-        $nuevoEstadoGeneral = 3; // Rechazado
+    // 3. Lógica para manejar la decisión (Rechazar o Aprobar)
+    if ($decision === 3) { // El usuario RECHAZÓ la solicitud
+        $valorDecision = 0; // 0 representa rechazo en la BD
+        $nuevoEstadoGeneral = 3; // 3 = Rechazado (estado final)
+
+        // Actualiza su propia columna de aprobación a 'rechazado'
+        $updateStmt = $conex->prepare("UPDATE Solicitudes SET $columnaAprobacion = ? WHERE IdSolicitud = ?");
+        $updateStmt->bind_param("ii", $valorDecision, $idSolicitud);
+        $updateStmt->execute();
+
+        // Actualiza el estado general de la solicitud a 'Rechazado' y guarda el comentario
         $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ?, Comentario = ? WHERE IdSolicitud = ?");
         $finalStmt->bind_param("isi", $nuevoEstadoGeneral, $comentario, $idSolicitud);
+        $finalStmt->execute();
+
         $message = "La solicitud ha sido rechazada.";
-    } else {
-        $otraAprobacion = $solicitud[$otraColumnaAprobacion];
-        if ($otraAprobacion == 1) {
-            $nuevoEstadoGeneral = 2; // Aprobada (final)
-            $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
-            $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
+
+    } else { // El usuario APROBÓ la solicitud
+        $valorDecision = 1; // 1 representa aprobación en la BD
+
+        // Actualiza su propia columna de aprobación a 'aprobado'
+        $updateStmt = $conex->prepare("UPDATE Solicitudes SET $columnaAprobacion = ? WHERE IdSolicitud = ?");
+        $updateStmt->bind_param("ii", $valorDecision, $idSolicitud);
+        $updateStmt->execute();
+
+        // --- CAMBIO CLAVE 2: Lógica de aprobación final simplificada ---
+        // Obtenemos el valor de la aprobación del OTRO gerente DESPUÉS de actualizar la nuestra.
+        $stmtCheck = $conex->prepare("SELECT Aprobacion1, Aprobacion2 FROM Solicitudes WHERE IdSolicitud = ?");
+        $stmtCheck->bind_param("i", $idSolicitud);
+        $stmtCheck->execute();
+        $estadoActualizado = $stmtCheck->get_result()->fetch_assoc();
+
+        if ($estadoActualizado['Aprobacion1'] == 1 && $estadoActualizado['Aprobacion2'] == 1) {
+            // Si AMBOS han aprobado, el estado final es 'Aprobada'
+            $nuevoEstadoGeneral = 2; // 2 = Aprobada
             $message = "¡Aprobación final! La solicitud ha sido aprobada por ambos responsables.";
         } else {
-            $nuevoEstadoGeneral = 4; // Aprobado Parcialmente
-            $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
-            $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
+            // Si solo uno ha aprobado, el estado es 'Aprobado Parcialmente'
+            $nuevoEstadoGeneral = 4; // 4 = Aprobado Parcialmente
             $message = "Tu aprobación ha sido registrada. Aún falta la aprobación del otro gerente.";
         }
-    }
-    $finalStmt->execute();
 
-    if ($numNominaAprobador == HR_MANAGER_NOMINA && $approvalType === 'confidential') {
+        // Actualiza el estado general de la solicitud
+        $finalStmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
+        $finalStmt->bind_param("ii", $nuevoEstadoGeneral, $idSolicitud);
+        $finalStmt->execute();
+    }
+
+    // 4. Manejar la opción de 'Confidencial' si fue seleccionada por RRHH
+    if ($numNominaAprobador == HR_MANAGER_NOMINA && $approvalType === 'confidential' && $valorDecision === 1) {
         $confStmt = $conex->prepare("UPDATE Solicitudes SET EsConfidencial = 1 WHERE IdSolicitud = ?");
         $confStmt->bind_param("i", $idSolicitud);
         $confStmt->execute();
         $message .= " La solicitud ha sido marcada como confidencial.";
     }
 
-    // --- LÓGICA DE NOTIFICACIÓN FINAL (CON VERIFICACIÓN AÑADIDA) ---
+    // 5. Enviar notificaciones por correo electrónico si el estado es final (Aprobado o Rechazado)
     if ($nuevoEstadoGeneral === 2 || $nuevoEstadoGeneral === 3) {
         $infoStmt = $conex->prepare("SELECT s.Puesto, s.EsConfidencial, u.Correo AS CorreoSolicitante FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $infoStmt->bind_param("i", $idSolicitud);
         $infoStmt->execute();
         $infoSolicitud = $infoStmt->get_result()->fetch_assoc();
 
-        // Verificamos que la consulta para obtener la info del correo SÍ devolvió un resultado
         if ($infoSolicitud) {
             if ($nuevoEstadoGeneral === 2) {
                 enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex);
@@ -100,12 +140,15 @@ try {
 
 } catch (Exception $e) {
     $conex->rollback();
+    // Devolvemos el mensaje de error de la excepción, que ahora es más descriptivo
     echo json_encode(["success" => false, "message" => $e->getMessage()]);
 }
 $conex->close();
 
 
-// --- FUNCIÓN DE CORREO DE APROBACIÓN FINAL (CORREGIDA) ---
+// --- El resto de las funciones de correo no necesitan cambios ---
+
+// --- FUNCIÓN DE CORREO DE APROBACIÓN FINAL (SIN CAMBIOS, PERO REVISADA) ---
 function enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex) {
     global $url_sitio;
     $asunto = "Solicitud Aprobada: " . $infoSolicitud['Puesto'];
@@ -117,11 +160,9 @@ function enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex) {
         $stmtHR->bind_param("s", HR_MANAGER_NOMINA);
         $stmtHR->execute();
         $resultHR = $stmtHR->get_result();
-        // --- INICIO DE LA CORRECCIÓN ---
         if ($hrUser = $resultHR->fetch_assoc()) {
             $destinatarios[] = $hrUser['Correo'];
         }
-        // --- FIN DE LA CORRECCIÓN ---
     } else {
         $resultAdmin = $conex->query("SELECT Correo FROM Usuario WHERE IdRol = 1");
         while ($admin = $resultAdmin->fetch_assoc()) {
@@ -129,35 +170,36 @@ function enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex) {
         }
     }
 
-    $mensajeAdmin = "<h2 style='color: #198754; margin-top: 0;'>¡Solicitud Aprobada!</h2><p>Hola,</p><p>La solicitud de personal para el puesto <strong>\"" . htmlspecialchars($infoSolicitud['Puesto']) . "\"</strong> (ID: $idSolicitud) ha sido completamente aprobada.</p><p>Puedes iniciar la siguiente fase desde el panel de 'Solicitudes Aprobadas' en el sistema ATS.</p>";
-    enviarCorreoOutlook($destinatarios, $asunto, $mensajeAdmin, $logoUrl);
+    if (!empty($destinatarios)) {
+        $mensajeAdmin = "<h2 style='color: #198754; margin-top: 0;'>¡Solicitud Aprobada!</h2><p>Hola,</p><p>La solicitud de personal para el puesto <strong>\"" . htmlspecialchars($infoSolicitud['Puesto']) . "\"</strong> (ID: $idSolicitud) ha sido completamente aprobada.</p><p>Puedes iniciar la siguiente fase desde el panel de 'Solicitudes Aprobadas' en el sistema ATS.</p>";
+        enviarCorreoOutlook($destinatarios, $asunto, $mensajeAdmin, $logoUrl);
+    }
 
-    $asuntoSolicitante = "Actualización de tu Solicitud: " . $infoSolicitud['Puesto'];
-    $mensajeSolicitante = "<h2 style='color: #198754; margin-top: 0;'>¡Tu Solicitud fue Aprobada!</h2><p>Hola,</p><p>Te informamos que tu solicitud para el puesto <strong>\"" . htmlspecialchars($infoSolicitud['Puesto']) . "\"</strong> (ID: $idSolicitud) ha sido aprobada.</p><p>El equipo de Recursos Humanos comenzará con el proceso de reclutamiento.</p>";
-    // --- INICIO DE LA CORRECCIÓN ---
     if (!empty($infoSolicitud['CorreoSolicitante'])) {
+        $asuntoSolicitante = "Actualización de tu Solicitud: " . $infoSolicitud['Puesto'];
+        $mensajeSolicitante = "<h2 style='color: #198754; margin-top: 0;'>¡Tu Solicitud fue Aprobada!</h2><p>Hola,</p><p>Te informamos que tu solicitud para el puesto <strong>\"" . htmlspecialchars($infoSolicitud['Puesto']) . "\"</strong> (ID: $idSolicitud) ha sido aprobada.</p><p>El equipo de Recursos Humanos comenzará con el proceso de reclutamiento.</p>";
         enviarCorreoOutlook([$infoSolicitud['CorreoSolicitante']], $asuntoSolicitante, $mensajeSolicitante, $logoUrl);
     }
-    // --- FIN DE LA CORRECCIÓN ---
 }
 
-// --- FUNCIÓN DE CORREO DE RECHAZO FINAL (CORREGIDA) ---
+// --- FUNCIÓN DE CORREO DE RECHAZO FINAL (SIN CAMBIOS, PERO REVISADA) ---
 function enviarCorreoRechazoFinal($infoSolicitud, $idSolicitud, $comentario, $conex) {
     global $url_sitio;
     $asunto = "Solicitud Rechazada: " . $infoSolicitud['Puesto'];
     $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
-    $mensajeSolicitante = "<h2 style='color: #dc3545; margin-top: 0;'>Actualización sobre tu Solicitud</h2><p>Hola,</p><p>Te informamos que tu solicitud para el puesto <strong>\"" . htmlspecialchars($infoSolicitud['Puesto']) . "\"</strong> (ID: $idSolicitud) ha sido rechazada.</p><p><strong>Comentarios del aprobador:</strong></p><blockquote style='border-left: 4px solid #dddddd; padding-left: 15px; margin-left: 0; font-style: italic;'><p>" . nl2br(htmlspecialchars($comentario)) . "</p></blockquote><p>Si tienes dudas, contacta directamente con el gerente que realizó la aprobación.</p>";
-    // --- INICIO DE LA CORRECCIÓN ---
+
     if (!empty($infoSolicitud['CorreoSolicitante'])) {
+        $mensajeSolicitante = "<h2 style='color: #dc3545; margin-top: 0;'>Actualización sobre tu Solicitud</h2><p>Hola,</p><p>Te informamos que tu solicitud para el puesto <strong>\"" . htmlspecialchars($infoSolicitud['Puesto']) . "\"</strong> (ID: $idSolicitud) ha sido rechazada.</p><p><strong>Comentarios del aprobador:</strong></p><blockquote style='border-left: 4px solid #dddddd; padding-left: 15px; margin-left: 0; font-style: italic;'><p>" . nl2br(htmlspecialchars($comentario)) . "</p></blockquote><p>Si tienes dudas, contacta directamente con el gerente que realizó la aprobación.</p>";
         enviarCorreoOutlook([$infoSolicitud['CorreoSolicitante']], $asunto, $mensajeSolicitante, $logoUrl);
     }
-    // --- FIN DE LA CORRECCIÓN ---
 }
 
 
 // --- FUNCIÓN CENTRAL DE ENVÍO (SIN CAMBIOS) ---
 function enviarCorreoOutlook(array $destinatarios, $asunto, $cuerpoMensaje, $logoUrl) {
+    $destinatarios = array_filter(array_unique($destinatarios)); // Evitar duplicados y vacíos
     if (empty($destinatarios)) return;
+
     $contenidoHTML = "
     <!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'></head>
     <body style='margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif;'>
@@ -187,7 +229,7 @@ function enviarCorreoOutlook(array $destinatarios, $asunto, $cuerpoMensaje, $log
         $mail->setFrom('sistema_ats@grammermx.com', 'Sistema ATS Grammer');
 
         foreach($destinatarios as $email) {
-            if (!empty($email)) $mail->addAddress($email);
+            $mail->addAddress($email);
         }
 
         $mail->addBCC('sistema_ats@grammermx.com');
