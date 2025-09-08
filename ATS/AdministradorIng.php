@@ -288,7 +288,7 @@ echo "<script>const hrManagerNomina = '" . HR_MANAGER_NOMINA . "';</script>";
                         formData.append("approval_type", approvalType);
 
                         // ⚠️ REEMPLAZA ESTA URL POR LA RUTA A TU NUEVO ARCHIVO PHP DE DOBLE APROBACIÓN
-                        const response = await fetch('https://grammermx.com/Mailer/mailerActualizarEstatus.php', {
+                        const response = await fetch('https://grammermx.com/Mailer/testeo.php', {
                             method: 'POST',
                             body: formData
                         });
