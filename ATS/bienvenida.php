@@ -185,6 +185,82 @@
             min-width: 30px;
         }
 
+        /* --- INICIO: Estilos para la nueva sección de Documentos --- */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .tab-link {
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #6c757d;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .tab-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--color-acento);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .tab-link.active {
+            color: var(--color-primario);
+        }
+        .tab-link.active::after {
+            transform: scaleX(1);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeInContent 0.5s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .document-list {
+            list-style: none;
+            padding: 0;
+            column-count: 2;
+            column-gap: 40px;
+        }
+        .document-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+        .document-list .icon {
+            font-size: 1.4em;
+            color: var(--color-secundario);
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+        .alert-note {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fff3cd;
+            border-left: 5px solid var(--color-acento);
+            border-radius: 8px;
+            text-align: left;
+        }
+        .alert-note strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #664d03;
+        }
+        /* --- FIN: Estilos para la nueva sección de Documentos --- */
+
         /* --- Pie de Página --- */
         .footer {
             text-align: center;
@@ -195,12 +271,8 @@
         }
 
         /* --- Animaciones --- */
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInContent { from { opacity: 0; } to { opacity: 1; } }
         .key-point:nth-child(2) { animation-delay: 0.7s; }
         .key-point:nth-child(3) { animation-delay: 0.9s; }
 
@@ -210,7 +282,8 @@
             h2 { font-size: 1.6em; }
             .content { padding: 30px 25px; }
             .welcome-container { margin: 20px 15px; }
-            .key-points-container { flex-direction: column; }
+            .key-points-container, .document-list { flex-direction: column; column-count: 1; }
+            .tab-link { padding: 15px; font-size: 1em; }
         }
     </style>
 </head>
@@ -260,6 +333,52 @@
                 <li><span class="icon"><i class="fas fa-calendar-check"></i></span><div><strong>Tu Primer Día:</strong> Te informaremos los detalles para tu día de inducción y bienvenida al equipo.</div></li>
                 <li><span class="icon"><i class="fas fa-question-circle"></i></span><div><strong>¿Dudas?</strong> Si tienes alguna pregunta, no dudes en contactar al reclutador que te acompañó en el proceso.</div></li>
             </ul>
+
+            <!-- INICIO: Nueva Sección de Documentación -->
+            <h2>Documentación Requerida</h2>
+            <p>Para agilizar tu proceso de contratación, por favor reúne la siguiente documentación. Selecciona tu tipo de puesto:</p>
+
+            <div class="tabs-container">
+                <button class="tab-link active" data-tab="practicante">Practicante</button>
+                <button class="tab-link" data-tab="empleado">Empleado</button>
+            </div>
+
+            <div id="practicante" class="tab-content active">
+                <ol class="document-list">
+                    <li><span class="icon"><i class="fas fa-id-card"></i></span><div><strong>Credencial de Elector (INE):</strong> 1 Copia por ambos lados, legible.</div></li>
+                    <li><span class="icon"><i class="fas fa-user-shield"></i></span><div><strong>Número de Seguro Social (NSS):</strong> 1 Copia del documento oficial.</div></li>
+                    <li><span class="icon"><i class="fas fa-fingerprint"></i></span><div><strong>CURP:</strong> 1 Copia del formato actualizado (SEGOB).</div></li>
+                    <li><span class="icon"><i class="fas fa-file-invoice-dollar"></i></span><div><strong>Constancia de Situación Fiscal:</strong> 1 Copia de la hoja membretada del SAT.</div></li>
+                    <li><span class="icon"><i class="fas fa-map-marker-alt"></i></span><div><strong>Comprobante de Domicilio:</strong> 1 Copia reciente (no mayor a 2 meses) de recibo de agua o luz.</div></li>
+                    <li><span class="icon"><i class="fas fa-at"></i></span><div><strong>Correo Electrónico:</strong> Tu dirección de correo es obligatoria para la comunicación.</div></li>
+                    <li><span class="icon"><i class="fas fa-graduation-cap"></i></span><div><strong>Carta de la Universidad:</strong> 1 Copia de la carta para realizar prácticas profesionales.</div></li>
+                    <li><span class="icon"><i class="fas fa-baby"></i></span><div><strong>Acta de Nacimiento:</strong> 1 Copia.</div></li>
+                    <li><span class="icon"><i class="fas fa-landmark"></i></span><div><strong>Cuenta Bancaria HSBC:</strong> 1 Copia del contrato si ya tienes una. Si no, la empresa la gestionará por ti.</div></li>
+                    <li><span class="icon"><i class="fas fa-syringe"></i></span><div><strong>Comprobante de Vacunación COVID-19:</strong> 1 Copia.</div></li>
+                    <li><span class="icon"><i class="fas fa-file-alt"></i></span><div><strong>CV Actualizado:</strong> Tu currículum vitae más reciente.</div></li>
+                </ol>
+            </div>
+
+            <div id="empleado" class="tab-content">
+                <ol class="document-list">
+                    <li><span class="icon"><i class="fas fa-id-card"></i></span><div><strong>Credencial de Elector (INE):</strong> 1 Copia por ambos lados, legible.</div></li>
+                    <li><span class="icon"><i class="fas fa-user-shield"></i></span><div><strong>Número de Seguro Social (NSS):</strong> 1 Copia del documento oficial.</div></li>
+                    <li><span class="icon"><i class="fas fa-fingerprint"></i></span><div><strong>CURP:</strong> 1 Copia del formato actualizado (SEGOB).</div></li>
+                    <li><span class="icon"><i class="fas fa-file-invoice-dollar"></i></span><div><strong>Constancia de Situación Fiscal:</strong> 1 Copia de la hoja membretada del SAT.</div></li>
+                    <li><span class="icon"><i class="fas fa-map-marker-alt"></i></span><div><strong>Comprobante de Domicilio:</strong> 1 Copia reciente (no mayor a 2 meses) de recibo de agua o luz.</div></li>
+                    <li><span class="icon"><i class="fas fa-at"></i></span><div><strong>Correo Electrónico:</strong> Tu dirección de correo es obligatoria para la comunicación.</div></li>
+                    <li><span class="icon"><i class="fas fa-baby"></i></span><div><strong>Acta de Nacimiento:</strong> 1 Copia.</div></li>
+                    <li><span class="icon"><i class="fas fa-landmark"></i></span><div><strong>Cuenta Bancaria HSBC:</strong> 1 Copia del contrato si ya tienes una. Si no, la empresa la gestionará por ti.</div></li>
+                    <li><span class="icon"><i class="fas fa-syringe"></i></span><div><strong>Comprobante de Vacunación COVID-19:</strong> 1 Copia.</div></li>
+                    <li><span class="icon"><i class="fas fa-file-alt"></i></span><div><strong>CV Actualizado:</strong> Tu currículum vitae más reciente.</div></li>
+                </ol>
+            </div>
+
+            <div class="alert-note">
+                <strong>¡MUY IMPORTANTE!</strong>
+                <p style="text-align: left; margin-bottom: 0;">Si falta alguno de los documentos mencionados, tu proceso de contratación no podrá continuar. Por favor, envía la documentación en el orden numérico indicado (Ej: 1. INE, 2. NSS, 3. CURP...).</p>
+            </div>
+            <!-- FIN: Nueva Sección de Documentación -->
         </div>
     </div>
 </div>
@@ -267,6 +386,29 @@
 <div class="footer">
     &copy; <?= date('Y') ?> Grammer Automotive de México. Todos los derechos reservados.
 </div>
+
+<script>
+    // --- Lógica para las pestañas de documentación ---
+    const tabsContainer = document.querySelector('.tabs-container');
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabsContainer.addEventListener('click', (e) => {
+        const clicked = e.target.closest('.tab-link');
+        if (!clicked) return;
+
+        // Quitar clase 'active' de todos
+        tabLinks.forEach(link => link.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Añadir clase 'active' al clickeado y a su contenido
+        const tabId = clicked.dataset.tab;
+        const contentToShow = document.getElementById(tabId);
+
+        clicked.classList.add('active');
+        contentToShow.classList.add('active');
+    });
+</script>
 
 </body>
 </html>
