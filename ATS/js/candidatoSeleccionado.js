@@ -6,10 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoCandidato = document.getElementById('filtro-candidato');
     const btnBuscar = document.getElementById('btn-buscar');
 
-    let todosLosCandidatos = []; // Almacenamos todos los candidatos aquí para un filtrado rápido
+    let todosLosCandidatos = [];
 
-    // --- 1. Cargar Áreas Dinámicamente ---
     function cargarAreas() {
+        // Asumiendo que tu PHP de candidatos puede devolver áreas.
+        // Si no, puedes apuntar a un script específico.
         fetch('dao/obtenerCandidatoFinal.php?action=get_areas')
             .then(response => response.json())
             .then(areas => {
@@ -25,23 +26,25 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Error al cargar áreas:", error));
     }
 
-    // --- 2. Cargar Todos los Candidatos al Iniciar ---
     function cargarCandidatosIniciales() {
+        contenedorCandidatos.innerHTML = `<p class="mensaje-carga">Cargando candidatos...</p>`;
         fetch('dao/obtenerCandidatoFinal.php')
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
                     todosLosCandidatos = data;
                     renderizarCandidatos(todosLosCandidatos);
+                } else {
+                    throw new Error("La respuesta no es un formato válido.");
                 }
             })
             .catch(error => {
                 console.error("Error al cargar candidatos:", error);
-                contenedorCandidatos.innerHTML = `<p class="mensaje-error">Error al cargar los datos.</p>`;
+                contenedorCandidatos.innerHTML = `<p class="mensaje-error">Error al cargar los datos de los candidatos.</p>`;
             });
     }
 
-    // --- 3. Función de Renderizado (SIN el botón Contratar) ---
+    // --- FUNCIÓN DE RENDERIZADO MODIFICADA ---
     function renderizarCandidatos(candidatos) {
         contenedorCandidatos.innerHTML = "";
         if (candidatos.length === 0) {
@@ -98,12 +101,22 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-            `; // Se ha eliminado la sección <div class="card-footer">...</div>
+                <!-- INICIO: Botón Nuevo Añadido -->
+                <div class="card-footer">
+                    <button class="btn-accion btn-oferta" 
+                            data-nombre="${candidato.NombreCompleto}" 
+                            data-email="${candidato.Correo}" 
+                            data-vacante="${candidato.TituloVacante}">
+                        <i class="fas fa-paper-plane"></i> Enviar Oferta de Contratación
+                    </button>
+                </div>
+                <!-- FIN: Botón Nuevo Añadido -->
+            `;
             contenedorCandidatos.appendChild(card);
         });
     }
 
-    // --- 4. Lógica de Filtrado ---
+    // --- Lógica de Filtrado (sin cambios) ---
     function aplicarFiltros() {
         const filtroVacanteTexto = campoVacante.value.toLowerCase().trim();
         const filtroCandidatoTexto = campoCandidato.value.toLowerCase().trim();
@@ -120,12 +133,63 @@ document.addEventListener("DOMContentLoaded", function () {
         renderizarCandidatos(candidatosFiltrados);
     }
 
-    // --- Event Listeners ---
+    // --- INICIO: Nueva Lógica para Enviar Correo ---
+    contenedorCandidatos.addEventListener('click', e => {
+        if (e.target.classList.contains('btn-oferta') || e.target.closest('.btn-oferta')) {
+            const button = e.target.closest('.btn-oferta');
+            const { nombre, email, vacante } = button.dataset;
+
+            Swal.fire({
+                title: '¿Confirmar envío de oferta?',
+                html: `Se enviará un correo de contratación a <strong>${nombre}</strong> para la vacante de <strong>${vacante}</strong>.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, enviar ahora',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    enviarCorreoOferta(button, nombre, email, vacante);
+                }
+            });
+        }
+    });
+
+    async function enviarCorreoOferta(button, nombre, email, vacante) {
+        const originalButtonHTML = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+        const formData = new URLSearchParams();
+        formData.append('nombreCandidato', nombre);
+        formData.append('emailCandidato', email);
+        formData.append('nombreVacante', vacante);
+
+        try {
+            const response = await fetch('https://grammermx.com/Mailer/mailerOferta.php', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                Swal.fire('¡Correo Enviado!', 'La oferta de contratación ha sido enviada con éxito.', 'success');
+                button.innerHTML = '<i class="fas fa-check-circle"></i> Oferta Enviada';
+                button.classList.add('enviado'); // Cambia el estilo para mostrar que ya se envió
+            } else {
+                throw new Error(data.message || 'Error desconocido al enviar el correo.');
+            }
+        } catch (error) {
+            Swal.fire('Error de Envío', `No se pudo enviar el correo: ${error.message}`, 'error');
+            button.disabled = false;
+            button.innerHTML = originalButtonHTML;
+        }
+    }
+    // --- FIN: Nueva Lógica para Enviar Correo ---
+
+    // Event Listeners (sin cambios)
     btnBuscar.addEventListener("click", aplicarFiltros);
     campoVacante.addEventListener("keyup", (e) => { if (e.key === 'Enter') aplicarFiltros(); });
     campoCandidato.addEventListener("keyup", (e) => { if (e.key === 'Enter') aplicarFiltros(); });
     filtroArea.addEventListener("change", aplicarFiltros);
-
     limpiarFiltrosBtn.addEventListener("click", () => {
         campoVacante.value = "";
         campoCandidato.value = "";
@@ -133,7 +197,8 @@ document.addEventListener("DOMContentLoaded", function () {
         aplicarFiltros();
     });
 
-    // --- Inicialización de la Página ---
+    // Inicialización
     cargarAreas();
     cargarCandidatosIniciales();
 });
+
