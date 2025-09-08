@@ -24,6 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
+$idSolicitud = (int)$_POST['id'];
+$decision = (int)$_POST['status']; // 2 para aprobar, 3 para rechazar desde el frontend
+$numNominaAprobador = trim($_POST['num_nomina']);
+$comentario = trim($_POST['comentario'] ?? '');
+$approvalType = trim($_POST['approval_type'] ?? 'normal');
+echo $idSolicitud;
 // Verificar que la solicitud sea POST, y dar un error más detallado si no lo es.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $method = htmlspecialchars($_SERVER['REQUEST_METHOD']);
@@ -44,6 +50,7 @@ if (!isset($_POST['status'])) { // El status puede ser 0, por eso no se usa empt
 if (!isset($_POST['num_nomina']) || empty(trim($_POST['num_nomina']))) {
     $errors[] = 'num_nomina';
 }
+
 
 if (!empty($errors)) {
     echo json_encode([
