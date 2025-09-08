@@ -2,9 +2,9 @@
 header('Content-Type: application/json');
 session_start();
 include_once("ConexionBD.php");
-require '../Phpmailer/Exception.php'; // Asegúrate que la ruta sea correcta
-require '../Phpmailer/PHPMailer.php';
-require '../Phpmailer/SMTP.php';
+require 'Phpmailer/Exception.php'; // Asegúrate que la ruta sea correcta
+require 'Phpmailer/PHPMailer.php';
+require 'Phpmailer/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
