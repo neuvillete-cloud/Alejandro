@@ -13,35 +13,47 @@ use PHPMailer\PHPMailer\Exception;
 define('HR_MANAGER_NOMINA', '00030315'); // Reemplaza con la nómina real de RRHH
 $url_sitio = "https://grammermx.com/AleTest/ATS";
 
-// --- INICIO DE LA MODIFICACIÓN: Verificación de método de solicitud mejorada ---
+// --- INICIO DE LA MODIFICACIÓN: Aceptación de GET para depuración ---
+
 // Manejar solicitudes de pre-vuelo (preflight) de CORS
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    // Es una solicitud de exploración del navegador, no debe procesarse.
-    // Simplemente indicamos que aceptamos la solicitud POST real.
     header("Access-Control-Allow-Origin: *"); // O especifica tu dominio
     header("Access-Control-Allow-Methods: POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type");
     exit(0);
 }
 
-// Verificar que la solicitud sea POST, y dar un error más detallado si no lo es.
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+// --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+// El problema reportado es que se recibe una solicitud GET en lugar de POST.
+// Este bloque aceptará temporalmente datos de GET o POST para diagnosticar
+// si los parámetros están llegando.
+// ADVERTENCIA: No se debe usar GET para operaciones que cambian datos en producción.
+$request_data = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $request_data = $_POST;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $request_data = $_GET; // Aceptamos GET solo para depuración
+}
+
+if (empty($request_data)) {
     $method = htmlspecialchars($_SERVER['REQUEST_METHOD']);
     echo json_encode([
         "success" => false,
-        "message" => "Error: Se esperaba una solicitud de tipo POST, pero se recibió una de tipo '$method'."
+        "message" => "Error: Se recibió una solicitud de tipo '$method' sin parámetros."
     ]);
     exit;
 }
+// --- FIN DE CÓDIGO DE DEPURACIÓN ---
 
+// Ahora, usamos $request_data en lugar de $_POST
 $errors = [];
-if (!isset($_POST['id']) || empty(trim($_POST['id']))) {
+if (!isset($request_data['id']) || empty(trim($request_data['id']))) {
     $errors[] = 'id';
 }
-if (!isset($_POST['status'])) { // El status puede ser 0, por eso no se usa empty()
+if (!isset($request_data['status'])) { // El status puede ser 0, por eso no se usa empty()
     $errors[] = 'status';
 }
-if (!isset($_POST['num_nomina']) || empty(trim($_POST['num_nomina']))) {
+if (!isset($request_data['num_nomina']) || empty(trim($request_data['num_nomina']))) {
     $errors[] = 'num_nomina';
 }
 
@@ -54,11 +66,12 @@ if (!empty($errors)) {
 }
 // --- FIN DE LA MODIFICACIÓN ---
 
-$idSolicitud = (int)$_POST['id'];
-$decision = (int)$_POST['status']; // 2 para aprobar, 3 para rechazar desde el frontend
-$numNominaAprobador = trim($_POST['num_nomina']);
-$comentario = trim($_POST['comentario'] ?? '');
-$approvalType = trim($_POST['approval_type'] ?? 'normal');
+// Usar $request_data para obtener las variables
+$idSolicitud = (int)$request_data['id'];
+$decision = (int)$request_data['status'];
+$numNominaAprobador = trim($request_data['num_nomina']);
+$comentario = trim($request_data['comentario'] ?? '');
+$approvalType = trim($request_data['approval_type'] ?? 'normal');
 
 $con = new LocalConector();
 $conex = $con->conectar();
@@ -133,7 +146,7 @@ try {
 
         if ($estadoActualizado['Aprobacion1'] == 1 && $estadoActualizado['Aprobacion2'] == 1) {
             // Si AMBOS han aprobado, el estado final es 'Aprobada'
-            $nuevoEstadoGeneral = 2; // 2 = Aprobada
+            $nuevoEstadoGeneral = 5; // 5 = Aprobada (Cambiado de 2 a 5 según solicitado)
             $message = "¡Aprobación final! La solicitud ha sido aprobada por ambos responsables.";
         } else {
             // Si solo uno ha aprobado, el estado es 'Aprobado Parcialmente'
@@ -156,14 +169,14 @@ try {
     }
 
     // 5. Enviar notificaciones por correo electrónico si el estado es final (Aprobado o Rechazado)
-    if ($nuevoEstadoGeneral === 2 || $nuevoEstadoGeneral === 3) {
+    if ($nuevoEstadoGeneral === 5 || $nuevoEstadoGeneral === 3) { // Cambiado de 2 a 5
         $infoStmt = $conex->prepare("SELECT s.Puesto, s.EsConfidencial, u.Correo AS CorreoSolicitante FROM Solicitudes s JOIN Usuario u ON s.NumNomina = u.NumNomina WHERE s.IdSolicitud = ?");
         $infoStmt->bind_param("i", $idSolicitud);
         $infoStmt->execute();
         $infoSolicitud = $infoStmt->get_result()->fetch_assoc();
 
         if ($infoSolicitud) {
-            if ($nuevoEstadoGeneral === 2) {
+            if ($nuevoEstadoGeneral === 5) { // Cambiado de 2 a 5
                 enviarCorreoAprobacionFinal($infoSolicitud, $idSolicitud, $conex);
             } else {
                 enviarCorreoRechazoFinal($infoSolicitud, $idSolicitud, $comentario, $conex);
@@ -281,4 +294,5 @@ function enviarCorreoOutlook(array $destinatarios, $asunto, $cuerpoMensaje, $log
     }
 }
 ?>
+
 
