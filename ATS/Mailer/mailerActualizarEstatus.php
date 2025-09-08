@@ -29,7 +29,7 @@ $decision = (int)$_POST['status']; // 2 para aprobar, 3 para rechazar desde el f
 $numNominaAprobador = trim($_POST['num_nomina']);
 $comentario = trim($_POST['comentario'] ?? '');
 $approvalType = trim($_POST['approval_type'] ?? 'normal');
-echo $idSolicitud;
+echo $numNominaAprobador;
 // Verificar que la solicitud sea POST, y dar un error más detallado si no lo es.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $method = htmlspecialchars($_SERVER['REQUEST_METHOD']);
