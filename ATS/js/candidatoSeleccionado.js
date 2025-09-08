@@ -6,11 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoCandidato = document.getElementById('filtro-candidato');
     const btnBuscar = document.getElementById('btn-buscar');
 
-    let todosLosCandidatos = [];
+    let todosLosCandidatos = []; // Almacenamos todos los candidatos aquí para un filtrado rápido
 
+    // --- Cargar Áreas Dinámicamente (Lógica Original) ---
     function cargarAreas() {
-        // Asumiendo que tu PHP de candidatos puede devolver áreas.
-        // Si no, puedes apuntar a un script específico.
         fetch('dao/obtenerCandidatoFinal.php?action=get_areas')
             .then(response => response.json())
             .then(areas => {
@@ -26,25 +25,23 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Error al cargar áreas:", error));
     }
 
+    // --- Cargar Todos los Candidatos al Iniciar (Lógica Original) ---
     function cargarCandidatosIniciales() {
-        contenedorCandidatos.innerHTML = `<p class="mensaje-carga">Cargando candidatos...</p>`;
         fetch('dao/obtenerCandidatoFinal.php')
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
                     todosLosCandidatos = data;
                     renderizarCandidatos(todosLosCandidatos);
-                } else {
-                    throw new Error("La respuesta no es un formato válido.");
                 }
             })
             .catch(error => {
                 console.error("Error al cargar candidatos:", error);
-                contenedorCandidatos.innerHTML = `<p class="mensaje-error">Error al cargar los datos de los candidatos.</p>`;
+                contenedorCandidatos.innerHTML = `<p class="mensaje-error">Error al cargar los datos.</p>`;
             });
     }
 
-    // --- FUNCIÓN DE RENDERIZADO MODIFICADA ---
+    // --- INICIO DE LA MODIFICACIÓN: Renderizado con Lógica de Botón ---
     function renderizarCandidatos(candidatos) {
         contenedorCandidatos.innerHTML = "";
         if (candidatos.length === 0) {
@@ -55,6 +52,29 @@ document.addEventListener("DOMContentLoaded", function () {
         candidatos.forEach(candidato => {
             const card = document.createElement("div");
             card.className = "candidato-card";
+
+            // Lógica condicional para decidir qué botón mostrar
+            let footerHTML = '';
+            if (candidato.OfertaEnviada == 1) {
+                // Si la oferta ya se envió, mostrar un botón deshabilitado
+                footerHTML = `
+                    <button class="btn-accion btn-oferta enviado" disabled>
+                        <i class="fas fa-check-circle"></i> Oferta Enviada
+                    </button>
+                `;
+            } else {
+                // Si no, mostrar el botón para enviar la oferta
+                footerHTML = `
+                    <button class="btn-accion btn-oferta" 
+                            data-id="${candidato.IdPostulacion}" 
+                            data-nombre="${candidato.NombreCompleto}" 
+                            data-correo="${candidato.Correo}" 
+                            data-vacante="${candidato.TituloVacante}">
+                        <i class="fas fa-paper-plane"></i> Enviar Oferta
+                    </button>
+                `;
+            }
+
             card.innerHTML = `
                 <div class="card-body">
                     <div class="card-header-info">
@@ -101,22 +121,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-                <!-- INICIO: Botón Nuevo Añadido -->
                 <div class="card-footer">
-                    <button class="btn-accion btn-oferta" 
-                            data-nombre="${candidato.NombreCompleto}" 
-                            data-email="${candidato.Correo}" 
-                            data-vacante="${candidato.TituloVacante}">
-                        <i class="fas fa-paper-plane"></i> Enviar Oferta de Contratación
-                    </button>
+                    ${footerHTML}
                 </div>
-                <!-- FIN: Botón Nuevo Añadido -->
             `;
             contenedorCandidatos.appendChild(card);
         });
     }
 
-    // --- Lógica de Filtrado (sin cambios) ---
+    // --- Lógica de Filtrado (Lógica Original) ---
     function aplicarFiltros() {
         const filtroVacanteTexto = campoVacante.value.toLowerCase().trim();
         const filtroCandidatoTexto = campoCandidato.value.toLowerCase().trim();
@@ -133,63 +146,69 @@ document.addEventListener("DOMContentLoaded", function () {
         renderizarCandidatos(candidatosFiltrados);
     }
 
-    // --- INICIO: Nueva Lógica para Enviar Correo ---
-    contenedorCandidatos.addEventListener('click', e => {
-        if (e.target.classList.contains('btn-oferta') || e.target.closest('.btn-oferta')) {
-            const button = e.target.closest('.btn-oferta');
-            const { nombre, email, vacante } = button.dataset;
+    // --- INICIO DE LA MODIFICACIÓN: Lógica de Clic para Enviar Oferta ---
+    contenedorCandidatos.addEventListener('click', function(e) {
+        const button = e.target.closest('.btn-oferta');
+        if (!button || button.disabled) return;
 
-            Swal.fire({
-                title: '¿Confirmar envío de oferta?',
-                html: `Se enviará un correo de contratación a <strong>${nombre}</strong> para la vacante de <strong>${vacante}</strong>.`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, enviar ahora',
-                cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#6c757d',
-            }).then(result => {
-                if (result.isConfirmed) {
-                    enviarCorreoOferta(button, nombre, email, vacante);
+        const idPostulacion = button.dataset.id;
+        const nombreCandidato = button.dataset.nombre;
+        const correoCandidato = button.dataset.correo;
+        const vacante = button.dataset.vacante;
+
+        Swal.fire({
+            title: `¿Enviar oferta a ${nombreCandidato}?`,
+            text: `Se enviará un correo de felicitación a ${correoCandidato} para la vacante de ${vacante}.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'Sí, enviar ahora',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const originalButtonHTML = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando...`;
+
+                const formData = new URLSearchParams();
+                formData.append('idPostulacion', idPostulacion);
+                formData.append('nombreCandidato', nombreCandidato);
+                formData.append('correoCandidato', correoCandidato);
+                formData.append('vacante', vacante);
+
+                try {
+                    const response = await fetch('mailer/mailerOferta.php', { method: 'POST', body: formData });
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        Swal.fire('¡Enviado!', data.message, 'success');
+                        button.innerHTML = `<i class="fas fa-check-circle"></i> Oferta Enviada`;
+                        button.classList.add('enviado');
+
+                        const candidatoIndex = todosLosCandidatos.findIndex(c => c.IdPostulacion == idPostulacion);
+                        if(candidatoIndex > -1) {
+                            todosLosCandidatos[candidatoIndex].OfertaEnviada = 1;
+                        }
+                    } else {
+                        Swal.fire('Error', data.message || 'No se pudo enviar el correo.', 'error');
+                        button.disabled = false;
+                        button.innerHTML = originalButtonHTML;
+                    }
+                } catch (error) {
+                    Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
+                    button.disabled = false;
+                    button.innerHTML = originalButtonHTML;
                 }
-            });
-        }
+            }
+        });
     });
 
-    async function enviarCorreoOferta(button, nombre, email, vacante) {
-        const originalButtonHTML = button.innerHTML;
-        button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-
-        const formData = new URLSearchParams();
-        formData.append('nombreCandidato', nombre);
-        formData.append('emailCandidato', email);
-        formData.append('nombreVacante', vacante);
-
-        try {
-            const response = await fetch('https://grammermx.com/Mailer/mailerOferta.php', { method: 'POST', body: formData });
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                Swal.fire('¡Correo Enviado!', 'La oferta de contratación ha sido enviada con éxito.', 'success');
-                button.innerHTML = '<i class="fas fa-check-circle"></i> Oferta Enviada';
-                button.classList.add('enviado'); // Cambia el estilo para mostrar que ya se envió
-            } else {
-                throw new Error(data.message || 'Error desconocido al enviar el correo.');
-            }
-        } catch (error) {
-            Swal.fire('Error de Envío', `No se pudo enviar el correo: ${error.message}`, 'error');
-            button.disabled = false;
-            button.innerHTML = originalButtonHTML;
-        }
-    }
-    // --- FIN: Nueva Lógica para Enviar Correo ---
-
-    // Event Listeners (sin cambios)
+    // --- Event Listeners (Lógica Original) ---
     btnBuscar.addEventListener("click", aplicarFiltros);
     campoVacante.addEventListener("keyup", (e) => { if (e.key === 'Enter') aplicarFiltros(); });
     campoCandidato.addEventListener("keyup", (e) => { if (e.key === 'Enter') aplicarFiltros(); });
     filtroArea.addEventListener("change", aplicarFiltros);
+
     limpiarFiltrosBtn.addEventListener("click", () => {
         campoVacante.value = "";
         campoCandidato.value = "";
@@ -197,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
         aplicarFiltros();
     });
 
-    // Inicialización
+    // --- Inicialización de la Página (Lógica Original) ---
     cargarAreas();
     cargarCandidatosIniciales();
 });

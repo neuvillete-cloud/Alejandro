@@ -6,7 +6,7 @@ date_default_timezone_set('America/Mexico_City');
 
 $conn = (new LocalConector())->conectar();
 
-// --- INICIO: Bloque nuevo para obtener áreas ---
+// --- Bloque para obtener áreas (sin cambios) ---
 if (isset($_GET['action']) && $_GET['action'] === 'get_areas') {
     $stmt = $conn->prepare("SELECT DISTINCT NombreArea FROM Area ORDER BY NombreArea ASC");
     $stmt->execute();
@@ -18,12 +18,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_areas') {
     echo json_encode($areas, JSON_UNESCAPED_UNICODE);
     $stmt->close();
     $conn->close();
-    exit; // Importante para no continuar con el resto del script
+    exit;
 }
-// --- FIN: Bloque nuevo ---
 
-
-// Autocompletado: títulos de vacante
+// --- Bloques de autocompletado (sin cambios) ---
 if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'titulo' && !empty($_GET['q'])) {
     $termino = "%" . trim($_GET['q']) . "%";
     $stmt = $conn->prepare("
@@ -38,7 +36,6 @@ if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'titulo' && !empty
     $stmt->bind_param("ss", $termino, $termino);
     $stmt->execute();
     $res = $stmt->get_result();
-
     $sugerencias = [];
     while ($row = $res->fetch_assoc()) {
         $sugerencias[] = $row['TituloVacante'];
@@ -49,7 +46,6 @@ if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'titulo' && !empty
     exit;
 }
 
-// Autocompletado: nombre de candidato
 if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'nombre' && !empty($_GET['q'])) {
     $termino = "%" . trim($_GET['q']) . "%";
     $stmt = $conn->prepare("
@@ -62,7 +58,6 @@ if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'nombre' && !empty
     $stmt->bind_param("s", $termino);
     $stmt->execute();
     $res = $stmt->get_result();
-
     $sugerencias = [];
     while ($row = $res->fetch_assoc()) {
         $sugerencias[] = $row['NombreCompleto'];
@@ -73,7 +68,7 @@ if (isset($_GET['autocomplete']) && $_GET['autocomplete'] === 'nombre' && !empty
     exit;
 }
 
-// ----------- Filtro General de Candidatos -----------
+// ----------- Filtro General de Candidatos (Lógica original restaurada) -----------
 
 $filtros = [];
 $params = [];
@@ -97,9 +92,12 @@ if (!empty($_GET['area'])) {
     $tipos .= "s";
 }
 
+// --- INICIO DEL CAMBIO ---
+// Se añade p.OfertaEnviada a la consulta principal
 $sql = "SELECT 
             p.IdPostulacion,
             p.fechaSeleccion,
+            p.OfertaEnviada, 
             c.Nombre AS NombreCandidato,
             c.Apellidos AS ApellidosCandidato,
             c.Telefono,
@@ -120,7 +118,7 @@ if (!empty($filtros)) {
     $sql .= " AND " . implode(" AND ", $filtros);
 }
 
-// Ordenamiento
+// Ordenamiento (lógica original)
 $orden = "p.fechaSeleccion DESC";
 if (!empty($_GET['fecha']) && $_GET['fecha'] === 'antiguas') {
     $orden = "p.fechaSeleccion ASC";
@@ -148,7 +146,7 @@ while ($row = $result->fetch_assoc()) {
     $fecha = $row['fechaSeleccion'];
     $fechaFormateada = ($fecha && $fecha !== '0000-00-00 00:00:00') ? $fecha : null;
 
-
+    // Se añade OfertaEnviada a la respuesta JSON
     $candidatos[] = [
         'IdPostulacion'   => $row['IdPostulacion'],
         'NombreCompleto'  => $row['NombreCandidato'] . ' ' . $row['ApellidosCandidato'],
@@ -159,10 +157,13 @@ while ($row = $result->fetch_assoc()) {
         'NombreArea'      => $row['NombreArea'],
         'NombreSelector'  => $row['NombreSelector'],
         'FechaSeleccion'  => $fechaFormateada,
+        'OfertaEnviada'   => $row['OfertaEnviada'], // <-- Aquí está el campo añadido
         'Foto'            => 'imagenes/user-default.png'
     ];
 }
+// --- FIN DEL CAMBIO ---
 
 echo json_encode($candidatos, JSON_UNESCAPED_UNICODE);
 $conn->close();
 ?>
+
