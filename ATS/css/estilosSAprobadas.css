@@ -83,7 +83,6 @@ nav > a:not(:hover)::after {
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
-    50% { width: 100%; transform: translateX(0); }
     100% { width: 100%; transform: translateX(0); }
 }
 
@@ -267,14 +266,16 @@ nav > a:not(:hover)::after {
     color: white;
 }
 
-h2 {
+.contenido-blanco h2 {
     font-size: 1.8em;
     font-weight: bold;
-    color: #333; /* Color de texto oscuro para el área blanca */
+    color: #333;
+    margin-bottom: 30px;
 }
 
+
 /* ================================================= */
-/* == INICIO: NUEVOS ESTILOS PARA DISEÑO DE CARDS == */
+/* == INICIO: NUEVO Y MEJORADO DISEÑO DE TARJETAS == */
 /* ================================================= */
 
 :root {
@@ -282,205 +283,79 @@ h2 {
     --color-secundario: #005cb9;
     --color-exito: #198754;
     --color-info: #0d6efd;
+    --color-alerta: #ffc107;
     --color-gris: #6c757d;
-    --color-texto: #343a40; /* Añadida variable para el color de texto principal */
+    --color-texto: #343a40;
 }
 
-.controles-pagina {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.search-container {
-    position: relative;
-    flex-grow: 1;
-    min-width: 250px;
-}
-
-.search-container i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-}
-
-#search-input {
-    width: 95%;
-    padding: 12px 12px 12px 40px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    transition: box-shadow 0.3s;
-}
-
-#search-input:focus {
-    outline: none;
-    border-color: var(--color-secundario);
-    box-shadow: 0 0 0 3px rgba(0, 92, 185, 0.2);
-}
-
-.export-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.export-buttons .btn {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: opacity 0.3s;
-}
-.export-buttons .btn:hover {
-    opacity: 0.85;
-}
+/* --- Controles de Página (Búsqueda y Exportación) --- */
+.controles-pagina { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 20px; }
+.search-container { position: relative; flex-grow: 1; min-width: 300px; }
+.search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+#search-input { width: 100%; box-sizing: border-box; padding: 12px 12px 12px 45px; border-radius: 25px; border: 1px solid #ccc; font-size: 1rem; transition: all 0.3s; }
+#search-input:focus { outline: none; border-color: var(--color-secundario); box-shadow: 0 0 0 4px rgba(0, 92, 185, 0.1); }
+.export-buttons { display: flex; gap: 10px; }
+.export-buttons .btn { padding: 10px 15px; border-radius: 20px; border: none; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+.export-buttons .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 .btn-secondary { background-color: #6c757d; }
 .btn-success { background-color: #198754; }
 .btn-danger { background-color: #dc3545; }
 
+/* --- Grid de Tarjetas --- */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; }
 
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-}
-
+/* --- Estilo de cada Tarjeta --- */
 .solicitud-card {
     background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
-    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     transition: transform 0.3s, box-shadow 0.3s;
+    border-left: 5px solid var(--color-primario); /* Acento de color */
     color: var(--color-texto);
 }
+.solicitud-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12); }
 
-.solicitud-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-    padding: 20px;
-    border-bottom: 1px solid #e9ecef;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.card-header h3 {
-    margin: 0;
-    color: var(--color-primario);
-    font-size: 1.2rem;
-}
-
+/* --- Encabezado de la Tarjeta --- */
+.card-header { padding: 20px; }
+.card-header h3 { margin: 0; color: var(--color-primario); font-size: 1.3rem; margin-bottom: 10px; }
 .estatus-tag {
+    display: inline-block;
     font-size: 0.8rem;
     font-weight: bold;
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 20px;
-    color: white !important;
-    white-space: nowrap;
+    color: white;
 }
+.estatus-aprobado { background-color: var(--color-exito); border-left-color: var(--color-exito) !important; }
+.estatus-creada { background-color: var(--color-info); border-left-color: var(--color-info) !important; }
+.estatus-proceso { background-color: var(--color-alerta); color: #333; border-left-color: var(--color-alerta) !important; } /* Amarillo para 'en proceso' */
 
-.estatus-aprobado { background-color: var(--color-exito); }
-.estatus-creada { background-color: var(--color-info); }
-.estatus-proceso { background-color: var(--color-gris); }
+/* --- Cuerpo de la Tarjeta --- */
+.card-body { padding: 0 20px 20px; flex-grow: 1; }
+.info-item { display: flex; align-items: center; gap: 15px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+.info-item:last-child { border-bottom: none; }
+.info-item i { font-size: 1.1rem; color: var(--color-secundario); min-width: 20px; text-align: center; }
+.info-item strong { color: #555; font-weight: 600; }
+.info-item span { color: var(--color-texto); margin-left: auto; text-align: right; }
 
-.card-body {
-    padding: 20px;
-    flex-grow: 1;
-}
+/* --- Pie de la Tarjeta --- */
+.card-footer { padding: 20px; background-color: #f9fafb; border-top: 1px solid #e9ecef; }
+.btn-accion { width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-seguimiento { background: linear-gradient(45deg, var(--color-secundario), var(--color-primario)); box-shadow: 0 4px 10px rgba(0, 92, 185, 0.3); }
+.btn-seguimiento:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0, 92, 185, 0.4); }
+.accion-texto { font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; font-size: 1rem; border-radius: 8px; }
+.estatus-creada { color: var(--color-info); background-color: rgba(13, 110, 253, 0.1); }
+.estatus-proceso { color: #856404; background-color: rgba(255, 193, 7, 0.15); }
 
-.info-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #f2f2f2;
-}
-.info-item:last-child {
-    border-bottom: none;
-}
-.info-item strong {
-    color: #555;
-}
-.info-item span {
-    color: #343a40;
-    text-align: right;
-}
+/* --- Mensajes de Carga/Error --- */
+.mensaje-carga, .mensaje-vacio, .mensaje-error { text-align: center; padding: 50px; font-size: 1.2rem; color: #6c757d; }
+.mensaje-error { color: #dc3545; }
 
-.card-footer {
-    padding: 15px 20px;
-    background-color: #f8f9fa;
-    text-align: center;
-}
-
-.btn-accion {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    color: #ffffff; /* <<<--- CORRECCIÓN: Se establece explícitamente el color blanco */
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.btn-seguimiento {
-    background-color: var(--color-secundario);
-}
-.btn-seguimiento:hover {
-    background-color: var(--color-primario);
-}
-
-.accion-texto {
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    color: var(--color-gris); /* <<<--- CORRECCIÓN: Color por defecto para el texto de estado */
-}
-.estatus-creada { color: var(--color-info); }
-.estatus-proceso {
-    color: #ffffff;
-}
-
-.mensaje-carga, .mensaje-vacio, .mensaje-error {
-    text-align: center;
-    padding: 40px;
-    font-size: 1.1rem;
-    color: #6c757d;
-}
-.mensaje-error {
-    color: #dc3545;
-}
-
-@media (max-width: 768px) {
-    .controles-pagina {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
 
 /* ======================================= */
-/* == FIN: NUEVOS ESTILOS PARA CARDS    == */
+/* == FIN: NUEVO DISEÑO DE TARJETAS     == */
 /* ======================================= */
 
 
