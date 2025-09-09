@@ -13,7 +13,6 @@ if (!isset($_SESSION['NumNomina'])) {
     <title>Solicitudes Aprobadas</title>
     <link rel="stylesheet" href="css/estilosSAprobadas.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 </head>
 <body>
 
@@ -28,7 +27,6 @@ if (!isset($_SESSION['NumNomina'])) {
         </div>
         <nav>
             <a href="Administrador.php">Inicio</a>
-
             <div class="nav-item dropdown">
                 <a href="#" class="dropdown-toggle">
                     Seguimiento de la vacante <i class="fas fa-chevron-down"></i>
@@ -57,8 +55,6 @@ if (!isset($_SESSION['NumNomina'])) {
                     <a href="dashbord.php">Dashboard de Reclutamiento</a>
                 </div>
             </div>
-
-
             <?php if (isset($_SESSION['Nombre'])): ?>
                 <div class="user-menu">
                     <div class="user-info">
@@ -85,148 +81,177 @@ if (!isset($_SESSION['NumNomina'])) {
 
 <section class="area-blanca">
     <div class="contenido-blanco">
-        <div class="content">
-            <h2>Solicitudes Aprobadas y en Proceso</h2>
+        <h2>Solicitudes Aprobadas y en Proceso</h2>
+
+        <div class="controles-pagina">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Buscar por Folio, Puesto, Solicitante...">
+            </div>
             <div class="export-buttons">
                 <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copiar</button>
                 <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Excel</button>
                 <button id="pdfBtn" class="btn btn-danger"><i class="fas fa-file-pdf"></i> PDF</button>
             </div>
-            <div class="table-container">
-                <table id="solicitudesTable" class="display">
+        </div>
 
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Solicitante</th>
-                        <th>Área</th>
-                        <th>Folio</th>
-                        <th>Estado del Proceso</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+        <!-- Contenedor para las nuevas tarjetas -->
+        <div id="cards-container" class="cards-grid">
+            <!-- Las tarjetas se insertarán aquí dinámicamente -->
         </div>
     </div>
 </section>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Librerías para exportación y alertas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    const logoutLink = document.getElementById('logout');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            fetch('dao/logout.php', { method: 'POST' })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = 'login.php';
-                    } else {
-                        alert('Error al cerrar sesión. Inténtalo nuevamente.');
+    document.addEventListener('DOMContentLoaded', function () {
+        const cardsContainer = document.getElementById('cards-container');
+        const searchInput = document.getElementById('search-input');
+        let todasLasSolicitudes = [];
+
+        // --- 1. CARGAR DATOS ---
+        function cargarDatos() {
+            cardsContainer.innerHTML = '<p class="mensaje-carga">Cargando solicitudes...</p>';
+            fetch('https://grammermx.com/AleTest/ATS/dao/daoSAprobadas.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
                     }
+                    todasLasSolicitudes = data.data || [];
+                    renderizarCards(todasLasSolicitudes);
                 })
-                .catch(error => console.error('Error al cerrar sesión:', error));
-        });
-    }
+                .catch(error => {
+                    cardsContainer.innerHTML = `<p class="mensaje-error">Error al cargar los datos: ${error.message}</p>`;
+                });
+        }
 
-    $(document).ready(function () {
-        var tabla = $('#solicitudesTable').DataTable({
-            "responsive": true,
-            "ajax": {
-                "url": 'https://grammermx.com/AleTest/ATS/dao/daoSAprobadas.php',
-                "dataSrc": "data"
-            },
-
-            // COLUMNAS CORREGIDAS
-            "columns": [
-                { "data": "IdSolicitud" },
-                { "data": "NombreSolicitante" },
-                { "data": "NombreArea" },
-                { "data": "FolioSolicitud" },
-                { "data": "EstadoFinalCalculado" },
-                {
-                    "data": null,
-                    "orderable": false,
-                    "render": function (data, type, row) {
-                        if (row.EstadoFinalCalculado === "Completamente Aprobado") {
-                            return `<button class="btn btn-primary btn-sm go-to-page-btn" data-id="${row.IdSolicitud}"><i class="fas fa-external-link-alt"></i> Ir a Seguimiento</button>`;
-                        } else if (row.EstadoFinalCalculado === "Vacante Creada") {
-                            return '<span class="badge bg-success">Vacante Creada</span>';
-                        } else {
-                            return '<span class="badge bg-secondary">En Proceso</span>';
-                        }
-                    }
-                }
-            ],
-
-            "dom": 'lfrtip',
-            "pageLength": 3,
-            "language": {
-                "search": "Buscar:",
-                "lengthMenu": "Mostrar _MENU_ registros por página",
-                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "paginate": {
-                    "first": "Primero",
-                    "last": "Último",
-                    "next": "Siguiente",
-                    "previous": "Anterior"
-                }
+        // --- 2. RENDERIZAR TARJETAS ---
+        function renderizarCards(solicitudes) {
+            cardsContainer.innerHTML = '';
+            if (solicitudes.length === 0) {
+                cardsContainer.innerHTML = '<p class="mensaje-vacio">No se encontraron solicitudes con los filtros actuales.</p>';
+                return;
             }
-        });
 
-        $('.dataTables_filter input').on('keyup', function () {
-            tabla.search(this.value).draw();
-        });
+            solicitudes.forEach(solicitud => {
+                const card = document.createElement('div');
+                card.className = 'solicitud-card';
 
-        // Funcionalidad de botones
+                let actionsHTML = '';
+                let estatusClass = '';
 
-        $('#copyBtn').on('click', function () {
-            let text = "";
-            tabla.rows().every(function () {
-                let data = this.data();
-                text += Object.values(data).join("\t") + "\n";
+                switch (solicitud.EstadoFinalCalculado) {
+                    case "Completamente Aprobado":
+                        actionsHTML = `<button class="btn-accion btn-seguimiento" data-id="${solicitud.IdSolicitud}"><i class="fas fa-external-link-alt"></i> Ir a Seguimiento</button>`;
+                        estatusClass = 'estatus-aprobado';
+                        break;
+                    case "Vacante Creada":
+                        actionsHTML = `<span class="accion-texto estatus-creada"><i class="fas fa-check-circle"></i> Vacante ya Creada</span>`;
+                        estatusClass = 'estatus-creada';
+                        break;
+                    default:
+                        actionsHTML = `<span class="accion-texto estatus-proceso"><i class="fas fa-spinner"></i> En Proceso</span>`;
+                        estatusClass = 'estatus-proceso';
+                        break;
+                }
+
+                card.innerHTML = `
+                <div class="card-header">
+                    <h3>${solicitud.Puesto}</h3>
+                    <span class="estatus-tag ${estatusClass}">${solicitud.EstadoFinalCalculado}</span>
+                </div>
+                <div class="card-body">
+                    <div class="info-item"><strong>Solicitante:</strong> <span>${solicitud.NombreSolicitante}</span></div>
+                    <div class="info-item"><strong>Área:</strong> <span>${solicitud.NombreArea}</span></div>
+                    <div class="info-item"><strong>Folio:</strong> <span>${solicitud.FolioSolicitud}</span></div>
+                    <div class="info-item"><strong>ID:</strong> <span>${solicitud.IdSolicitud}</span></div>
+                </div>
+                <div class="card-footer">
+                    ${actionsHTML}
+                </div>
+            `;
+                cardsContainer.appendChild(card);
             });
+        }
 
-            navigator.clipboard.writeText(text).then(function () {
-                alert('Tabla copiada al portapapeles');
-            }).catch(err => console.error('Error al copiar:', err));
+        // --- 3. LÓGICA DE BÚSQUEDA Y FILTROS ---
+        searchInput.addEventListener('input', function() {
+            const termino = this.value.toLowerCase().trim();
+            if (termino === "") {
+                renderizarCards(todasLasSolicitudes);
+                return;
+            }
+            const solicitudesFiltradas = todasLasSolicitudes.filter(s =>
+                (s.FolioSolicitud && s.FolioSolicitud.toLowerCase().includes(termino)) ||
+                (s.Puesto && s.Puesto.toLowerCase().includes(termino)) ||
+                (s.NombreSolicitante && s.NombreSolicitante.toLowerCase().includes(termino))
+            );
+            renderizarCards(solicitudesFiltradas);
         });
 
-        $('#pdfBtn').on('click', function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.autoTable({ html: '#solicitudesTable' });
-            doc.save('solicitudes.pdf');
-        });
-
-        $('#excelBtn').on('click', function () {
-            const table = document.querySelector('#solicitudesTable');
-            if (table) {
-                const wb = XLSX.utils.table_to_book(table, { sheet: "Solicitudes" });
-                XLSX.writeFile(wb, 'solicitudes.xlsx');
-            } else {
-                alert('No se encontró la tabla para exportar');
+        // --- 4. LÓGICA DE ACCIONES (BOTONES) ---
+        cardsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-seguimiento') || e.target.closest('.btn-seguimiento')) {
+                window.location.href = 'SeguimientoAdministrador.php';
             }
         });
 
-        // Evento para el botón "Ir a Seguimiento"
-        $('#solicitudesTable tbody').on('click', '.go-to-page-btn', function () {
-            window.location.href = 'SeguimientoAdministrador.php';
+        document.getElementById('logout').addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('dao/logout.php', { method: 'POST' }).then(response => {
+                if (response.ok) window.location.href = 'login.php';
+            });
         });
 
+        // --- 5. LÓGICA DE EXPORTACIÓN (ADAPTADA) ---
+        function exportarDatos(formato) {
+            if (todasLasSolicitudes.length === 0) {
+                Swal.fire('Vacío', 'No hay datos para exportar.', 'info');
+                return;
+            }
 
+            const headers = ["ID", "Solicitante", "Área", "Folio", "Estado del Proceso"];
+            const data = todasLasSolicitudes.map(s => [
+                s.IdSolicitud,
+                s.NombreSolicitante,
+                s.NombreArea,
+                s.FolioSolicitud,
+                s.EstadoFinalCalculado
+            ]);
+
+            if (formato === 'excel') {
+                const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Solicitudes");
+                XLSX.writeFile(workbook, "solicitudes_aprobadas.xlsx");
+            } else if (formato === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.autoTable({ head: [headers], body: data });
+                doc.save('solicitudes_aprobadas.pdf');
+            } else if (formato === 'copy') {
+                const text = [headers.join('\t'), ...data.map(row => row.join('\t'))].join('\n');
+                navigator.clipboard.writeText(text).then(() =>
+                    Swal.fire('Copiado', 'Datos copiados al portapapeles.', 'success')
+                );
+            }
+        }
+
+        document.getElementById('excelBtn').addEventListener('click', () => exportarDatos('excel'));
+        document.getElementById('pdfBtn').addEventListener('click', () => exportarDatos('pdf'));
+        document.getElementById('copyBtn').addEventListener('click', () => exportarDatos('copy'));
+
+        // --- INICIALIZACIÓN ---
+        cargarDatos();
     });
 </script>
+
 <footer class="main-footer">
     <div class="footer-container">
 
@@ -269,6 +294,6 @@ if (!isset($_SESSION['NumNomina'])) {
         <p class="developer-credit">Desarrollado con <i class="fas fa-heart"></i> por Alejandro Torres Jimenez</p>
     </div>
 </footer>
+
 </body>
 </html>
-

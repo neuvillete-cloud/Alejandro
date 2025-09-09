@@ -42,14 +42,6 @@ nav a {
     padding-bottom: 10px;
 }
 
-/* --- INICIO DE CAMBIOS --- */
-
-/* 1. SE ELIMINA ESTA REGLA QUE CAUSABA LA BARRA DUPLICADA */
-/* nav a:last-of-type { ... } */
-/* nav a:last-of-type::before { ... } */
-
-
-/* 2. El user-menu ahora tiene el padding y la barra, como ya lo tenías configurado */
 .user-menu {
     position: relative;
     display: inline-block;
@@ -66,7 +58,6 @@ nav a {
     display: inline-block;
 }
 
-/* 3. Se ajusta el selector de la barra de animación para que incluya al nuevo submenú */
 nav > a::after, .dropdown-toggle::after {
     content: '';
     position: absolute;
@@ -79,7 +70,6 @@ nav > a::after, .dropdown-toggle::after {
     transition: width 0.3s ease-in-out;
 }
 
-/* Se ajusta el activador de la animación para el enlace normal */
 nav > a:hover::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
@@ -87,13 +77,9 @@ nav > a:not(:hover)::after {
     animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
-/* Se AÑADE el activador de la animación para el nuevo submenú */
 .nav-item.dropdown:hover > .dropdown-toggle::after {
     animation: smooth-infinite-bar 0.8s linear forwards;
 }
-
-/* --- FIN DE CAMBIOS --- */
-
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
@@ -150,11 +136,6 @@ nav > a:not(:hover)::after {
     font-weight: bold;
     padding-right: 700px;
     padding-top: 60px;
-}
-
-.user-menu {
-    position: relative;
-    display: inline-block;
 }
 
 .user-info {
@@ -286,239 +267,233 @@ nav > a:not(:hover)::after {
     color: white;
 }
 
-/* ===== NUEVO: Centrar y agrandar cuando solo hay una card ===== */
-.contenedor-candidatos.solo-uno {
-    justify-content: center;
-}
-
-.contenedor-candidatos.solo-uno .candidato-card {
-    flex: 0 0 80%;
-    max-width: 700px;
-}
-
-/* Contenedor de la tabla */
-.table-container {
-    width: 100%;
-    max-width: 1500px;
-    margin: 20px auto; /* Más arriba y centrado */
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 10; /* 🔼 Lleva la tabla al frente */
-}
-
-/* 📌 Título de la tabla (h2) */
 h2 {
     font-size: 1.8em;
     font-weight: bold;
-    margin-bottom: -44px; /* 🔼 Más separación respecto a la tabla */
-    position: relative;
-    z-index: 20; /* 🔼 Asegura que esté por encima de la tabla */
+    color: #333; /* Color de texto oscuro para el área blanca */
 }
 
-/* 🔍 Controles superiores (selector y buscador) */
-.top-controls {
+/* ================================================= */
+/* == INICIO: NUEVOS ESTILOS PARA DISEÑO DE CARDS == */
+/* ================================================= */
+
+:root {
+    --color-primario: #004a8d;
+    --color-secundario: #005cb9;
+    --color-exito: #198754;
+    --color-info: #0d6efd;
+    --color-gris: #6c757d;
+}
+
+.controles-pagina {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px; /* 🔼 Más separación de la tabla */
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.search-container {
+    position: relative;
+    flex-grow: 1;
+    min-width: 250px;
+}
+
+.search-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+#search-input {
     width: 100%;
-    padding: 15px 0;
-}
-
-/* Selector de registros */
-.dataTables_length {
-    flex: 1;
-    text-align: left;
-    margin-left: 20px; /* 🔼 Más separación */
-}
-
-/* Buscador */
-.dataTables_filter {
-    flex: 1;
-    text-align: right;
-    margin-right: 20px; /* 🔼 Más separación */
-}
-
-/* 📌 Estiliza el input de búsqueda */
-.dataTables_filter input {
-    padding: 10px;
+    padding: 12px 12px 12px 40px;
+    border-radius: 8px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 220px; /* 🔼 Más ancho */
+    font-size: 1rem;
+    transition: box-shadow 0.3s;
 }
 
-/* Selector de registros */
-.dataTables_length select {
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-}
-/* 📌 Tabla */
-#solicitudesTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-    text-align: left;
-    background-color: #E6F4F9; /* 🔼 Fondo para toda la tabla */
+#search-input:focus {
+    outline: none;
+    border-color: var(--color-secundario);
+    box-shadow: 0 0 0 3px rgba(0, 92, 185, 0.2);
 }
 
-/* 📌 Encabezados */
-#solicitudesTable thead {
-    background: linear-gradient(135deg, #2e3c5c, rgba(0.15, 0, 0, 0.15)); /* Azul cielo y azul claro pastel */
-    color: white;
-    font-weight: bold;
-}
-/* Bordes y espaciado */
-#solicitudesTable th, #solicitudesTable td {
-    padding: 14px 18px;
-    border: 1px solid #ddd;
-}
-
-/* 📌 Aplicar fondo a TODAS las filas y columnas */
-#solicitudesTable tbody tr th,
-#solicitudesTable tbody tr td {
-    background-color: white !important; /* 🔼 Asegura que todas las columnas tengan color */
-    color: black !important; /* 🔼 Asegura que todo el texto sea negro */
-}
-
-
-/* 📌 Hover */
-#solicitudesTable tbody tr:hover td {
-    background-color: #d4edf4 !important; /* 🔼 Un poco más oscuro en hover */
-}
-
-
-/* Paginación */
-.dataTables_paginate {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-/* Botones de paginación */
-.dataTables_paginate .paginate_button {
-    padding: 10px 15px;
-    margin: 5px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #87CEEB, #B0E0E6); /* Azul cielo y azul claro pastel */
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-/* Hover en paginación */
-.dataTables_paginate .paginate_button:hover {
-    background-color: #f4eed4 !important;
-}
-
-/* Texto de info */
-.dataTables_info {
-    font-size: 14px;
-    margin-top: 15px;
-}
-
-/* 🎯 Botones de Exportación */
-.buttons-container {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    width: 90%;
-    margin: 20px auto;
-}
-
-
-/* Contenedor de los botones de exportación */
 .export-buttons {
     display: flex;
-    justify-content: flex-end; /* Alinea los botones a la derecha */
-    gap: 10px; /* Espaciado entre botones */
-    margin: 10px 0; /* Espaciado superior e inferior */
-    position: relative; /* Asegura que los botones estén en la capa correcta */
-    z-index: 1000; /* Se asegura de que estén por encima de otros elementos */
+    gap: 10px;
 }
 
-/* Botones */
-#copyBtn, #pdfBtn, #excelBtn {
-    display: inline-flex; /* Mantiene tamaño correcto */
-    align-items: center; /* Centra el contenido verticalmente */
-    justify-content: center; /* Centra el texto y el icono */
-    padding: 10px 18px;
-    font-size: 14px;
-    border: none;
+.export-buttons .btn {
+    padding: 10px 15px;
     border-radius: 5px;
-    cursor: pointer;
-    color: white;
-    transition: 0.3s;
-    position: relative; /* Evita que otro elemento los cubra */
-    z-index: 1001; /* Más alto que otros elementos */
-    pointer-events: auto; /* Asegura que los clics funcionen */
-}
-
-/* Colores */
-#copyBtn { background-color: #6c757d; }
-#pdfBtn { background-color: #dc3545; }
-#excelBtn { background-color: #28a745; }
-
-/* Hover */
-#copyBtn:hover { background-color: #5a6268; }
-#pdfBtn:hover { background-color: #c82333; }
-#excelBtn:hover { background-color: #218838; }
-
-
-
-/* Ocultar el título cuando la sidebar está activa */
-.sidebar.active ~ .content h2 {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.go-to-page-btn {
-    background-color: #007bff; /* Azul brillante */
-    color: white;
     border: none;
-    padding: 8px 12px;
-    font-size: 14px;
+    color: white;
+    cursor: pointer;
     font-weight: bold;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s;
+}
+.export-buttons .btn:hover {
+    opacity: 0.85;
+}
+.btn-secondary { background-color: #6c757d; }
+.btn-success { background-color: #198754; }
+.btn-danger { background-color: #dc3545; }
+
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.solicitud-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.solicitud-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: var(--color-primario);
+    font-size: 1.2rem;
+}
+
+.estatus-tag {
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: white;
+    white-space: nowrap;
+}
+
+.estatus-aprobado { background-color: var(--color-exito); }
+.estatus-creada { background-color: var(--color-info); }
+.estatus-proceso { background-color: var(--color-gris); }
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f2f2f2;
+}
+.info-item:last-child {
+    border-bottom: none;
+}
+.info-item strong {
+    color: #555;
+}
+.info-item span {
+    color: #343a40;
+    text-align: right;
+}
+
+.card-footer {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.btn-accion {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.go-to-page-btn i {
-    margin-right: 5px; /* Espaciado entre el icono y el texto */
+.btn-seguimiento {
+    background-color: var(--color-secundario);
+}
+.btn-seguimiento:hover {
+    background-color: var(--color-primario);
 }
 
-.go-to-page-btn:hover {
-    background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+.accion-texto {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+}
+.estatus-creada { color: var(--color-info); }
+.estatus-proceso { color: var(--color-gris); }
+
+.mensaje-carga, .mensaje-vacio, .mensaje-error {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+.mensaje-error {
+    color: #dc3545;
 }
 
-.go-to-page-btn:active {
-    background-color: #004494; /* Azul aún más oscuro al hacer clic */
-    transform: scale(0.98); /* Pequeño efecto de clic */
+@media (max-width: 768px) {
+    .controles-pagina {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
+
+/* ======================================= */
+/* == FIN: NUEVOS ESTILOS PARA CARDS    == */
+/* ======================================= */
 
 
 /* ========================================= */
-/* == ESTILOS PARA EL FOOTER              == */
+/* == ESTILOS PARA EL FOOTER (Sin cambios) == */
 /* ========================================= */
-
 .main-footer {
-    background-color: #063962; /* Mismo azul oscuro del header */
-    color: #e0e0e0; /* Un blanco un poco más suave */
+    background-color: #063962;
+    color: #e0e0e0;
     padding: 60px 0 0 0;
-    font-family: Arial, sans-serif;
 }
 
 .footer-container {
     width: 80%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Diseño de columnas responsivo */
-    gap: 40px; /* Espacio entre columnas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
     padding-bottom: 40px;
 }
 
@@ -534,7 +509,6 @@ h2 {
     padding-bottom: 10px;
 }
 
-/* Línea decorativa debajo de los títulos del footer */
 .footer-column h3::after {
     content: '';
     position: absolute;
@@ -542,7 +516,7 @@ h2 {
     bottom: 0;
     width: 40px;
     height: 2px;
-    background-color: #99d0e9; /* Mismo color de acento del header */
+    background-color: #99d0e9;
 }
 
 .footer-about {
@@ -588,7 +562,7 @@ h2 {
     font-size: 1.2rem;
     margin-right: 20px;
     transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block; /* Necesario para la transformación */
+    display: inline-block;
 }
 
 .social-icons a:hover {
@@ -597,7 +571,7 @@ h2 {
 }
 
 .sub-footer {
-    background-color: #042a4a; /* Un tono de azul aún más oscuro */
+    background-color: #042a4a;
     text-align: center;
     padding: 20px 0;
     font-size: 0.9rem;
@@ -616,10 +590,10 @@ h2 {
 }
 
 .developer-credit .fa-heart {
-    color: #e74c3c; /* Un color rojo para el corazón */
+    color: #e74c3c;
 }
 
-/* --- BLOQUE AÑADIDO AL FINAL PARA EL NUEVO SUBMENÚ --- */
+/* --- Menú Desplegable de Navegación (Sin cambios) --- */
 .nav-item.dropdown {
     position: relative;
 }
