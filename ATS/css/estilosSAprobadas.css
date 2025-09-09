@@ -458,7 +458,9 @@ h2 {
     color: var(--color-gris); /* <<<--- CORRECCIÓN: Color por defecto para el texto de estado */
 }
 .estatus-creada { color: var(--color-info); }
-.estatus-proceso { color: var(--color-gris); }
+.estatus-proceso {
+    color: #ffffff;
+}
 
 .mensaje-carga, .mensaje-vacio, .mensaje-error {
     text-align: center;
