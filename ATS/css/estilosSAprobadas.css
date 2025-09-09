@@ -363,7 +363,7 @@ h2 {
     display: flex;
     flex-direction: column;
     transition: transform 0.3s, box-shadow 0.3s;
-    color: var(--color-texto); /* <<<--- PRIMERA CORRECCIÓN: Se establece un color de texto oscuro por defecto para la card */
+    color: var(--color-texto);
 }
 
 .solicitud-card:hover {
@@ -390,7 +390,7 @@ h2 {
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 20px;
-    color: white !important; /* <<<--- SEGUNDA CORRECCIÓN: Se asegura que el texto de la etiqueta siempre sea blanco */
+    color: white !important;
     white-space: nowrap;
 }
 
@@ -431,7 +431,7 @@ h2 {
     padding: 12px;
     border: none;
     border-radius: 8px;
-    color: white !important; /* <<<--- SEGUNDA CORRECCIÓN: Se asegura que el texto del botón siempre sea blanco */
+    color: #ffffff; /* <<<--- CORRECCIÓN: Se establece explícitamente el color blanco */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -455,6 +455,7 @@ h2 {
     justify-content: center;
     gap: 8px;
     padding: 12px;
+    color: var(--color-gris); /* <<<--- CORRECCIÓN: Color por defecto para el texto de estado */
 }
 .estatus-creada { color: var(--color-info); }
 .estatus-proceso { color: var(--color-gris); }
