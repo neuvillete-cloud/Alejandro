@@ -192,7 +192,7 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                 formData.append("num_nomina_aprobador", currentUserNomina);
 
                 try {
-                    const response = await fetch('dao/daoAprobacionS.php', {
+                    const response = await fetch('https://grammermx.com/Mailer/mailerAprobacionS.php', {
                         method: 'POST',
                         body: formData
                     });
@@ -243,7 +243,7 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                 formData.append("num_nomina_aprobador", currentUserNomina);
 
                 try {
-                    const response = await fetch('dao/daoAprobacionS.php', {
+                    const response = await fetch('https://grammermx.com/Mailer/mailerAprobacionS.php', {
                         method: 'POST',
                         body: formData
                     });
