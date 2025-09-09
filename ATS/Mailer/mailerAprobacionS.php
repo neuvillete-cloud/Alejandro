@@ -121,13 +121,52 @@ function enviarCorreoAprobacionFinalAdmin($correosAdmins, $folio, $puesto) {
     $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
     $linkSeguimiento = "$url_sitio/SAprobadas.php";
 
-    $cuerpo = "
-        <h2 style='color: #198754;'>Request Approved and Ready</h2>
-        <p>Hello Administrator,</p>
-        <p>The personnel requisition for the position of <strong>" . htmlspecialchars($puesto) . "</strong> (Folio: <strong>$folio</strong>) has been fully approved by all required managers.</p>
-        <p>You can now proceed with the next steps in the recruitment process. Please visit the approved requests panel to continue.</p>
-        <a href='$linkSeguimiento' style='display: inline-block; background-color: #0d6efd; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Go to Approved Requests</a>
+    // --- INICIO DE LA MODIFICACIÓN: Plantilla de correo mejorada ---
+    $cuerpoMensaje = "
+        <h2 style='color: #198754; font-family: Arial, sans-serif; font-size: 24px;'>Request Approved and Ready</h2>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Hello Administrator,</p>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>The personnel requisition for the position of <strong>" . htmlspecialchars($puesto) . "</strong> (Folio: <strong>$folio</strong>) has been fully approved by all required managers.</p>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>You can now proceed with the next steps in the recruitment process. Please visit the approved requests panel to continue.</p>
+        
+        <!-- Botón a prueba de Outlook -->
+        <table width='100%' border='0' cellspacing='0' cellpadding='0' style='margin-top: 25px; margin-bottom: 25px;'>
+          <tr>
+            <td>
+              <table border='0' cellspacing='0' cellpadding='0' align='center'>
+                <tr>
+                  <td align='center' style='border-radius: 8px; background-color: #0d6efd;'>
+                    <a href='" . $linkSeguimiento . "' target='_blank' style='font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 8px; padding: 14px 28px; border: 1px solid #0d6efd; display: inline-block; font-weight: bold;'>
+                      Go to Approved Requests
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Thank you for your attention to this matter.</p>
     ";
+
+    $contenidoHTML = "
+    <!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><meta name='viewport' content='width=device-width, initial-scale=1.0'></head>
+    <body style='margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif;'>
+        <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+            <tr><td style='padding: 20px 0;'>
+                <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+                    <tr><td align='center' style='background-color: #005195; padding: 30px; border-top-left-radius: 12px; border-top-right-radius: 12px;'><img src='$logoUrl' alt='Grammer Logo' width='150' style='display: block;'></td></tr>
+                    <tr><td style='padding: 40px 30px; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;'>
+                        $cuerpoMensaje
+                        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Best regards,<br><strong>Grammer ATS System</strong></p>
+                    </td></tr>
+                    <tr><td align='center' style='background-color: #f8f9fa; padding: 20px; font-size: 12px; color: #6c757d; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;'>
+                        <p style='margin: 0;'>&copy; " . date('Y') . " Grammer Automotive de México. This is an automated notification.</p>
+                    </td></tr>
+                </table>
+            </td></tr>
+        </table>
+    </body></html>";
+    // --- FIN DE LA MODIFICACIÓN ---
 
     $mail = new PHPMailer(true);
     try {
@@ -149,7 +188,7 @@ function enviarCorreoAprobacionFinalAdmin($correosAdmins, $folio, $puesto) {
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
-        $mail->Body = $cuerpo; // Para simplicidad, pero idealmente usarías tu plantilla completa
+        $mail->Body = $contenidoHTML; // Se usa la plantilla completa
         $mail->send();
     } catch (Exception $e) {
         // No lanzamos una excepción para no revertir la aprobación, solo registramos el error
