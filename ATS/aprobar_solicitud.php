@@ -109,6 +109,11 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const btnAceptar = document.getElementById('btn-aceptar');
+        const btnRechazar = document.getElementById('btn-rechazar');
+        const confirmRejectBtn = document.getElementById('confirmRejectBtn');
+        const rejectModal = document.getElementById('rejectModal');
+
         let folioActual = null;
         const urlParams = new URLSearchParams(window.location.search);
         folioActual = urlParams.get("folio");
@@ -119,12 +124,16 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             document.querySelector(".card-solicitud-detalle").innerHTML = `<p style="text-align:center; color:red;">No request folio was provided.</p>`;
         }
 
-        document.getElementById('btn-aceptar').addEventListener('click', () => {
+        btnAceptar.addEventListener('click', () => {
             handleAceptar(folioActual);
         });
 
-        document.getElementById('btn-rechazar').addEventListener('click', () => {
-            handleRechazar();
+        btnRechazar.addEventListener('click', () => {
+            rejectModal.classList.add('show');
+        });
+
+        confirmRejectBtn.addEventListener('click', () => {
+            handleRechazar(folioActual);
         });
     });
 
@@ -137,19 +146,16 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             .then(data => {
                 if (data.status === "success" && data.data) {
                     const solicitud = data.data;
-
                     document.getElementById("puesto-solicitud").textContent = solicitud.Puesto || "N/A";
                     const estatusSpan = document.getElementById("estatus-solicitud");
                     estatusSpan.textContent = solicitud.NombreEstatus || "Unknown";
                     estatusSpan.className = 'estatus ' + (solicitud.NombreEstatus || '').toLowerCase().replace(/\s+/g, '');
-
                     document.querySelector("#nombre-solicitante .valor-con-icono span").textContent = solicitud.Nombre || "N/A";
                     document.querySelector("#nomina-solicitante .valor-con-icono span").textContent = solicitud.NumNomina || "N/A";
                     document.querySelector("#area-solicitud span").textContent = solicitud.NombreArea || "N/A";
                     document.querySelector("#folio-solicitud span").textContent = solicitud.FolioSolicitud || "N/A";
                     document.querySelector("#tipo-contratacion span").textContent = solicitud.TipoContratacion || "N/A";
                     document.querySelector("#fecha-solicitud span").textContent = solicitud.FechaSolicitud || "N/A";
-
                     const reemplazoItem = document.getElementById("reemplazo-solicitud");
                     if (solicitud.NombreReemplazo) {
                         reemplazoItem.style.display = 'block';
@@ -157,14 +163,12 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                     } else {
                         reemplazoItem.style.display = 'none';
                     }
-
                     if (data.usuario_ya_voto) {
                         const actionsContainer = document.querySelector('.card-solicitud-detalle .card-actions');
                         if (actionsContainer) {
                             actionsContainer.innerHTML = '<p class="mensaje-accion-realizada">You have already registered an action for this request.</p>';
                         }
                     }
-
                 } else {
                     document.querySelector(".card-solicitud-detalle").innerHTML = `<p style="text-align:center; color:red;">Error: ${data.message || 'Request not found.'}</p>`;
                 }
@@ -185,46 +189,51 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             cancelButtonText: "Cancel"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const formData = new URLSearchParams();
-                formData.append("folio", folio);
-                formData.append("accion", 'aprobar');
-                formData.append("num_nomina_aprobador", currentUserNomina);
+                const btnAceptar = document.getElementById('btn-aceptar');
+                const btnRechazar = document.getElementById('btn-rechazar');
+                const originalButtonHTML = btnAceptar.innerHTML;
+
+                // Desactivar botones y mostrar carga
+                btnAceptar.disabled = true;
+                btnRechazar.disabled = true;
+                btnAceptar.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+
+                const formData = new URLSearchParams({
+                    folio: folio,
+                    accion: 'aprobar',
+                    num_nomina_aprobador: currentUserNomina
+                });
 
                 try {
-                    const response = await fetch('https://grammermx.com/Mailer/mailerAprobacionS.php', {
-                        method: 'POST',
-                        body: formData
-                    });
+                    const response = await fetch('https://grammermx.com/Mailer/mailerAprobacionS.php', { method: 'POST', body: formData });
                     const jsonResponse = await response.json();
-
                     if (jsonResponse.success) {
-                        Swal.fire("Approved", "The request was approved successfully.", "success").then(() => {
-                            window.location.reload();
-                        });
+                        Swal.fire("Approved", "The request was approved successfully.", "success").then(() => window.location.reload());
                     } else {
                         Swal.fire("Error", jsonResponse.message || "Could not approve the request.", "error");
+                        // Reactivar botones si falla
+                        btnAceptar.disabled = false;
+                        btnRechazar.disabled = false;
+                        btnAceptar.innerHTML = originalButtonHTML;
                     }
                 } catch (error) {
                     Swal.fire("Error", "Could not connect to the server.", "error");
+                    // Reactivar botones si falla la conexión
+                    btnAceptar.disabled = false;
+                    btnRechazar.disabled = false;
+                    btnAceptar.innerHTML = originalButtonHTML;
                 }
             }
         });
     }
 
-    function handleRechazar() {
-        document.getElementById('rejectComment').value = '';
-        document.getElementById('rejectModal').classList.add('show');
-    }
-
-    document.getElementById('confirmRejectBtn').addEventListener('click', () => {
+    function handleRechazar(folio) {
         const comentario = document.getElementById('rejectComment').value.trim();
         if (!comentario) {
             Swal.fire("Attention", "You must enter a comment to reject.", "warning");
             return;
         }
         document.getElementById('rejectModal').classList.remove('show');
-
-        const folio = new URLSearchParams(window.location.search).get("folio");
 
         Swal.fire({
             title: "Are you sure?",
@@ -235,32 +244,44 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
             cancelButtonText: "Cancel"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const formData = new URLSearchParams();
-                formData.append("folio", folio);
-                formData.append("accion", 'rechazar');
-                formData.append("comentario", comentario);
-                formData.append("num_nomina_aprobador", currentUserNomina);
+                const btnAceptar = document.getElementById('btn-aceptar');
+                const btnRechazar = document.getElementById('btn-rechazar');
+                const originalButtonHTML = btnRechazar.innerHTML;
+
+                // Desactivar botones y mostrar carga
+                btnAceptar.disabled = true;
+                btnRechazar.disabled = true;
+                btnRechazar.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+
+                const formData = new URLSearchParams({
+                    folio: folio,
+                    accion: 'rechazar',
+                    comentario: comentario,
+                    num_nomina_aprobador: currentUserNomina
+                });
 
                 try {
-                    const response = await fetch('https://grammermx.com/Mailer/mailerAprobacionS.php', {
-                        method: 'POST',
-                        body: formData
-                    });
+                    const response = await fetch('https://grammermx.com/Mailer/mailerAprobacionS.php', { method: 'POST', body: formData });
                     const jsonResponse = await response.json();
-
                     if (jsonResponse.success) {
-                        Swal.fire("Rejected", "The request has been rejected successfully.", "success").then(() => {
-                            window.location.reload();
-                        });
+                        Swal.fire("Rejected", "The request has been rejected successfully.", "success").then(() => window.location.reload());
                     } else {
                         Swal.fire("Error", jsonResponse.message || "Could not reject the request.", "error");
+                        // Reactivar botones si falla
+                        btnAceptar.disabled = false;
+                        btnRechazar.disabled = false;
+                        btnRechazar.innerHTML = originalButtonHTML;
                     }
                 } catch (error) {
                     Swal.fire("Error", "Could not connect to the server.", "error");
+                    // Reactivar botones si falla la conexión
+                    btnAceptar.disabled = false;
+                    btnRechazar.disabled = false;
+                    btnRechazar.innerHTML = originalButtonHTML;
                 }
             }
         });
-    });
+    }
 
     document.querySelector('.close-reject-modal')?.addEventListener('click', () => {
         document.getElementById('rejectModal').classList.remove('show');
@@ -268,11 +289,9 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
 
     document.getElementById('logout')?.addEventListener('click', (e) => {
         e.preventDefault();
-        fetch('dao/logout.php', { method: 'POST' })
-            .then(response => {
-                if (response.ok) window.location.href = 'login.php';
-            });
+        fetch('dao/logout.php', { method: 'POST' }).then(response => { if (response.ok) window.location.href = 'login.php'; });
     });
 </script>
 </body>
 </html>
+
