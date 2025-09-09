@@ -283,6 +283,7 @@ h2 {
     --color-exito: #198754;
     --color-info: #0d6efd;
     --color-gris: #6c757d;
+    --color-texto: #343a40; /* Añadida variable para el color de texto principal */
 }
 
 .controles-pagina {
@@ -362,6 +363,7 @@ h2 {
     display: flex;
     flex-direction: column;
     transition: transform 0.3s, box-shadow 0.3s;
+    color: var(--color-texto); /* <<<--- PRIMERA CORRECCIÓN: Se establece un color de texto oscuro por defecto para la card */
 }
 
 .solicitud-card:hover {
@@ -388,7 +390,7 @@ h2 {
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 20px;
-    color: white;
+    color: white !important; /* <<<--- SEGUNDA CORRECCIÓN: Se asegura que el texto de la etiqueta siempre sea blanco */
     white-space: nowrap;
 }
 
@@ -429,7 +431,7 @@ h2 {
     padding: 12px;
     border: none;
     border-radius: 8px;
-    color: white;
+    color: white !important; /* <<<--- SEGUNDA CORRECCIÓN: Se asegura que el texto del botón siempre sea blanco */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -648,3 +650,4 @@ h2 {
 .nav-item.dropdown:hover .dropdown-toggle .fa-chevron-down {
     transform: rotate(180deg);
 }
+
