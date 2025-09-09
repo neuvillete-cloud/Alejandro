@@ -41,7 +41,6 @@ echo "<script>const currentUserNomina = '" . htmlspecialchars($_SESSION['NumNomi
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <a href="perfil.php">Profile</a>
                         <a href="#" id="logout">Log out</a>
                     </div>
                 </div>
