@@ -79,7 +79,6 @@ nav a:not(:hover)::after {
 
 @keyframes smooth-infinite-bar {
     0% { width: 0%; transform: translateX(0); }
-    50% { width: 100%; transform: translateX(0); }
     100% { width: 100%; transform: translateX(0); }
 }
 
@@ -100,26 +99,12 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
-/* Responsividad */
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
 .hero {
-    margin-top: 90px; /* Agrega espacio visual debajo del header */
-    position: relative; /* Necesario para que el video se ajuste dentro */
+    margin-top: 90px;
+    position: relative;
     text-align: center;
-    padding: 353px 20px 200px 20px; /* Conserva el tamaño */
-    overflow: hidden; /* Oculta cualquier desbordamiento del video */
+    padding: 353px 20px 200px 20px;
+    overflow: hidden;
 }
 
 .hero-video {
@@ -128,11 +113,12 @@ nav a:not(:hover)::after {
     left: 50%;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Mueve el video detrás del contenido */
+    z-index: -1;
     transform: translate(-50%, -50%);
-    object-fit: cover; /* Asegura que el video cubra toda el área */
-    opacity: 0.8; /* Agrega un poco de transparencia si deseas */
+    object-fit: cover;
+    opacity: 0.8;
 }
+
 .search-container {
     position: absolute;
     top: 82%;
@@ -146,9 +132,8 @@ nav a:not(:hover)::after {
     max-width: 850px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
-    z-index: 2; /* Asegura que esté por encima */
+    z-index: 2;
 }
-
 
 .grammer-branding {
     text-align: center;
@@ -167,17 +152,16 @@ nav a:not(:hover)::after {
     color: #2f5e93;
 }
 
-
 .search-box {
     display: flex;
     align-items: center;
-    gap: 10px; /* Separamos el input del botón */
+    gap: 10px;
     width: 100%;
 }
 
 .search-box input {
     flex: 1;
-    padding: 14px 20px; /* Más espacio interno */
+    padding: 14px 20px;
     border: 1px solid #ccc;
     font-size: 16px;
     outline: none;
@@ -188,7 +172,7 @@ nav a:not(:hover)::after {
     background: #0077cc;
     border: none;
     color: white;
-    padding: 14px 30px; /* Más grande */
+    padding: 14px 30px;
     font-size: 16px;
     cursor: pointer;
     border-radius: 50px;
@@ -200,58 +184,38 @@ nav a:not(:hover)::after {
     background: #d6ecff;
 }
 
-
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-    .hero h2 {
-        font-size: 48px;
-    }
-    .search-container {
-        width: 90%;
-    }
-}
-
 .white-section {
     background-color: white;
-    min-height: 600px; /* Ajusta la altura según necesites */
+    min-height: 600px;
     width: 100%;
     position: relative;
     z-index: 1;
-    padding: 50px 20px; /* Espaciado para que el contenido no quede pegado */
+    padding: 50px 20px;
     text-align: center;
-    color: black; /* Ajusta el color del texto para que se vea en fondo blanco */
+    color: black;
 }
 
 .white-section p {
-    font-family: "Arial", sans-serif; /* Ajustamos la tipografía */
-    font-size: 22px; /* Tamaño similar al de la imagen */
-    font-weight: 400; /* Grosor estándar */
-    line-height: 1.5; /* Espaciado entre líneas para mejor legibilidad */
-    color: #12123b; /* Color oscuro similar al de la imagen */
-    max-width: 900px; /* Limita el ancho del párrafo */
-    margin: 90px auto 0 auto; /* Baja el párrafo y lo centra */
-    text-align: left; /* Alineación de texto */
+    font-family: "Arial", sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #12123b;
+    max-width: 900px;
+    margin: 90px auto 0 auto;
+    text-align: left;
 }
 
 .white-section h2 {
-    margin-bottom: 0px; /* Elimina el espacio inferior del título */
+    margin-bottom: 0px;
 }
 
 .white-section p:first-of-type {
-    margin-bottom: 60px; /* Mantiene la separación del primer párrafo */
+    margin-bottom: 60px;
 }
 
 .white-section p:last-of-type {
-    margin-top: 5px; /* Reduce el espacio superior del párrafo debajo del título */
+    margin-top: 5px;
 }
 
 .carousel-container {
@@ -261,7 +225,7 @@ nav a:not(:hover)::after {
     position: relative;
     width: 100%;
     max-width: 1400px;
-    margin: 60px auto 0; /* Agrega margen arriba para bajarlo */
+    margin: 60px auto 0;
     overflow: hidden;
 }
 
@@ -278,11 +242,19 @@ nav a:not(:hover)::after {
     max-width: 300px;
     text-align: center;
     position: relative;
+    overflow: hidden;
 }
 
 .carousel-item img {
     width: 100%;
-    height: auto;
+    height: 350px;
+    object-fit: cover;
+    display: block;
+    transition: filter 0.3s ease-in-out;
+}
+
+.carousel-item:hover img {
+    filter: brightness(1.15);
 }
 
 .carousel-item h3 {
@@ -297,10 +269,10 @@ nav a:not(:hover)::after {
 }
 
 .carousel-btn {
-    background: none; /* Sin fondo */
+    background: none;
     border: none;
-    color: #0077cc; /* Color de la flecha */
-    font-size: 50px; /* Tamaño más grande para que sean visibles */
+    color: #0077cc;
+    font-size: 50px;
     font-weight: bold;
     cursor: pointer;
     padding: 10px;
@@ -309,40 +281,16 @@ nav a:not(:hover)::after {
     transform: translateY(-50%);
     transition: color 0.3s;
     z-index: 10;
-    opacity: 0.8; /* Hacerlos visibles pero con un ligero efecto */
+    opacity: 0.8;
 }
 
 .carousel-btn:hover {
-    color: #005fa3; /* Cambio de color */
+    color: #005fa3;
     opacity: 1;
 }
 
-/* Ajuste de posiciones dentro del carrusel */
-.prev {
-    left: 70px; /* Más pegado a la imagen */
-}
-
-.next {
-    right: 97px;
-}
-
-.carousel-item {
-    position: relative; /* Para que el ::after se posicione dentro */
-    overflow: hidden; /* Evita que la barra sobresalga */
-}
-
-.carousel-item img {
-    display: block;
-    width: 100%;
-    height: 350px;
-    position: relative;
-    z-index: 1; /* Asegura que la imagen esté por encima */
-    transition: filter 0.3s ease-in-out; /* Agrega una transición suave */
-}
-
-.carousel-item:hover img {
-    filter: brightness(1.15); /* Aumenta el brillo en un 30% */
-}
+.prev { left: 70px; }
+.next { right: 97px; }
 
 .carousel-item::after {
     content: '';
@@ -353,7 +301,7 @@ nav a:not(:hover)::after {
     height: 4px;
     background: #0077cc;
     z-index: 2;
-    transition: width 0.3s ease-in-out; /* Transición para la animación */
+    transition: width 0.3s ease-in-out;
     max-width: 100%;
 }
 
@@ -362,36 +310,23 @@ nav a:not(:hover)::after {
 }
 
 .carousel-item:not(:hover)::after {
-    animation: smooth-infinite-bar-out 0.8s linear forwards; /* Animación de salida */
-}
-
-/* Animación de crecimiento */
-@keyframes smooth-infinite-bar {
-    0% { width: 0%; }
-    100% { width: 100%; }
-}
-
-/* Animación de decrecimiento */
-@keyframes smooth-infinite-bar-out {
-    0% { width: 100%; }
-    100% { width: 0%; }
+    animation: smooth-infinite-bar-out 0.8s linear forwards;
 }
 
 .carousel-icon {
     position: absolute;
-    bottom: 15px; /* Ajusta la posición vertical */
-    right: 15px;  /* Ajusta la posición horizontal */
+    bottom: 15px;
+    right: 15px;
     color: #0077cc;
-    font-size: 30px; /* Tamaño del icono */
+    font-size: 30px;
     padding: 5px 10px;
     border-radius: 5px;
     transition: transform 0.3s ease-in-out;
-    z-index: 3; /* Asegura que el icono esté por encima de todo */
+    z-index: 3;
 }
 
-/* Animación al pasar el cursor */
 .carousel-item:hover .carousel-icon {
-    transform: translateX(8px); /* Se mueve 8px a la derecha */
+    transform: translateX(8px);
 }
 
 .impact-section {
@@ -481,11 +416,11 @@ nav a:not(:hover)::after {
 .subtexto {
     margin-top: 8px;
     font-size: 20px;
-    color: #333; /* Puedes ajustar el color según el diseño */
+    color: #333;
 }
 
 .impact-detail-inline {
-    grid-column: span 3; /* Ocupa dos columnas */
+    grid-column: span 3;
     background: white;
     border: 1px solid #ddd;
     padding: 15px;
@@ -542,13 +477,9 @@ nav a:not(:hover)::after {
     color: #c0392b;
 }
 
-/* ========================================= */
-/* == ESTILOS PARA EL FOOTER              == */
-/* ========================================= */
-
 .main-footer {
-    background-color: #063962; /* Mismo azul oscuro del header */
-    color: #e0e0e0; /* Un blanco un poco más suave */
+    background-color: #063962;
+    color: #e0e0e0;
     padding: 60px 0 0 0;
     font-family: Arial, sans-serif;
 }
@@ -557,8 +488,8 @@ nav a:not(:hover)::after {
     width: 80%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Diseño de columnas responsivo */
-    gap: 40px; /* Espacio entre columnas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
     padding-bottom: 40px;
 }
 
@@ -574,7 +505,6 @@ nav a:not(:hover)::after {
     padding-bottom: 10px;
 }
 
-/* Línea decorativa debajo de los títulos del footer */
 .footer-column h3::after {
     content: '';
     position: absolute;
@@ -582,7 +512,7 @@ nav a:not(:hover)::after {
     bottom: 0;
     width: 40px;
     height: 2px;
-    background-color: #99d0e9; /* Mismo color de acento del header */
+    background-color: #99d0e9;
 }
 
 .footer-about {
@@ -628,7 +558,7 @@ nav a:not(:hover)::after {
     font-size: 1.2rem;
     margin-right: 20px;
     transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block; /* Necesario para la transformación */
+    display: inline-block;
 }
 
 .social-icons a:hover {
@@ -637,7 +567,7 @@ nav a:not(:hover)::after {
 }
 
 .sub-footer {
-    background-color: #042a4a; /* Un tono de azul aún más oscuro */
+    background-color: #042a4a;
     text-align: center;
     padding: 20px 0;
     font-size: 0.9rem;
@@ -656,7 +586,125 @@ nav a:not(:hover)::after {
 }
 
 .developer-credit .fa-heart {
-    color: #e74c3c; /* Un color rojo para el corazón */
+    color: #e74c3c;
 }
 
+/* ========================================= */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO == */
+/* ========================================= */
 
+@media (max-width: 1200px) {
+    /* Ajustes para laptops y tablets grandes */
+    .header-container, .footer-container {
+        width: 90%;
+    }
+    .hero {
+        padding-top: 250px;
+        padding-bottom: 150px;
+    }
+    .search-container {
+        width: 80%;
+        padding: 25px 30px;
+        top: 85%;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Ajustes para tablets */
+    nav {
+        padding-right: 0;
+    }
+    .search-container {
+        width: 90%;
+    }
+    .carousel {
+        width: 90%;
+    }
+    .carousel-btn {
+        font-size: 40px;
+    }
+    .prev { left: 10px; }
+    .next { right: 10px; }
+}
+
+@media (max-width: 768px) {
+    /* Ajustes generales para tablets y móviles */
+    body {
+        -webkit-text-size-adjust: 100%;
+    }
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        width: 100%;
+    }
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        width: 90%;
+    }
+    .hero {
+        padding-top: 150px;
+        padding-bottom: 120px;
+    }
+    .search-container {
+        position: static; /* El buscador deja de flotar */
+        transform: none;
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 20px;
+        background-color: #f1f5f9;
+    }
+    .hero-video {
+        display: none; /* Ocultamos el video en móvil para ahorrar datos y mejorar rendimiento */
+    }
+    .search-box {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .search-box input, .search-box button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .white-section p {
+        font-size: 18px;
+        margin-top: 40px;
+    }
+    .carousel-container {
+        margin-top: 40px;
+    }
+    .carousel {
+        width: 100%;
+        gap: 15px;
+    }
+    .carousel-btn {
+        display: none; /* Ocultamos las flechas en móvil, se usará swipe */
+    }
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes finos para móviles pequeños */
+    .white-section p {
+        font-size: 16px;
+    }
+    .impact-section h2 {
+        font-size: 28px;
+    }
+    .impact-detail-inline {
+        flex-direction: column;
+    }
+    .impact-detail-inline video {
+        width: 100%;
+    }
+}
