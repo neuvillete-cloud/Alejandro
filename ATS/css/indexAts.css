@@ -4,6 +4,7 @@ body {
     background-color: #140c33;
     color: white;
     overflow-x: hidden;
+    padding-top: 90px; /* MODIFICACIÓN: Empuja todo el contenido hacia abajo para dejar espacio al header fijo */
 }
 
 header {
@@ -100,7 +101,7 @@ nav a:not(:hover)::after {
 }
 
 .hero {
-    margin-top: 90px;
+    margin-top: 0; /* MODIFICACIÓN: Se elimina el margen superior, ahora controlado por el padding del body */
     position: relative;
     text-align: center;
     padding: 353px 20px 200px 20px;
@@ -590,12 +591,12 @@ nav a:not(:hover)::after {
     }
     .hero {
         padding-top: 250px;
-        padding-bottom: 180px; /* Más espacio para el buscador */
+        padding-bottom: 180px;
     }
     .search-container {
         width: 80%;
         padding: 25px 30px;
-        top: 88%; /* Ajuste de posición vertical */
+        top: 88%;
     }
 }
 
@@ -630,6 +631,7 @@ nav a:not(:hover)::after {
     /* Ajustes generales para tablets y móviles */
     body {
         -webkit-text-size-adjust: 100%;
+        padding-top: 140px; /* MODIFICACIÓN: Espacio para el header que ahora es más alto */
     }
     .header-container {
         flex-direction: column;
@@ -649,29 +651,27 @@ nav a:not(:hover)::after {
         padding-right: 0;
     }
     .hero {
-        /* Se hace más corto y se elimina el margen superior grande */
-        margin-top: 80px; /* Altura del header aprox */
+        margin-top: 0; /* MODIFICACIÓN: Se quita el margen que ahora controla el body */
         padding: 80px 20px 40px 20px;
-        min-height: auto;
+        min-height: 40vh; /* Se reduce la altura mínima */
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-end; /* Alinea el contenido hacia abajo */
     }
-    /* El video ahora es visible en móvil */
     .hero-video {
-        opacity: 0.3; /* Menos opacidad para que no distraiga */
+        opacity: 0.3;
     }
     .search-container {
-        position: relative; /* Ya no flota sobre el video */
+        position: relative;
         top: auto;
         left: auto;
         transform: none;
         width: 100%;
         max-width: none;
-        border-radius: 12px; /* Mantiene bordes redondeados */
+        border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         padding: 25px;
-        margin-top: 20px;
+        margin-top: auto; /* Empuja el buscador hacia abajo */
         box-sizing: border-box;
     }
     .search-box {
@@ -695,24 +695,21 @@ nav a:not(:hover)::after {
     .carousel {
         width: auto;
         padding: 0 20px;
-        /* Habilitar scroll horizontal */
         overflow-x: auto;
-        /* Ocultar la barra de scroll */
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-        /* Mejorar la experiencia de scroll */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
     }
     .carousel::-webkit-scrollbar {
-        display: none; /* Chrome, Safari y Opera */
+        display: none;
     }
     .carousel-item {
-        min-width: 80%; /* Cada item ocupa el 80% del ancho */
-        scroll-snap-align: center; /* Centra el item al detener el scroll */
+        min-width: 80%;
+        scroll-snap-align: center;
     }
     .carousel-btn {
-        display: none; /* Ocultamos las flechas, se usa swipe/scroll */
+        display: none;
     }
     .footer-container {
         grid-template-columns: 1fr;
@@ -727,6 +724,9 @@ nav a:not(:hover)::after {
 
 @media (max-width: 480px) {
     /* Ajustes finos para móviles pequeños */
+    body {
+        padding-top: 130px; /* Un poco menos de espacio para pantallas muy pequeñas */
+    }
     .white-section p {
         font-size: 16px;
     }
