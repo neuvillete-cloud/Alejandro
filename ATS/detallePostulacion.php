@@ -280,7 +280,7 @@ session_start();
             formData.append("id", IdPostulacion);
             formData.append("status", nuevoEstatus);
 
-            fetch("dao/ActualizarEstatusPostulacion.php", {
+            fetch("https://grammermx.com/Mailer/ActualizarEstatusPostulacion.php", {
                 method: "POST",
                 body: formData
             })

@@ -209,7 +209,7 @@ if (!isset($_SESSION['NumNomina'])) {
         cvModal.addEventListener('click', e => { if (e.target === cvModal) cerrarModal(); });
 
         function actualizarEstatus(id, status) {
-            fetch(`dao/ActualizarEstatusPostulacion.php`, {
+            fetch(`https://grammermx.com/Mailer/ActualizarEstatusPostulacion.php`, {
                 method: "POST",
                 body: new URLSearchParams({ id, status })
             })
