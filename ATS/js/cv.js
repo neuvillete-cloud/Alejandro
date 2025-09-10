@@ -29,7 +29,7 @@ document.getElementById("formPostulacion").addEventListener("submit", function (
         return;
     }
 
-    fetch(`dao/subirPostulacion.php?idVacante=${idVacante}`, {
+    fetch(`https://grammermx.com/Mailer/subirPostulacion.php?idVacante=${idVacante}`, {
         method: "POST",
         body: formData
     })
