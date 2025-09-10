@@ -267,7 +267,7 @@ function enviarCorreoSolicitanteRevision($correoSolicitante, $nombreSolicitante,
     $asunto = "Candidatos listos para tu revisión: " . $nombreVacante;
     $url_sitio = "https://grammermx.com/AleTest/ATS";
     $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
-    $linkRevision = $url_sitio . "/Postulaciones.php";
+    $linkRevision = $url_sitio . "/seleccionFinal.php";
 
     $cuerpoMensaje = "
         <h2 style='color: #005195; font-family: Arial, sans-serif; font-size: 24px;'>Candidatos listos para tu revisión</h2>
