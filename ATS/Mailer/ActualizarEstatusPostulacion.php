@@ -84,6 +84,30 @@ try {
                 enviarCorreoRechazoCandidato($infoResult['Correo'], $infoResult['NombreCandidato'], $infoResult['TituloVacante']);
             }
         }
+        // Notificación para el SOLICITANTE cuando se le envían candidatos para revisar
+        else {
+            $infoSql = "SELECT 
+                            v.TituloVacante, 
+                            solicitante.Nombre AS NombreSolicitante, 
+                            solicitante.Correo AS CorreoSolicitante
+                        FROM Postulaciones p
+                        JOIN Vacantes v ON p.IdVacante = v.IdVacante
+                        JOIN Solicitudes s ON v.IdSolicitud = s.IdSolicitud
+                        JOIN Usuario solicitante ON s.NumNomina = solicitante.NumNomina
+                        WHERE p.IdPostulacion = ?";
+            $infoStmt = $conex->prepare($infoSql);
+            $infoStmt->bind_param("i", $idPostulacion);
+            $infoStmt->execute();
+            $infoResult = $infoStmt->get_result()->fetch_assoc();
+
+            if ($infoResult && !empty($infoResult['CorreoSolicitante'])) {
+                enviarCorreoSolicitanteRevision(
+                    $infoResult['CorreoSolicitante'],
+                    $infoResult['NombreSolicitante'],
+                    $infoResult['TituloVacante']
+                );
+            }
+        }
         // --- FIN DE LA LÓGICA DE NOTIFICACIONES ---
 
         $conex->commit();
@@ -231,10 +255,76 @@ function enviarCorreoRechazoCandidato($correoCandidato, $nombreCandidato, $nombr
         $mail->Body = $contenidoHTML;
         $mail->send();
     } catch (Exception $e) {
-        // No se lanza una excepción para no detener el flujo principal, solo se registra el error.
         error_log("Error al enviar correo de rechazo al candidato: " . $mail->ErrorInfo);
     }
 }
-?>
 
+
+/**
+ * NUEVA FUNCIÓN: Envía correo al Solicitante para que revise candidatos.
+ */
+function enviarCorreoSolicitanteRevision($correoSolicitante, $nombreSolicitante, $nombreVacante) {
+    $asunto = "Candidatos listos para tu revisión: " . $nombreVacante;
+    $url_sitio = "https://grammermx.com/AleTest/ATS";
+    $logoUrl = $url_sitio . '/imagenes/logo_blanco.png';
+    $linkRevision = $url_sitio . "/Postulaciones.php";
+
+    $cuerpoMensaje = "
+        <h2 style='color: #005195; font-family: Arial, sans-serif; font-size: 24px;'>Candidatos listos para tu revisión</h2>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Estimado(a) " . htmlspecialchars($nombreSolicitante) . ",</p>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>El equipo de Recursos Humanos ha concluido la primera fase de entrevistas para la vacante de <strong>" . htmlspecialchars($nombreVacante) . "</strong>.</p>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Hemos identificado a un grupo de candidatos que cumplen con el perfil y nos gustaría que los revisaras para continuar con el proceso de entrevistas técnicas o de área.</p>
+        <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Por favor, accede al sistema para ver sus perfiles y darnos tu retroalimentación.</p>
+        
+        <table width='100%' border='0' cellspacing='0' cellpadding='0' style='margin-top: 25px; margin-bottom: 25px;'>
+          <tr><td><table border='0' cellspacing='0' cellpadding='0' align='center'><tr>
+          <td align='center' style='border-radius: 8px; background-color: #0d6efd;'>
+            <a href='" . $linkRevision . "' target='_blank' style='font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 8px; padding: 14px 28px; border: 1px solid #0d6efd; display: inline-block; font-weight: bold;'>
+              Revisar Candidatos
+            </a>
+          </td>
+          </tr></table></td></tr>
+        </table>
+    ";
+
+    $contenidoHTML = "
+    <!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'></head>
+    <body style='margin: 0; padding: 0; background-color: #f4f7fc; font-family: Arial, sans-serif;'>
+        <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr_><td style='padding: 20px 0;'>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+                <tr><td align='center' style='background-color: #005195; padding: 30px; border-top-left-radius: 12px; border-top-right-radius: 12px;'><img src='$logoUrl' alt='Logo Grammer' width='150' style='display: block;'></td></tr>
+                <tr><td style='padding: 40px 30px;'>
+                    $cuerpoMensaje
+                    <p style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>Saludos,<br><strong>Equipo de Recursos Humanos</strong></p>
+                </td></tr>
+                <tr><td align='center' style='background-color: #f8f9fa; padding: 20px; font-size: 12px; color: #6c757d; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;'>
+                    <p style='margin: 0;'>&copy; " . date('Y') . " Grammer Automotive de México. Este es un correo automatizado.</p>
+                </td></tr>
+            </table>
+        </td></tr></table>
+    </body></html>";
+
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.hostinger.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'sistema_ats@grammermx.com';
+        $mail->Password = 'SATSGrammer2024.';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
+        $mail->setFrom('sistema_ats@grammermx.com', 'Sistema ATS Grammer');
+        $mail->addAddress($correoSolicitante, $nombreSolicitante);
+        $mail->addBCC('sistema_ats@grammermx.com');
+        $mail->addBCC('extern.alejandro.torres@grammer.com');
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = $asunto;
+        $mail->Body = $contenidoHTML;
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Error al enviar correo de revisión al solicitante: " . $mail->ErrorInfo);
+    }
+}
+?>
 
