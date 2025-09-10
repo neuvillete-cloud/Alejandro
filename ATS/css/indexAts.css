@@ -386,16 +386,6 @@ nav a:not(:hover)::after {
     transform: translateX(5px);
 }
 
-.imagen-banner {
-    position: absolute;
-    top: 60%;
-    right: 2rem;
-    transform: translateY(-50%);
-    max-height: 200px;
-    width: auto;
-    padding-right: 265px;
-}
-
 .logo {
     display: flex;
     align-items: center;
@@ -589,9 +579,9 @@ nav a:not(:hover)::after {
     color: #e74c3c;
 }
 
-/* ========================================= */
-/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO == */
-/* ========================================= */
+/* ======================================================= */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO MEJORADO      == */
+/* ======================================================= */
 
 @media (max-width: 1200px) {
     /* Ajustes para laptops y tablets grandes */
@@ -600,12 +590,12 @@ nav a:not(:hover)::after {
     }
     .hero {
         padding-top: 250px;
-        padding-bottom: 150px;
+        padding-bottom: 180px; /* Más espacio para el buscador */
     }
     .search-container {
         width: 80%;
         padding: 25px 30px;
-        top: 85%;
+        top: 88%; /* Ajuste de posición vertical */
     }
 }
 
@@ -614,17 +604,26 @@ nav a:not(:hover)::after {
     nav {
         padding-right: 0;
     }
+    .hero {
+        min-height: 60vh;
+        padding-bottom: 150px;
+    }
     .search-container {
         width: 90%;
+        top: 90%;
     }
     .carousel {
         width: 90%;
     }
     .carousel-btn {
         font-size: 40px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
     }
-    .prev { left: 10px; }
-    .next { right: 10px; }
+    .prev { left: 20px; }
+    .next { right: 20px; }
 }
 
 @media (max-width: 768px) {
@@ -637,29 +636,43 @@ nav a:not(:hover)::after {
         text-align: center;
         gap: 20px;
         width: 100%;
+        padding: 15px 0;
+    }
+    header {
+        padding: 0;
     }
     nav {
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
         width: 90%;
+        padding-right: 0;
     }
     .hero {
-        padding-top: 150px;
-        padding-bottom: 120px;
+        /* Se hace más corto y se elimina el margen superior grande */
+        margin-top: 80px; /* Altura del header aprox */
+        padding: 80px 20px 40px 20px;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    /* El video ahora es visible en móvil */
+    .hero-video {
+        opacity: 0.3; /* Menos opacidad para que no distraiga */
     }
     .search-container {
-        position: static; /* El buscador deja de flotar */
+        position: relative; /* Ya no flota sobre el video */
+        top: auto;
+        left: auto;
         transform: none;
         width: 100%;
         max-width: none;
-        border-radius: 0;
-        box-shadow: none;
-        padding: 20px;
-        background-color: #f1f5f9;
-    }
-    .hero-video {
-        display: none; /* Ocultamos el video en móvil para ahorrar datos y mejorar rendimiento */
+        border-radius: 12px; /* Mantiene bordes redondeados */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-top: 20px;
+        box-sizing: border-box;
     }
     .search-box {
         flex-direction: column;
@@ -672,20 +685,39 @@ nav a:not(:hover)::after {
     .white-section p {
         font-size: 18px;
         margin-top: 40px;
+        padding: 0 10px;
     }
     .carousel-container {
         margin-top: 40px;
+        padding: 0;
+        width: 100%;
     }
     .carousel {
-        width: 100%;
-        gap: 15px;
+        width: auto;
+        padding: 0 20px;
+        /* Habilitar scroll horizontal */
+        overflow-x: auto;
+        /* Ocultar la barra de scroll */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+        /* Mejorar la experiencia de scroll */
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    .carousel::-webkit-scrollbar {
+        display: none; /* Chrome, Safari y Opera */
+    }
+    .carousel-item {
+        min-width: 80%; /* Cada item ocupa el 80% del ancho */
+        scroll-snap-align: center; /* Centra el item al detener el scroll */
     }
     .carousel-btn {
-        display: none; /* Ocultamos las flechas en móvil, se usará swipe */
+        display: none; /* Ocultamos las flechas, se usa swipe/scroll */
     }
     .footer-container {
         grid-template-columns: 1fr;
         text-align: center;
+        width: 90%;
     }
     .footer-column h3::after {
         left: 50%;
@@ -708,3 +740,4 @@ nav a:not(:hover)::after {
         width: 100%;
     }
 }
+
