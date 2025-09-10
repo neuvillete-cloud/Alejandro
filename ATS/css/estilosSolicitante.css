@@ -100,19 +100,6 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
 .section-title {
     background-color:   #3b8ac9a3;
     padding: 100px 20px;
@@ -268,19 +255,18 @@ nav a:not(:hover)::after {
 }
 
 /* ================================================= */
-/* == INICIO: ESTILOS MODERNOS PARA FORMULARIO    == */
+/* == ESTILOS MODERNOS PARA FORMULARIO            == */
 /* ================================================= */
 
-/* --- Contenedor Principal del Formulario --- */
 .form-container {
-    background-color: #ffffff; /* Fondo blanco limpio */
+    background-color: #ffffff;
     color: #333;
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra más suave y profesional */
-    max-width: 600px; /* Ancho máximo mantenido */
-    margin: 0 auto; /* Centrar el formulario en la página */
-    text-align: left; /* Alineamos el texto a la izquierda */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
 }
 
 .form-container h1 {
@@ -289,38 +275,35 @@ nav a:not(:hover)::after {
     font-weight: 700;
     margin-top: 0;
     margin-bottom: 30px;
-    color: #1a253c; /* Azul oscuro corporativo */
+    color: #1a253c;
     text-align: center;
     border-bottom: 1px solid #e5e7eb;
     padding-bottom: 20px;
 }
 
-/* Usamos un grid para un espaciado consistente */
 #solicitudForm {
     display: grid;
     gap: 20px;
 }
 
-/* --- Etiquetas (Labels) --- */
 .form-container label {
     display: block;
     font-weight: 600;
     font-size: 0.9rem;
-    color: #4b5563; /* Gris oscuro */
-    margin-bottom: 5px; /* Menos espacio, el grid ya lo maneja */
+    color: #4b5563;
+    margin-bottom: 5px;
 }
 
-/* --- Campos de Entrada (Inputs) y Select --- */
 .form-container input,
 .form-container select {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #d1d5db; /* Borde gris claro */
+    border: 1px solid #d1d5db;
     border-radius: 8px;
-    background-color: #f9fafb; /* Fondo casi blanco */
+    background-color: #f9fafb;
     font-size: 1rem;
     color: #111827;
-    box-sizing: border-box; /* Importante para el padding */
+    box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -328,15 +311,13 @@ nav a:not(:hover)::after {
     color: #9ca3af;
 }
 
-/* --- Estado :focus para Inputs (Efecto al hacer clic) --- */
 .form-container input:focus,
 .form-container select:focus {
     outline: none;
-    border-color: #3b82f6; /* Borde azul al seleccionar */
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* Anillo de foco */
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
-/* Personalización de la flecha del select */
 .form-container select {
     appearance: none;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
@@ -345,7 +326,6 @@ nav a:not(:hover)::after {
     background-size: 1.5em;
 }
 
-/* --- Contenedor dinámico del Reemplazo --- */
 #reemplazoFields {
     padding: 20px;
     background-color: #f9fafb;
@@ -353,11 +333,10 @@ nav a:not(:hover)::after {
     border: 1px dashed #d1d5db;
 }
 
-/* --- Botón de Envío --- */
 .form-container .btn-submit {
     width: 100%;
     padding: 15px;
-    background-color: #063962; /* Azul corporativo del header */
+    background-color: #063962;
     color: white;
     border: none;
     border-radius: 8px;
@@ -368,25 +347,21 @@ nav a:not(:hover)::after {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Espacio para el ícono */
+    gap: 10px;
 }
 
 .form-container .btn-submit:hover {
-    background-color: #084c81; /* Un poco más claro al pasar el mouse */
-    transform: translateY(-2px); /* Efecto de elevación */
+    background-color: #084c81;
+    transform: translateY(-2px);
 }
-
-/* ================================================= */
-/* == FIN: ESTILOS MODERNOS PARA FORMULARIO       == */
-/* ================================================= */
 
 /* ========================================= */
 /* == ESTILOS PARA EL FOOTER              == */
 /* ========================================= */
 
 .main-footer {
-    background-color: #063962; /* Mismo azul oscuro del header */
-    color: #e0e0e0; /* Un blanco un poco más suave */
+    background-color: #063962;
+    color: #e0e0e0;
     padding: 60px 0 0 0;
     font-family: Arial, sans-serif;
 }
@@ -395,8 +370,8 @@ nav a:not(:hover)::after {
     width: 80%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Diseño de columnas responsivo */
-    gap: 40px; /* Espacio entre columnas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
     padding-bottom: 40px;
 }
 
@@ -412,7 +387,6 @@ nav a:not(:hover)::after {
     padding-bottom: 10px;
 }
 
-/* Línea decorativa debajo de los títulos del footer */
 .footer-column h3::after {
     content: '';
     position: absolute;
@@ -420,7 +394,7 @@ nav a:not(:hover)::after {
     bottom: 0;
     width: 40px;
     height: 2px;
-    background-color: #99d0e9; /* Mismo color de acento del header */
+    background-color: #99d0e9;
 }
 
 .footer-about {
@@ -466,7 +440,7 @@ nav a:not(:hover)::after {
     font-size: 1.2rem;
     margin-right: 20px;
     transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block; /* Necesario para la transformación */
+    display: inline-block;
 }
 
 .social-icons a:hover {
@@ -475,7 +449,7 @@ nav a:not(:hover)::after {
 }
 
 .sub-footer {
-    background-color: #042a4a; /* Un tono de azul aún más oscuro */
+    background-color: #042a4a;
     text-align: center;
     padding: 20px 0;
     font-size: 0.9rem;
@@ -484,4 +458,86 @@ nav a:not(:hover)::after {
 
 .sub-footer p {
     margin: 0;
+}
+
+
+/* ========================================= */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO == */
+/* ========================================= */
+
+@media (max-width: 1200px) {
+    /* Ajustes para pantallas de laptop y tablets grandes */
+    .header-container, .footer-container {
+        width: 90%;
+    }
+    .section-title h1 {
+        padding-right: 0; /* Eliminamos el padding grande */
+        font-size: 50px;
+        text-align: center;
+    }
+    .imagen-banner {
+        position: static; /* La imagen deja de estar flotando */
+        transform: none;
+        max-height: 150px;
+        margin-top: 20px;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Ajustes generales para tablets y móviles */
+    body {
+        -webkit-text-size-adjust: 100%; /* Evita que los móviles agranden el texto automáticamente */
+    }
+
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        width: 100%;
+    }
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        width: 90%;
+    }
+    .section-title h1 {
+        font-size: 36px;
+    }
+    .area-blanca {
+        padding: 40px 15px;
+    }
+    .form-container {
+        padding: 25px;
+    }
+    .form-container h1 {
+        font-size: 1.8rem;
+    }
+    .footer-container {
+        grid-template-columns: 1fr; /* Una sola columna en el footer */
+        text-align: center;
+    }
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes finos para móviles pequeños */
+    .section-title h1 {
+        font-size: 28px;
+    }
+    .form-container {
+        padding: 20px 15px;
+    }
+    .form-container h1 {
+        font-size: 1.6rem;
+    }
+    .form-container .btn-submit,
+    .form-container input,
+    .form-container select {
+        font-size: 0.95rem; /* Hacemos la fuente un poco más pequeña dentro del form */
+    }
 }
