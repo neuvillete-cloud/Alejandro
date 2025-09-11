@@ -661,6 +661,7 @@ header .global {
 .developer-credit .fa-heart {
     color: #e74c3c;
 }
+
 .logo {
     display: flex;
     align-items: center;
@@ -688,8 +689,12 @@ header .global {
     .sidebar.expanded + .main-content {
         margin-left: 280px;
     }
-    .hero .logo, .hero .text {
+    .hero .logo {
         left: 30px;
+    }
+    .hero .text {
+        left: 30px;
+        bottom: 50px;
     }
     .program-description h2 {
         font-size: 36px;
@@ -715,33 +720,36 @@ header .global {
     }
 
     .hero {
-        height: 60vh; /* Altura fija para tener más control */
+        height: 60vh;
         min-height: 400px;
-        padding: 0;
-        display: flex; /* Se mantiene flex para centrar el texto fácilmente */
+        padding: 0; /* Sin padding para eliminar espacios */
+        display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-end; /* Alinea el texto hacia abajo */
+        align-items: flex-start; /* Alinea el texto a la izquierda */
     }
 
-    /* Se quita la regla 'header .global' ya que no existe en el HTML */
+    header .global {
+        display: none; /* Oculta el texto 'Global' en móvil */
+    }
 
     .hero .logo {
         position: absolute;
         top: 20px;
         left: 20px;
-        width: 90px; /* Tamaño del logo más pequeño y controlado */
+        width: 100px; /* Tamaño del logo más pequeño */
     }
+
     .hero .text {
-        position: static; /* El texto fluye normalmente */
-        transform: none;
-        margin: 0; /* Se quitan márgenes que puedan causar espacios */
-        padding: 20px;
-        width: auto;
-        color: white; /* Se asegura que el color sea blanco */
+        position: relative; /* Cambiado a relativo para que fluya dentro del hero */
+        bottom: 20px;      /* Espacio desde abajo */
+        left: 20px;        /* Espacio desde la izquierda */
+        color: white;      /* Asegura el color blanco del texto */
+        text-align: left;
     }
+
     .hero h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
 
     .program-description, .seccion-destacada, .clientes-section, .certificaciones {
