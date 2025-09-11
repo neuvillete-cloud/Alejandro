@@ -7,10 +7,8 @@
 body, html {
     height: 100%;
     font-family: sans-serif;
-    /* --- INICIO DE LA CORRECCIÓN --- */
     width: 100%;
     overflow-x: hidden;
-    /* --- FIN DE LA CORRECCIÓN --- */
 }
 
 .container {
@@ -68,7 +66,6 @@ body, html {
     display: none;
 }
 
-/* Mostrar contenido solo si está expandido */
 .sidebar.expanded .sidebar-content {
     display: block;
 }
@@ -107,13 +104,12 @@ header .global {
 .hero {
     width: 100%;
     height: 100%;
-    background-image: url('../imagenes/20250425_0943_Equipo en Fábrica_remix_01jspsry8tfvjtbvjj2vbbqz1r.png'); /* Imagen de fondo */
+    background-image: url('../imagenes/20250425_0943_Equipo en Fábrica_remix_01jspsry8tfvjtbvjj2vbbqz1r.png');
     background-size: cover;
     background-position: center;
     position: relative;
 }
 
-/* Logo dentro del hero */
 .hero .logo {
     position: absolute;
     top: 20px;
@@ -136,22 +132,22 @@ header .global {
 }
 
 .icon-img {
-    width: 28px; /* Ajusta el tamaño del ícono */
-    height: 30px; /* Ajusta el tamaño del ícono */
-    fill: white;  /* Color del ícono */
-    transition: transform 0.3s ease-in-out; /* Animación para hover */
+    width: 28px;
+    height: 30px;
+    fill: white;
+    transition: transform 0.3s ease-in-out;
 }
 
 .icon-img:hover {
-    transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
+    transform: scale(1.2);
 }
 
 .icon-global {
     width: 30px;
     height: 30px;
     margin-right: 8px;
-    margin-left: -10px;   /* Mueve hacia la izquierda */
-    margin-top: 5px;     /* Mueve hacia abajo */
+    margin-left: -10px;
+    margin-top: 5px;
     vertical-align: middle;
 }
 
@@ -179,36 +175,32 @@ header .global {
 }
 
 .main-content {
-    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
+    margin-left: 80px;
     transition: margin-left 0.3s ease;
-    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
+    flex-grow: 1;
 }
 
 .sidebar.expanded + .main-content {
-    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
+    margin-left: 350px;
 }
 
-
-/* --- ESTILOS PARA EL NUEVO CONTENIDO DEL SIDEBAR --- */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espacio entre enlaces */
-    padding-top: 80px; /* Espacio desde la parte superior */
+    gap: 10px;
+    padding-top: 80px;
 }
 
 .sidebar-nav a {
     display: flex;
     align-items: center;
-    gap: 15px; /* Espacio entre el ícono y el texto */
+    gap: 15px;
     padding: 15px 20px;
     color: white;
     text-decoration: none;
     font-size: 1.1rem;
     border-radius: 8px;
     transition: background-color 0.2s ease;
-
-    /* Ocultos por defecto para la animación */
     opacity: 0;
     transform: translateX(-100%);
 }
@@ -218,20 +210,16 @@ header .global {
 }
 
 .sidebar-nav a i {
-    width: 20px; /* Alinea los íconos */
+    width: 20px;
     text-align: center;
 }
 
-
-/* --- LA NUEVA ANIMACIÓN --- */
-/* Eliminamos la animación de los íconos originales */
 .sidebar.bounce .top-icon,
 .sidebar.bounce .middle-icon,
 .sidebar.bounce .bottom-icon {
     animation: none;
 }
 
-/* Definimos una animación de entrada con rebote más atractiva */
 @keyframes slideInBounce {
     0% {
         transform: translateX(-100%);
@@ -250,12 +238,10 @@ header .global {
     }
 }
 
-/* Aplicamos la nueva animación a los enlaces cuando el sidebar se expande */
 .sidebar.expanded .sidebar-nav a {
     animation: slideInBounce 0.6s forwards ease-out;
 }
 
-/* Efecto escalonado para cada enlace */
 .sidebar.expanded .sidebar-nav a:nth-child(1) {
     animation-delay: 0.1s;
 }
@@ -282,7 +268,7 @@ header .global {
 }
 
 .program-description h2 {
-    font-size: 48px; /* Muy cercano al tamaño del título de la imagen */
+    font-size: 48px;
     font-weight: 700;
     color: #12123d;
     margin-bottom: 100px;
@@ -290,7 +276,7 @@ header .global {
 }
 
 .program-description p {
-    font-size: 22px; /* Ahora igual que el cuerpo de texto del ejemplo */
+    font-size: 22px;
     font-weight: 400;
     line-height: 1.9;
     margin-bottom: 24px;
@@ -300,7 +286,7 @@ header .global {
 .program-description h3 {
     font-size: 32px;
     font-weight: 600;
-    color: #003366; /* Azul oscuro que combina bien con el #12123d del h2 */
+    color: #003366;
     margin-top: 60px;
     margin-bottom: 30px;
     border-left: 6px solid #12123d;
@@ -310,7 +296,7 @@ header .global {
 .grammer-stats {
     display: flex;
     justify-content: center;
-    align-items: stretch; /* Estira las tarjetas para que todas tengan la misma altura */
+    align-items: stretch;
     flex-wrap: wrap;
     gap: 30px;
     padding: 60px 20px;
@@ -322,7 +308,7 @@ header .global {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     width: 250px;
-    min-height: 30px; /* Altura mínima fija para todas */
+    min-height: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -341,7 +327,7 @@ header .global {
 }
 
 .stat-card .text {
-    flex-grow: 1; /* Para que el contenido se distribuya bien */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -423,7 +409,7 @@ header .global {
 
 .clientes-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Solo 2 columnas */
+    grid-template-columns: repeat(2, 1fr);
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
@@ -484,7 +470,7 @@ header .global {
 
 .titulo-clientes h2 {
     font-size: 2.5rem;
-    color: #002855; /* azul oscuro Grammer */
+    color: #002855;
     margin-bottom: 10px;
 }
 
@@ -654,7 +640,7 @@ header .global {
 }
 .developer-credit {
     font-size: 0.8rem;
-    color: #a0a0a0;
+    color: #a0a0e0;
     margin-top: 8px;
     margin-bottom: 0;
 }
@@ -678,11 +664,13 @@ header .global {
     line-height: 1;
     color: white;
 }
+
 /* ======================================================= */
-/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO (CORREGIDO)   == */
 /* ======================================================= */
 
-@media (max-width: 1024px) {
+/* --- ESTILOS PARA TABLET (769px a 1024px) --- */
+@media (min-width: 769px) and (max-width: 1024px) {
     .sidebar.expanded {
         width: 280px;
     }
@@ -707,6 +695,7 @@ header .global {
     }
 }
 
+/* --- ESTILOS PARA MÓVIL (hasta 768px) --- */
 @media (max-width: 768px) {
     body {
         -webkit-text-size-adjust: 100%;
@@ -715,15 +704,14 @@ header .global {
         width: calc(100% - 80px);
     }
 
-    /* --- INICIO DE LA CORRECCIÓN --- */
+    /* Ancho reducido del sidebar y margen ajustado */
     .sidebar.expanded {
-        width: 250px; /* Ancho reducido para móviles */
+        width: 250px;
     }
     .sidebar.expanded + .main-content {
-        margin-left: 250px; /* Margen ajustado para el contenido */
+        margin-left: 250px;
         width: calc(100% - 250px);
     }
-    /* --- FIN DE LA CORRECCIÓN --- */
 
     .hero {
         height: 60vh;
@@ -789,10 +777,7 @@ header .global {
         left: 50%;
         transform: translateX(-50%);
     }
-    .footer-column p {
-        justify-content: center;
-    }
-    .footer-column .logo {
+    .footer-column p, .footer-column .logo {
         justify-content: center;
     }
 }
