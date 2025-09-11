@@ -272,7 +272,7 @@ header .global {
 }
 
 .tab-image img {
-    max-width: 100%; /* Corregido de 200% a 100% */
+    max-width: 200%; /* Corregido de 200% a 100% */
     height: auto;
     border-radius: 8px;
     margin-top: 20px;
@@ -358,7 +358,7 @@ header .global {
     max-width: 350px;
 }
 .proceso-img img {
-    width: 100%; /* Corregido de 200% a 100% */
+    width: 200%; /* Corregido de 200% a 100% */
     height: auto;
     border-radius: 10px;
 }
