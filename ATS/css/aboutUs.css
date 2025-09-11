@@ -7,10 +7,8 @@
 body, html {
     height: 100%;
     font-family: sans-serif;
-    /* --- INICIO DE LA CORRECCIÓN --- */
     width: 100%;
     overflow-x: hidden;
-    /* --- FIN DE LA CORRECCIÓN --- */
 }
 
 .container {
@@ -90,7 +88,16 @@ body, html {
 .main-content {
     flex: 1;
     position: relative;
+    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
+    transition: margin-left 0.3s ease;
+    width: calc(100% - 80px); /* Ancho dinámico */
 }
+
+.sidebar.expanded + .main-content {
+    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
+    width: calc(100% - 350px);
+}
+
 
 header .global {
     position: absolute;
@@ -177,17 +184,6 @@ header .global {
 .sidebar.expanded .sidebar-content {
     display: block;
 }
-
-.main-content {
-    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
-    transition: margin-left 0.3s ease;
-    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
-}
-
-.sidebar.expanded + .main-content {
-    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
-}
-
 
 /* --- ESTILOS PARA EL NUEVO CONTENIDO DEL SIDEBAR --- */
 .sidebar-nav {
@@ -664,13 +660,7 @@ header .global {
 
 /* === ESTILOS DEL FOOTER QUE MENCIONASTE (SIN CAMBIOS) === */
 .imagen-banner {
-    position: absolute;
-    top: 60%;
-    right: 2rem;
-    transform: translateY(-50%);
-    max-height: 200px;
-    width: auto;
-    padding-right: 265px;
+    display: none; /* Oculto por defecto, ya que no se usa en esta página */
 }
 
 .logo {
@@ -703,16 +693,11 @@ header .global {
     .sidebar.expanded + .main-content {
         margin-left: 280px;
     }
-    .hero .logo {
+    .hero .logo, .hero .text {
         left: 30px;
-    }
-    .hero .text {
-        left: 30px;
-        bottom: 50px;
     }
     .program-description h2 {
         font-size: 36px;
-        margin-bottom: 60px;
     }
     .program-description p {
         font-size: 18px;
@@ -736,7 +721,7 @@ header .global {
 
     /* --- INICIO DE LA CORRECCIÓN PARA HERO Y LOGO --- */
     .hero {
-        height: auto; /* Altura automática para que se ajuste al contenido */
+        height: auto;
         min-height: 50vh;
         padding: 20px;
         display: flex;
@@ -744,26 +729,25 @@ header .global {
         justify-content: center;
         align-items: center;
     }
-    .hero .logo, .hero .text {
-        position: static; /* Dejan de flotar para centrarse correctamente */
-        transform: none;
-        margin: 15px auto;
-        width: auto;
-        max-width: 90%; /* Evita que el logo sea más grande que la pantalla */
-        left: auto;
-        bottom: auto;
-        text-align: center;
-    }
-    .hero .logo img { /* Si el logo es una imagen dentro del div .logo */
-        max-width: 100%;
-        height: auto;
-    }
     header .global {
+        position: static; /* Se quita la posición absoluta */
+        transform: none;
+        margin: 0;
+        padding: 0;
+        /* Se mueve al .main-content o a un header propio si es necesario */
+    }
+    .hero .logo {
         position: static;
         transform: none;
-        margin: 20px auto;
-        padding: 0 15px;
-        color: #333;
+        width: 100px; /* Tamaño reducido y fijo para el logo */
+        margin: 0 auto 15px auto; /* Centrado y con margen inferior */
+    }
+    .hero .text {
+        position: static;
+        transform: none;
+        width: auto;
+        margin: 0;
+        text-align: center;
     }
     .hero h1 {
         font-size: 2rem;
