@@ -661,7 +661,7 @@ nav a:not(:hover)::after {
     }
     .hero {
         margin-top: 0;
-        padding: 60px 0; /* Se quita padding lateral para que el video ocupe todo */
+        padding: 60px 0; /* Se quita padding lateral */
         min-height: 50vh;
         display: flex;
         flex-direction: column;
@@ -673,11 +673,12 @@ nav a:not(:hover)::after {
         top: auto;
         left: auto;
         transform: none;
-        width: 90%; /* Ancho del 90% para dejar márgenes */
-        max-width: 500px;
+        width: 100%; /* Ocupa todo el ancho */
+        max-width: none;
         padding: 25px;
-        margin: 20px auto 0 auto; /* Se centra automáticamente */
+        margin: 20px auto 0 auto;
         box-sizing: border-box;
+        border-radius: 0; /* Sin esquinas redondeadas */
     }
     .search-box {
         flex-direction: column;
