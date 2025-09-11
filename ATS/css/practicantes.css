@@ -698,6 +698,9 @@ header .global {
     .proceso-img {
         max-width: 100%;
     }
+    .proceso-img img {
+        width: 100%; /* Asegura que la imagen se ajuste en móviles */
+    }
     .proceso-info {
         padding: 0;
         width: 100%;
