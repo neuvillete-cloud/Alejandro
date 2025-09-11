@@ -7,8 +7,10 @@
 body, html {
     height: 100%;
     font-family: sans-serif;
+    /* --- INICIO DE LA CORRECCIÓN --- */
     width: 100%;
     overflow-x: hidden;
+    /* --- FIN DE LA CORRECCIÓN --- */
 }
 
 .container {
@@ -88,16 +90,7 @@ body, html {
 .main-content {
     flex: 1;
     position: relative;
-    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
-    transition: margin-left 0.3s ease;
-    width: calc(100% - 80px); /* Ancho dinámico */
 }
-
-.sidebar.expanded + .main-content {
-    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
-    width: calc(100% - 350px);
-}
-
 
 header .global {
     position: absolute;
@@ -184,6 +177,17 @@ header .global {
 .sidebar.expanded .sidebar-content {
     display: block;
 }
+
+.main-content {
+    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
+    transition: margin-left 0.3s ease;
+    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
+}
+
+.sidebar.expanded + .main-content {
+    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
+}
+
 
 /* --- ESTILOS PARA EL NUEVO CONTENIDO DEL SIDEBAR --- */
 .sidebar-nav {
@@ -657,7 +661,6 @@ header .global {
 .developer-credit .fa-heart {
     color: #e74c3c;
 }
-
 .logo {
     display: flex;
     align-items: center;
@@ -685,12 +688,8 @@ header .global {
     .sidebar.expanded + .main-content {
         margin-left: 280px;
     }
-    .hero .logo {
+    .hero .logo, .hero .text {
         left: 30px;
-    }
-    .hero .text {
-        left: 30px;
-        bottom: 50px;
     }
     .program-description h2 {
         font-size: 36px;
@@ -716,28 +715,30 @@ header .global {
     }
 
     .hero {
-        height: auto;
-        min-height: 50vh;
-        padding: 0; /* Se quita el padding para eliminar espacios blancos */
-        display: flex;
+        height: 60vh; /* Altura fija para tener más control */
+        min-height: 400px;
+        padding: 0;
+        display: flex; /* Se mantiene flex para centrar el texto fácilmente */
         flex-direction: column;
-        justify-content: space-between; /* Distribuye el espacio */
+        justify-content: center;
+        align-items: center;
     }
-    header .global, .hero .text {
-        position: static;
-        transform: none;
-        margin: 20px auto;
-        padding: 0 15px;
-        color: #333; /* Color oscuro para ser legible en fondo blanco si aplica */
-    }
+
+    /* Se quita la regla 'header .global' ya que no existe en el HTML */
+
     .hero .logo {
-        position: absolute; /* Se mantiene absoluto para la esquina */
-        top: 15px; /* Más pegado a la esquina */
-        left: 15px;
-        width: 80px; /* Tamaño del logo más pequeño */
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 90px; /* Tamaño del logo más pequeño y controlado */
     }
     .hero .text {
-        margin: auto; /* Centra el texto vertical y horizontalmente */
+        position: static; /* El texto fluye normalmente */
+        transform: none;
+        margin: 0; /* Se quitan márgenes que puedan causar espacios */
+        padding: 20px;
+        width: auto;
+        color: white; /* Se asegura que el color sea blanco */
     }
     .hero h1 {
         font-size: 2rem;
