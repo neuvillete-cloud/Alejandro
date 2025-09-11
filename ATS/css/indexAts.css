@@ -676,9 +676,9 @@ nav a:not(:hover)::after {
         width: 100%;
         max-width: none;
         padding: 25px;
-        margin: 20px 0 0 0; /* CORRECCIÓN: Se quita el margen automático */
+        margin: 20px auto 0 auto;
         box-sizing: border-box;
-        border-radius: 0; /* CORRECCIÓN: Sin esquinas redondeadas */
+        border-radius: 0;
     }
     .search-box {
         flex-direction: column;
