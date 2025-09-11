@@ -272,7 +272,7 @@ header .global {
 }
 
 .tab-image img {
-    max-width: 200%; /* Corregido de 200% a 100% */
+    max-width: 100%; /* Corregido de 200% a 100% */
     height: auto;
     border-radius: 8px;
     margin-top: 20px;
@@ -358,7 +358,7 @@ header .global {
     max-width: 350px;
 }
 .proceso-img img {
-    width: 200%; /* Corregido de 200% a 100% */
+    width: 100%; /* Corregido de 200% a 100% */
     height: auto;
     border-radius: 10px;
 }
@@ -629,7 +629,11 @@ header .global {
         width: calc(100% - 250px);
     }
 
-    /* --- INICIO DE LA CORRECCIÓN --- */
+    /* Ocultar "Global" en móvil */
+    header .global {
+        display: none;
+    }
+
     /* Ajustes del Hero */
     .hero {
         height: 50vh; /* Altura reducida para que la imagen no sea tan grande */
@@ -643,7 +647,7 @@ header .global {
     .hero .logo {
         top: 20px;
         left: 20px;
-        width: 100px;
+        width: 70px; /* Ajustado a 70px */
     }
     .hero .text {
         position: static; /* Dejamos que flexbox controle la posición */
@@ -655,7 +659,6 @@ header .global {
     .hero h1 {
         font-size: 1.9rem; /* Título un poco más pequeño */
     }
-    /* --- FIN DE LA CORRECCIÓN --- */
 
     /* Ajustes generales de texto y espaciado */
     .program-description, .tabs-content {
