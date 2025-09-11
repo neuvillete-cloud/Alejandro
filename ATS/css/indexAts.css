@@ -4,7 +4,7 @@ body {
     background-color: #140c33;
     color: white;
     overflow-x: hidden;
-    padding-top: 90px; /* MODIFICACIÓN: Empuja todo el contenido hacia abajo para dejar espacio al header fijo */
+    /* MODIFICACIÓN: Se elimina el padding-top de aquí para un control más fino en las media queries */
 }
 
 header {
@@ -101,12 +101,26 @@ nav a:not(:hover)::after {
 }
 
 .hero {
-    margin-top: 0; /* MODIFICACIÓN: Se elimina el margen superior, ahora controlado por el padding del body */
+    margin-top: 90px; /* Espacio para el header fijo en escritorio */
     position: relative;
     text-align: center;
     padding: 353px 20px 200px 20px;
     overflow: hidden;
+    background-color: #140c33; /* Color de fondo por si el video no carga */
 }
+
+/* Capa oscura sobre el video para solucionar el tinte morado */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+}
+
 
 .hero-video {
     position: absolute;
@@ -117,7 +131,7 @@ nav a:not(:hover)::after {
     z-index: -1;
     transform: translate(-50%, -50%);
     object-fit: cover;
-    opacity: 0.8;
+    /* Se quita la opacidad de aquí para evitar el tinte morado */
 }
 
 .search-container {
@@ -628,41 +642,38 @@ nav a:not(:hover)::after {
 }
 
 @media (max-width: 768px) {
-    /* Ajustes generales para tablets y móviles */
+    /* --- CORRECCIÓN: Ajustes generales para tablets y móviles --- */
     body {
         -webkit-text-size-adjust: 100%;
-        padding-top: 140px; /* MODIFICACIÓN: Espacio para el header que ahora es más alto */
+        padding-top: 140px; /* Espacio dinámico para el header que ahora es más alto */
+    }
+    header {
+        padding: 0; /* Quitamos el padding para que el contenedor ocupe todo */
     }
     .header-container {
         flex-direction: column;
         text-align: center;
-        gap: 20px;
+        gap: 15px; /* Menos espacio */
         width: 100%;
         padding: 15px 0;
-    }
-    header {
-        padding: 0;
     }
     nav {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 15px;
+        gap: 10px 15px; /* Espacio vertical y horizontal */
         width: 90%;
         padding-right: 0;
     }
     .hero {
-        margin-top: 0; /* MODIFICACIÓN: Se quita el margen que ahora controla el body */
-        padding: 80px 20px 40px 20px;
-        min-height: 40vh; /* Se reduce la altura mínima */
+        margin-top: 0;
+        padding: 40px 20px;
+        min-height: 50vh; /* Altura más corta */
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Alinea el contenido hacia abajo */
-    }
-    .hero-video {
-        opacity: 0.3;
+        justify-content: center; /* Centra el contenido verticalmente */
     }
     .search-container {
-        position: relative;
+        position: relative; /* Ya no flota */
         top: auto;
         left: auto;
         transform: none;
@@ -671,7 +682,7 @@ nav a:not(:hover)::after {
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         padding: 25px;
-        margin-top: auto; /* Empuja el buscador hacia abajo */
+        margin-top: 20px; /* Espacio respecto al contenido del hero (si lo hubiera) */
         box-sizing: border-box;
     }
     .search-box {
@@ -725,7 +736,7 @@ nav a:not(:hover)::after {
 @media (max-width: 480px) {
     /* Ajustes finos para móviles pequeños */
     body {
-        padding-top: 130px; /* Un poco menos de espacio para pantallas muy pequeñas */
+        padding-top: 130px;
     }
     .white-section p {
         font-size: 16px;
