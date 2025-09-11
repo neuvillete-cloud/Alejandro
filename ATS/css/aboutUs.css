@@ -704,17 +704,17 @@ header .global {
     /* --- INICIO DE LA CORRECCIÓN --- */
     /* Ancho reducido para el sidebar COLAPSADO y elementos dependientes */
     .sidebar {
-        width: 60px;
+        width: 50px;
     }
     .sidebar-icons {
-        width: 60px;
+        width: 50px;
     }
     .sidebar-content {
-        margin-left: 60px;
+        margin-left: 50px;
     }
     .main-content {
-        margin-left: 60px;
-        width: calc(100% - 60px);
+        margin-left: 50px;
+        width: calc(100% - 50px);
     }
     /* --- FIN DE LA CORRECCIÓN --- */
 
