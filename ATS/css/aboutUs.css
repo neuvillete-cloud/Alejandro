@@ -714,10 +714,16 @@ header .global {
     .main-content {
         width: calc(100% - 80px);
     }
-    .sidebar.expanded + .main-content {
-        margin-left: 280px;
-        width: calc(100% - 280px);
+
+    /* --- INICIO DE LA CORRECCIÓN --- */
+    .sidebar.expanded {
+        width: 250px; /* Ancho reducido para móviles */
     }
+    .sidebar.expanded + .main-content {
+        margin-left: 250px; /* Margen ajustado para el contenido */
+        width: calc(100% - 250px);
+    }
+    /* --- FIN DE LA CORRECCIÓN --- */
 
     .hero {
         height: 60vh;
@@ -786,10 +792,7 @@ header .global {
     .footer-column p {
         justify-content: center;
     }
-
-    /* --- INICIO DE LA CORRECCIÓN --- */
     .footer-column .logo {
-        justify-content: center; /* Esto centrará tu logo y texto */
+        justify-content: center;
     }
-    /* --- FIN DE LA CORRECCIÓN --- */
 }
