@@ -709,6 +709,7 @@ header .global {
     /* Corrección de Galería */
     .galeria {
         grid-template-columns: 1fr;
+        padding: 0 15px; /* Añade espaciado horizontal */
     }
     .imagen img {
         max-height: 150px; /* Hacemos las imágenes de la galería un poco más pequeñas */
