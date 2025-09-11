@@ -64,6 +64,7 @@ body, html {
     display: none;
 }
 
+/* Mostrar contenido solo si está expandido */
 .sidebar.expanded .sidebar-content {
     display: block;
 }
@@ -102,12 +103,13 @@ header .global {
 .hero {
     width: 100%;
     height: 100%;
-    background-image: url('../imagenes/20250425_0943_Equipo en Fábrica_remix_01jspsry8tfvjtbvjj2vbbqz1r.png');
+    background-image: url('../imagenes/20250425_0943_Equipo en Fábrica_remix_01jspsry8tfvjtbvjj2vbbqz1r.png'); /* Imagen de fondo */
     background-size: cover;
     background-position: center;
     position: relative;
 }
 
+/* Logo dentro del hero */
 .hero .logo {
     position: absolute;
     top: 20px;
@@ -130,22 +132,22 @@ header .global {
 }
 
 .icon-img {
-    width: 28px;
-    height: 30px;
-    fill: white;
-    transition: transform 0.3s ease-in-out;
+    width: 28px; /* Ajusta el tamaño del ícono */
+    height: 30px; /* Ajusta el tamaño del ícono */
+    fill: white;  /* Color del ícono */
+    transition: transform 0.3s ease-in-out; /* Animación para hover */
 }
 
 .icon-img:hover {
-    transform: scale(1.2);
+    transform: scale(1.2); /* Efecto de aumento al pasar el ratón */
 }
 
 .icon-global {
     width: 30px;
     height: 30px;
     margin-right: 8px;
-    margin-left: -10px;
-    margin-top: 5px;
+    margin-left: -10px;   /* Mueve hacia la izquierda */
+    margin-top: 5px;     /* Mueve hacia abajo */
     vertical-align: middle;
 }
 
@@ -168,33 +170,41 @@ header .global {
     100% { transform: translateX(0); }
 }
 
+.sidebar.expanded .sidebar-content {
+    display: block;
+}
+
 .main-content {
-    margin-left: 80px;
+    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
     transition: margin-left 0.3s ease;
-    flex-grow: 1;
+    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
 }
 
 .sidebar.expanded + .main-content {
-    margin-left: 350px;
+    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
 }
 
+
+/* --- ESTILOS PARA EL NUEVO CONTENIDO DEL SIDEBAR --- */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding-top: 80px;
+    gap: 10px; /* Espacio entre enlaces */
+    padding-top: 80px; /* Espacio desde la parte superior */
 }
 
 .sidebar-nav a {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 15px; /* Espacio entre el ícono y el texto */
     padding: 15px 20px;
     color: white;
     text-decoration: none;
     font-size: 1.1rem;
     border-radius: 8px;
     transition: background-color 0.2s ease;
+
+    /* Ocultos por defecto para la animación */
     opacity: 0;
     transform: translateX(-100%);
 }
@@ -204,25 +214,56 @@ header .global {
 }
 
 .sidebar-nav a i {
-    width: 20px;
+    width: 20px; /* Alinea los íconos */
     text-align: center;
 }
 
-@keyframes slideInBounce {
-    0% { transform: translateX(-100%); opacity: 0; }
-    60% { transform: translateX(10px); opacity: 1; }
-    80% { transform: translateX(-5px); }
-    100% { transform: translateX(0); opacity: 1; }
+
+/* --- LA NUEVA ANIMACIÓN --- */
+/* Eliminamos la animación de los íconos originales */
+.sidebar.bounce .top-icon,
+.sidebar.bounce .middle-icon,
+.sidebar.bounce .bottom-icon {
+    animation: none;
 }
 
+/* Definimos una animación de entrada con rebote más atractiva */
+@keyframes slideInBounce {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    60% {
+        transform: translateX(10px);
+        opacity: 1;
+    }
+    80% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Aplicamos la nueva animación a los enlaces cuando el sidebar se expande */
 .sidebar.expanded .sidebar-nav a {
     animation: slideInBounce 0.6s forwards ease-out;
 }
 
-.sidebar.expanded .sidebar-nav a:nth-child(1) { animation-delay: 0.1s; }
-.sidebar.expanded .sidebar-nav a:nth-child(2) { animation-delay: 0.2s; }
-.sidebar.expanded .sidebar-nav a:nth-child(3) { animation-delay: 0.3s; }
-.sidebar.expanded .sidebar-nav a:nth-child(4) { animation-delay: 0.4s; }
+/* Efecto escalonado para cada enlace */
+.sidebar.expanded .sidebar-nav a:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.sidebar.expanded .sidebar-nav a:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.sidebar.expanded .sidebar-nav a:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.sidebar.expanded .sidebar-nav a:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 .program-description {
     background-color: white;
@@ -237,7 +278,7 @@ header .global {
 }
 
 .program-description h2 {
-    font-size: 48px;
+    font-size: 48px; /* Muy cercano al tamaño del título de la imagen */
     font-weight: 700;
     color: #12123d;
     margin-bottom: 100px;
@@ -245,7 +286,7 @@ header .global {
 }
 
 .program-description p {
-    font-size: 22px;
+    font-size: 22px; /* Ahora igual que el cuerpo de texto del ejemplo */
     font-weight: 400;
     line-height: 1.9;
     margin-bottom: 24px;
@@ -255,7 +296,7 @@ header .global {
 .program-description h3 {
     font-size: 32px;
     font-weight: 600;
-    color: #003366;
+    color: #003366; /* Azul oscuro que combina bien con el #12123d del h2 */
     margin-top: 60px;
     margin-bottom: 30px;
     border-left: 6px solid #12123d;
@@ -265,7 +306,7 @@ header .global {
 .grammer-stats {
     display: flex;
     justify-content: center;
-    align-items: stretch;
+    align-items: stretch; /* Estira las tarjetas para que todas tengan la misma altura */
     flex-wrap: wrap;
     gap: 30px;
     padding: 60px 20px;
@@ -277,7 +318,7 @@ header .global {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     width: 250px;
-    min-height: 30px;
+    min-height: 30px; /* Altura mínima fija para todas */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -296,7 +337,7 @@ header .global {
 }
 
 .stat-card .text {
-    flex-grow: 1;
+    flex-grow: 1; /* Para que el contenido se distribuya bien */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -364,6 +405,23 @@ header .global {
     color: white;
 }
 
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .seccion-destacada {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .contenido-imagen img {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .contenido-texto {
+        max-width: 90%;
+    }
+}
+
 .clientes-section {
     padding: 50px 20px;
     background-color: #f9f9f9;
@@ -378,7 +436,7 @@ header .global {
 
 .clientes-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* Solo 2 columnas */
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
@@ -432,6 +490,13 @@ header .global {
     background-color: #1565c0;
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+    .clientes-grid {
+        grid-template-columns: 1fr; /* 1 columna en pantallas chicas */
+    }
+}
+
 .titulo-clientes {
     text-align: center;
     margin-bottom: 40px;
@@ -439,7 +504,7 @@ header .global {
 
 .titulo-clientes h2 {
     font-size: 2.5rem;
-    color: #002855;
+    color: #002855; /* azul oscuro Grammer */
     margin-bottom: 10px;
 }
 
@@ -522,9 +587,13 @@ header .global {
     background: #0055a5;
 }
 
+/* ========================================= */
+/* == ESTILOS PARA EL FOOTER              == */
+/* ========================================= */
+
 .main-footer {
-    background-color: #063962;
-    color: #e0e0e0;
+    background-color: #063962; /* Mismo azul oscuro del header */
+    color: #e0e0e0; /* Un blanco un poco más suave */
     padding: 60px 0 0 0;
     font-family: Arial, sans-serif;
 }
@@ -533,8 +602,8 @@ header .global {
     width: 80%;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Diseño de columnas responsivo */
+    gap: 40px; /* Espacio entre columnas */
     padding-bottom: 40px;
 }
 
@@ -550,6 +619,7 @@ header .global {
     padding-bottom: 10px;
 }
 
+/* Línea decorativa debajo de los títulos del footer */
 .footer-column h3::after {
     content: '';
     position: absolute;
@@ -557,7 +627,7 @@ header .global {
     bottom: 0;
     width: 40px;
     height: 2px;
-    background-color: #99d0e9;
+    background-color: #99d0e9; /* Mismo color de acento del header */
 }
 
 .footer-about {
@@ -603,7 +673,7 @@ header .global {
     font-size: 1.2rem;
     margin-right: 20px;
     transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block;
+    display: inline-block; /* Necesario para la transformación */
 }
 
 .social-icons a:hover {
@@ -612,7 +682,7 @@ header .global {
 }
 
 .sub-footer {
-    background-color: #042a4a;
+    background-color: #042a4a; /* Un tono de azul aún más oscuro */
     text-align: center;
     padding: 20px 0;
     font-size: 0.9rem;
@@ -631,124 +701,32 @@ header .global {
 }
 
 .developer-credit .fa-heart {
-    color: #e74c3c;
+    color: #e74c3c; /* Un color rojo para el corazón */
 }
 
-/* ======================================================= */
-/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
-/* ======================================================= */
-
-@media (max-width: 1024px) {
-    /* Ajustes para tablets en modo horizontal y pantallas más pequeñas */
-    .sidebar.expanded {
-        width: 280px; /* Hacemos el sidebar un poco más estrecho */
-    }
-    .sidebar.expanded + .main-content {
-        margin-left: 280px;
-    }
-    .hero .logo {
-        left: 30px;
-    }
-    .hero .text {
-        left: 30px;
-        bottom: 50px;
-    }
-    .program-description h2 {
-        font-size: 36px;
-        margin-bottom: 60px;
-    }
-    .program-description p {
-        font-size: 18px;
-    }
-    .clientes-grid {
-        grid-template-columns: 1fr; /* Una columna para tablets */
-    }
+.imagen-banner {
+    position: absolute;
+    top: 60%;
+    right: 2rem;
+    transform: translateY(-50%);
+    max-height: 200px;
+    width: auto;
+    padding-right: 265px;
 }
 
-@media (max-width: 768px) {
-    /* Ajustes generales para tablets y móviles */
-    body {
-        -webkit-text-size-adjust: 100%;
-    }
-    .sidebar {
-        width: 100%;
-        height: 60px; /* Se convierte en una barra superior */
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        bottom: 0; /* Se posiciona abajo */
-        top: auto;
-    }
-    .sidebar.expanded {
-        height: 100%; /* Se expande a pantalla completa */
-        width: 100%;
-    }
-    .sidebar-icons {
-        flex-direction: row;
-        width: 100%;
-        justify-content: space-around;
-        padding: 0 20px;
-    }
-    .sidebar.expanded .sidebar-icons {
-        justify-content: flex-start; /* Icono de cerrar a la izquierda */
-    }
-    .sidebar.expanded .sidebar-content {
-        margin-left: 0;
-        padding-top: 80px; /* Espacio para el icono de cerrar */
-    }
-    .main-content {
-        margin-left: 0; /* Sin margen, el sidebar ya no está a la izquierda */
-        padding-bottom: 60px; /* Espacio para que el contenido no quede debajo de la barra inferior */
-    }
-    .sidebar.expanded + .main-content {
-        margin-left: 0;
-        display: none; /* Ocultamos el contenido principal cuando el menú está abierto */
-    }
-    header .global, .hero .logo, .hero .text {
-        position: static; /* Todos los elementos dejan de flotar */
-        transform: none;
-        text-align: center;
-        margin: 20px auto;
-        padding: 0 15px;
-    }
-    .hero {
-        height: auto;
-        min-height: 50vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .hero h1 {
-        font-size: 2rem;
-    }
-    .program-description {
-        padding: 40px 15px;
-    }
-    .program-description h2 {
-        font-size: 28px;
-        margin-bottom: 40px;
-    }
-    .program-description p {
-        font-size: 16px;
-    }
-    .seccion-destacada {
-        flex-direction: column;
-        padding: 30px 15px;
-    }
-    .contenido-imagen img {
-        width: 100%;
-    }
-    .footer-container {
-        grid-template-columns: 1fr;
-        width: 90%;
-        text-align: center;
-    }
-    .footer-column h3::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    .footer-column p {
-        justify-content: center;
-    }
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.logo-texto h1, .logo-texto span {
+    margin: 0;
+    line-height: 1;
+    color: white;
 }
