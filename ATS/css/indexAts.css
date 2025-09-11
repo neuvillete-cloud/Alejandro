@@ -639,11 +639,11 @@ nav a:not(:hover)::after {
 @media (max-width: 768px) {
     body {
         -webkit-text-size-adjust: 100%;
-        padding-top: 0; /* El header ya no es fijo */
+        padding-top: 0;
     }
     header {
         padding: 0;
-        position: static; /* El header fluye con la página */
+        position: static;
     }
     .header-container {
         flex-direction: column;
@@ -661,7 +661,7 @@ nav a:not(:hover)::after {
     }
     .hero {
         margin-top: 0;
-        padding: 60px 0; /* Se quita padding lateral */
+        padding: 60px 0;
         min-height: 50vh;
         display: flex;
         flex-direction: column;
@@ -673,12 +673,12 @@ nav a:not(:hover)::after {
         top: auto;
         left: auto;
         transform: none;
-        width: 100%; /* Ocupa todo el ancho */
+        width: 100%;
         max-width: none;
         padding: 25px;
-        margin: 20px auto 0 auto;
+        margin: 20px 0 0 0; /* CORRECCIÓN: Se quita el margen automático */
         box-sizing: border-box;
-        border-radius: 0; /* Sin esquinas redondeadas */
+        border-radius: 0; /* CORRECCIÓN: Sin esquinas redondeadas */
     }
     .search-box {
         flex-direction: column;
