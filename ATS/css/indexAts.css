@@ -661,11 +661,11 @@ nav a:not(:hover)::after {
     }
     .hero {
         margin-top: 0;
-        padding: 60px 0;
+        padding: 0; /* Se quita todo el padding */
         min-height: 50vh;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-end; /* Alinea el contenido hacia abajo */
         box-sizing: border-box;
     }
     .search-container {
@@ -676,7 +676,7 @@ nav a:not(:hover)::after {
         width: 100%;
         max-width: none;
         padding: 25px;
-        margin: 20px auto 0 auto;
+        margin: 0; /* Se quita el margen */
         box-sizing: border-box;
         border-radius: 0;
     }
