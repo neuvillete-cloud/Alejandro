@@ -629,21 +629,33 @@ header .global {
         width: calc(100% - 250px);
     }
 
+    /* --- INICIO DE LA CORRECCIÓN --- */
     /* Ajustes del Hero */
-    .hero { height: 60vh; }
-    header .global { display: none; }
+    .hero {
+        height: 50vh; /* Altura reducida para que la imagen no sea tan grande */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end; /* Alinea el texto al pie de la imagen */
+        align-items: flex-start;
+        padding: 20px; /* Espaciado interno para el texto */
+        background-position: center 30%; /* Centra mejor la imagen en los rostros */
+    }
     .hero .logo {
         top: 20px;
         left: 20px;
         width: 100px;
     }
     .hero .text {
-        position: relative;
-        bottom: 20px;
-        left: 20px;
-        padding-right: 20px;
+        position: static; /* Dejamos que flexbox controle la posición */
+        bottom: auto;
+        left: auto;
+        padding-right: 0;
+        width: 100%; /* Asegura que ocupe el ancho */
     }
-    .hero h1 { font-size: 2.2rem; }
+    .hero h1 {
+        font-size: 1.9rem; /* Título un poco más pequeño */
+    }
+    /* --- FIN DE LA CORRECCIÓN --- */
 
     /* Ajustes generales de texto y espaciado */
     .program-description, .tabs-content {
