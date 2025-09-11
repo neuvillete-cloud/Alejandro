@@ -722,29 +722,29 @@ header .global {
     .hero {
         height: 60vh;
         min-height: 400px;
-        padding: 0; /* Sin padding para eliminar espacios */
+        padding: 0;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Alinea el texto hacia abajo */
-        align-items: flex-start; /* Alinea el texto a la izquierda */
+        justify-content: flex-end;
+        align-items: flex-start;
     }
 
     header .global {
-        display: none; /* Oculta el texto 'Global' en móvil */
+        display: none;
     }
 
     .hero .logo {
         position: absolute;
         top: 20px;
         left: 20px;
-        width: 100px; /* Tamaño del logo más pequeño */
+        width: 100px;
     }
 
     .hero .text {
-        position: relative; /* Cambiado a relativo para que fluya dentro del hero */
-        bottom: 20px;      /* Espacio desde abajo */
-        left: 20px;        /* Espacio desde la izquierda */
-        color: white;      /* Asegura el color blanco del texto */
+        position: relative;
+        bottom: 20px;
+        left: 20px;
+        color: white;
         text-align: left;
     }
 
@@ -786,5 +786,10 @@ header .global {
     .footer-column p {
         justify-content: center;
     }
-}
 
+    /* --- INICIO DE LA CORRECCIÓN --- */
+    .footer-column .logo {
+        justify-content: center; /* Esto centrará tu logo y texto */
+    }
+    /* --- FIN DE LA CORRECCIÓN --- */
+}
