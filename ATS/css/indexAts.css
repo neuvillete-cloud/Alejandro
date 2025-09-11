@@ -107,7 +107,7 @@ nav a:not(:hover)::after {
     text-align: center;
     padding: 353px 20px 200px 20px;
     overflow: hidden;
-    background-color: #140c33; /* Color de respaldo */
+    /* Se quita el color de fondo para que se vea el video */
 }
 
 .hero::before {
@@ -640,11 +640,11 @@ nav a:not(:hover)::after {
 @media (max-width: 768px) {
     body {
         -webkit-text-size-adjust: 100%;
-        padding-top: 0; /* CORRECCIÓN: Se quita el padding para que el header no deje un hueco */
+        /* El padding-top se ajusta dinámicamente según la altura del header en móvil */
     }
     header {
         padding: 0;
-        position: static; /* CORRECCIÓN: El header deja de ser fijo y ahora fluye con la página */
+        position: absolute; /* MODIFICACIÓN: El header ya no es fijo en móvil */
     }
     .header-container {
         flex-direction: column;
@@ -661,16 +661,16 @@ nav a:not(:hover)::after {
         padding-right: 0;
     }
     .hero {
-        margin-top: 0;
-        padding: 60px 20px; /* Padding reducido para móvil */
-        min-height: 50vh;
+        margin-top: 0; /* Ya no necesita margen superior */
+        padding: 40px 20px;
+        min-height: 70vh; /* Un poco más de altura para que el video respire */
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-end; /* Alinea el buscador hacia la parte inferior */
         box-sizing: border-box;
     }
     .search-container {
-        position: relative; /* Se asegura que fluya dentro del hero */
+        position: relative; /* Se mantiene en el flujo normal */
         top: auto;
         left: auto;
         transform: none;
