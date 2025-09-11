@@ -1,3 +1,31 @@
+/* =============================================================================
+== SOLUCIÓN DEFINITIVA PARA EL PROBLEMA DE ZOOM EN EL TELÉFONO ==
+=============================================================================
+
+Hola! El problema de que la página cargue con un zoom incorrecto en el
+teléfono se debe a que tu archivo HTML no tiene la configuración correcta
+en la sección <head>.
+
+Para arreglarlo de una vez por todas, reemplaza la sección <head>
+completa de tu archivo HTML con el siguiente bloque de código.
+
+Este bloque incluye la meta etiqueta "viewport" esencial y también se
+asegura de que estés enlazando a ESTE archivo CSS que hemos estado editando.
+
+====================== INICIA CÓDIGO PARA COPIAR ======================
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduate Program</title>
+    <link rel="stylesheet" href="css/estilosEscuelaDeTalentos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+======================= FIN DE CÓDIGO PARA COPIAR =======================
+
+*/
+
 * {
     margin: 0;
     padding: 0;
@@ -7,10 +35,8 @@
 body, html {
     height: 100%;
     font-family: sans-serif;
-    /* --- INICIO DE LA CORRECCIÓN --- */
     width: 100%;
     overflow-x: hidden;
-    /* --- FIN DE LA CORRECCIÓN --- */
 }
 
 .container {
@@ -90,7 +116,16 @@ body, html {
 .main-content {
     flex: 1;
     position: relative;
+    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
+    transition: margin-left 0.3s ease;
+    width: calc(100% - 80px); /* Ancho dinámico */
 }
+
+.sidebar.expanded + .main-content {
+    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
+    width: calc(100% - 350px);
+}
+
 
 header .global {
     position: absolute;
@@ -165,29 +200,9 @@ header .global {
     transition: transform 0.2s ease-in-out;
 }
 
-@keyframes bounceContent {
-    0% { transform: translateX(0); }
-    20% { transform: translateX(10px); }
-    40% { transform: translateX(-8px); }
-    60% { transform: translateX(6px); }
-    80% { transform: translateX(-4px); }
-    100% { transform: translateX(0); }
-}
-
 .sidebar.expanded .sidebar-content {
     display: block;
 }
-
-.main-content {
-    margin-left: 80px; /* Asegura que el contenido principal no se solape con la barra lateral colapsada */
-    transition: margin-left 0.3s ease;
-    flex-grow: 1; /* Permite que el contenido principal ocupe el espacio restante */
-}
-
-.sidebar.expanded + .main-content {
-    margin-left: 350px; /* Empuja el contenido principal cuando la barra lateral se expande */
-}
-
 
 /* --- ESTILOS PARA EL NUEVO CONTENIDO DEL SIDEBAR --- */
 .sidebar-nav {
@@ -220,15 +235,6 @@ header .global {
 .sidebar-nav a i {
     width: 20px; /* Alinea los íconos */
     text-align: center;
-}
-
-
-/* --- LA NUEVA ANIMACIÓN --- */
-/* Eliminamos la animación de los íconos originales */
-.sidebar.bounce .top-icon,
-.sidebar.bounce .middle-icon,
-.sidebar.bounce .bottom-icon {
-    animation: none;
 }
 
 /* Definimos una animación de entrada con rebote más atractiva */
@@ -282,7 +288,7 @@ header .global {
 }
 
 .program-description h2 {
-    font-size: 48px; /* Muy cercano al tamaño del título de la imagen */
+    font-size: 48px;
     font-weight: 700;
     color: #12123d;
     margin-bottom: 100px;
@@ -290,7 +296,7 @@ header .global {
 }
 
 .program-description p {
-    font-size: 22px; /* Ahora igual que el cuerpo de texto del ejemplo */
+    font-size: 22px;
     font-weight: 400;
     line-height: 1.9;
     margin-bottom: 24px;
@@ -300,7 +306,7 @@ header .global {
 .program-description h3 {
     font-size: 32px;
     font-weight: 600;
-    color: #003366; /* Azul oscuro que combina bien con el #12123d del h2 */
+    color: #003366;
     margin-top: 60px;
     margin-bottom: 30px;
     border-left: 6px solid #12123d;
@@ -310,7 +316,7 @@ header .global {
 .grammer-stats {
     display: flex;
     justify-content: center;
-    align-items: stretch; /* Estira las tarjetas para que todas tengan la misma altura */
+    align-items: stretch;
     flex-wrap: wrap;
     gap: 30px;
     padding: 60px 20px;
@@ -322,7 +328,7 @@ header .global {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     width: 250px;
-    min-height: 30px; /* Altura mínima fija para todas */
+    min-height: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -331,35 +337,16 @@ header .global {
     text-align: center;
 }
 
-.stat-card .icon {
-    margin-bottom: 20px;
-}
-
-.stat-card .icon svg {
-    width: 40px;
-    height: 40px;
-}
-
+.stat-card .icon { margin-bottom: 20px; }
+.stat-card .icon svg { width: 40px; height: 40px; }
 .stat-card .text {
-    flex-grow: 1; /* Para que el contenido se distribuya bien */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
-
-.stat-card .text h3 {
-    font-size: 2.5rem;
-    color: #1c1c2b;
-    margin: 0;
-    font-weight: bold;
-}
-
-.stat-card .text p {
-    font-size: 1rem;
-    color: #333;
-    margin-top: 12px;
-    line-height: 1.5;
-}
+.stat-card .text h3 { font-size: 2.5rem; color: #1c1c2b; margin: 0; font-weight: bold; }
+.stat-card .text p { font-size: 1rem; color: #333; margin-top: 12px; line-height: 1.5; }
 
 .seccion-destacada {
     display: flex;
@@ -377,22 +364,9 @@ header .global {
     object-fit: cover;
 }
 
-.contenido-texto {
-    max-width: 500px;
-}
-
-.contenido-texto h2 {
-    font-size: 36px;
-    color: #1a1a1a;
-    margin-bottom: 20px;
-}
-
-.contenido-texto p {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 30px;
-}
-
+.contenido-texto { max-width: 500px; }
+.contenido-texto h2 { font-size: 36px; color: #1a1a1a; margin-bottom: 20px; }
+.contenido-texto p { font-size: 18px; color: #333; margin-bottom: 30px; }
 .boton {
     display: inline-block;
     padding: 12px 24px;
@@ -403,32 +377,21 @@ header .global {
     text-decoration: none;
     transition: all 0.3s ease;
 }
-
-.boton:hover {
-    background-color: #6200ea;
-    color: white;
-}
+.boton:hover { background-color: #6200ea; color: white; }
 
 .clientes-section {
     padding: 50px 20px;
     background-color: #f9f9f9;
     text-align: center;
 }
-
-.clientes-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    color: #0d47a1;
-}
-
+.clientes-section h2 { font-size: 2.5rem; margin-bottom: 30px; color: #0d47a1; }
 .clientes-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Solo 2 columnas */
+    grid-template-columns: repeat(2, 1fr);
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
 }
-
 .cliente-card {
     background: #fff;
     padding: 20px;
@@ -439,133 +402,28 @@ header .global {
     align-items: center;
     transition: transform 0.3s ease;
 }
+.cliente-card:hover { transform: translateY(-5px); }
+.cliente-card img { width: 120px; height: 80px; object-fit: contain; margin-bottom: 15px; }
+.cliente-card h3 { font-size: 1.5rem; color: #0d47a1; margin-bottom: 10px; }
+.cliente-card p { font-size: 1rem; color: #555; margin-bottom: 20px; padding: 0 10px; }
+.cliente-card .btn { background-color: #0d47a1; color: #fff; padding: 8px 20px; border-radius: 25px; text-decoration: none; transition: background 0.3s; }
+.cliente-card .btn:hover { background-color: #1565c0; }
 
-.cliente-card:hover {
-    transform: translateY(-5px);
-}
+.titulo-clientes { text-align: center; margin-bottom: 40px; }
+.titulo-clientes h2 { font-size: 2.5rem; color: #002855; margin-bottom: 10px; }
+.titulo-clientes p { font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto; line-height: 1.5; }
 
-.cliente-card img {
-    width: 120px;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 15px;
-}
-
-.cliente-card h3 {
-    font-size: 1.5rem;
-    color: #0d47a1;
-    margin-bottom: 10px;
-}
-
-.cliente-card p {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 20px;
-    padding: 0 10px;
-}
-
-.cliente-card .btn {
-    background-color: #0d47a1;
-    color: #fff;
-    padding: 8px 20px;
-    border-radius: 25px;
-    text-decoration: none;
-    transition: background 0.3s;
-}
-
-.cliente-card .btn:hover {
-    background-color: #1565c0;
-}
-
-.titulo-clientes {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.titulo-clientes h2 {
-    font-size: 2.5rem;
-    color: #002855; /* azul oscuro Grammer */
-    margin-bottom: 10px;
-}
-
-.titulo-clientes p {
-    font-size: 1.2rem;
-    color: #555;
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.5;
-}
-
-.certificaciones {
-    text-align: center;
-    padding: 60px 20px;
-}
-
-.certificaciones h2 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: #003366;
-}
-
-.certificaciones p {
-    font-size: 1rem;
-    margin-bottom: 40px;
-    color: #555;
-}
-
-.contenedor-certificaciones {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.tarjeta {
-    background: #ffffff;
-    border: 2px solid #e0e0e0;
-    border-radius: 15px;
-    padding: 20px;
-    transition: transform 0.3s ease;
-}
-
-.tarjeta:hover {
-    transform: translateY(-10px);
-}
-
-.tarjeta img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin-bottom: 20px;
-}
-
-.tarjeta h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: #003366;
-}
-
-.tarjeta p {
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-    color: #666;
-}
-
-.tarjeta a {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #003366;
-    color: #fff;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s;
-}
-
-.tarjeta a:hover {
-    background: #0055a5;
-}
+.certificaciones { text-align: center; padding: 60px 20px; }
+.certificaciones h2 { font-size: 2.5rem; margin-bottom: 10px; color: #003366; }
+.certificaciones p { font-size: 1rem; margin-bottom: 40px; color: #555; }
+.contenedor-certificaciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+.tarjeta { background: #ffffff; border: 2px solid #e0e0e0; border-radius: 15px; padding: 20px; transition: transform 0.3s ease; }
+.tarjeta:hover { transform: translateY(-10px); }
+.tarjeta img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 20px; }
+.tarjeta h3 { font-size: 1.4rem; margin-bottom: 10px; color: #003366; }
+.tarjeta p { font-size: 0.95rem; margin-bottom: 20px; color: #666; }
+.tarjeta a { display: inline-block; padding: 10px 20px; background: #003366; color: #fff; border-radius: 30px; text-decoration: none; font-weight: bold; transition: background 0.3s; }
+.tarjeta a:hover { background: #0055a5; }
 
 .main-footer {
     background-color: #063962;
@@ -573,7 +431,6 @@ header .global {
     padding: 60px 0 0 0;
     font-family: Arial, sans-serif;
 }
-
 .footer-container {
     width: 80%;
     margin: 0 auto;
@@ -582,79 +439,18 @@ header .global {
     gap: 40px;
     padding-bottom: 40px;
 }
-
-.footer-column .logo {
-    margin-bottom: 20px;
-}
-
-.footer-column h3 {
-    color: #ffffff;
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-.footer-column h3::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 40px;
-    height: 2px;
-    background-color: #99d0e9;
-}
-
-.footer-about {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    max-width: 300px;
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
-.footer-links a {
-    color: #e0e0e0;
-    text-decoration: none;
-    transition: color 0.3s ease, padding-left 0.3s ease;
-}
-
-.footer-links a:hover {
-    color: #ffffff;
-    padding-left: 5px;
-}
-
-.footer-column p {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.social-icons {
-    margin-top: 20px;
-}
-
-.social-icons a {
-    color: #ffffff;
-    font-size: 1.2rem;
-    margin-right: 20px;
-    transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block;
-}
-
-.social-icons a:hover {
-    transform: scale(1.2);
-    color: #99d0e9;
-}
+.footer-column .logo { margin-bottom: 20px; }
+.footer-column h3 { color: #ffffff; font-size: 1.2rem; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+.footer-column h3::after { content: ''; position: absolute; left: 0; bottom: 0; width: 40px; height: 2px; background-color: #99d0e9; }
+.footer-about { font-size: 0.9rem; line-height: 1.6; max-width: 300px; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a { color: #e0e0e0; text-decoration: none; transition: color 0.3s ease, padding-left 0.3s ease; }
+.footer-links a:hover { color: #ffffff; padding-left: 5px; }
+.footer-column p { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+.social-icons { margin-top: 20px; }
+.social-icons a { color: #ffffff; font-size: 1.2rem; margin-right: 20px; transition: transform 0.3s ease, color 0.3s ease; display: inline-block; }
+.social-icons a:hover { transform: scale(1.2); color: #99d0e9; }
 
 .sub-footer {
     background-color: #042a4a;
@@ -663,48 +459,9 @@ header .global {
     font-size: 0.9rem;
     border-top: 1px solid #1f3b77;
 }
-
-.sub-footer p {
-    margin: 0;
-}
-
-.developer-credit {
-    font-size: 0.8rem;
-    color: #a0a0a0;
-    margin-top: 8px;
-    margin-bottom: 0;
-}
-
-.developer-credit .fa-heart {
-    color: #e74c3c;
-}
-
-.imagen-banner {
-    position: absolute;
-    top: 60%;
-    right: 2rem;
-    transform: translateY(-50%);
-    max-height: 200px;
-    width: auto;
-    padding-right: 265px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-img {
-    height: 50px;
-    width: auto;
-}
-
-.logo-texto h1, .logo-texto span {
-    margin: 0;
-    line-height: 1;
-    color: white;
-}
+.sub-footer p { margin: 0; }
+.developer-credit { font-size: 0.8rem; color: #a0a0a0; margin-top: 8px; margin-bottom: 0; }
+.developer-credit .fa-heart { color: #e74c3c; }
 
 /* ======================================================= */
 /* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
@@ -717,16 +474,11 @@ header .global {
     .sidebar.expanded + .main-content {
         margin-left: 280px;
     }
-    .hero .logo {
+    .hero .logo, .hero .text {
         left: 30px;
-    }
-    .hero .text {
-        left: 30px;
-        bottom: 50px;
     }
     .program-description h2 {
         font-size: 36px;
-        margin-bottom: 60px;
     }
     .program-description p {
         font-size: 18px;
@@ -740,74 +492,63 @@ header .global {
     body {
         -webkit-text-size-adjust: 100%;
     }
-    .sidebar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        bottom: 0;
-        top: auto;
-    }
-    .sidebar.expanded {
-        height: 100%;
-        width: 100%;
-    }
-    .sidebar-icons {
-        flex-direction: row;
-        width: 100%;
-        justify-content: space-around;
-        padding: 0 20px;
-    }
-    .sidebar.expanded .sidebar-icons {
-        justify-content: flex-start;
-    }
-    .sidebar.expanded .sidebar-content {
-        margin-left: 0;
-        padding-top: 80px;
-    }
     .main-content {
-        margin-left: 0;
-        padding-bottom: 60px;
+        width: calc(100% - 80px); /* El contenido siempre deja espacio para el sidebar */
     }
     .sidebar.expanded + .main-content {
-        margin-left: 0;
-        display: none;
+        margin-left: 280px; /* Ancho expandido para móvil, si se quiere mantener */
+        width: calc(100% - 280px);
     }
-    header .global, .hero .logo, .hero .text {
+
+    /* Adaptamos el contenido dentro de .main-content */
+    header .global {
         position: static;
         transform: none;
-        text-align: center;
         margin: 20px auto;
         padding: 0 15px;
+        color: #333; /* Color oscuro para ser legible en fondo blanco si aplica */
     }
     .hero {
         height: auto;
         min-height: 50vh;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
     }
+    .hero .logo, .hero .text {
+        position: static;
+        transform: none;
+        margin: 10px auto;
+        width: auto;
+        left: auto;
+        bottom: auto;
+    }
     .hero h1 {
         font-size: 2rem;
     }
-    .program-description {
+    .program-description, .seccion-destacada, .clientes-section, .certificaciones {
         padding: 40px 15px;
     }
-    .program-description h2 {
-        font-size: 28px;
-        margin-bottom: 40px;
+    .program-description h2, .clientes-section h2, .certificaciones h2, .contenido-texto h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
     }
-    .program-description p {
-        font-size: 16px;
+    .program-description p, .contenido-texto p {
+        font-size: 1rem;
     }
     .seccion-destacada {
         flex-direction: column;
-        padding: 30px 15px;
     }
     .contenido-imagen img {
+        width: 100%; /* La imagen ahora ocupa todo el ancho disponible */
+    }
+    .stat-card, .cliente-card {
         width: 100%;
+    }
+    .clientes-grid, .grammer-stats, .contenedor-certificaciones {
+        grid-template-columns: 1fr;
     }
     .footer-container {
         grid-template-columns: 1fr;
