@@ -272,7 +272,7 @@ header .global {
 }
 
 .tab-image img {
-    max-width: 100%; /* Corregido de 200% a 100% */
+    max-width: 200%; /* Ajustado para PC */
     height: auto;
     border-radius: 8px;
     margin-top: 20px;
@@ -358,7 +358,7 @@ header .global {
     max-width: 350px;
 }
 .proceso-img img {
-    width: 100%; /* Corregido de 200% a 100% */
+    width: 100%;
     height: auto;
     border-radius: 10px;
 }
@@ -657,7 +657,7 @@ header .global {
         width: 100%; /* Asegura que ocupe el ancho */
     }
     .hero h1 {
-        font-size: 1.7rem; /* Título un poco más pequeño */
+        font-size: 1.9rem; /* Título un poco más pequeño */
     }
 
     /* Ajustes generales de texto y espaciado */
@@ -682,6 +682,9 @@ header .global {
     .tab-image {
         max-width: 100%;
         margin-bottom: 20px;
+    }
+    .tab-image img {
+        max-width: 100%; /* Asegura que la imagen se ajuste en móviles */
     }
     .tab-text {
         padding: 0;
