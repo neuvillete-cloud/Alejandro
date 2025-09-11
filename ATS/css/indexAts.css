@@ -495,14 +495,12 @@ nav a:not(:hover)::after {
     padding-bottom: 40px;
 }
 
-/* --- INICIO DE LA MODIFICACIÓN --- */
 .footer-column:first-child {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
-/* --- FIN DE LA MODIFICACIÓN --- */
 
 .footer-column .logo {
     margin-bottom: 20px;
@@ -729,15 +727,21 @@ nav a:not(:hover)::after {
     .carousel-btn {
         display: none;
     }
+    /* --- INICIO DE LA MODIFICACIÓN: CENTRADO DE COLUMNAS DEL FOOTER EN MÓVIL --- */
     .footer-container {
         grid-template-columns: 1fr;
         text-align: center;
         width: 90%;
     }
+    /* Centra el contenido de los párrafos en TODAS las columnas */
+    .footer-column p {
+        justify-content: center;
+    }
     .footer-column h3::after {
         left: 50%;
         transform: translateX(-50%);
     }
+    /* --- FIN DE LA MODIFICACIÓN --- */
 }
 
 @media (max-width: 480px) {
