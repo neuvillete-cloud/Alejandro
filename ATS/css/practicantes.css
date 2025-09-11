@@ -710,6 +710,9 @@ header .global {
     .galeria {
         grid-template-columns: 1fr;
     }
+    .imagen img {
+        max-height: 150px; /* Hacemos las imágenes de la galería un poco más pequeñas */
+    }
     .imagen.activa {
         grid-column: span 1;
         flex-direction: column;
@@ -718,6 +721,7 @@ header .global {
     .imagen.activa img {
         margin: 0;
         max-width: 100%;
+        max-height: 320px; /* Ajustamos también la altura de la imagen activa */
     }
     .cerrar {
         left: auto;
