@@ -573,7 +573,6 @@ header .global {
     padding: 60px 0 0 0;
     font-family: Arial, sans-serif;
 }
-
 .footer-container {
     width: 80%;
     margin: 0 auto;
@@ -582,11 +581,9 @@ header .global {
     gap: 40px;
     padding-bottom: 40px;
 }
-
 .footer-column .logo {
     margin-bottom: 20px;
 }
-
 .footer-column h3 {
     color: #ffffff;
     font-size: 1.2rem;
@@ -594,7 +591,6 @@ header .global {
     position: relative;
     padding-bottom: 10px;
 }
-
 .footer-column h3::after {
     content: '';
     position: absolute;
@@ -604,45 +600,37 @@ header .global {
     height: 2px;
     background-color: #99d0e9;
 }
-
 .footer-about {
     font-size: 0.9rem;
     line-height: 1.6;
     max-width: 300px;
 }
-
 .footer-links {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-
 .footer-links li {
     margin-bottom: 12px;
 }
-
 .footer-links a {
     color: #e0e0e0;
     text-decoration: none;
     transition: color 0.3s ease, padding-left 0.3s ease;
 }
-
 .footer-links a:hover {
     color: #ffffff;
     padding-left: 5px;
 }
-
 .footer-column p {
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 .social-icons {
     margin-top: 20px;
 }
-
 .social-icons a {
     color: #ffffff;
     font-size: 1.2rem;
@@ -650,12 +638,10 @@ header .global {
     transition: transform 0.3s ease, color 0.3s ease;
     display: inline-block;
 }
-
 .social-icons a:hover {
     transform: scale(1.2);
     color: #99d0e9;
 }
-
 .sub-footer {
     background-color: #042a4a;
     text-align: center;
@@ -663,22 +649,20 @@ header .global {
     font-size: 0.9rem;
     border-top: 1px solid #1f3b77;
 }
-
 .sub-footer p {
     margin: 0;
 }
-
 .developer-credit {
     font-size: 0.8rem;
     color: #a0a0a0;
     margin-top: 8px;
     margin-bottom: 0;
 }
-
 .developer-credit .fa-heart {
     color: #e74c3c;
 }
 
+/* === ESTILOS DEL FOOTER QUE MENCIONASTE (SIN CAMBIOS) === */
 .imagen-banner {
     position: absolute;
     top: 60%;
@@ -705,6 +689,8 @@ header .global {
     line-height: 1;
     color: white;
 }
+/* === FIN DE ESTILOS DEL FOOTER === */
+
 
 /* ======================================================= */
 /* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
@@ -741,23 +727,16 @@ header .global {
         -webkit-text-size-adjust: 100%;
     }
     .main-content {
-        width: calc(100% - 80px); /* El contenido siempre deja espacio para el sidebar */
+        width: calc(100% - 80px);
     }
     .sidebar.expanded + .main-content {
-        margin-left: 280px; /* Ancho expandido para móvil, si se quiere mantener */
+        margin-left: 280px;
         width: calc(100% - 280px);
     }
 
-    /* Adaptamos el contenido dentro de .main-content */
-    header .global {
-        position: static;
-        transform: none;
-        margin: 20px auto;
-        padding: 0 15px;
-        color: #333; /* Color oscuro para ser legible en fondo blanco si aplica */
-    }
+    /* --- INICIO DE LA CORRECCIÓN PARA HERO Y LOGO --- */
     .hero {
-        height: auto;
+        height: auto; /* Altura automática para que se ajuste al contenido */
         min-height: 50vh;
         padding: 20px;
         display: flex;
@@ -766,16 +745,31 @@ header .global {
         align-items: center;
     }
     .hero .logo, .hero .text {
-        position: static;
+        position: static; /* Dejan de flotar para centrarse correctamente */
         transform: none;
-        margin: 10px auto;
+        margin: 15px auto;
         width: auto;
+        max-width: 90%; /* Evita que el logo sea más grande que la pantalla */
         left: auto;
         bottom: auto;
+        text-align: center;
+    }
+    .hero .logo img { /* Si el logo es una imagen dentro del div .logo */
+        max-width: 100%;
+        height: auto;
+    }
+    header .global {
+        position: static;
+        transform: none;
+        margin: 20px auto;
+        padding: 0 15px;
+        color: #333;
     }
     .hero h1 {
         font-size: 2rem;
     }
+    /* --- FIN DE LA CORRECCIÓN --- */
+
     .program-description, .seccion-destacada, .clientes-section, .certificaciones {
         padding: 40px 15px;
     }
@@ -790,7 +784,7 @@ header .global {
         flex-direction: column;
     }
     .contenido-imagen img {
-        width: 100%; /* La imagen ahora ocupa todo el ancho disponible */
+        width: 100%;
     }
     .stat-card, .cliente-card {
         width: 100%;
