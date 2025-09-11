@@ -700,11 +700,25 @@ header .global {
     body {
         -webkit-text-size-adjust: 100%;
     }
-    .main-content {
-        width: calc(100% - 80px);
-    }
 
-    /* Ancho reducido del sidebar y margen ajustado */
+    /* --- INICIO DE LA CORRECCIÓN --- */
+    /* Ancho reducido para el sidebar COLAPSADO y elementos dependientes */
+    .sidebar {
+        width: 60px;
+    }
+    .sidebar-icons {
+        width: 60px;
+    }
+    .sidebar-content {
+        margin-left: 60px;
+    }
+    .main-content {
+        margin-left: 60px;
+        width: calc(100% - 60px);
+    }
+    /* --- FIN DE LA CORRECCIÓN --- */
+
+    /* Ancho para el sidebar EXPANDIDO y su contenido */
     .sidebar.expanded {
         width: 250px;
     }
@@ -781,3 +795,4 @@ header .global {
         justify-content: center;
     }
 }
+
