@@ -658,11 +658,6 @@ header .global {
     color: #e74c3c;
 }
 
-/* === ESTILOS DEL FOOTER QUE MENCIONASTE (SIN CAMBIOS) === */
-.imagen-banner {
-    display: none; /* Oculto por defecto, ya que no se usa en esta página */
-}
-
 .logo {
     display: flex;
     align-items: center;
@@ -679,9 +674,6 @@ header .global {
     line-height: 1;
     color: white;
 }
-/* === FIN DE ESTILOS DEL FOOTER === */
-
-
 /* ======================================================= */
 /* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
 /* ======================================================= */
@@ -693,8 +685,12 @@ header .global {
     .sidebar.expanded + .main-content {
         margin-left: 280px;
     }
-    .hero .logo, .hero .text {
+    .hero .logo {
         left: 30px;
+    }
+    .hero .text {
+        left: 30px;
+        bottom: 50px;
     }
     .program-description h2 {
         font-size: 36px;
@@ -719,40 +715,33 @@ header .global {
         width: calc(100% - 280px);
     }
 
-    /* --- INICIO DE LA CORRECCIÓN PARA HERO Y LOGO --- */
     .hero {
         height: auto;
         min-height: 50vh;
-        padding: 20px;
+        padding: 0; /* Se quita el padding para eliminar espacios blancos */
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: space-between; /* Distribuye el espacio */
     }
-    header .global {
-        position: static; /* Se quita la posición absoluta */
+    header .global, .hero .text {
+        position: static;
         transform: none;
-        margin: 0;
-        padding: 0;
-        /* Se mueve al .main-content o a un header propio si es necesario */
+        margin: 20px auto;
+        padding: 0 15px;
+        color: #333; /* Color oscuro para ser legible en fondo blanco si aplica */
     }
     .hero .logo {
-        position: static;
-        transform: none;
-        width: 100px; /* Tamaño reducido y fijo para el logo */
-        margin: 0 auto 15px auto; /* Centrado y con margen inferior */
+        position: absolute; /* Se mantiene absoluto para la esquina */
+        top: 15px; /* Más pegado a la esquina */
+        left: 15px;
+        width: 80px; /* Tamaño del logo más pequeño */
     }
     .hero .text {
-        position: static;
-        transform: none;
-        width: auto;
-        margin: 0;
-        text-align: center;
+        margin: auto; /* Centra el texto vertical y horizontalmente */
     }
     .hero h1 {
         font-size: 2rem;
     }
-    /* --- FIN DE LA CORRECCIÓN --- */
 
     .program-description, .seccion-destacada, .clientes-section, .certificaciones {
         padding: 40px 15px;
