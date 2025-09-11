@@ -636,28 +636,25 @@ header .global {
 
     /* Ajustes del Hero */
     .hero {
-        height: 50vh; /* Altura reducida para que la imagen no sea tan grande */
+        height: 50vh;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Alinea el texto al pie de la imagen */
+        justify-content: flex-end;
         align-items: flex-start;
-        padding: 20px; /* Espaciado interno para el texto */
-        background-position: center 30%; /* Centra mejor la imagen en los rostros */
+        padding: 20px;
+        background-position: center 30%;
     }
     .hero .logo {
         top: 20px;
         left: 20px;
-        width: 70px; /* Ajustado a 70px */
+        width: 70px;
     }
     .hero .text {
-        position: static; /* Dejamos que flexbox controle la posición */
-        bottom: auto;
-        left: auto;
-        padding-right: 0;
-        width: 100%; /* Asegura que ocupe el ancho */
+        position: static;
+        width: 100%;
     }
     .hero h1 {
-        font-size: 1.9rem; /* Título un poco más pequeño */
+        font-size: 1.9rem;
     }
 
     /* Ajustes generales de texto y espaciado */
@@ -684,7 +681,7 @@ header .global {
         margin-bottom: 20px;
     }
     .tab-image img {
-        max-width: 100%; /* Asegura que la imagen se ajuste en móviles */
+        max-width: 100%;
     }
     .tab-text {
         padding: 0;
@@ -699,7 +696,7 @@ header .global {
         max-width: 100%;
     }
     .proceso-img img {
-        width: 100%; /* Asegura que la imagen se ajuste en móviles */
+        width: 100%;
     }
     .proceso-info {
         padding: 0;
@@ -709,10 +706,10 @@ header .global {
     /* Corrección de Galería */
     .galeria {
         grid-template-columns: 1fr;
-        padding: 0 15px; /* Añade espaciado horizontal */
+        padding: 0 15px;
     }
     .imagen img {
-        max-height: 150px; /* Hacemos las imágenes de la galería un poco más pequeñas */
+        max-height: 150px;
     }
     .imagen.activa {
         grid-column: span 1;
@@ -722,7 +719,7 @@ header .global {
     .imagen.activa img {
         margin: 0;
         max-width: 100%;
-        max-height: 320px; /* Ajustamos también la altura de la imagen activa */
+        max-height: 320px;
     }
     .cerrar {
         left: auto;
@@ -730,7 +727,7 @@ header .global {
         top: 15px;
     }
     .imagen .frase {
-        font-size: 1rem; /* Tamaño de fuente reducido para el texto de la galería en móvil */
+        font-size: 1rem;
         padding: 10px 0;
     }
 
@@ -744,8 +741,13 @@ header .global {
         left: 50%;
         transform: translateX(-50%);
     }
-    .footer-column p, .footer-column .logo {
+    .footer-column p {
         justify-content: center;
     }
+    /* --- INICIO DE LA CORRECCIÓN --- */
+    .footer-column .logo {
+        justify-content: center; /* Centra el logo y el texto del footer */
+    }
+    /* --- FIN DE LA CORRECCIÓN --- */
 }
 
