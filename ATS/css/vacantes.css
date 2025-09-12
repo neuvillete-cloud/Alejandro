@@ -101,22 +101,9 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
 /* Sección del título */
 .section-title {
-    background-color:	#3b8ac9a3;
+    background-color:   #3b8ac9a3;
     padding: 100px 20px;
     min-height: 170px; /* ajusta a lo que necesites */
     display: flex;
@@ -522,17 +509,6 @@ nav a:not(:hover)::after {
     line-height: 1.5;
 }
 
-/* Responsive (ajusta el layout de columnas a 100% en móviles) */
-@media (max-width: 768px) {
-    .info-empleo-fila {
-        flex-direction: column;
-    }
-
-    .info-empleo-fila .info-item-vacante {
-        flex: 1 1 100%;
-    }
-}
-
 .reciente {
     color: #2196F3;
     font-weight: 500;
@@ -818,3 +794,109 @@ nav a:not(:hover)::after {
 .developer-credit .fa-heart {
     color: #e74c3c; /* Un color rojo para el corazón */
 }
+
+/* ======================================================= */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
+/* ======================================================= */
+
+@media (max-width: 1024px) {
+    .header-container {
+        width: 90%;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav {
+        padding-right: 0;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav a:last-of-type::before {
+        display: none;
+    }
+
+    .section-title {
+        margin-top: 150px;
+        padding: 40px 20px;
+    }
+
+    .section-title h1 {
+        font-size: 36px;
+        padding: 0;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .imagen-banner {
+        display: block;
+        position: static;
+        transform: none;
+        padding: 0;
+        max-height: 120px;
+        margin: 0 auto;
+    }
+
+    .contenedor-vacantes {
+        flex-direction: column;
+    }
+
+    .detalle-vacante {
+        position: static; /* Elimina el comportamiento pegajoso */
+        max-height: none; /* Permite que crezca según su contenido */
+    }
+}
+
+@media (max-width: 768px) {
+    .fila-superior {
+        flex-direction: column;
+        align-items: stretch; /* Estira los elementos para que ocupen el ancho */
+    }
+
+    .btn-buscar {
+        width: 100%;
+    }
+
+    .encabezado-vacante {
+        flex-direction: column;
+    }
+
+    .imagen-vacante-detalle img {
+        width: 100%;
+        height: auto;
+        max-height: 200px; /* Limita la altura de la imagen */
+    }
+
+    .compatibilidad {
+        grid-template-columns: 1fr; /* Una sola columna para la compatibilidad */
+    }
+
+    .info-empleo-fila {
+        flex-direction: column;
+    }
+
+    .info-empleo-fila .info-item-vacante {
+        flex: 1 1 100%;
+    }
+
+    .contenedor-paginacion {
+        text-align: center; /* Centra la paginación */
+        padding-left: 0;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        width: 90%;
+    }
+    .footer-column .logo,
+    .footer-column p {
+        justify-content: center;
+    }
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
