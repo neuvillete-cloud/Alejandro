@@ -100,22 +100,9 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
 /* Sección del título */
 .section-title {
-    background-color:	#3b8ac9a3;
+    background-color:   #3b8ac9a3;
     padding: 100px 20px;
     min-height: 170px; /* ajusta a lo que necesites */
     display: flex;
@@ -123,6 +110,7 @@ nav a:not(:hover)::after {
     justify-content: center;
     text-align: center;
     flex-direction: column;
+    margin-top: 80px; /* Espacio para el header fijo */
 }
 
 
@@ -246,20 +234,6 @@ button:hover,
 .register-btn:hover {
     background-color: #005fa3;
     border-color: #005fa3;
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-    .section-login {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .login-left,
-    .login-right {
-        flex: 1 1 100%;
-        padding: 30px 20px;
-    }
 }
 
 .login-left {
@@ -441,6 +415,7 @@ button:hover,
     max-width: 300px;
 }
 
+/* .footer-links ya estaba definido, se pueden fusionar estilos si es necesario */
 .footer-links {
     list-style: none;
     padding: 0;
@@ -508,3 +483,101 @@ button:hover,
 .developer-credit .fa-heart {
     color: #e74c3c; /* Un color rojo para el corazón */
 }
+
+
+/* ======================================================= */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
+/* ======================================================= */
+
+/* --- ESTILOS PARA TABLET Y MÓVIL --- */
+@media (max-width: 1024px) {
+    .header-container {
+        width: 90%;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav {
+        padding-right: 0;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav a:last-of-type::before {
+        display: none; /* Oculta la barra vertical en móvil */
+    }
+
+    .section-title {
+        padding: 80px 20px 40px 20px; /* Ajusta el padding para que no sea tan alto */
+    }
+
+    .section-title h1 {
+        font-size: 36px; /* Reduce el tamaño del título */
+        padding: 0; /* Elimina el padding que lo movía */
+        text-align: center; /* Centra el texto */
+    }
+
+    .imagen-banner {
+        display: none; /* Oculta la imagen del banner para dar espacio */
+    }
+
+    .login-left {
+        border-right: none; /* Elimina la línea divisoria */
+        padding-right: 0;
+        border-bottom: 1px solid #ccc; /* Añade una línea divisoria abajo */
+        padding-bottom: 30px;
+        margin-bottom: 20px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        width: 80%; /* Hace los inputs más anchos */
+    }
+
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-right {
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-nav {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-login {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .login-left,
+    .login-right {
+        flex: 1 1 100%;
+        padding: 20px;
+    }
+
+    .login-right {
+        padding: 20px;
+    }
+
+    .login-right h2,
+    .login-right p {
+        text-align: center; /* Centra el texto en la columna derecha */
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        width: 100%; /* Ocupan todo el ancho disponible */
+    }
+
+    .footer-container {
+        /* Hereda los estilos de la media query anterior, pero podemos hacer ajustes finos si es necesario */
+    }
+}
+
