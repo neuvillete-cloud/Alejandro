@@ -987,13 +987,13 @@ header .global {
 
     /* Ajustes del Hero */
     .hero {
-        height: 55vh; /* Altura ligeramente reducida para un mejor encuadre */
+        height: 50vh; /* Altura más reducida para que la imagen se vea más completa */
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         align-items: flex-start;
         padding: 20px;
-        background-position: center 40%; /* Ajusta el foco vertical de la imagen */
+        background-position: center center; /* Centramos la imagen para un mejor encuadre general */
     }
     .hero .logo {
         top: 20px;
