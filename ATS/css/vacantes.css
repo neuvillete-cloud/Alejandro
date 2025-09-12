@@ -818,7 +818,7 @@ nav a:not(:hover)::after {
     }
 
     .section-title {
-        margin-top: 150px;
+        margin-top: 250px; /* Aumentamos el margen para separar del header fijo */
         padding: 40px 20px;
     }
 
