@@ -509,18 +509,24 @@ button:hover,
     }
 
     .section-title {
-        margin-top: 160px; /* Aumentamos el margen para que no quede debajo del header */
-        padding: 60px 20px; /* Ajusta el padding para que no sea tan alto */
+        margin-top: 220px; /* Aumentamos AÚN MÁS el margen para que el header no tape el título */
+        padding: 40px 20px; /* Ajusta el padding */
     }
 
     .section-title h1 {
         font-size: 36px; /* Reduce el tamaño del título */
         padding: 0; /* Elimina el padding que lo movía */
         text-align: center; /* Centra el texto */
+        margin-bottom: 20px; /* Espacio entre el título y la imagen */
     }
 
     .imagen-banner {
-        display: none; /* Oculta la imagen del banner para dar espacio */
+        display: block; /* Hacemos la imagen visible */
+        position: static; /* La devolvemos al flujo normal del documento */
+        transform: none; /* Reseteamos transformaciones */
+        padding: 0; /* Reseteamos paddings */
+        max-height: 120px; /* Le damos un tamaño adecuado */
+        margin: 0 auto; /* La centramos */
     }
 
     .login-left {
