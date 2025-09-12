@@ -570,6 +570,14 @@ button:hover,
         left: 50%;
         transform: translateX(-50%);
     }
+    .main-footer .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    .main-footer .social-icons a {
+        margin: 0;
+    }
 }
 
 @media (max-width: 768px) {
