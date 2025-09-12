@@ -377,7 +377,7 @@ button:hover,
     font-family: Arial, sans-serif;
 }
 
-.footer-container {
+.main-footer .footer-container {
     width: 80%;
     margin: 0 auto;
     display: grid;
@@ -416,23 +416,23 @@ button:hover,
 }
 
 /* .footer-links ya estaba definido, se pueden fusionar estilos si es necesario */
-.footer-links {
+.main-footer .footer-links {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.footer-links li {
+.main-footer .footer-links li {
     margin-bottom: 12px;
 }
 
-.footer-links a {
+.main-footer .footer-links a {
     color: #e0e0e0;
     text-decoration: none;
     transition: color 0.3s ease, padding-left 0.3s ease;
 }
 
-.footer-links a:hover {
+.main-footer .footer-links a:hover {
     color: #ffffff;
     padding-left: 5px;
 }
@@ -542,18 +542,33 @@ button:hover,
         width: 80%; /* Hace los inputs más anchos */
     }
 
-    .footer-container {
+    /* --- Corrección de Footers --- */
+    /* Footer superior (.footer-grammer) */
+    .footer-grammer .footer-container {
         flex-direction: column;
         text-align: center;
     }
-
-    .footer-right {
+    .footer-grammer .footer-right {
         align-items: center;
         text-align: center;
     }
-
-    .footer-nav {
+    .footer-grammer .footer-nav {
         justify-content: center;
+    }
+
+    /* Footer principal (.main-footer) */
+    .main-footer .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        width: 90%;
+    }
+    .main-footer .footer-column .logo,
+    .main-footer .footer-column p {
+        justify-content: center;
+    }
+    .main-footer .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
@@ -582,10 +597,6 @@ button:hover,
     input[type="email"],
     input[type="password"] {
         width: 100%; /* Ocupan todo el ancho disponible */
-    }
-
-    .footer-container {
-        /* Hereda los estilos de la media query anterior, pero podemos hacer ajustes finos si es necesario */
     }
 }
 
