@@ -567,6 +567,7 @@ button:hover,
     .login-right {
         flex: 1 1 100%;
         padding: 20px;
+        align-items: center; /* Centra los elementos internos */
     }
 
     .login-right {
