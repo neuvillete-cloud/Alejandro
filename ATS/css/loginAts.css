@@ -509,8 +509,8 @@ button:hover,
     }
 
     .section-title {
-        margin-top: 220px; /* Aumentamos AÚN MÁS el margen para que el header no tape el título */
-        padding: 40px 20px; /* Ajusta el padding */
+        margin-top: 300px; /* Aumentado para dar espacio suficiente al header que ahora es más alto */
+        padding: 40px 20px;
     }
 
     .section-title h1 {
