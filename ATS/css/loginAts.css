@@ -509,7 +509,7 @@ button:hover,
     }
 
     .section-title {
-        margin-top: 300px; /* Aumentado para dar espacio suficiente al header que ahora es más alto */
+        margin-top: 275px; /* Ajustado para eliminar el espacio con el header */
         padding: 40px 20px;
     }
 
