@@ -818,7 +818,7 @@ nav a:not(:hover)::after {
     }
 
     .section-title {
-        margin-top: 235px; /* Reducimos el margen para juntar con el header */
+        margin-top: 235px; /* Ajustamos para que no quede el espacio morado */
         padding: 40px 20px;
     }
 
@@ -845,6 +845,11 @@ nav a:not(:hover)::after {
     .detalle-vacante {
         position: static; /* Elimina el comportamiento pegajoso */
         max-height: none; /* Permite que crezca según su contenido */
+    }
+
+    .dropdown-menu {
+        left: auto; /* Anulamos la posición izquierda */
+        right: 0;   /* Alineamos el menú a la derecha de su contenedor */
     }
 }
 
