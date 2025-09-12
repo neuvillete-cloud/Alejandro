@@ -987,7 +987,7 @@ header .global {
 
     /* Ajustes del Hero */
     .hero {
-        height: 50vh; /* Altura más reducida para que la imagen se vea más completa */
+        height: 80vh; /* Altura más reducida para que la imagen se vea más completa */
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
