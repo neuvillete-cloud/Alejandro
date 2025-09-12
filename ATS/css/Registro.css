@@ -100,22 +100,9 @@ nav a:not(:hover)::after {
     line-height: 1;
 }
 
-@media(max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
 /* Sección del título */
 .section-title {
-    background-color:	#3b8ac9a3;
+    background-color:   #3b8ac9a3;
     padding: 100px 20px;
     min-height: 170px; /* ajusta a lo que necesites */
     display: flex;
@@ -163,7 +150,7 @@ nav a:not(:hover)::after {
 .section-blanca input[type="number"],
 .section-blanca input[type="date"],
 .section-blanca select,
-.section-blanca textarea
+.section-blanca textarea,
 #otra_especialidad{
     width: 50%;
     padding: 12px 14px;
@@ -337,6 +324,84 @@ nav a:not(:hover)::after {
     color: white;
 }
 
+/* ======================================================= */
+/* == INICIO: BLOQUE DE CÓDIGO RESPONSIVO               == */
+/* ======================================================= */
 
+@media (max-width: 1024px) {
+    .header-container {
+        width: 90%;
+        flex-direction: column;
+        gap: 15px;
+    }
 
+    nav {
+        padding-right: 0;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav a:last-of-type::before {
+        display: none; /* Oculta la barra vertical en móvil */
+    }
+
+    .section-title {
+        margin-top: 150px; /* Espacio para que no choque con el header */
+        padding: 40px 20px;
+    }
+
+    .section-title h1 {
+        font-size: 36px;
+        padding: 0;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .imagen-banner {
+        display: block;
+        position: static;
+        transform: none;
+        padding: 0;
+        max-height: 120px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-blanca {
+        padding: 40px 20px;
+        text-align: left; /* Alinea las etiquetas a la izquierda en móvil */
+    }
+
+    /* Ajuste para todos los campos del formulario en móvil */
+    .section-blanca input[type="text"],
+    .section-blanca input[type="email"],
+    .section-blanca input[type="password"],
+    .section-blanca input[type="tel"],
+    .section-blanca input[type="number"],
+    .section-blanca input[type="date"],
+    .section-blanca select,
+    .section-blanca textarea,
+    #otra_especialidad {
+        width: 100%; /* Ocupan todo el ancho disponible */
+    }
+
+    .botones-final {
+        flex-direction: column; /* Apila los botones */
+        gap: 10px;
+    }
+
+    .btn-confirmar,
+    .btn-cancelar {
+        width: 100%; /* Botones ocupan todo el ancho */
+    }
+
+    .header-container {
+        /* Hereda los estilos de la media query anterior */
+    }
+    nav {
+        /* Hereda los estilos de la media query anterior */
+    }
+}
 
