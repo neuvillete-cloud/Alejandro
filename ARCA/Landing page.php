@@ -243,7 +243,7 @@
                 <a href="register.html" class="btn btn-register" style="font-size: 18px; padding: 15px 35px;">Crear mi Cuenta Gratis</a>
             </div>
             <div class="app-mockup">
-                <<img src="https://via.placeholder.com/1200x750/E3F2FD/1A237E?text=Dashboard+ARCA" alt="Maqueta del Dashboard de ARCA">
+                <img src="https://i.ibb.co/k2hSJVd/dashboard-arca.png" alt="Dashboard de la aplicación ARCA">
             </div>
         </div>
     </section>
