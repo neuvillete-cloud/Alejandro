@@ -1,4 +1,8 @@
 <?php
+// AÑADE ESTAS TRES LÍNEAS AL INICIO DE TU SCRIPT
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 // Paso 1: Incluimos TU archivo de conexión.
 include_once("conexionArca.php");
