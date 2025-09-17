@@ -11,9 +11,9 @@
 
     <style>
         :root {
-            --color-primario: #2563eb;
-            --color-secundario: #1d4ed8;
-            --color-acento: #3b82f6;
+            --color-primario: #4a6984;
+            --color-secundario: #5c85ad;
+            --color-acento: #8ab4d7;
             --color-fondo: #f4f6f9;
             --color-blanco: #ffffff;
             --color-texto: #333333;
