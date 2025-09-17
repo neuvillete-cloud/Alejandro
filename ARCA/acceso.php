@@ -88,7 +88,7 @@
                         timer: 1500 // Se cierra automáticamente
                     }).then(() => {
                         // Redirige al dashboard principal
-                        window.location.href = 'index.html';
+                        window.location.href = 'index.php';
                     });
                 } else {
                     Swal.fire({
