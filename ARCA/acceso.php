@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="css/estilosAcceso.css">
 
@@ -26,10 +27,11 @@
         <div class="login-form-container">
             <h2>Bienvenido de Vuelta</h2>
             <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>
-            <form action="index.html" method="GET">
+
+            <form id="loginForm" action="dao/daoLogin.php" method="POST">
                 <div class="input-group">
                     <i class="fa-solid fa-user"></i>
-                    <input type="text" id="username" name="username" class="input-field" placeholder="Nombre de Usuario" required>
+                    <input type="text" id="nombreUsuario" name="nombreUsuario" class="input-field" placeholder="Nombre de Usuario" required>
                 </div>
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
@@ -53,6 +55,59 @@
         </div>
     </div>
 </div>
+
+<script>
+    const form = document.getElementById('loginForm');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenimos el envío tradicional
+
+        const formData = new FormData(form);
+
+        Swal.fire({
+            title: 'Iniciando Sesión...',
+            text: 'Por favor, espera.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch('dao/daoLogin.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Bienvenido!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500 // Se cierra automáticamente
+                    }).then(() => {
+                        // Redirige al dashboard principal
+                        window.location.href = 'index.html';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de Acceso',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo comunicar con el servidor.',
+                });
+            });
+    });
+</script>
 
 </body>
 </html>
