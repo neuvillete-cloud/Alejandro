@@ -223,7 +223,7 @@ $conex->close();
                         const formData = new FormData();
                         formData.append('nombre', nombre);
 
-                        return fetch(`php/add_${tipo}.php`, { // Asegúrate de que la ruta sea correcta
+                        return fetch(`dao/add_${tipo}.php`, { // Asegúrate de que la ruta sea correcta
                             method: 'POST',
                             body: formData
                         })
