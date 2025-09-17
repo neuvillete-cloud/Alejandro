@@ -125,7 +125,7 @@
             return;
         }
 
-        fetch(`php/verificar_usuario.php?nombreUsuario=${encodeURIComponent(username)}`)
+        fetch(`dao/verificar_usuario.php?nombreUsuario=${encodeURIComponent(username)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.exists) {
