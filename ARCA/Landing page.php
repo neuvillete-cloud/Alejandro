@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        /* --- NUEVA PALETA DE COLORES: AZUL TECNOLÓGICO Y VIBRANTE --- */
         :root {
-            --color-primario: #2563eb;
-            --color-secundario: #1d4ed8;
-            --color-acento: #3b82f6;
+            --color-primario: #2563eb;   /* Azul Real (más brillante) */
+            --color-secundario: #1d4ed8; /* Azul más oscuro para botones */
+            --color-acento: #3b82f6;     /* Azul claro para interacciones */
             --color-fondo: #f4f6f9;
             --color-blanco: #ffffff;
             --color-texto: #333333;
@@ -35,7 +36,8 @@
 
         .branding-panel {
             flex-basis: 50%;
-            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+            /* El gradiente ahora usa los nuevos colores primario y secundario */
+            background: linear-gradient(rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
             color: var(--color-blanco);
             display: flex;
@@ -125,7 +127,7 @@
         .input-field:focus {
             outline: none;
             border-color: var(--color-acento);
-            box-shadow: 0 0 0 3px rgba(68, 138, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .extra-options {
@@ -163,7 +165,9 @@
             transition: background-color 0.3s;
         }
 
-        .submit-btn:hover { background-color: var(--color-primario); }
+        .submit-btn:hover {
+            background-color: var(--color-primario);
+        }
 
         .form-footer {
             margin-top: 25px;
@@ -202,18 +206,15 @@
 <body>
 
 <div class="login-wrapper">
-
     <div class="branding-panel">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <h1>Sistema de Gestión de Contenciones y Calidad</h1>
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
     </div>
-
     <div class="login-panel">
         <div class="login-form-container">
             <h2>Bienvenido de Vuelta</h2>
             <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>
-
             <form action="index.html" method="GET">
                 <div class="input-group">
                     <i class="fa-solid fa-user"></i>
@@ -223,7 +224,6 @@
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
                 </div>
-
                 <div class="extra-options">
                     <div>
                         <input type="checkbox" id="remember" name="remember" style="margin-right: 5px;">
@@ -231,15 +231,12 @@
                     </div>
                     <a href="#">¿Olvidaste tu contraseña?</a>
                 </div>
-
                 <button type="submit" class="submit-btn">Acceder</button>
             </form>
-
             <div class="form-footer">
                 <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí.</a></p>
             </div>
         </div>
-
         <div class="version-info">
             ARCA v1.0.1
         </div>
