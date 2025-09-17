@@ -70,38 +70,13 @@
             opacity: 0.9;
         }
 
-        /* --- NUEVO: Estilos para la Caja de Anuncios --- */
-        .announcement-box {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-left: 4px solid var(--color-acento);
-            border-radius: 8px;
-        }
-
-        .announcement-box h4 {
-            font-family: 'Montserrat', sans-serif;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
-        .announcement-box h4 i {
-            margin-right: 10px;
-        }
-
-        .announcement-box p {
-            font-size: 15px;
-            margin-bottom: 0;
-            opacity: 0.9;
-        }
-
         .login-panel {
             flex-basis: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: var(--color-blanco);
-            position: relative; /* Para posicionar el número de versión */
+            position: relative;
         }
 
         .login-form-container {
@@ -153,7 +128,6 @@
             box-shadow: 0 0 0 3px rgba(68, 138, 255, 0.2);
         }
 
-        /* --- NUEVO: Estilos para Opciones Extra (Recordar y Olvidé Contraseña) --- */
         .extra-options {
             display: flex;
             justify-content: space-between;
@@ -205,7 +179,6 @@
 
         .form-footer a:hover { text-decoration: underline; }
 
-        /* --- NUEVO: Estilos para el Número de Versión --- */
         .version-info {
             position: absolute;
             bottom: 20px;
@@ -234,11 +207,6 @@
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <h1>Sistema de Gestión de Contenciones y Calidad</h1>
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
-
-        <div class="announcement-box">
-            <h4><i class="fa-solid fa-bullhorn"></i> Avisos Importantes</h4>
-            <p>Mantenimiento programado para el Sábado 21 de Septiembre a las 10 PM.</p>
-        </div>
     </div>
 
     <div class="login-panel">
