@@ -38,7 +38,8 @@ exit();
  */
 function registrarUsuarioEnDB($conex, $nombre, $nombreUsuario, $password) {
     // 1. (SEGURIDAD) Validar requisitos de la contraseña en el servidor
-    if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $pass) || !preg_match('/[0-9]/', $pass)) {
+    // La variable $pass fue corregida a $password
+    if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password)) {
         return array('status' => 'error', 'message' => 'La contraseña no cumple los requisitos de seguridad.');
     }
 
