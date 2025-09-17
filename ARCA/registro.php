@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="stylesheet" href="css/estilosRegistro.css">
 
 </head>
@@ -34,10 +36,17 @@
                     <i class="fa-solid fa-address-card"></i>
                     <input type="text" id="nombre" name="nombre" class="input-field" placeholder="Nombre Completo" required>
                 </div>
+
                 <div class="input-group">
                     <i class="fa-solid fa-user"></i>
                     <input type="text" id="nombreUsuario" name="nombreUsuario" class="input-field" placeholder="Nombre de Usuario" required>
                 </div>
+
+                <div id="username-feedback" class="feedback-container">
+                    <span id="username-status"></span>
+                    <div id="username-suggestions"></div>
+                </div>
+
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
@@ -69,7 +78,9 @@
 </div>
 
 <script>
-    // --- Lógica del Asistente de Contraseña ---
+    // --- LÓGICA COMPLETA PARA LA PÁGINA DE REGISTRO ---
+
+    // --- Parte 1: Asistente de Contraseña ---
     const passwordInput = document.getElementById('password');
     const requirementsList = document.getElementById('password-requirements');
     const reqLength = document.getElementById('req-length');
@@ -101,11 +112,52 @@
         });
     });
 
-    // --- Lógica de Envío del Formulario con Fetch y SweetAlert2 ---
+    // --- Parte 2: Verificador de Nombre de Usuario en Tiempo Real ---
+    const usernameInput = document.getElementById('nombreUsuario');
+    const usernameStatus = document.getElementById('username-status');
+    const usernameSuggestions = document.getElementById('username-suggestions');
+
+    usernameInput.addEventListener('blur', function() {
+        const username = this.value.trim();
+        if (username === '') {
+            usernameStatus.textContent = '';
+            usernameSuggestions.innerHTML = '';
+            return;
+        }
+
+        fetch(`php/verificar_usuario.php?nombreUsuario=${encodeURIComponent(username)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    usernameStatus.className = 'status-error';
+                    usernameStatus.textContent = 'Este nombre de usuario ya está en uso. Prueba con uno de estos:';
+                    usernameSuggestions.innerHTML = '';
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionEl = document.createElement('span');
+                        suggestionEl.className = 'suggestion-item';
+                        suggestionEl.textContent = suggestion;
+                        suggestionEl.onclick = () => {
+                            usernameInput.value = suggestion;
+                            usernameStatus.textContent = '';
+                            usernameSuggestions.innerHTML = '';
+                        };
+                        usernameSuggestions.appendChild(suggestionEl);
+                    });
+                } else {
+                    usernameStatus.className = 'status-success';
+                    usernameStatus.textContent = '¡Nombre de usuario disponible!';
+                    usernameSuggestions.innerHTML = '';
+                }
+            })
+            .catch(error => console.error('Error al verificar usuario:', error));
+    });
+
+
+    // --- Parte 3: Lógica de Envío del Formulario con Fetch y SweetAlert2 ---
     const form = document.getElementById('registroForm');
 
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevenimos el envío tradicional
+        event.preventDefault();
 
         const password = passwordInput.value;
         const passwordConfirm = document.getElementById('password_confirm').value;
@@ -164,6 +216,5 @@
             });
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

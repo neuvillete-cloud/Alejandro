@@ -223,3 +223,45 @@ body {
     color: #28a745; /* Verde para requisito cumplido */
     text-decoration: line-through;
 }
+
+/* --- ESTILOS PARA FEEDBACK DE USERNAME --- */
+.feedback-container {
+    min-height: 20px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+
+.feedback-container .status-error {
+    color: #a83232;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.feedback-container .status-success {
+    color: #28a745;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#username-suggestions {
+    margin-top: 5px;
+}
+
+.suggestion-item {
+    display: inline-block;
+    background-color: #e3f2fd; /* Un azul muy claro */
+    color: var(--color-secundario);
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: #bbdefb; /* Un poco más oscuro al pasar el mouse */
+}
