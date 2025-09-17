@@ -12,7 +12,7 @@ if (isset($_GET['nombreUsuario'])) {
     $nombreUsuario = trim($_GET['nombreUsuario']);
 
     if (!empty($nombreUsuario)) {
-        $con = new ConexionBD();
+        $con = new LocalConector();
         $conex = $con->conectar();
 
         // Usamos sentencias preparadas para seguridad
