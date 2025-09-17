@@ -248,6 +248,66 @@ $conex->close();
             });
         });
         <?php endif; ?>
+
+        // --- INICIA NUEVO BLOQUE: Lógica para Enviar el Formulario Completo ---
+        const solicitudForm = document.getElementById('solicitudForm');
+
+        solicitudForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Siempre prevenimos el envío por defecto
+
+            // Validación: Asegurarse de que al menos un defecto ha sido añadido
+            if (defectosContainer.children.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Faltan Defectos',
+                    text: 'Debes registrar al menos un defecto para poder guardar la solicitud.',
+                });
+                return;
+            }
+
+            const formData = new FormData(solicitudForm);
+
+            Swal.fire({
+                title: 'Guardando Solicitud...',
+                text: 'Este proceso puede tardar un momento.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch('php/guardar_solicitud.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Solicitud Guardada!',
+                            text: data.message,
+                        }).then(() => {
+                            // Redirigir o limpiar el formulario
+                            window.location.href = 'index.php'; // Por ejemplo, al dashboard
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al Guardar',
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de Conexión',
+                        text: 'No se pudo comunicar con el servidor.',
+                    });
+                });
+        });
     });
 </script>
 
