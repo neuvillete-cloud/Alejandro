@@ -17,15 +17,18 @@
 <body>
 
 <div class="login-wrapper">
+
     <div class="branding-panel">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <h1>Sistema de Gestión de Contenciones y Calidad</h1>
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
     </div>
+
     <div class="login-panel">
         <div class="login-form-container">
             <h2>Crear una Cuenta</h2>
             <p class="subtitle">Completa el formulario para obtener acceso al sistema.</p>
+
             <form action="/crear-usuario-endpoint" method="POST">
                 <div class="input-group">
                     <i class="fa-solid fa-address-card"></i>
@@ -39,17 +42,68 @@
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
                 </div>
+
+                <ul id="password-requirements" class="password-requirements">
+                    <li id="req-length"><i class="fa-solid fa-circle-xmark"></i> Al menos 8 caracteres</li>
+                    <li id="req-lowercase"><i class="fa-solid fa-circle-xmark"></i> Una letra minúscula</li>
+                    <li id="req-uppercase"><i class="fa-solid fa-circle-xmark"></i> Una letra mayúscula</li>
+                    <li id="req-number"><i class="fa-solid fa-circle-xmark"></i> Al menos un número</li>
+                </ul>
+
                 <button type="submit" class="submit-btn">Crear Cuenta</button>
             </form>
+
             <div class="form-footer">
                 <p>¿Ya tienes una cuenta? <a href="acceso.php">Inicia Sesión aquí.</a></p>
             </div>
         </div>
+
         <div class="version-info">
             ARCA v1.0.1
         </div>
     </div>
 </div>
+
+<script>
+    const passwordInput = document.getElementById('password');
+    const requirementsList = document.getElementById('password-requirements');
+
+    // Obtenemos cada requisito individualmente
+    const reqLength = document.getElementById('req-length');
+    const reqLowercase = document.getElementById('req-lowercase');
+    const reqUppercase = document.getElementById('req-uppercase');
+    const reqNumber = document.getElementById('req-number');
+
+    const requirements = [
+        { el: reqLength,    regex: /.{8,}/ },
+        { el: reqLowercase, regex: /[a-z]/ },
+        { el: reqUppercase, regex: /[A-Z]/ },
+        { el: reqNumber,    regex: /[0-9]/ }
+    ];
+
+    // Muestra la lista cuando el usuario hace focus en el campo de contraseña
+    passwordInput.addEventListener('focus', () => {
+        requirementsList.classList.add('visible');
+    });
+
+    // Valida la contraseña en tiempo real mientras el usuario escribe
+    passwordInput.addEventListener('keyup', () => {
+        const password = passwordInput.value;
+
+        requirements.forEach(req => {
+            const icon = req.el.querySelector('i');
+            if (req.regex.test(password)) {
+                req.el.classList.add('valid');
+                icon.classList.remove('fa-circle-xmark');
+                icon.classList.add('fa-circle-check');
+            } else {
+                req.el.classList.remove('valid');
+                icon.classList.remove('fa-circle-check');
+                icon.classList.add('fa-circle-xmark');
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

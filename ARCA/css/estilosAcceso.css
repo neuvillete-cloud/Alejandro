@@ -188,38 +188,3 @@ body {
         right: auto;
     }
 }
-
-/* --- ESTILOS PARA EL ASISTENTE DE CONTRASEÑA --- */
-.password-requirements {
-    list-style-type: none;
-    padding-left: 0;
-    margin-top: -15px; /* Lo acerca al campo de contraseña */
-    margin-bottom: 20px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out; /* Animación suave de despliegue */
-}
-
-/* Estilo para cuando se muestra el asistente */
-.password-requirements.visible {
-    max-height: 200px; /* Altura suficiente para mostrar todos los items */
-    margin-top: 10px;
-}
-
-.password-requirements li {
-    font-size: 13px;
-    color: #a83232; /* Rojo para requisito no cumplido */
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
-}
-
-.password-requirements li i {
-    margin-right: 8px;
-    width: 16px; /* Para alinear los íconos */
-}
-
-/* Estilo para cuando un requisito SÍ se cumple */
-.password-requirements li.valid {
-    color: #28a745; /* Verde para requisito cumplido */
-    text-decoration: line-through;
-}
