@@ -1,0 +1,274 @@
+/* =================================================================
+   HOJA DE ESTILOS PRINCIPAL PARA EL PROYECTO ARCA
+   ================================================================= */
+
+/* --- 1. Variables Globales y Estilos Base --- */
+:root {
+    /* Paleta de colores: Azul Corporativo y Sofisticado */
+    --color-primario: #4a6984;   /* Azul Acero */
+    --color-secundario: #5c85ad; /* Azul Medio Sobrio */
+    --color-acento: #8ab4d7;     /* Azul Claro Sutil */
+    --color-fondo: #f4f6f9;
+    --color-blanco: #ffffff;
+    --color-texto: #333333;
+    --color-borde: #dbe1e8;
+    --color-exito: #28a745;
+    --color-error: #a83232;
+    --sombra-suave: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- 2. Estilos para las Páginas de Acceso y Registro --- */
+.login-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.branding-panel {
+    flex-basis: 50%;
+    background: linear-gradient(rgba(74, 105, 132, 0.85), rgba(92, 133, 173, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+    color: var(--color-blanco);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    box-sizing: border-box;
+}
+
+.login-panel {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-blanco);
+    position: relative;
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+}
+
+.login-form-container h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    color: var(--color-primario);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.login-form-container .subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.input-field {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px rgba(138, 180, 215, 0.25);
+}
+
+.extra-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.extra-options label {
+    cursor: pointer;
+    color: #555;
+}
+
+.extra-options a {
+    color: var(--color-secundario);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: var(--color-primario);
+}
+
+.form-footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.form-footer a {
+    color: var(--color-secundario);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.version-info {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 600;
+}
+
+
+/* --- 3. Estilos del Layout Principal (Dashboard, Formularios, etc.) --- */
+.header {
+    background-color: var(--color-blanco);
+    box-shadow: var(--sombra-suave);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-primario);
+}
+
+.logo i { margin-right: 10px; }
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info span {
+    margin-right: 20px;
+    font-weight: 700;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--color-secundario);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.logout-btn:hover {
+    color: var(--color-primario);
+}
+
+.logout-btn i {
+    margin-left: 8px;
+}
+
+/* --- 4. Estilos para el Formulario de Nueva Solicitud --- */
+.form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
+.form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; }
+fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
+fieldset:last-of-type { border-bottom: none; }
+legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: var(--color-primario, #4a6984); margin-bottom: 20px; }
+.form-row { display: flex; flex-wrap: wrap; gap: 20px; }
+.form-group { flex: 1; display: flex; flex-direction: column; margin-bottom: 15px; min-width: 200px; }
+.form-group label { margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; font-family: 'Lato', sans-serif; box-sizing: border-box; }
+.form-group-checkbox { display: flex; align-items: center; gap: 10px; }
+.hidden-section { display: none; margin-top: 15px; }
+.select-with-button { display: flex; align-items: flex-end; gap: 10px; }
+.select-with-button select { flex-grow: 1; }
+.form-actions { text-align: right; margin-top: 20px; }
+
+/* --- 5. Estilos para Componentes Interactivos (Validadores, Defectos) --- */
+
+/* Asistente de Contraseña */
+.password-requirements { list-style-type: none; padding-left: 0; margin-top: -15px; margin-bottom: 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+.password-requirements.visible { max-height: 200px; margin-top: 10px; }
+.password-requirements li { font-size: 13px; color: var(--color-error); margin-bottom: 5px; transition: all 0.3s ease; }
+.password-requirements li i { margin-right: 8px; width: 16px; }
+.password-requirements li.valid { color: var(--color-exito); text-decoration: line-through; }
+
+/* Feedback de Nombre de Usuario */
+.feedback-container { min-height: 20px; margin-top: -15px; margin-bottom: 15px; padding-left: 5px; }
+.feedback-container .status-error { color: var(--color-error); font-size: 13px; font-weight: 600; }
+.feedback-container .status-success { color: var(--color-exito); font-size: 13px; font-weight: 600; }
+#username-suggestions { margin-top: 5px; }
+.suggestion-item { display: inline-block; background-color: #e3f2fd; color: var(--color-secundario); padding: 3px 10px; border-radius: 15px; font-size: 12px; font-weight: 600; margin-right: 8px; margin-bottom: 5px; cursor: pointer; transition: background-color 0.2s; }
+.suggestion-item:hover { background-color: #bbdefb; }
+
+/* Items de Defecto Dinámicos */
+.defecto-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background-color: #fafafa; }
+.defecto-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.defecto-header h4 { margin: 0; font-family: 'Montserrat', sans-serif; }
+.btn-remove-defecto { background: none; border: none; color: var(--color-error); font-size: 24px; font-weight: bold; cursor: pointer; }
+
+/* --- 6. Estilos de Botones y Utilerías --- */
+.btn-primary, .btn-secondary { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+.btn-primary { background-color: var(--color-secundario); color: white; }
+.btn-primary:hover { background-color: var(--color-primario); }
+.btn-secondary { background-color: #e0e0e0; color: #333; }
+.btn-secondary:hover { background-color: #bdbdbd; }
+.btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
+
+
+/* --- 7. Estilos Responsivos --- */
+@media (max-width: 992px) {
+    .branding-panel { display: none; }
+    .login-panel { flex-basis: 100%; }
+    .version-info { left: 50%; transform: translateX(-50%); right: auto; }
+}
+
+@media (max-width: 768px) {
+    .form-row { flex-direction: column; gap: 0; }
+}
