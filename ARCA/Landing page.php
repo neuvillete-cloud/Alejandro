@@ -11,11 +11,10 @@
 
     <style>
         :root {
-            /* Paleta de colores 100% azul */
-            --color-primario: #1a237e; /* Azul marino corporativo */
-            --color-secundario: #3f51b5; /* Azul índigo */
-            --color-acento: #448aff; /* Azul brillante para interacciones */
-            --color-fondo: #f4f6f9;   /* Un gris muy claro con tinte azulado */
+            --color-primario: #1a237e;
+            --color-secundario: #3f51b5;
+            --color-acento: #448aff;
+            --color-fondo: #f4f6f9;
             --color-blanco: #ffffff;
             --color-texto: #333333;
             --color-borde: #dbe1e8;
@@ -36,7 +35,7 @@
 
         .branding-panel {
             flex-basis: 50%;
-            background: linear-gradient(rgba(26, 35, 126, 0.85), rgba(63, 81, 181, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
             color: var(--color-blanco);
             display: flex;
@@ -71,12 +70,38 @@
             opacity: 0.9;
         }
 
+        /* --- NUEVO: Estilos para la Caja de Anuncios --- */
+        .announcement-box {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--color-acento);
+            border-radius: 8px;
+        }
+
+        .announcement-box h4 {
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .announcement-box h4 i {
+            margin-right: 10px;
+        }
+
+        .announcement-box p {
+            font-size: 15px;
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+
         .login-panel {
             flex-basis: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: var(--color-blanco);
+            position: relative; /* Para posicionar el número de versión */
         }
 
         .login-form-container {
@@ -128,6 +153,28 @@
             box-shadow: 0 0 0 3px rgba(68, 138, 255, 0.2);
         }
 
+        /* --- NUEVO: Estilos para Opciones Extra (Recordar y Olvidé Contraseña) --- */
+        .extra-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .extra-options label {
+            cursor: pointer;
+            color: #555;
+        }
+
+        .extra-options a {
+            color: var(--color-acento);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .extra-options a:hover { text-decoration: underline; }
+
         .submit-btn {
             width: 100%;
             padding: 15px;
@@ -142,9 +189,7 @@
             transition: background-color 0.3s;
         }
 
-        .submit-btn:hover {
-            background-color: var(--color-primario);
-        }
+        .submit-btn:hover { background-color: var(--color-primario); }
 
         .form-footer {
             margin-top: 25px;
@@ -160,23 +205,47 @@
 
         .form-footer a:hover { text-decoration: underline; }
 
+        /* --- NUEVO: Estilos para el Número de Versión --- */
+        .version-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: #aaa;
+            font-weight: 600;
+        }
+
         @media (max-width: 992px) {
             .branding-panel { display: none; }
             .login-panel { flex-basis: 100%; }
+            .version-info {
+                left: 50%;
+                transform: translateX(-50%);
+                right: auto;
+            }
         }
     </style>
 </head>
 <body>
+
 <div class="login-wrapper">
+
     <div class="branding-panel">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <h1>Sistema de Gestión de Contenciones y Calidad</h1>
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
+
+        <div class="announcement-box">
+            <h4><i class="fa-solid fa-bullhorn"></i> Avisos Importantes</h4>
+            <p>Mantenimiento programado para el Sábado 21 de Septiembre a las 10 PM.</p>
+        </div>
     </div>
+
     <div class="login-panel">
         <div class="login-form-container">
             <h2>Bienvenido de Vuelta</h2>
             <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>
+
             <form action="index.html" method="GET">
                 <div class="input-group">
                     <i class="fa-solid fa-user"></i>
@@ -186,16 +255,28 @@
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
                 </div>
+
+                <div class="extra-options">
+                    <div>
+                        <input type="checkbox" id="remember" name="remember" style="margin-right: 5px;">
+                        <label for="remember">Recordar sesión</label>
+                    </div>
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+
                 <button type="submit" class="submit-btn">Acceder</button>
             </form>
-            <div class="form-footer">
-                <a href="#">¿Olvidaste tu contraseña?</a>
-            </div>
+
             <div class="form-footer">
                 <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí.</a></p>
             </div>
         </div>
+
+        <div class="version-info">
+            ARCA v1.0.1
+        </div>
     </div>
 </div>
+
 </body>
 </html>
