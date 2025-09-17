@@ -196,7 +196,7 @@
                         timer: 2000,
                         timerProgressBar: true
                     }).then(() => {
-                        window.location.href = 'acceso.html';
+                        window.location.href = 'acceso.php';
                     });
                 } else {
                     Swal.fire({
