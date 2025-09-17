@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* --- NUEVA PALETA DE COLORES: AZUL TECNOLÓGICO Y VIBRANTE --- */
+        /* --- NUEVA PALETA DE COLORES: AZUL CORPORATIVO Y SOFISTICADO --- */
         :root {
-            --color-primario: #2563eb;   /* Azul Real (más brillante) */
-            --color-secundario: #1d4ed8; /* Azul más oscuro para botones */
-            --color-acento: #3b82f6;     /* Azul claro para interacciones */
+            --color-primario: #4a6984;   /* Azul Acero */
+            --color-secundario: #5c85ad; /* Azul Medio Sobrio */
+            --color-acento: #8ab4d7;     /* Azul Claro Sutil */
             --color-fondo: #f4f6f9;
             --color-blanco: #ffffff;
             --color-texto: #333333;
@@ -36,8 +36,8 @@
 
         .branding-panel {
             flex-basis: 50%;
-            /* El gradiente ahora usa los nuevos colores primario y secundario */
-            background: linear-gradient(rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+            /* El gradiente ahora usa los nuevos colores sobrios */
+            background: linear-gradient(rgba(74, 105, 132, 0.85), rgba(92, 133, 173, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
             color: var(--color-blanco);
             display: flex;
@@ -127,7 +127,7 @@
         .input-field:focus {
             outline: none;
             border-color: var(--color-acento);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(138, 180, 215, 0.25);
         }
 
         .extra-options {
@@ -144,7 +144,7 @@
         }
 
         .extra-options a {
-            color: var(--color-acento);
+            color: var(--color-secundario);
             text-decoration: none;
             font-weight: 600;
         }
@@ -176,7 +176,7 @@
         }
 
         .form-footer a {
-            color: var(--color-acento);
+            color: var(--color-secundario);
             text-decoration: none;
             font-weight: 600;
         }
