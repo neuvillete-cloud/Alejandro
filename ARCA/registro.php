@@ -42,7 +42,7 @@
                 <button type="submit" class="submit-btn">Crear Cuenta</button>
             </form>
             <div class="form-footer">
-                <p>¿Ya tienes una cuenta? <a href="acceso.html">Inicia Sesión aquí.</a></p>
+                <p>¿Ya tienes una cuenta? <a href="acceso.php">Inicia Sesión aquí.</a></p>
             </div>
         </div>
         <div class="version-info">
