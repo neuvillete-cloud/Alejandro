@@ -1,14 +1,19 @@
 <?php
+// Incluye el script que verifica si hay una sesión activa o una cookie "remember_me"
+// Asegúrate de que la ruta a tu archivo sea la correcta.
 include_once("dao/verificar_sesion.php");
 
+// Si después de la verificación, el usuario sigue sin estar logueado, se redirige a la página de acceso
 if (!isset($_SESSION['loggedin'])) {
-    header('Location: acceso.html');
+    header('Location: acceso.php');
     exit();
 }
 
+// Se verifica si el usuario tiene el rol de Super Usuario (IdRol = 1)
 $esSuperUsuario = (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1);
 
-// --- NUEVA LÓGICA: Cargar datos para los menús desplegables ---
+// --- Cargar datos para los menús desplegables ---
+// Asegúrate de que la ruta a tu archivo de conexión sea la correcta.
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
@@ -22,6 +27,7 @@ $commodities = $conex->query("SELECT IdCommodity, NombreCommodity FROM Commodity
 // Cargar Terciarias
 $terciarias = $conex->query("SELECT IdTerciaria, NombreTerciaria FROM Terciarias ORDER BY NombreTerciaria ASC");
 
+// Cerrar la conexión después de obtener los datos
 $conex->close();
 ?>
 <!DOCTYPE html>
@@ -31,12 +37,13 @@ $conex->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nueva Solicitud - ARCA</title>
 
-    <link rel="stylesheet" href="css/estilosSolicitud.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="css/estilosSolicitud.css">
 </head>
 <body>
 
@@ -44,7 +51,7 @@ $conex->close();
     <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
     <div class="user-info">
         <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
-        <button class="logout-btn" onclick="window.location.href='php/logout.php'">
+        <button class="logout-btn" onclick="window.location.href='dao/logout.php'">
             Cerrar Sesión <i class="fa-solid fa-right-from-bracket"></i>
         </button>
     </div>
@@ -58,10 +65,23 @@ $conex->close();
 
             <fieldset><legend>Datos Generales</legend>
                 <div class="form-row">
-                    <div class="form-group"><label for="numeroParte">Número de Parte</label><input type="text" id="numeroParte" name="numeroParte" required></div>
-                    <div class="form-group"><label for="cantidad">Cantidad</label><input type="number" id="cantidad" name="cantidad" required></div>
+                    <div class="form-group">
+                        <label for="responsable">Nombre del Responsable</label>
+                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="numeroParte">Número de Parte</label>
+                        <input type="text" id="numeroParte" name="numeroParte" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" id="cantidad" name="cantidad" required>
+                    </div>
                 </div>
-                <div class="form-group"><label for="descripcion">Descripción del Problema</label><textarea id="descripcion" name="descripcion" rows="3" required></textarea></div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción del Problema</label>
+                    <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
+                </div>
             </fieldset>
 
             <fieldset><legend>Clasificación</legend>
@@ -151,14 +171,18 @@ $conex->close();
                     <h4>Defecto #${defectosContainer.children.length + 1}</h4>
                     <button type="button" class="btn-remove-defecto" data-defecto-id="${defectoCounter}">&times;</button>
                 </div>
+                <div class="form-group">
+                    <label for="defectoNombre-${defectoCounter}">Nombre del Defecto</label>
+                    <input type="text" name="defectos[${defectoCounter}][nombre]" required>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="defectoNombre-${defectoCounter}">Nombre del Defecto</label>
-                        <input type="text" name="defectos[${defectoCounter}][nombre]" required>
+                        <label for="defectoFotoOk-${defectoCounter}">Foto OK (Ejemplo correcto)</label>
+                        <input type="file" name="defectos[${defectoCounter}][foto_ok]" accept="image/*" required>
                     </div>
                     <div class="form-group">
-                        <label for="defectoFoto-${defectoCounter}">Foto del Defecto</label>
-                        <input type="file" name="defectos[${defectoCounter}][foto]" accept="image/*" required>
+                        <label for="defectoFotoNok-${defectoCounter}">Foto NO OK (Evidencia del defecto)</label>
+                        <input type="file" name="defectos[${defectoCounter}][foto_nok]" accept="image/*" required>
                     </div>
                 </div>
             </div>`;
@@ -194,13 +218,12 @@ $conex->close();
                     preConfirm: (nombre) => {
                         if (!nombre) {
                             Swal.showValidationMessage('El nombre no puede estar vacío');
-                            return;
+                            return false;
                         }
-                        // Enviamos el dato al script PHP correspondiente
                         const formData = new FormData();
                         formData.append('nombre', nombre);
 
-                        return fetch(`php/add_${tipo}.php`, {
+                        return fetch(`php/add_${tipo}.php`, { // Asegúrate de que la ruta sea correcta
                             method: 'POST',
                             body: formData
                         })
@@ -215,11 +238,10 @@ $conex->close();
                 }).then((result) => {
                     if (result.isConfirmed && result.value.status === 'success') {
                         Swal.fire('¡Guardado!', result.value.message, 'success');
-                        // Añadimos la nueva opción al select correspondiente
                         const select = document.getElementById(tipo);
                         const newOption = new Option(result.value.data.nombre, result.value.data.id, true, true);
                         select.add(newOption);
-                    } else if(result.value) {
+                    } else if (result.value) {
                         Swal.fire('Error', result.value.message, 'error');
                     }
                 });
