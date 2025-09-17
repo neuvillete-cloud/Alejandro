@@ -29,7 +29,7 @@
             <h2>Crear una Cuenta</h2>
             <p class="subtitle">Completa el formulario para obtener acceso al sistema.</p>
 
-            <form action="/crear-usuario-endpoint" method="POST">
+            <form id="registroForm" action="dao/daoRegistroU.php" method="POST">
                 <div class="input-group">
                     <i class="fa-solid fa-address-card"></i>
                     <input type="text" id="nombre" name="nombre" class="input-field" placeholder="Nombre Completo" required>
@@ -41,6 +41,10 @@
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password_confirm" name="password_confirm" class="input-field" placeholder="Confirmar Contraseña" required>
                 </div>
 
                 <ul id="password-requirements" class="password-requirements">
@@ -65,31 +69,24 @@
 </div>
 
 <script>
+    // --- Lógica del Asistente de Contraseña ---
     const passwordInput = document.getElementById('password');
     const requirementsList = document.getElementById('password-requirements');
-
-    // Obtenemos cada requisito individualmente
     const reqLength = document.getElementById('req-length');
     const reqLowercase = document.getElementById('req-lowercase');
     const reqUppercase = document.getElementById('req-uppercase');
     const reqNumber = document.getElementById('req-number');
-
     const requirements = [
         { el: reqLength,    regex: /.{8,}/ },
         { el: reqLowercase, regex: /[a-z]/ },
         { el: reqUppercase, regex: /[A-Z]/ },
         { el: reqNumber,    regex: /[0-9]/ }
     ];
-
-    // Muestra la lista cuando el usuario hace focus en el campo de contraseña
     passwordInput.addEventListener('focus', () => {
         requirementsList.classList.add('visible');
     });
-
-    // Valida la contraseña en tiempo real mientras el usuario escribe
     passwordInput.addEventListener('keyup', () => {
         const password = passwordInput.value;
-
         requirements.forEach(req => {
             const icon = req.el.querySelector('i');
             if (req.regex.test(password)) {
@@ -103,7 +100,70 @@
             }
         });
     });
-</script>
 
+    // --- Lógica de Envío del Formulario con Fetch y SweetAlert2 ---
+    const form = document.getElementById('registroForm');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenimos el envío tradicional
+
+        const password = passwordInput.value;
+        const passwordConfirm = document.getElementById('password_confirm').value;
+
+        if (password !== passwordConfirm) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Las contraseñas no coinciden.',
+            });
+            return;
+        }
+
+        const formData = new FormData(form);
+
+        Swal.fire({
+            title: 'Registrando...',
+            text: 'Por favor, espera.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        fetch('dao/daoRegistroU.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Registro Exitoso!',
+                        text: data.message,
+                        timer: 2000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = 'acceso.html';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Conexión',
+                    text: 'No se pudo comunicar con el servidor. Inténtalo más tarde.',
+                });
+            });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
