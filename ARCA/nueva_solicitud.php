@@ -67,7 +67,7 @@ $conex->close();
                 <div class="form-row">
                     <div class="form-group">
                         <label for="responsable">Nombre del Responsable</label>
-                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" readonly>
+                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
                     </div>
                     <div class="form-group">
                         <label for="numeroParte">Número de Parte</label>
