@@ -11,10 +11,11 @@
 
     <style>
         :root {
-            --color-primario: #1a237e;
-            --color-secundario: #3f51b5;
-            --color-acento: #448aff;
-            --color-fondo: #f4f6f9;
+            /* Paleta de colores 100% azul */
+            --color-primario: #1a237e; /* Azul marino corporativo */
+            --color-secundario: #3f51b5; /* Azul índigo */
+            --color-acento: #448aff; /* Azul brillante para interacciones */
+            --color-fondo: #f4f6f9;   /* Un gris muy claro con tinte azulado */
             --color-blanco: #ffffff;
             --color-texto: #333333;
             --color-borde: #dbe1e8;
@@ -35,7 +36,7 @@
 
         .branding-panel {
             flex-basis: 50%;
-            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+            background: linear-gradient(rgba(26, 35, 126, 0.85), rgba(63, 81, 181, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
             color: var(--color-blanco);
             display: flex;
@@ -159,36 +160,25 @@
 
         .form-footer a:hover { text-decoration: underline; }
 
-        /* --- Responsive Design --- */
         @media (max-width: 992px) {
-            .branding-panel {
-                display: none; /* Ocultamos el panel de marca en pantallas pequeñas */
-            }
-            .login-panel {
-                flex-basis: 100%;
-            }
+            .branding-panel { display: none; }
+            .login-panel { flex-basis: 100%; }
         }
-
     </style>
 </head>
 <body>
-
 <div class="login-wrapper">
-
     <div class="branding-panel">
-        <div class="logo">
-            <i class="fa-solid fa-shield-halved"></i>ARCA
-        </div>
+        <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <h1>Sistema de Gestión de Contenciones y Calidad</h1>
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
     </div>
-
     <div class="login-panel">
         <div class="login-form-container">
             <h2>Bienvenido de Vuelta</h2>
             <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>
-
-            <form action="index.html" method="GET"> <div class="input-group">
+            <form action="index.html" method="GET">
+                <div class="input-group">
                     <i class="fa-solid fa-user"></i>
                     <input type="text" id="username" name="username" class="input-field" placeholder="Nombre de Usuario" required>
                 </div>
@@ -198,17 +188,14 @@
                 </div>
                 <button type="submit" class="submit-btn">Acceder</button>
             </form>
-
             <div class="form-footer">
                 <a href="#">¿Olvidaste tu contraseña?</a>
             </div>
             <div class="form-footer">
-                <p>¿Necesitas una cuenta? <a href="register.html">Contacta al administrador.</a></p>
+                <p>¿No tienes una cuenta? <a href="register.html">Regístrate aquí.</a></p>
             </div>
         </div>
     </div>
-
 </div>
-
 </body>
 </html>
