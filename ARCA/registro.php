@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al Sistema ARCA</title>
+    <title>Registro de Usuario - ARCA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* --- NUEVA PALETA DE COLORES: AZUL CORPORATIVO Y SOFISTICADO --- */
+        /* Paleta de colores: Azul Corporativo y Sofisticado */
         :root {
             --color-primario: #4a6984;   /* Azul Acero */
             --color-secundario: #5c85ad; /* Azul Medio Sobrio */
@@ -36,8 +36,7 @@
 
         .branding-panel {
             flex-basis: 50%;
-            /* El gradiente ahora usa los nuevos colores sobrios */
-            background: linear-gradient(rgba(74, 105, 132, 0.85), rgba(92, 133, 173, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+            background: linear-gradient(rgba(74, 105, 132, 0.85), rgba(92, 133, 173, 0.85)), url('https://images.unsplash.com/photo-1621999699042-834c6de1b489?q=80&w=1974&auto-format&fit=crop') no-repeat center center;
             background-size: cover;
             color: var(--color-blanco);
             display: flex;
@@ -130,27 +129,6 @@
             box-shadow: 0 0 0 3px rgba(138, 180, 215, 0.25);
         }
 
-        .extra-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .extra-options label {
-            cursor: pointer;
-            color: #555;
-        }
-
-        .extra-options a {
-            color: var(--color-secundario);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .extra-options a:hover { text-decoration: underline; }
-
         .submit-btn {
             width: 100%;
             padding: 15px;
@@ -206,37 +184,40 @@
 <body>
 
 <div class="login-wrapper">
+
     <div class="branding-panel">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <h1>Sistema de Gestión de Contenciones y Calidad</h1>
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
     </div>
+
     <div class="login-panel">
         <div class="login-form-container">
-            <h2>Bienvenido de Vuelta</h2>
-            <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>
-            <form action="index.html" method="GET">
+            <h2>Crear una Cuenta</h2>
+            <p class="subtitle">Completa el formulario para obtener acceso al sistema.</p>
+
+            <form action="/crear-usuario-endpoint" method="POST">
+                <div class="input-group">
+                    <i class="fa-solid fa-address-card"></i>
+                    <input type="text" id="nombre" name="nombre" class="input-field" placeholder="Nombre Completo" required>
+                </div>
                 <div class="input-group">
                     <i class="fa-solid fa-user"></i>
-                    <input type="text" id="username" name="username" class="input-field" placeholder="Nombre de Usuario" required>
+                    <input type="text" id="nombreUsuario" name="nombreUsuario" class="input-field" placeholder="Nombre de Usuario" required>
                 </div>
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
                 </div>
-                <div class="extra-options">
-                    <div>
-                        <input type="checkbox" id="remember" name="remember" style="margin-right: 5px;">
-                        <label for="remember">Recordar sesión</label>
-                    </div>
-                    <a href="#">¿Olvidaste tu contraseña?</a>
-                </div>
-                <button type="submit" class="submit-btn">Acceder</button>
+
+                <button type="submit" class="submit-btn">Crear Cuenta</button>
             </form>
+
             <div class="form-footer">
-                <p>¿No tienes una cuenta? <a href="registro.php">Regístrate aquí.</a></p>
+                <p>¿Ya tienes una cuenta? <a href="acceso.html">Inicia Sesión aquí.</a></p>
             </div>
         </div>
+
         <div class="version-info">
             ARCA v1.0.1
         </div>
