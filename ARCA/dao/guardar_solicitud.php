@@ -14,7 +14,7 @@ header('Content-Type: application/json');
 
 // --- CONFIGURACIÓN ---
 // ¡IMPORTANTE! Cambia esto a la URL base de tu proyecto.
-$baseUrl = "https://grammermx.com/AleTest/ARCA";
+$baseUrl = "https://grammermx.com/AleTest/ARCA/";
 
 /**
  * Función para limpiar y sanitizar nombres de archivo.
