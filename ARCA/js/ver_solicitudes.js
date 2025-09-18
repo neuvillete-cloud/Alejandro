@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Preparamos y mostramos el modal con un mensaje de carga
             modalFolio.textContent = `S-${id.padStart(4, '0')}`;
             modalBody.innerHTML = '<p>Cargando datos...</p>';
-            modal.classList.add('visible'); // Usamos la clase para mostrarlo con animación
+            modal.classList.add('visible');
 
             // Hacemos la llamada al servidor para obtener los datos
             fetch(`dao/get_solicitud_details.php?id=${id}`)
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (result.status === 'success') {
                         const data = result.data;
 
-                        // Plantilla del Método de Trabajo
                         let metodoHTML = '';
                         if (data.RutaArchivo) {
                             metodoHTML = `
@@ -55,21 +54,21 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </fieldset>`;
                         }
 
-                        // Plantilla de Defectos
+                        // Plantilla de Defectos con el nuevo diseño de cajas
                         let defectosHTML = '<fieldset><legend>Defectos Registrados</legend>';
                         if (data.defectos && data.defectos.length > 0) {
                             data.defectos.forEach((defecto, index) => {
                                 defectosHTML += `
                                     <div class="defecto-view-item">
-                                        <h4>Defecto #${index + 1}: ${defecto.NombreDefecto || ''}</h4>
+                                        <h4>${defecto.NombreDefecto || ''}</h4>
                                         <div class="defect-view-gallery">
-                                            <div class="defect-image-container">
-                                                <label>Foto OK</label>
-                                                <img src="${defecto.RutaFotoOk}" alt="Foto OK del defecto ${defecto.NombreDefecto}">
+                                            <div class="defect-photo-box ok-box">
+                                                <span class="box-label">OK</span>
+                                                <img src="${defecto.RutaFotoOk}" alt="Foto OK: ${defecto.NombreDefecto}">
                                             </div>
-                                            <div class="defect-image-container">
-                                                <label>Foto NO OK</label>
-                                                <img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK del defecto ${defecto.NombreDefecto}">
+                                            <div class="defect-photo-box nok-box">
+                                                <span class="box-label">NO OK</span>
+                                                <img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK: ${defecto.NombreDefecto}">
                                             </div>
                                         </div>
                                     </div>`;
@@ -79,46 +78,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         defectosHTML += '</fieldset>';
 
-                        // Construimos el HTML completo del modal con la estructura del formulario de solo lectura
+                        // El resto del modal se construye como antes
                         modalBody.innerHTML = `
                             <fieldset><legend>Datos Generales</legend>
                                 <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Nombre del Responsable</label>
-                                        <input type="text" value="${data.Responsable || ''}" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Número de Parte</label>
-                                        <input type="text" value="${data.NumeroParte || ''}" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Cantidad</label>
-                                        <input type="text" value="${data.Cantidad || ''}" readonly>
-                                    </div>
+                                    <div class="form-group"><label>Responsable</label><input type="text" value="${data.Responsable || ''}" readonly></div>
+                                    <div class="form-group"><label>Número de Parte</label><input type="text" value="${data.NumeroParte || ''}" readonly></div>
+                                    <div class="form-group"><label>Cantidad</label><input type="text" value="${data.Cantidad || ''}" readonly></div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Descripción del Problema</label>
-                                    <textarea rows="3" readonly>${data.Descripcion || ''}</textarea>
-                                </div>
+                                <div class="form-group"><label>Descripción</label><textarea rows="3" readonly>${data.Descripcion || ''}</textarea></div>
                             </fieldset>
-
                             <fieldset><legend>Clasificación</legend>
                                 <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Proveedor</label>
-                                        <input type="text" value="${data.NombreProvedor || ''}" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Commodity</label>
-                                        <input type="text" value="${data.NombreCommodity || ''}" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Terciaria</label>
-                                        <input type="text" value="${data.NombreTerciaria || ''}" readonly>
-                                    </div>
+                                    <div class="form-group"><label>Proveedor</label><input type="text" value="${data.NombreProvedor || ''}" readonly></div>
+                                    <div class="form-group"><label>Commodity</label><input type="text" value="${data.NombreCommodity || ''}" readonly></div>
+                                    <div class="form-group"><label>Terciaria</label><input type="text" value="${data.NombreTerciaria || ''}" readonly></div>
                                 </div>
                             </fieldset>
-                            
                             ${metodoHTML}
                             ${defectosHTML}
                         `;
@@ -128,18 +104,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    modalBody.innerHTML = '<p style="color:var(--color-error);">Error al cargar los datos. Revisa la consola para más detalles.</p>';
+                    modalBody.innerHTML = '<p style="color:var(--color-error);">Error al cargar los datos.</p>';
                 });
         });
     });
 
-    // --- LÓGICA PARA MOSTRAR IMAGEN AMPLIADA AL HACER CLIC ---
+    // Lógica para mostrar la imagen ampliada
     modalBody.addEventListener('click', function(e) {
-        // Verificamos si el elemento clickeado es una imagen dentro de un contenedor de defecto
-        if (e.target.tagName === 'IMG' && e.target.closest('.defect-image-container')) {
+        if (e.target.tagName === 'IMG' && e.target.closest('.defect-photo-box')) {
             const imageSrc = e.target.src;
             const imageAlt = e.target.alt;
-
             Swal.fire({
                 imageUrl: imageSrc,
                 imageAlt: imageAlt,
@@ -147,15 +121,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: '0',
                 background: 'none',
                 showConfirmButton: false,
-                showCloseButton: true,
-                customClass: {
-                    closeButton: 'swal-close-button'
-                }
+                showCloseButton: true
             });
         }
     });
 
-    // --- LÓGICA PARA EL BOTÓN DE ENVIAR POR CORREO ---
+    // Lógica para el botón de enviar por correo
     document.querySelectorAll('.btn-email').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
@@ -184,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     // Aquí harías un fetch a un script php/enviar_correo.php
-                    // fetch('php/enviar_correo.php', { method: 'POST', body: ... })
 
                     // Simulamos una respuesta exitosa del servidor para demostración
                     setTimeout(() => {
