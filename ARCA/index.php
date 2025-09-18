@@ -155,7 +155,7 @@
         </div>
         <nav class="main-nav">
             <a href="index.php" class="active">Dashboard</a>
-            <a href="ver_solicitudes.php">Mis Solicitudes</a>
+            <a href="Historial.php">Mis Solicitudes</a>
         </nav>
     </div>
     <div class="user-info">
@@ -176,7 +176,7 @@
                 <i class="fa-solid fa-plus"></i>
                 Nueva Solicitud
             </a>
-            <a href="ver_solicitudes.php" class="cta-button secondary">
+            <a href="Historial.php" class="cta-button secondary">
                 <i class="fa-solid fa-list-check"></i>
                 Ver mis Solicitudes
             </a>
