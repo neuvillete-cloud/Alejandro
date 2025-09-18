@@ -226,3 +226,21 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
     .form-row { flex-direction: column; gap: 0; }
     .filter-form { flex-direction: column; align-items: stretch; }
 }
+
+/* --- AÑADE ESTAS REGLAS PARA CORREGIR LA ALINEACIÓN --- */
+
+/* 1. Forzamos una altura y un modelo de caja consistentes */
+.filter-form .form-group input,
+.filter-form .action-buttons .btn-primary,
+.filter-form .action-buttons .btn-tertiary {
+    height: 48px; /* Altura fija para todos los elementos */
+    box-sizing: border-box; /* Asegura que el padding y borde se incluyan en la altura total */
+}
+
+/* 2. Centramos el texto de los botones verticalmente */
+.filter-form .action-buttons .btn-primary,
+.filter-form .action-buttons .btn-tertiary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
