@@ -109,7 +109,7 @@ try {
     );
     $idEstatusInicial = 1;
 
-    $stmt_solicitud->bind_param("isssisiiii",
+    $stmt_solicitud->bind_param("ississiiii",
         $_SESSION['user_id'],
         $_POST['responsable'],
         $_POST['numeroParte'],
