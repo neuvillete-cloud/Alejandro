@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.classList.add('visible'); // Usamos la clase para mostrarlo
 
             // Hacemos la llamada al servidor para obtener los datos
-            fetch(`php/get_solicitud_details.php?id=${id}`)
+            fetch(`dao/get_solicitud_details.php?id=${id}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('La respuesta del servidor no fue exitosa.');
