@@ -156,12 +156,15 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
     color: var(--color-texto); /* Usa un gris oscuro de tu paleta */
 }
 
+/* Busca esta sección en tu css/estilos.css */
 .defect-photo-box img {
     width: 100%;
-    height: 180px; /* Un poco más grandes */
+    height: 120px; /* Ajustado para que quepa bien sin cortar */
     border-radius: 6px;
     cursor: pointer;
-    object-fit: cover;
+    /* --- CAMBIO CRÍTICO AQUÍ --- */
+    object-fit: contain; /* Esta propiedad asegura que la imagen se vea completa */
+    /* -------------------------- */
     transition: all 0.2s ease;
 }
 .defect-photo-box img:hover {
