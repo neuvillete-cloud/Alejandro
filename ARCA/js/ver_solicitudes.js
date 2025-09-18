@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Preparamos y mostramos el modal con un mensaje de carga
             modalFolio.textContent = `S-${id.padStart(4, '0')}`;
             modalBody.innerHTML = '<p>Cargando datos...</p>';
-            modal.classList.add('visible');
+            modal.classList.add('visible'); // Usamos la clase para mostrarlo con animación
 
             // Hacemos la llamada al servidor para obtener los datos
             fetch(`dao/get_solicitud_details.php?id=${id}`)
@@ -169,6 +169,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    });
+
+    // --- LÓGICA PARA LA ANIMACIÓN DE ENTRADA DE LA TABLA ---
+    const tableRows = document.querySelectorAll('.results-table tbody tr');
+    tableRows.forEach((row, index) => {
+        // Se añade un pequeño retraso a cada fila para un efecto escalonado
+        row.style.animationDelay = `${index * 0.05}s`;
     });
 
 });

@@ -139,3 +139,83 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
     .header-left, .user-info { flex-direction: column; align-items: flex-start; gap: 10px; }
     .user-info { align-items: flex-end; }
 }
+
+/* --- 8. MEJORAS VISUALES PARA LA PÁGINA "VER SOLICITUDES" --- */
+
+/* Icono en el título principal de la página */
+.page-header h1 i {
+    margin-right: 15px;
+    color: var(--color-acento);
+}
+
+/* Iconos en las cabeceras de la tabla */
+.results-table th i {
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+/* Nuevo diseño para las insignias de estatus */
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 13px;
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid var(--color-borde);
+}
+
+.status::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Colores para las nuevas insignias de estatus */
+.status.status-abierta { color: #b75c09; background-color: #fff3e0; border-color: #ffe0b2; }
+.status.status-abierta::before { background-color: #ff9800; }
+
+.status.status-en-revision { color: #0d47a1; background-color: #e3f2fd; border-color: #bbdefb; }
+.status.status-en-revision::before { background-color: #2196f3; }
+
+.status.status-cerrada { color: #1b5e20; background-color: #e8f5e9; border-color: #c8e6c9; }
+.status.status-cerrada::before { background-color: #4caf50; }
+
+/* Estilos para el estado vacío (cuando no hay resultados) */
+.no-results-cell {
+    text-align: center;
+    padding: 60px 20px !important;
+}
+.no-results-content i {
+    font-size: 48px;
+    color: var(--color-acento);
+    margin-bottom: 15px;
+}
+.no-results-content p {
+    font-size: 18px;
+    color: #777;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Animación para las filas de la tabla */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.results-table tbody tr {
+    opacity: 0; /* Empiezan invisibles */
+    animation: fadeInUp 0.5s ease-out forwards;
+}

@@ -1,10 +1,14 @@
 <?php
+// Incluye el script que verifica si hay una sesión activa o una cookie "remember_me"
 include_once("dao/verificar_sesion.php");
+
+// Si después de la verificación, el usuario sigue sin estar logueado, se redirige a la página de acceso
 if (!isset($_SESSION['loggedin'])) {
     header('Location: acceso.php');
     exit();
 }
 
+// Incluimos la conexión a la base de datos
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
@@ -50,6 +54,7 @@ if (!empty($types)) {
 }
 $stmt->execute();
 $solicitudes = $stmt->get_result();
+$conex->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -81,7 +86,7 @@ $solicitudes = $stmt->get_result();
 
 <main class="container">
     <div class="page-header">
-        <h1>Mis Solicitudes de Contención</h1>
+        <h1><i class="fa-solid fa-list-check"></i>Mis Solicitudes de Contención</h1>
         <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> Crear Nueva Solicitud</a>
     </div>
 
@@ -95,7 +100,6 @@ $solicitudes = $stmt->get_result();
                 <label for="fecha">Buscar por Fecha</label>
                 <input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>">
             </div>
-
             <button type="submit" class="btn-primary">Filtrar</button>
             <a href="Historial.php" class="btn-tertiary">Limpiar</a>
         </form>
@@ -105,12 +109,12 @@ $solicitudes = $stmt->get_result();
         <table class="results-table">
             <thead>
             <tr>
-                <th>Folio</th>
-                <th>No. Parte</th>
-                <th>Proveedor</th>
-                <th>Fecha de Registro</th>
-                <th>Estatus</th>
-                <th>Acciones</th>
+                <th><i class="fa-solid fa-hashtag"></i>Folio</th>
+                <th><i class="fa-solid fa-barcode"></i>No. Parte</th>
+                <th><i class="fa-solid fa-truck-fast"></i>Proveedor</th>
+                <th><i class="fa-solid fa-calendar-days"></i>Fecha de Registro</th>
+                <th><i class="fa-solid fa-circle-info"></i>Estatus</th>
+                <th><i class="fa-solid fa-cogs"></i>Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -121,7 +125,13 @@ $solicitudes = $stmt->get_result();
                         <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
                         <td><?php echo htmlspecialchars($row['NombreProvedor']); ?></td>
                         <td><?php echo date("d/m/Y H:i", strtotime($row['FechaRegistro'])); ?></td>
-                        <td><span class="status open"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span></td>
+                        <td>
+                            <?php
+                            // Convertimos el nombre del estatus a una clase CSS válida (ej: "En Revisión" -> "en-revision")
+                            $estatus_clase = "status-" . strtolower(str_replace(' ', '-', $row['NombreEstatus']));
+                            ?>
+                            <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span>
+                        </td>
                         <td class="actions-cell">
                             <button class="btn-icon btn-details" data-id="<?php echo $row['IdSolicitud']; ?>" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
                             <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
@@ -130,7 +140,12 @@ $solicitudes = $stmt->get_result();
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" style="text-align:center;">No se encontraron solicitudes con los filtros aplicados.</td>
+                    <td colspan="6" class="no-results-cell">
+                        <div class="no-results-content">
+                            <i class="fa-solid fa-folder-open"></i>
+                            <p>No se encontraron solicitudes</p>
+                        </div>
+                    </td>
                 </tr>
             <?php endif; ?>
             </tbody>
