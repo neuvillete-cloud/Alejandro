@@ -132,8 +132,21 @@ $conex->close();
             </fieldset>
 
             <fieldset><legend>Documentación Adicional</legend>
-                <div class="form-group-checkbox"><input type="checkbox" id="toggleMetodo"><label for="toggleMetodo">Adjuntar Método de Trabajo (Opcional)</label></div>
-                <div id="metodo-trabajo-container" class="hidden-section"><div class="form-group"><label for="metodoFile">Subir archivo PDF</label><input type="file" id="metodoFile" name="metodoFile" accept=".pdf"></div></div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="toggleMetodo">
+                    <label for="toggleMetodo">Adjuntar Método de Trabajo (Opcional)</label>
+                </div>
+
+                <div id="metodo-trabajo-container" class="hidden-section">
+                    <div class="form-group">
+                        <label for="tituloMetodo">Nombre del Método</label>
+                        <input type="text" id="tituloMetodo" name="tituloMetodo">
+                    </div>
+                    <div class="form-group">
+                        <label for="metodoFile">Subir archivo PDF</label>
+                        <input type="file" id="metodoFile" name="metodoFile" accept=".pdf">
+                    </div>
+                </div>
             </fieldset>
 
             <fieldset><legend>Registro de Defectos</legend>
