@@ -14,14 +14,16 @@ $idUsuario = $_SESSION['user_id'];
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// Consulta principal para los datos de la solicitud
-$sql_solicitud = "SELECT s.*, u.Nombre AS NombreUsuario, p.NombreProvedor, c.NombreCommodity, t.NombreTerciaria, e.NombreEstatus 
+// Reemplaza la variable $sql_solicitud en get_solicitud_details.php
+
+$sql_solicitud = "SELECT s.*, u.Nombre AS NombreUsuario, p.NombreProvedor, c.NombreCommodity, t.NombreTerciaria, e.NombreEstatus, m.RutaArchivo 
                   FROM Solicitudes s
                   LEFT JOIN Usuarios u ON s.IdUsuario = u.IdUsuario
                   LEFT JOIN Provedores p ON s.IdProvedor = p.IdProvedor
                   LEFT JOIN Commodity c ON s.IdCommodity = c.IdCommodity
                   LEFT JOIN Terciarias t ON s.IdTerciaria = t.IdTerciaria
                   LEFT JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+                  LEFT JOIN Metodos m ON s.IdMetodo = m.IdMetodo
                   WHERE s.IdSolicitud = ? AND s.IdUsuario = ?";
 
 $stmt = $conex->prepare($sql_solicitud);

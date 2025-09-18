@@ -27,11 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (result.status === 'success') {
                         const data = result.data;
                         let metodoHTML = '';
-                        if (data.IdMetodo) {
+                        if (data.RutaArchivo) { // Usamos la nueva variable
                             metodoHTML = `
-                                <fieldset><legend>Método de Trabajo</legend>
-                                    <iframe src="${data.IdMetodo}" width="100%" height="500px"></iframe>
-                                </fieldset>`;
+        <fieldset><legend>Método de Trabajo</legend>
+            <iframe src="${data.RutaArchivo}" width="100%" height="500px"></iframe>
+        </fieldset>`;
                         }
 
                         let defectosHTML = '<fieldset><legend>Defectos Registrados</legend>';
