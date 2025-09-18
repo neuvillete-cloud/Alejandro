@@ -244,7 +244,7 @@
     <section class="hero">
         <h1>Panel de Control de Contenciones</h1>
         <p>Sistema de Administración y Respuesta para Contenciones en Almacén. Inicie un nuevo registro o revise el estado de las solicitudes activas.</p>
-        <a href="#nueva-solicitud" class="cta-button">
+        <a href="nueva_solicitud.php" class="cta-button">
             <i class="fa-solid fa-plus"></i>
             Nueva Solicitud de Contención
         </a>
