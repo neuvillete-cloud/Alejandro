@@ -133,16 +133,41 @@ try {
         throw new Exception('No se encontraron defectos para registrar.');
     }
 
+    // Reemplaza tu bucle foreach en guardar_solicitud.php con este bloque
+
     foreach ($_POST['defectos'] as $key => $defecto) {
         $nombre_defecto = trim($defecto['nombre']);
 
+        // Verificamos que las fotos para este defecto se hayan subido.
         if ($_FILES['defectos']['error'][$key]['foto_ok'] !== UPLOAD_ERR_OK || $_FILES['defectos']['error'][$key]['foto_nok'] !== UPLOAD_ERR_OK) {
             throw new Exception("Faltan fotos o hay un error en la subida para el defecto: " . htmlspecialchars($nombre_defecto));
         }
 
-        $rutaFotoOk = procesarArchivoSubido($_FILES['defectos']['tmp_name'][$key]['foto_ok'], 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_ok_");
-        $rutaFotoNok = procesarArchivoSubido($_FILES['defectos']['tmp_name'][$key]['foto_nok'], 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_nok_");
+        // --- INICIA LA CORRECCIÓN ---
+        // 1. Reconstruimos el arreglo para la FOTO OK
+        $foto_ok_para_procesar = [
+            'name' => $_FILES['defectos']['name'][$key]['foto_ok'],
+            'type' => $_FILES['defectos']['type'][$key]['foto_ok'],
+            'tmp_name' => $_FILES['defectos']['tmp_name'][$key]['foto_ok'],
+            'error' => $_FILES['defectos']['error'][$key]['foto_ok'],
+            'size' => $_FILES['defectos']['size'][$key]['foto_ok']
+        ];
 
+        // 2. Reconstruimos el arreglo para la FOTO NO OK
+        $foto_nok_para_procesar = [
+            'name' => $_FILES['defectos']['name'][$key]['foto_nok'],
+            'type' => $_FILES['defectos']['type'][$key]['foto_nok'],
+            'tmp_name' => $_FILES['defectos']['tmp_name'][$key]['foto_nok'],
+            'error' => $_FILES['defectos']['error'][$key]['foto_nok'],
+            'size' => $_FILES['defectos']['size'][$key]['foto_nok']
+        ];
+
+        // 3. Ahora llamamos a la función con los arreglos completos y correctos
+        $rutaFotoOk = procesarArchivoSubido($foto_ok_para_procesar, 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_ok_");
+        $rutaFotoNok = procesarArchivoSubido($foto_nok_para_procesar, 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_nok_");
+        // --- FIN DE LA CORRECCIÓN ---
+
+        // Insertamos el defecto en la base de datos (esta parte no cambia)
         $stmt_defecto = $conex->prepare(
             "INSERT INTO Defectos (IdSolicitud, NombreDefecto, RutaFotoOk, RutaFotoNoOk) VALUES (?, ?, ?, ?)"
         );
