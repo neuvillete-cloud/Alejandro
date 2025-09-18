@@ -219,3 +219,15 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
     opacity: 0; /* Empiezan invisibles */
     animation: fadeInUp 0.5s ease-out forwards;
 }
+
+/* --- AÑADE ESTOS ESTILOS A TU ARCHIVO CSS --- */
+
+/* Color para el estatus "Recibido" (usando un azul de la paleta) */
+.status.status-recibido {
+    color: #0d47a1; /* Texto azul oscuro */
+    background-color: #e3f2fd; /* Fondo azul claro */
+    border-color: #bbdefb; /* Borde azul más claro */
+}
+.status.status-recibido::before {
+    background-color: #2196f3; /* Punto azul brillante */
+}
