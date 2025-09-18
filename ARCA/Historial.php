@@ -137,13 +137,13 @@ $solicitudes = $stmt->get_result();
     </div>
 </main>
 
-<div id="details-modal" class="modal-overlay" style="display: none;">
+<div id="details-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
             <h2>Detalles de la Solicitud <span id="modal-folio"></span></h2>
             <button id="modal-close" class="modal-close-btn">&times;</button>
         </div>
-        <div id="modal-body" class="modal-body">
+        <div id="modal-body" class="modal-body view-mode">
         </div>
     </div>
 </div>
