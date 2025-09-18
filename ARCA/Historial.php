@@ -39,7 +39,7 @@ $solicitudes = $stmt->get_result();
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <nav class="main-nav">
             <a href="index.php">Dashboard</a>
-            <a href="ver_solicitudes.php" class="active">Mis Solicitudes</a>
+            <a href="Historial.php" class="active">Mis Solicitudes</a>
         </nav>
     </div>
     <div class="user-info">
@@ -55,11 +55,11 @@ $solicitudes = $stmt->get_result();
     </div>
 
     <div class="filter-bar">
-        <form action="ver_solicitudes.php" method="GET" class="filter-form">
+        <form action="Historial.php" method="GET" class="filter-form">
             <div class="form-group"><label for="folio">Buscar por Folio</label><input type="number" name="folio" id="folio" placeholder="Ej: 123" value="<?php echo htmlspecialchars($_GET['folio'] ?? ''); ?>"></div>
             <div class="form-group"><label for="fecha">Buscar por Fecha</label><input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>"></div>
             <button type="submit" class="btn-secondary">Filtrar</button>
-            <a href="ver_solicitudes.php" class="btn-tertiary">Limpiar</a>
+            <a href="Historial.php" class="btn-tertiary">Limpiar</a>
         </form>
     </div>
 
