@@ -133,6 +133,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // --- LÓGICA PARA MOSTRAR IMAGEN AMPLIADA AL HACER CLIC ---
+    modalBody.addEventListener('click', function(e) {
+        // Verificamos si el elemento clickeado es una imagen dentro de un contenedor de defecto
+        if (e.target.tagName === 'IMG' && e.target.closest('.defect-image-container')) {
+            const imageSrc = e.target.src;
+            const imageAlt = e.target.alt;
+
+            Swal.fire({
+                imageUrl: imageSrc,
+                imageAlt: imageAlt,
+                width: 'auto',
+                padding: '0',
+                background: 'none',
+                showConfirmButton: false,
+                showCloseButton: true,
+                customClass: {
+                    closeButton: 'swal-close-button'
+                }
+            });
+        }
+    });
+
     // --- LÓGICA PARA EL BOTÓN DE ENVIAR POR CORREO ---
     document.querySelectorAll('.btn-email').forEach(button => {
         button.addEventListener('click', function() {
