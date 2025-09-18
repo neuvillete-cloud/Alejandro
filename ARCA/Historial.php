@@ -95,8 +95,11 @@ $solicitudes = $stmt->get_result();
                 <label for="fecha">Buscar por Fecha</label>
                 <input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>">
             </div>
-            <button type="submit" class="btn-secondary">Filtrar</button>
-            <a href="Historial.php" class="btn-tertiary">Limpiar</a>
+
+            <div class="form-group action-buttons">
+                <button type="submit" class="btn-primary">Filtrar</button>
+                <a href="Historial.php" class="btn-tertiary">Limpiar</a>
+            </div>
         </form>
     </div>
 
