@@ -61,7 +61,7 @@ $conex->close();
     <div class="form-container">
         <h1><i class="fa-solid fa-file-circle-plus"></i> Crear Nueva Solicitud de Contención</h1>
 
-        <form id="solicitudForm" action="php/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
+        <form id="solicitudForm" action="dao/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
 
             <fieldset><legend>Datos Generales</legend>
                 <div class="form-row">
@@ -289,7 +289,7 @@ $conex->close();
                 }
             });
 
-            fetch('php/guardar_solicitud.php', {
+            fetch('dao/guardar_solicitud.php', {
                 method: 'POST',
                 body: formData
             })
