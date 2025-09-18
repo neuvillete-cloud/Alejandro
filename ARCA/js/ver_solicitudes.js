@@ -2,88 +2,113 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const modal = document.getElementById('details-modal');
     const modalCloseBtn = document.getElementById('modal-close');
-    const modalBody = document.getElementById('modal-body');
+    const modalMainInfo = document.getElementById('modal-main-info');
+    const modalAttachments = document.getElementById('modal-attachments');
     const modalFolio = document.getElementById('modal-folio');
 
-    // Cerrar el modal
-    modalCloseBtn.addEventListener('click', () => modal.style.display = 'none');
-    window.addEventListener('click', (e) => {
-        if (e.target == modal) {
-            modal.style.display = 'none';
+    // --- LÓGICA PARA CERRAR EL MODAL ---
+    function closeModal() {
+        modal.classList.remove('visible');
+    }
+    modalCloseBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        // Se cierra si se hace clic en el fondo oscuro
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    // También se puede cerrar con la tecla 'Escape'
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape" && modal.classList.contains('visible')) {
+            closeModal();
         }
     });
 
-    // Abrir y llenar el modal de detalles
+
+    // --- LÓGICA PARA ABRIR Y LLENAR EL MODAL DE DETALLES ---
     document.querySelectorAll('.btn-details').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
-            modalFolio.textContent = `#${id.padStart(4, '0')}`;
-            modalBody.innerHTML = '<p>Cargando datos...</p>';
-            modal.style.display = 'flex';
 
-            fetch(`dao/get_solicitud_details.php?id=${id}`)
-                .then(response => response.json())
+            // Preparamos y mostramos el modal con un mensaje de carga
+            modalFolio.textContent = `S-${id.padStart(4, '0')}`;
+            modalMainInfo.innerHTML = '<p>Cargando datos...</p>';
+            modalAttachments.innerHTML = '';
+            modal.classList.add('visible');
+
+            // Hacemos la llamada al servidor para obtener los datos
+            fetch(`php/get_solicitud_details.php?id=${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta del servidor no fue exitosa.');
+                    }
+                    return response.json();
+                })
                 .then(result => {
                     if (result.status === 'success') {
                         const data = result.data;
-                        let metodoHTML = '';
-                        if (data.RutaArchivo) { // Usamos la nueva variable
-                            metodoHTML = `
-        <fieldset><legend>Método de Trabajo</legend>
-            <iframe src="${data.RutaArchivo}" width="100%" height="500px"></iframe>
-        </fieldset>`;
+
+                        // Llenamos la Columna Izquierda (Información Principal)
+                        modalMainInfo.innerHTML = `
+                            <fieldset><legend>Datos Generales</legend>
+                                <div class="info-item"><strong>Responsable:</strong> <span>${data.Responsable || ''}</span></div>
+                                <div class="info-item"><strong>Número de Parte:</strong> <span>${data.NumeroParte || ''}</span></div>
+                                <div class="info-item"><strong>Cantidad:</strong> <span>${data.Cantidad || ''}</span></div>
+                                <div class="info-item"><strong>Descripción:</strong> <span>${data.Descripcion || ''}</span></div>
+                            </fieldset>
+                            <fieldset><legend>Clasificación</legend>
+                                <div class="info-item"><strong>Proveedor:</strong> <span>${data.NombreProvedor || ''}</span></div>
+                                <div class="info-item"><strong>Commodity:</strong> <span>${data.NombreCommodity || ''}</span></div>
+                                <div class="info-item"><strong>Terciaria:</strong> <span>${data.NombreTerciaria || ''}</span></div>
+                            </fieldset>
+                        `;
+
+                        // Llenamos la Columna Derecha (Adjuntos)
+                        let attachmentsHTML = '<h3>Adjuntos</h3>';
+
+                        if (data.RutaArchivo) {
+                            attachmentsHTML += `
+                                <fieldset><legend>Método de Trabajo</legend>
+                                    <iframe src="${data.RutaArchivo}" width="100%" height="400px" frameborder="0"></iframe>
+                                </fieldset>`;
                         }
 
-                        let defectosHTML = '<fieldset><legend>Defectos Registrados</legend>';
-                        if (data.defectos.length > 0) {
+                        attachmentsHTML += '<fieldset><legend>Defectos Registrados</legend>';
+                        if (data.defectos && data.defectos.length > 0) {
                             data.defectos.forEach((defecto, index) => {
-                                defectosHTML += `
-                                    <div class="defecto-item-view">
-                                        <h4>Defecto #${index + 1}: ${defecto.NombreDefecto}</h4>
-                                        <div class="defect-gallery">
-                                            <div class="defect-image">
+                                attachmentsHTML += `
+                                    <div class="defecto-view-item">
+                                        <h4>Defecto #${index + 1}: ${defecto.NombreDefecto || ''}</h4>
+                                        <div class="defect-view-gallery">
+                                            <div class="defect-image-container">
                                                 <label>Foto OK</label>
-                                                <img src="${defecto.RutaFotoOk}" alt="Foto OK">
+                                                <img src="${defecto.RutaFotoOk}" alt="Foto OK del defecto ${defecto.NombreDefecto}">
                                             </div>
-                                            <div class="defect-image">
+                                            <div class="defect-image-container">
                                                 <label>Foto NO OK</label>
-                                                <img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK">
+                                                <img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK del defecto ${defecto.NombreDefecto}">
                                             </div>
                                         </div>
                                     </div>`;
                             });
                         } else {
-                            defectosHTML += '<p>No se registraron defectos para esta solicitud.</p>';
+                            attachmentsHTML += '<p>No se registraron defectos para esta solicitud.</p>';
                         }
-                        defectosHTML += '</fieldset>';
+                        attachmentsHTML += '</fieldset>';
+                        modalAttachments.innerHTML = attachmentsHTML;
 
-                        modalBody.innerHTML = `
-                            <fieldset><legend>Datos Generales</legend>
-                                <p><strong>Responsable:</strong> ${data.Responsable}</p>
-                                <p><strong>Número de Parte:</strong> ${data.NumeroParte}</p>
-                                <p><strong>Cantidad:</strong> ${data.Cantidad}</p>
-                                <p><strong>Descripción:</strong> ${data.Descripcion}</p>
-                            </fieldset>
-                            <fieldset><legend>Clasificación</legend>
-                                <p><strong>Proveedor:</strong> ${data.NombreProvedor}</p>
-                                <p><strong>Commodity:</strong> ${data.NombreCommodity}</p>
-                                <p><strong>Terciaria:</strong> ${data.NombreTerciaria}</p>
-                            </fieldset>
-                            ${metodoHTML}
-                            ${defectosHTML}
-                        `;
                     } else {
-                        modalBody.innerHTML = `<p style="color:red;">${result.message}</p>`;
+                        modalMainInfo.innerHTML = `<p style="color:red;">${result.message}</p>`;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    modalBody.innerHTML = '<p style="color:red;">Error al cargar los datos.</p>';
+                    modalMainInfo.innerHTML = '<p style="color:red;">Error al cargar los datos. Revisa la consola para más detalles.</p>';
                 });
         });
     });
 
-    // Lógica para el botón de enviar por correo
+    // --- LÓGICA PARA EL BOTÓN DE ENVIAR POR CORREO ---
     document.querySelectorAll('.btn-email').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
@@ -94,12 +119,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 inputPlaceholder: 'ejemplo@dominio.com',
                 showCancelButton: true,
                 confirmButtonText: 'Enviar',
-                cancelButtonText: 'Cancelar'
+                cancelButtonText: 'Cancelar',
+                preConfirm: (email) => {
+                    if (!email) {
+                        Swal.showValidationMessage('Por favor, ingresa una dirección de correo.');
+                    }
+                    return email;
+                }
             }).then((result) => {
                 if (result.isConfirmed && result.value) {
+                    const email = result.value;
+                    Swal.fire({
+                        title: 'Enviando...',
+                        text: `Enviando solicitud S-${id.padStart(4, '0')} a ${email}`,
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); }
+                    });
+
                     // Aquí harías un fetch a un script php/enviar_correo.php
-                    console.log(`Enviar solicitud #${id} al correo: ${result.value}`);
-                    Swal.fire('Enviado', `La solicitud #${id} ha sido enviada a ${result.value}.`, 'success');
+                    // fetch('php/enviar_correo.php', { method: 'POST', body: ... })
+
+                    // Simulamos una respuesta exitosa del servidor
+                    setTimeout(() => {
+                        Swal.fire('¡Enviado!', `La solicitud ha sido enviada a ${email}.`, 'success');
+                    }, 1500);
                 }
             });
         });
