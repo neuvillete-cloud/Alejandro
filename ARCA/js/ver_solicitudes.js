@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </fieldset>`;
                         }
 
-                        // Plantilla de Defectos con el nuevo diseño de cajas
+                        // Plantilla de Defectos con el nuevo diseño mejorado
                         let defectosHTML = '<fieldset><legend>Defectos Registrados</legend>';
                         if (data.defectos && data.defectos.length > 0) {
                             data.defectos.forEach((defecto, index) => {
@@ -63,11 +63,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <h4>${defecto.NombreDefecto || ''}</h4>
                                         <div class="defect-view-gallery">
                                             <div class="defect-photo-box ok-box">
-                                                <span class="box-label">OK</span>
+                                                <div class="box-label">
+                                                    <i class="fa-solid fa-thumbs-up"></i>
+                                                    <span>OK</span>
+                                                </div>
                                                 <img src="${defecto.RutaFotoOk}" alt="Foto OK: ${defecto.NombreDefecto}">
                                             </div>
                                             <div class="defect-photo-box nok-box">
-                                                <span class="box-label">NO OK</span>
+                                                <div class="box-label">
+                                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                                    <span>NO OK</span>
+                                                </div>
                                                 <img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK: ${defecto.NombreDefecto}">
                                             </div>
                                         </div>
@@ -109,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Lógica para mostrar la imagen ampliada
+    // Lógica para mostrar la imagen ampliada al hacer clic
     modalBody.addEventListener('click', function(e) {
         if (e.target.tagName === 'IMG' && e.target.closest('.defect-photo-box')) {
             const imageSrc = e.target.src;
