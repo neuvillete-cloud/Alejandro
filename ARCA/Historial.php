@@ -96,10 +96,8 @@ $solicitudes = $stmt->get_result();
                 <input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>">
             </div>
 
-            <div class="form-group action-buttons">
-                <button type="submit" class="btn-primary">Filtrar</button>
-                <a href="Historial.php" class="btn-tertiary">Limpiar</a>
-            </div>
+            <button type="submit" class="btn-primary">Filtrar</button>
+            <a href="Historial.php" class="btn-tertiary">Limpiar</a>
         </form>
     </div>
 

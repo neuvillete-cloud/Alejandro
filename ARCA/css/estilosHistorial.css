@@ -1,5 +1,5 @@
 /* =================================================================
-   HOJA DE ESTILOS PRINCIPAL PARA EL PROYECTO ARCA
+   HOJA DE ESTILOS PARA LA APLICACIÓN ARCA (POST-LOGIN)
    ================================================================= */
 
 /* --- 1. Variables Globales y Estilos Base --- */
@@ -31,7 +31,7 @@ body {
     padding: 20px;
 }
 
-/* --- 2. Layout Principal de la Aplicación (Header) --- */
+/* --- 2. Layout Principal (Header) --- */
 .header {
     background-color: var(--color-blanco);
     box-shadow: var(--sombra-suave);
@@ -49,7 +49,8 @@ body {
 .user-info span { margin-right: 20px; font-weight: 700; }
 .logout-btn { background: none; border: none; color: var(--color-secundario); font-size: 16px; cursor: pointer; display: flex; align-items: center; }
 
-/* --- 3. Estilos de Formularios (Basado en tu nueva_solicitud.php) --- */
+
+/* --- 3. Estilos de Formularios (ej. Nueva Solicitud) --- */
 .form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
 .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; }
 fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
@@ -68,11 +69,16 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .defecto-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .defecto-header h4 { margin: 0; font-family: 'Montserrat', sans-serif; }
 
-/* --- 4. Página: Ver Solicitudes (Tabla Mejorada) --- */
+
+/* --- 4. Página: Ver Solicitudes (Filtros y Tabla) --- */
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--color-borde); }
 .page-header h1 { margin: 0; font-family: 'Montserrat', sans-serif; }
 .filter-bar { background-color: var(--color-blanco); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: var(--sombra-suave); }
-.filter-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px; }
+.filter-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 15px; }
+.filter-form .form-group { margin-bottom: 0; }
+.filter-form .form-group input, .filter-form button, .filter-form a.btn-tertiary { height: 45px; padding: 10px 15px; box-sizing: border-box; margin: 0; }
+.filter-form button, .filter-form a.btn-tertiary { display: flex; align-items: center; justify-content: center; }
+
 .results-container { background-color: var(--color-blanco); border-radius: 8px; box-shadow: var(--sombra-suave); overflow: hidden; }
 .results-table { width: 100%; border-collapse: collapse; }
 .results-table th, .results-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--color-borde); }
@@ -86,7 +92,7 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .status.review { background-color: #e3f2fd; color: #2196f3; }
 .status.closed { background-color: #e8f5e9; color: #4caf50; }
 
-/* --- 5. Componente: Modal (con diseño de Formulario) --- */
+/* --- 5. Componente: Modal de Detalles --- */
 .modal-overlay { position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
 .modal-overlay.visible { opacity: 1; visibility: visible; }
 .modal-content { background-color: var(--color-blanco); border-radius: 12px; width: 95%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; transform: scale(0.9); transition: all 0.3s ease; }
@@ -95,152 +101,41 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .modal-header h2 { margin: 0; font-family: 'Montserrat', sans-serif; }
 .modal-close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #888; }
 .modal-body { padding: 30px; overflow-y: auto; }
-/* Clase para aplicar estilos de solo lectura a los campos del formulario dentro del modal */
 .view-mode .form-group input, .view-mode .form-group textarea { background-color: #f4f6f9; border-color: #e0e0e0; cursor: default; box-shadow: none; color: #555; }
-/* --- REEMPLAZA ESTAS REGLAS EN TU CSS --- */
+/* Estilos Mejorados para Defectos en Modal */
+.defecto-view-item { padding-top: 15px; border-top: 1px solid var(--color-borde); margin-bottom: 15px; }
+.defecto-view-item:first-child { border-top: none; padding-top: 0; }
+.defecto-view-item h4 { margin: 0 0 15px 0; font-family: 'Montserrat', sans-serif; }
+.defect-view-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.defect-photo-box { border: 1px solid var(--color-borde); background-color: #fdfdfd; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; text-align: center; }
+.box-label { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 16px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--color-borde); }
+.defect-photo-box.ok-box .box-label { color: var(--color-secundario); }
+.defect-photo-box.nok-box .box-label { color: var(--color-texto); }
+.defect-photo-box img { width: 100%; height: 120px; border-radius: 6px; cursor: pointer; object-fit: contain; transition: all 0.2s ease; }
+.defect-photo-box img:hover { transform: scale(1.03); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
 
-/* --- ESTILOS MEJORADOS PARA LA VISTA DE DEFECTOS EN EL MODAL --- */
-
-.defecto-view-item {
-    padding-top: 15px;
-    border-top: 1px solid var(--color-borde);
-    margin-bottom: 15px;
-}
-.defecto-view-item:first-child {
-    border-top: none;
-    padding-top: 0;
-}
-
-.defecto-view-item h4 {
-    margin: 0 0 15px 0;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.defect-view-gallery {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.defect-photo-box {
-    border: 1px solid var(--color-borde);
-    background-color: #fdfdfd;
-    border-radius: 8px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column; /* Apila el título y la imagen */
-    text-align: center;
-}
-
-/* El nuevo título de la caja */
-.box-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-borde);
-}
-
-/* Estilo para la caja OK */
-.defect-photo-box.ok-box .box-label {
-    color: var(--color-secundario); /* Usa el azul secundario de tu paleta */
-}
-
-/* Estilo para la caja NO OK */
-.defect-photo-box.nok-box .box-label {
-    color: var(--color-texto); /* Usa un gris oscuro de tu paleta */
-}
-
-/* Busca esta sección en tu css/estilos.css */
-.defect-photo-box img {
-    width: 100%;
-    height: 120px; /* Ajustado para que quepa bien sin cortar */
-    border-radius: 6px;
-    cursor: pointer;
-    /* --- CAMBIO CRÍTICO AQUÍ --- */
-    object-fit: contain; /* Esta propiedad asegura que la imagen se vea completa */
-    /* -------------------------- */
-    transition: all 0.2s ease;
-}
-.defect-photo-box img:hover {
-    transform: scale(1.03);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-}
-/* Reemplaza la regla CSS existente .defect-image-container img con esta */
-
-.defect-image-container img {
-    width: 100%;
-    height: 150px; /* Altura fija para todas las miniaturas */
-    border-radius: 6px;
-    border: 1px solid var(--color-borde);
-    cursor: pointer;
-    object-fit: cover; /* Evita que la imagen se deforme */
-    transition: all 0.2s ease;
-}
-
-.defect-image-container img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-}
 /* --- 6. Botones y Utilerías --- */
-.btn-primary, .btn-secondary, .btn-tertiary, .submit-btn { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; text-decoration: none; display: inline-block; }
+.btn-primary, .btn-secondary, .btn-tertiary { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; text-decoration: none; display: inline-block; }
 .btn-primary { background-color: var(--color-secundario); color: white; }
+.btn-primary:hover { background-color: var(--color-primario); }
 .btn-secondary { background-color: #e0e0e0; color: #333; }
-/* Busca y reemplaza esta regla en tu CSS */
-.btn-tertiary {
-    padding: 12px 25px; /* Aseguramos que tenga padding */
-    border-radius: 6px; /* Y borde redondeado */
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    background: none;
-    border: 2px solid var(--color-secundario); /* Borde azul */
-    color: var(--color-secundario); /* Texto azul */
-}
-
-.btn-tertiary:hover {
-    background-color: var(--color-secundario); /* Fondo azul al pasar el mouse */
-    color: var(--color-blanco); /* Texto blanco */
-}
-
-/* Añade esta nueva regla para alinear los botones entre sí */
-.action-buttons {
-    flex-direction: row !important; /* Asegura que los botones estén en línea */
-    gap: 10px;
-    margin-bottom: 0 !important; /* Quitamos el margen inferior por defecto */
-}.btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
+.btn-secondary:hover { background-color: #bdbdbd; }
+.btn-tertiary { background: none; border: 2px solid var(--color-secundario); color: var(--color-secundario); padding: 10px 23px; }
+.btn-tertiary:hover { background-color: var(--color-secundario); color: var(--color-blanco); }
+.btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 .btn-icon { background-color: #f0f0f0; border: none; font-size: 16px; cursor: pointer; color: var(--color-secundario); width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; transition: all 0.2s ease; }
 .btn-icon:hover { background-color: var(--color-secundario); color: var(--color-blanco); transform: scale(1.1); }
 .btn-remove-defecto { background: none; border: none; color: var(--color-error); font-size: 24px; font-weight: bold; cursor: pointer; }
 
+
 /* --- 7. Estilos Responsivos --- */
+@media (max-width: 992px) {
+    .header-left { gap: 20px; }
+    .main-nav a { margin: 0 8px; }
+}
 @media (max-width: 768px) {
-    .form-row { flex-direction: column; gap: 0; }
-    .filter-form { flex-direction: column; align-items: stretch; }
-}
-
-/* --- AÑADE ESTAS REGLAS PARA CORREGIR LA ALINEACIÓN --- */
-
-/* 1. Forzamos una altura y un modelo de caja consistentes */
-.filter-form .form-group input,
-.filter-form .action-buttons .btn-primary,
-.filter-form .action-buttons .btn-tertiary {
-    height: 48px; /* Altura fija para todos los elementos */
-    box-sizing: border-box; /* Asegura que el padding y borde se incluyan en la altura total */
-}
-
-/* 2. Centramos el texto de los botones verticalmente */
-.filter-form .action-buttons .btn-primary,
-.filter-form .action-buttons .btn-tertiary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .form-row, .filter-form { flex-direction: column; gap: 0; }
+    .filter-form { align-items: stretch; }
+    .header-left, .user-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .user-info { align-items: flex-end; }
 }
