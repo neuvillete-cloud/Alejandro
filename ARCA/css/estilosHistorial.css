@@ -191,8 +191,32 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .btn-primary, .btn-secondary, .btn-tertiary, .submit-btn { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; text-decoration: none; display: inline-block; }
 .btn-primary { background-color: var(--color-secundario); color: white; }
 .btn-secondary { background-color: #e0e0e0; color: #333; }
-.btn-tertiary { background: none; border: 1px solid var(--color-borde); color: var(--color-texto); }
-.btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
+/* Busca y reemplaza esta regla en tu CSS */
+.btn-tertiary {
+    padding: 12px 25px; /* Aseguramos que tenga padding */
+    border-radius: 6px; /* Y borde redondeado */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    background: none;
+    border: 2px solid var(--color-secundario); /* Borde azul */
+    color: var(--color-secundario); /* Texto azul */
+}
+
+.btn-tertiary:hover {
+    background-color: var(--color-secundario); /* Fondo azul al pasar el mouse */
+    color: var(--color-blanco); /* Texto blanco */
+}
+
+/* Añade esta nueva regla para alinear los botones entre sí */
+.action-buttons {
+    flex-direction: row !important; /* Asegura que los botones estén en línea */
+    gap: 10px;
+    margin-bottom: 0 !important; /* Quitamos el margen inferior por defecto */
+}.btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
 .btn-icon { background-color: #f0f0f0; border: none; font-size: 16px; cursor: pointer; color: var(--color-secundario); width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; transition: all 0.2s ease; }
 .btn-icon:hover { background-color: var(--color-secundario); color: var(--color-blanco); transform: scale(1.1); }
 .btn-remove-defecto { background: none; border: none; color: var(--color-error); font-size: 24px; font-weight: bold; cursor: pointer; }
