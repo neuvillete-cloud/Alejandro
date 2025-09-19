@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         defectosHTML += '</fieldset>';
 
-                        // El resto del modal se construye como antes
+                        // Construimos el HTML completo del modal con los campos actualizados
                         modalBody.innerHTML = `
                             <fieldset><legend>Datos Generales</legend>
                                 <div class="form-row">
@@ -92,15 +92,33 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="form-group"><label>Número de Parte</label><input type="text" value="${data.NumeroParte || ''}" readonly></div>
                                     <div class="form-group"><label>Cantidad</label><input type="text" value="${data.Cantidad || ''}" readonly></div>
                                 </div>
-                                <div class="form-group"><label>Descripción</label><textarea rows="3" readonly>${data.Descripcion || ''}</textarea></div>
-                            </fieldset>
-                            <fieldset><legend>Clasificación</legend>
-                                <div class="form-row">
-                                    <div class="form-group"><label>Proveedor</label><input type="text" value="${data.NombreProvedor || ''}" readonly></div>
-                                    <div class="form-group"><label>Commodity</label><input type="text" value="${data.NombreCommodity || ''}" readonly></div>
-                                    <div class="form-group"><label>Terciaria</label><input type="text" value="${data.NombreTerciaria || ''}" readonly></div>
+                                <div class="form-group">
+                                    <label>Descripción de Parte</label>
+                                    <input type="text" value="${data.DescripcionParte || ''}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Descripción del Problema</label>
+                                    <textarea rows="3" readonly>${data.Descripcion || ''}</textarea>
                                 </div>
                             </fieldset>
+
+                            <fieldset><legend>Clasificación</legend>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Proveedor</label>
+                                        <input type="text" value="${data.NombreProvedor || ''}" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Lugar de Contención</label>
+                                        <input type="text" value="${data.NombreLugar || ''}" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Terciaria</label>
+                                        <input type="text" value="${data.NombreTerciaria || ''}" readonly>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            
                             ${metodoHTML}
                             ${defectosHTML}
                         `;
