@@ -21,11 +21,11 @@ $conex = $con->conectar();
 // Cargar Proveedores
 $proveedores = $conex->query("SELECT IdProvedor, NombreProvedor FROM Provedores ORDER BY NombreProvedor ASC");
 
-// Cargar Commodities
-$commodities = $conex->query("SELECT IdCommodity, NombreCommodity FROM Commodity ORDER BY NombreCommodity ASC");
-
 // Cargar Terciarias
 $terciarias = $conex->query("SELECT IdTerciaria, NombreTerciaria FROM Terciarias ORDER BY NombreTerciaria ASC");
+
+// NUEVO: Cargar Lugares
+$lugares = $conex->query("SELECT IdLugar, NombreLugar FROM Lugares ORDER BY NombreLugar ASC");
 
 // Cerrar la conexión después de obtener los datos
 $conex->close();
@@ -79,6 +79,10 @@ $conex->close();
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="descripcionParte">Descripción de Parte</label>
+                    <textarea id="descripcionParte" name="descripcionParte" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
                     <label for="descripcion">Descripción del Problema</label>
                     <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
                 </div>
@@ -101,16 +105,16 @@ $conex->close();
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="commodity">Commodity</label>
+                        <label for="lugar">Lugar de Contención</label>
                         <div class="select-with-button">
-                            <select id="commodity" name="IdCommodity" required>
-                                <option value="" disabled selected>Seleccione un commodity</option>
-                                <?php while($row = $commodities->fetch_assoc()): ?>
-                                    <option value="<?php echo $row['IdCommodity']; ?>"><?php echo htmlspecialchars($row['NombreCommodity']); ?></option>
+                            <select id="lugar" name="IdLugar" required>
+                                <option value="" disabled selected>Seleccione un lugar</option>
+                                <?php while($row = $lugares->fetch_assoc()): ?>
+                                    <option value="<?php echo $row['IdLugar']; ?>"><?php echo htmlspecialchars($row['NombreLugar']); ?></option>
                                 <?php endwhile; ?>
                             </select>
                             <?php if ($esSuperUsuario): ?>
-                                <button type="button" class="btn-add" data-tipo="commodity" title="Añadir Nuevo Commodity">+</button>
+                                <button type="button" class="btn-add" data-tipo="lugar" title="Añadir Nuevo Lugar">+</button>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -214,9 +218,10 @@ $conex->close();
         document.querySelectorAll('.btn-add').forEach(button => {
             button.addEventListener('click', function() {
                 const tipo = this.dataset.tipo;
+                // CAMBIO: Se elimina 'commodity' y se añade 'lugar'
                 const titulos = {
                     proveedor: 'Añadir Nuevo Proveedor',
-                    commodity: 'Añadir Nuevo Commodity',
+                    lugar: 'Añadir Nuevo Lugar',
                     terciaria: 'Añadir Nueva Terciaria'
                 };
 
@@ -262,63 +267,31 @@ $conex->close();
         });
         <?php endif; ?>
 
-        // --- INICIA NUEVO BLOQUE: Lógica para Enviar el Formulario Completo ---
+        // Lógica para Enviar el Formulario Completo
         const solicitudForm = document.getElementById('solicitudForm');
 
         solicitudForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Siempre prevenimos el envío por defecto
-
-            // Validación: Asegurarse de que al menos un defecto ha sido añadido
+            event.preventDefault();
             if (defectosContainer.children.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Faltan Defectos',
-                    text: 'Debes registrar al menos un defecto para poder guardar la solicitud.',
-                });
+                Swal.fire({ icon: 'error', title: 'Faltan Defectos', text: 'Debes registrar al menos un defecto para poder guardar la solicitud.' });
                 return;
             }
-
             const formData = new FormData(solicitudForm);
+            Swal.fire({ title: 'Guardando Solicitud...', text: 'Este proceso puede tardar un momento.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-            Swal.fire({
-                title: 'Guardando Solicitud...',
-                text: 'Este proceso puede tardar un momento.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            fetch('dao/guardar_solicitud.php', {
-                method: 'POST',
-                body: formData
-            })
+            fetch('dao/guardar_solicitud.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Solicitud Guardada!',
-                            text: data.message,
-                        }).then(() => {
-                            // Redirigir o limpiar el formulario
-                            window.location.href = 'index.php'; // Por ejemplo, al dashboard
-                        });
+                        Swal.fire({ icon: 'success', title: '¡Solicitud Guardada!', text: data.message })
+                            .then(() => { window.location.href = 'index.php'; });
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error al Guardar',
-                            text: data.message,
-                        });
+                        Swal.fire({ icon: 'error', title: 'Error al Guardar', text: data.message });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de Conexión',
-                        text: 'No se pudo comunicar con el servidor.',
-                    });
+                    Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo comunicar con el servidor.' });
                 });
         });
     });

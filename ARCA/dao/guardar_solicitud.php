@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // --- FIN MODO DE DEPURACIÓN ---
 
-// Incluimos los archivos necesarios. Asegúrate de que las rutas sean correctas desde la carpeta 'php'.
+// Incluimos los archivos necesarios.
 include_once("verificar_sesion.php");
 include_once("conexionArca.php");
 
@@ -13,7 +13,7 @@ include_once("conexionArca.php");
 header('Content-Type: application/json');
 
 // --- CONFIGURACIÓN ---
-// ¡IMPORTANTE! Cambia esto a la URL base de tu proyecto.
+// ¡IMPORTANTE! Asegúrate de que esta sea la URL base de tu proyecto.
 $baseUrl = "https://grammermx.com/AleTest/ARCA/";
 
 /**
@@ -33,12 +33,12 @@ function procesarArchivoSubido($archivo, $subdirectorio, $prefijo) {
     if (!isset($archivo) || $archivo['error'] === UPLOAD_ERR_NO_FILE) {
         return null;
     }
-
     if ($archivo['error'] !== UPLOAD_ERR_OK) {
         throw new Exception("Error en la subida del archivo (código: {$archivo['error']}).");
     }
 
-    $directorioDestino = $_SERVER['DOCUMENT_ROOT'] . '/AleTest/ARCA/' . $subdirectorio;
+    // Usamos rutas relativas desde la ubicación del script para mayor portabilidad.
+    $directorioDestino = realpath(dirname(__FILE__) . '/../') . '/' . $subdirectorio;
 
     if (!is_dir($directorioDestino) && !mkdir($directorioDestino, 0775, true)) {
         throw new Exception("Error fatal: No se pudo crear la carpeta de destino: $subdirectorio");
@@ -55,9 +55,9 @@ function procesarArchivoSubido($archivo, $subdirectorio, $prefijo) {
         throw new Exception("Falló la subida del archivo. No se pudo mover a la carpeta de destino.");
     }
 
+    // Devolvemos la URL pública que se guardará en la base de datos.
     return $baseUrl . $subdirectorio . $nombreUnico;
 }
-
 
 // --- LÓGICA PRINCIPAL DEL SCRIPT ---
 $response = ['status' => 'error', 'message' => 'Ocurrió un error inesperado.'];
@@ -77,47 +77,39 @@ try {
 
     // 1. Procesar el Método de Trabajo (archivo PDF opcional)
     if (isset($_FILES['metodoFile']) && $_FILES['metodoFile']['error'] === UPLOAD_ERR_OK) {
-
-        // --- CAMBIO AQUÍ: Recibimos y validamos el nuevo campo 'tituloMetodo' ---
         if (empty(trim($_POST['tituloMetodo']))) {
             throw new Exception("Si adjuntas un método de trabajo, debes proporcionar un nombre para el método.");
         }
         $tituloMetodo = trim($_POST['tituloMetodo']);
-
         $rutaMetodoPublica = procesarArchivoSubido($_FILES['metodoFile'], 'Metodos/', 'metodo_');
-
-        $stmt_metodo = $conex->prepare(
-            "INSERT INTO Metodos (TituloMetodo, RutaArchivo, IdUsuarioCarga) VALUES (?, ?, ?)"
-        );
-
+        $stmt_metodo = $conex->prepare("INSERT INTO Metodos (TituloMetodo, RutaArchivo, IdUsuarioCarga) VALUES (?, ?, ?)");
         $idUsuarioCarga = $_SESSION['user_id'];
-
-        // --- CAMBIO AQUÍ: Usamos el título que nos envió el usuario ---
         $stmt_metodo->bind_param("ssi", $tituloMetodo, $rutaMetodoPublica, $idUsuarioCarga);
-
         if (!$stmt_metodo->execute()) {
             throw new Exception("Error al guardar el método en la base de datos: " . $stmt_metodo->error);
         }
-
         $idMetodoParaGuardar = $stmt_metodo->insert_id;
         $stmt_metodo->close();
     }
 
     // 2. Insertar los datos principales en la tabla `Solicitudes`.
+    // --- CAMBIO AQUÍ: Se actualizó la consulta INSERT ---
     $stmt_solicitud = $conex->prepare(
-        "INSERT INTO Solicitudes (IdUsuario, Responsable, NumeroParte, Cantidad, Descripcion, IdTerciaria, IdCommodity, IdProvedor, IdEstatus, IdMetodo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO Solicitudes (IdUsuario, Responsable, NumeroParte, DescripcionParte, Cantidad, Descripcion, IdTerciaria, IdProvedor, IdLugar, IdEstatus, IdMetodo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     $idEstatusInicial = 1;
 
-    $stmt_solicitud->bind_param("ississiiii",
+    // --- CAMBIO AQUÍ: Se actualizó el bind_param para los nuevos campos ---
+    $stmt_solicitud->bind_param("isssisiiiii",
         $_SESSION['user_id'],
         $_POST['responsable'],
         $_POST['numeroParte'],
+        $_POST['descripcionParte'], // <-- NUEVO
         $_POST['cantidad'],
         $_POST['descripcion'],
         $_POST['IdTerciaria'],
-        $_POST['IdCommodity'],
         $_POST['IdProvedor'],
+        $_POST['IdLugar'],          // <-- NUEVO
         $idEstatusInicial,
         $idMetodoParaGuardar
     );
@@ -133,44 +125,28 @@ try {
         throw new Exception('No se encontraron defectos para registrar.');
     }
 
-    // Reemplaza tu bucle foreach en guardar_solicitud.php con este bloque
-
     foreach ($_POST['defectos'] as $key => $defecto) {
         $nombre_defecto = trim($defecto['nombre']);
 
-        // Verificamos que las fotos para este defecto se hayan subido.
         if ($_FILES['defectos']['error'][$key]['foto_ok'] !== UPLOAD_ERR_OK || $_FILES['defectos']['error'][$key]['foto_nok'] !== UPLOAD_ERR_OK) {
             throw new Exception("Faltan fotos o hay un error en la subida para el defecto: " . htmlspecialchars($nombre_defecto));
         }
 
-        // --- INICIA LA CORRECCIÓN ---
-        // 1. Reconstruimos el arreglo para la FOTO OK
         $foto_ok_para_procesar = [
-            'name' => $_FILES['defectos']['name'][$key]['foto_ok'],
-            'type' => $_FILES['defectos']['type'][$key]['foto_ok'],
-            'tmp_name' => $_FILES['defectos']['tmp_name'][$key]['foto_ok'],
-            'error' => $_FILES['defectos']['error'][$key]['foto_ok'],
+            'name' => $_FILES['defectos']['name'][$key]['foto_ok'], 'type' => $_FILES['defectos']['type'][$key]['foto_ok'],
+            'tmp_name' => $_FILES['defectos']['tmp_name'][$key]['foto_ok'], 'error' => $_FILES['defectos']['error'][$key]['foto_ok'],
             'size' => $_FILES['defectos']['size'][$key]['foto_ok']
         ];
-
-        // 2. Reconstruimos el arreglo para la FOTO NO OK
         $foto_nok_para_procesar = [
-            'name' => $_FILES['defectos']['name'][$key]['foto_nok'],
-            'type' => $_FILES['defectos']['type'][$key]['foto_nok'],
-            'tmp_name' => $_FILES['defectos']['tmp_name'][$key]['foto_nok'],
-            'error' => $_FILES['defectos']['error'][$key]['foto_nok'],
+            'name' => $_FILES['defectos']['name'][$key]['foto_nok'], 'type' => $_FILES['defectos']['type'][$key]['foto_nok'],
+            'tmp_name' => $_FILES['defectos']['tmp_name'][$key]['foto_nok'], 'error' => $_FILES['defectos']['error'][$key]['foto_nok'],
             'size' => $_FILES['defectos']['size'][$key]['foto_nok']
         ];
 
-        // 3. Ahora llamamos a la función con los arreglos completos y correctos
         $rutaFotoOk = procesarArchivoSubido($foto_ok_para_procesar, 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_ok_");
         $rutaFotoNok = procesarArchivoSubido($foto_nok_para_procesar, 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_nok_");
-        // --- FIN DE LA CORRECCIÓN ---
 
-        // Insertamos el defecto en la base de datos (esta parte no cambia)
-        $stmt_defecto = $conex->prepare(
-            "INSERT INTO Defectos (IdSolicitud, NombreDefecto, RutaFotoOk, RutaFotoNoOk) VALUES (?, ?, ?, ?)"
-        );
+        $stmt_defecto = $conex->prepare("INSERT INTO Defectos (IdSolicitud, NombreDefecto, RutaFotoOk, RutaFotoNoOk) VALUES (?, ?, ?, ?)");
         $stmt_defecto->bind_param("isss", $id_solicitud_nueva, $nombre_defecto, $rutaFotoOk, $rutaFotoNok);
 
         if (!$stmt_defecto->execute()) {
