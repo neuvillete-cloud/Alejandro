@@ -47,9 +47,26 @@ $conex->close();
     <div class="form-container">
         <h1><i class="fa-solid fa-file-circle-plus"></i> Crear Nueva Solicitud de Contención</h1>
 
+        <div class="stepper">
+            <div class="step active">
+                <div class="step-icon">1</div>
+                <div class="step-label">Datos y Defectos</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-icon">2</div>
+                <div class="step-label">Clasificación</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-icon">3</div>
+                <div class="step-label">Documentación</div>
+            </div>
+        </div>
+
         <form id="solicitudForm" action="dao/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
 
-            <fieldset><legend>Datos Generales</legend>
+            <fieldset><legend><i class="fa-solid fa-file-lines"></i> Datos Generales</legend>
                 <div class="form-row">
                     <div class="form-group w-50">
                         <label for="responsable">Nombre del Responsable</label>
@@ -64,7 +81,6 @@ $conex->close();
                         <input type="number" id="cantidad" name="cantidad" required>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="descripcionParte">Descripción de Parte</label>
                     <input type="text" id="descripcionParte" name="descripcionParte" required>
@@ -74,14 +90,13 @@ $conex->close();
                     <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
                 </div>
 
-                <fieldset><legend>Registro de Defectos</legend>
+                <fieldset><legend><i class="fa-solid fa-bug"></i> Registro de Defectos</legend>
                     <div id="defectos-container"></div>
                     <button type="button" id="btn-add-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Defecto</button>
                 </fieldset>
-
             </fieldset>
 
-            </fieldset> <fieldset><legend>Clasificación</legend>
+            <fieldset><legend><i class="fa-solid fa-tags"></i> Clasificación</legend>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="proveedor">Proveedor</label>
@@ -128,7 +143,7 @@ $conex->close();
                 </div>
             </fieldset>
 
-            <fieldset><legend>Documentación Adicional</legend>
+            <fieldset><legend><i class="fa-solid fa-paperclip"></i> Documentación Adicional</legend>
                 <div class="form-group-checkbox">
                     <input type="checkbox" id="toggleMetodo">
                     <label for="toggleMetodo">Adjuntar Método de Trabajo (Opcional)</label>
@@ -140,6 +155,10 @@ $conex->close();
                     </div>
                     <div class="form-group">
                         <label for="metodoFile">Subir archivo PDF</label>
+                        <label class="file-upload-label" for="metodoFile">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span>
+                        </label>
                         <input type="file" id="metodoFile" name="metodoFile" accept=".pdf">
                     </div>
                 </div>
@@ -182,11 +201,19 @@ $conex->close();
                 <div class="form-row">
                     <div class="form-group">
                         <label for="defectoFotoOk-${defectoCounter}">Foto OK (Ejemplo correcto)</label>
-                        <input type="file" name="defectos[${defectoCounter}][foto_ok]" accept="image/*" required>
+                        <label class="file-upload-label" for="defectoFotoOk-${defectoCounter}">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
+                        </label>
+                        <input type="file" id="defectoFotoOk-${defectoCounter}" name="defectos[${defectoCounter}][foto_ok]" accept="image/*" required>
                     </div>
                     <div class="form-group">
                         <label for="defectoFotoNok-${defectoCounter}">Foto NO OK (Evidencia del defecto)</label>
-                        <input type="file" name="defectos[${defectoCounter}][foto_nok]" accept="image/*" required>
+                         <label class="file-upload-label" for="defectoFotoNok-${defectoCounter}">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
+                        </label>
+                        <input type="file" id="defectoFotoNok-${defectoCounter}" name="defectos[${defectoCounter}][foto_nok]" accept="image/*" required>
                     </div>
                 </div>
             </div>`;
@@ -197,6 +224,19 @@ $conex->close();
         defectosContainer.addEventListener('click', function(e) {
             if (e.target && e.target.classList.contains('btn-remove-defecto')) {
                 document.getElementById(`defecto-${e.target.dataset.defectoId}`).remove();
+            }
+        });
+
+        // Lógica para actualizar el texto de los botones de subida de archivo
+        document.querySelector('.form-container').addEventListener('change', function(e) {
+            if (e.target.type === 'file') {
+                const labelSpan = e.target.previousElementSibling.querySelector('span');
+                const defaultText = labelSpan.dataset.defaultText;
+                if (e.target.files.length > 0) {
+                    labelSpan.textContent = e.target.files[0].name;
+                } else {
+                    labelSpan.textContent = defaultText;
+                }
             }
         });
 
