@@ -283,11 +283,36 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 }
 
 /* --- Pequeño ajuste para mejorar la apariencia del fieldset anidado --- */
+/* --- REEMPLAZA TU REGLA CSS 'fieldset fieldset' CON ESTE BLOQUE COMPLETO --- */
+
+/* Primero, quitamos todos los bordes y espaciados del fieldset anidado */
 fieldset fieldset {
+    border: 0;
+    padding: 0;
     margin-top: 25px;
-    padding-top: 25px;
-    border-top: 1px solid var(--color-borde);
-    padding-bottom: 0;
     margin-bottom: 0;
-    border-bottom: none;
+}
+
+/* Ahora, convertimos la leyenda en un separador con texto en medio */
+fieldset fieldset legend {
+    width: 100%; /* Ocupa todo el ancho */
+    display: flex; /* Activa Flexbox para alinear los elementos */
+    align-items: center; /* Centra verticalmente el texto con las líneas */
+    gap: 15px; /* Espacio entre las líneas y el texto */
+
+    /* Mantenemos los estilos de fuente que ya tenías */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--color-primario);
+    margin-bottom: 20px;
+}
+
+/* Estas son las líneas a cada lado del texto */
+fieldset fieldset legend::before,
+fieldset fieldset legend::after {
+    content: ''; /* Necesario para que los pseudo-elementos se muestren */
+    flex-grow: 1; /* Hace que las líneas crezcan para ocupar el espacio disponible */
+    height: 1px; /* El grosor de la línea */
+    background-color: var(--color-borde); /* Usa el color de borde de tu paleta */
 }
