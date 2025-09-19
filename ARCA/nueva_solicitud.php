@@ -51,27 +51,24 @@ $conex->close();
 
             <fieldset><legend>Datos Generales</legend>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="responsable">Nombre del Responsable</label>
-                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
-                    </div>
-                    <div class="form-group">
+                    <div class="form-group w-50">
                         <label for="numeroParte">Número de Parte</label>
                         <input type="text" id="numeroParte" name="numeroParte" required>
                     </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="descripcionParte">Descripción de Parte</label>
-                        <input type="text" id="descripcionParte" name="descripcionParte" required>
-                    </div>
-                    <div class="form-group">
+                    <div class="form-group w-25">
                         <label for="cantidad">Cantidad</label>
                         <input type="number" id="cantidad" name="cantidad" required>
                     </div>
+                    <div class="form-group w-25">
+                        <label for="responsable">Nombre del Responsable</label>
+                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
+                    </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="descripcionParte">Descripción de Parte</label>
+                    <input type="text" id="descripcionParte" name="descripcionParte" required>
+                </div>
                 <div class="form-group">
                     <label for="descripcion">Descripción del Problema</label>
                     <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
@@ -81,6 +78,8 @@ $conex->close();
                     <div id="defectos-container"></div>
                     <button type="button" id="btn-add-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Defecto</button>
                 </fieldset>
+
+            </fieldset>
 
             </fieldset> <fieldset><legend>Clasificación</legend>
                 <div class="form-row">

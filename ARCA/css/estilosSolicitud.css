@@ -272,3 +272,22 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 @media (max-width: 768px) {
     .form-row { flex-direction: column; gap: 0; }
 }
+
+/* --- NUEVO: Clases de utilidad para anchos de columna en formularios --- */
+.form-row .form-group.w-50 {
+    flex-basis: calc(50% - 10px); /* 50% del espacio menos la mitad del 'gap' */
+}
+
+.form-row .form-group.w-25 {
+    flex-basis: calc(25% - 15px); /* 25% del espacio menos 3/4 del 'gap' */
+}
+
+/* --- Pequeño ajuste para mejorar la apariencia del fieldset anidado --- */
+fieldset fieldset {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid var(--color-borde);
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
