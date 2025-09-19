@@ -1,33 +1,19 @@
 <?php
-// Incluye el script que verifica si hay una sesión activa o una cookie "remember_me"
-// Asegúrate de que la ruta a tu archivo sea la correcta.
+// Incluye el script que verifica si hay una sesión activa
 include_once("dao/verificar_sesion.php");
+if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 
-// Si después de la verificación, el usuario sigue sin estar logueado, se redirige a la página de acceso
-if (!isset($_SESSION['loggedin'])) {
-    header('Location: acceso.php');
-    exit();
-}
-
-// Se verifica si el usuario tiene el rol de Super Usuario (IdRol = 1)
 $esSuperUsuario = (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1);
 
-// --- Cargar datos para los menús desplegables ---
-// Asegúrate de que la ruta a tu archivo de conexión sea la correcta.
+// Conexión y carga de datos para los menús desplegables
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// Cargar Proveedores
 $proveedores = $conex->query("SELECT IdProvedor, NombreProvedor FROM Provedores ORDER BY NombreProvedor ASC");
-
-// Cargar Terciarias
 $terciarias = $conex->query("SELECT IdTerciaria, NombreTerciaria FROM Terciarias ORDER BY NombreTerciaria ASC");
-
-// NUEVO: Cargar Lugares
 $lugares = $conex->query("SELECT IdLugar, NombreLugar FROM Lugares ORDER BY NombreLugar ASC");
 
-// Cerrar la conexión después de obtener los datos
 $conex->close();
 ?>
 <!DOCTYPE html>
@@ -73,22 +59,30 @@ $conex->close();
                         <label for="numeroParte">Número de Parte</label>
                         <input type="text" id="numeroParte" name="numeroParte" required>
                     </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="descripcionParte">Descripción de Parte</label>
+                        <input type="text" id="descripcionParte" name="descripcionParte" required>
+                    </div>
                     <div class="form-group">
                         <label for="cantidad">Cantidad</label>
                         <input type="number" id="cantidad" name="cantidad" required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="descripcionParte">Descripción de Parte</label>
-                    <textarea id="descripcionParte" name="descripcionParte" rows="2" required></textarea>
-                </div>
+
                 <div class="form-group">
                     <label for="descripcion">Descripción del Problema</label>
                     <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
                 </div>
-            </fieldset>
 
-            <fieldset><legend>Clasificación</legend>
+                <fieldset><legend>Registro de Defectos</legend>
+                    <div id="defectos-container"></div>
+                    <button type="button" id="btn-add-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Defecto</button>
+                </fieldset>
+
+            </fieldset> <fieldset><legend>Clasificación</legend>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="proveedor">Proveedor</label>
@@ -140,7 +134,6 @@ $conex->close();
                     <input type="checkbox" id="toggleMetodo">
                     <label for="toggleMetodo">Adjuntar Método de Trabajo (Opcional)</label>
                 </div>
-
                 <div id="metodo-trabajo-container" class="hidden-section">
                     <div class="form-group">
                         <label for="tituloMetodo">Nombre del Método</label>
@@ -151,11 +144,6 @@ $conex->close();
                         <input type="file" id="metodoFile" name="metodoFile" accept=".pdf">
                     </div>
                 </div>
-            </fieldset>
-
-            <fieldset><legend>Registro de Defectos</legend>
-                <div id="defectos-container"></div>
-                <button type="button" id="btn-add-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Defecto</button>
             </fieldset>
 
             <div class="form-actions"><button type="submit" class="btn-primary">Guardar Solicitud</button></div>
@@ -218,7 +206,6 @@ $conex->close();
         document.querySelectorAll('.btn-add').forEach(button => {
             button.addEventListener('click', function() {
                 const tipo = this.dataset.tipo;
-                // CAMBIO: Se elimina 'commodity' y se añade 'lugar'
                 const titulos = {
                     proveedor: 'Añadir Nuevo Proveedor',
                     lugar: 'Añadir Nuevo Lugar',
@@ -241,7 +228,7 @@ $conex->close();
                         const formData = new FormData();
                         formData.append('nombre', nombre);
 
-                        return fetch(`dao/add_${tipo}.php`, { // Asegúrate de que la ruta sea correcta
+                        return fetch(`dao/add_${tipo}.php`, {
                             method: 'POST',
                             body: formData
                         })
@@ -269,7 +256,6 @@ $conex->close();
 
         // Lógica para Enviar el Formulario Completo
         const solicitudForm = document.getElementById('solicitudForm');
-
         solicitudForm.addEventListener('submit', function(event) {
             event.preventDefault();
             if (defectosContainer.children.length === 0) {
