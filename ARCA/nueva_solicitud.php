@@ -52,16 +52,16 @@ $conex->close();
             <fieldset><legend>Datos Generales</legend>
                 <div class="form-row">
                     <div class="form-group w-50">
+                        <label for="responsable">Nombre del Responsable</label>
+                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
+                    </div>
+                    <div class="form-group w-25">
                         <label for="numeroParte">Número de Parte</label>
                         <input type="text" id="numeroParte" name="numeroParte" required>
                     </div>
                     <div class="form-group w-25">
                         <label for="cantidad">Cantidad</label>
                         <input type="number" id="cantidad" name="cantidad" required>
-                    </div>
-                    <div class="form-group w-25">
-                        <label for="responsable">Nombre del Responsable</label>
-                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
                     </div>
                 </div>
 
