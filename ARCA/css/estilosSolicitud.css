@@ -405,3 +405,38 @@ legend i {
 input[type="file"] {
     display: none;
 }
+
+/* --- ESTILOS PERSONALIZADOS PARA EL WIDGET DE GOOGLE TRANSLATE --- */
+
+/* Contenedor principal del widget */
+#google_translate_element .goog-te-gadget-simple {
+    background-color: var(--color-fondo); /* Fondo gris claro */
+    border: 1px solid var(--color-borde);
+    border-radius: 20px; /* Lo hace redondeado, como una píldora */
+    padding: 6px 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* El texto que muestra el idioma seleccionado */
+#google_translate_element .goog-te-gadget-simple span {
+    color: var(--color-texto) !important; /* !important es necesario para sobreescribir estilos de Google */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Oculta el icono de Google que aparece al lado del texto */
+#google_translate_element .goog-te-gadget-icon {
+    display: none !important;
+}
+
+/* Oculta el texto "Powered by Google" que aparece al traducir */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+
+/* Evita que Google añada un espacio extra en la parte superior de la página */
+body {
+    top: 0px !important;
+}
