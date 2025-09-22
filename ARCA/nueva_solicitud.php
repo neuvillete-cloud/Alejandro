@@ -203,7 +203,7 @@ $conex->close();
                 'swal_saving': 'Saving Request...', 'swal_savingText': 'This may take a moment.',
                 'swal_missingDefectsTitle': 'Missing Defects', 'swal_missingDefectsText': 'You must register at least one defect to save the request.',
                 'swal_successTitle': 'Request Saved!', 'swal_errorTitle': 'Error Saving', 'swal_connectionError': 'Connection Error',
-                'swal_connectionErrorText': 'Could not communicate with the server.'
+                'swal_connectionErrorText': 'Could not communicate with the server.', // <-- CORRECCIÓN AQUÍ
                 'tooltip_partNumber': 'Unique identifier for the affected material or component.',
                 'tooltip_quantity': 'Total number of affected pieces in the containment.',
                 'tooltip_partDescription': 'Name or brief description of the material (e.g., Allen Screw M5).',
