@@ -8,6 +8,12 @@ if (!isset($_SESSION['loggedin'])) {
     exit();
 }
 
+// --- ADICIÓN: LÓGICA DE IDIOMA ---
+$idioma_actual = 'es';
+if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
+    $idioma_actual = 'en';
+}
+
 // Incluimos la conexión a la base de datos
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
@@ -61,7 +67,7 @@ $conex->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ver Solicitudes - ARCA</title>
+    <title data-translate-key="pageTitle">Ver Solicitudes - ARCA</title>
     <link rel="stylesheet" href="css/estilosHistorial.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,34 +80,38 @@ $conex->close();
     <div class="header-left">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <nav class="main-nav">
-            <a href="index.php">Dashboard</a>
-            <a href="Historial.php" class="active">Mis Solicitudes</a>
+            <a href="index.php" data-translate-key="nav_dashboard">Dashboard</a>
+            <a href="Historial.php" class="active" data-translate-key="nav_myRequests">Mis Solicitudes</a>
         </nav>
     </div>
     <div class="user-info">
-        <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
-        <button class="logout-btn" onclick="window.location.href='dao/logout.php'">Cerrar Sesión <i class="fa-solid fa-right-from-bracket"></i></button>
+        <div class="language-selector">
+            <button type="button" class="lang-btn active" data-lang="es">ES</button>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <span><span data-translate-key="welcome">Bienvenido</span>, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
+        <button class="logout-btn" onclick="window.location.href='dao/logout.php'"><span data-translate-key="logout">Cerrar Sesión</span> <i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
 </header>
 
 <main class="container">
     <div class="page-header">
-        <h1><i class="fa-solid fa-list-check"></i>Mis Solicitudes de Contención</h1>
-        <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> Crear Nueva Solicitud</a>
+        <h1><i class="fa-solid fa-list-check"></i><span data-translate-key="mainTitle">Mis Solicitudes de Contención</span></h1>
+        <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_createNewRequest">Crear Nueva Solicitud</span></a>
     </div>
 
     <div class="filter-bar">
         <form action="Historial.php" method="GET" class="filter-form">
             <div class="form-group">
-                <label for="folio">Buscar por Folio</label>
+                <label for="folio" data-translate-key="label_searchByFolio">Buscar por Folio</label>
                 <input type="number" name="folio" id="folio" placeholder="Ej: 123" value="<?php echo htmlspecialchars($_GET['folio'] ?? ''); ?>">
             </div>
             <div class="form-group">
-                <label for="fecha">Buscar por Fecha</label>
+                <label for="fecha" data-translate-key="label_searchByDate">Buscar por Fecha</label>
                 <input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>">
             </div>
-            <button type="submit" class="btn-primary">Filtrar</button>
-            <a href="Historial.php" class="btn-tertiary">Limpiar</a>
+            <button type="submit" class="btn-primary" data-translate-key="btn_filter">Filtrar</button>
+            <a href="Historial.php" class="btn-tertiary" data-translate-key="btn_clear">Limpiar</a>
         </form>
     </div>
 
@@ -109,12 +119,12 @@ $conex->close();
         <table class="results-table">
             <thead>
             <tr>
-                <th><i class="fa-solid fa-hashtag"></i>Folio</th>
-                <th><i class="fa-solid fa-barcode"></i>No. Parte</th>
-                <th><i class="fa-solid fa-truck-fast"></i>Proveedor</th>
-                <th><i class="fa-solid fa-calendar-days"></i>Fecha de Registro</th>
-                <th><i class="fa-solid fa-circle-info"></i>Estatus</th>
-                <th><i class="fa-solid fa-cogs"></i>Acciones</th>
+                <th><i class="fa-solid fa-hashtag"></i><span data-translate-key="table_folio">Folio</span></th>
+                <th><i class="fa-solid fa-barcode"></i><span data-translate-key="table_partNumber">No. Parte</span></th>
+                <th><i class="fa-solid fa-truck-fast"></i><span data-translate-key="table_supplier">Proveedor</span></th>
+                <th><i class="fa-solid fa-calendar-days"></i><span data-translate-key="table_date">Fecha de Registro</span></th>
+                <th><i class="fa-solid fa-circle-info"></i><span data-translate-key="table_status">Estatus</span></th>
+                <th><i class="fa-solid fa-cogs"></i><span data-translate-key="table_actions">Acciones</span></th>
             </tr>
             </thead>
             <tbody>
@@ -126,15 +136,12 @@ $conex->close();
                         <td><?php echo htmlspecialchars($row['NombreProvedor']); ?></td>
                         <td><?php echo date("d/m/Y H:i", strtotime($row['FechaRegistro'])); ?></td>
                         <td>
-                            <?php
-                            // Convertimos el nombre del estatus a una clase CSS válida (ej: "En Revisión" -> "en-revision")
-                            $estatus_clase = "status-" . strtolower(str_replace(' ', '-', $row['NombreEstatus']));
-                            ?>
+                            <?php $estatus_clase = "status-" . strtolower(str_replace(' ', '-', $row['NombreEstatus'])); ?>
                             <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span>
                         </td>
                         <td class="actions-cell">
-                            <button class="btn-icon btn-details" data-id="<?php echo $row['IdSolicitud']; ?>" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
-                            <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
+                            <button class="btn-icon btn-details" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_viewDetails" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -143,7 +150,7 @@ $conex->close();
                     <td colspan="6" class="no-results-cell">
                         <div class="no-results-content">
                             <i class="fa-solid fa-folder-open"></i>
-                            <p>No se encontraron solicitudes</p>
+                            <p data-translate-key="noResults">No se encontraron solicitudes</p>
                         </div>
                     </td>
                 </tr>
@@ -156,7 +163,7 @@ $conex->close();
 <div id="details-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Detalles de la Solicitud <span id="modal-folio"></span></h2>
+            <h2><span data-translate-key="modal_title">Detalles de la Solicitud</span> <span id="modal-folio"></span></h2>
             <button id="modal-close" class="modal-close-btn">&times;</button>
         </div>
         <div id="modal-body" class="modal-body view-mode">
