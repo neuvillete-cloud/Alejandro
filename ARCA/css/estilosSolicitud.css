@@ -449,3 +449,62 @@ legend i {
 input[type="file"] {
     display: none;
 }
+
+/* --- ESTILOS PARA LOS TOOLTIPS DE INFORMACIÓN --- */
+
+/* Contenedor para la etiqueta y el icono */
+.label-with-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el texto y el icono */
+}
+
+/* Estilo del icono de información */
+.tooltip-icon {
+    position: relative;
+    display: inline-block;
+    cursor: help; /* Cambia el cursor para indicar que es un elemento de ayuda */
+}
+
+.tooltip-icon i {
+    color: var(--color-acento);
+    font-size: 14px;
+}
+
+/* Estilo del texto del tooltip (inicialmente oculto) */
+.tooltip-icon .tooltip-text {
+    visibility: hidden;
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%; /* Se posiciona encima del icono */
+    left: 50%;
+    margin-left: -125px; /* La mitad del ancho para centrarlo */
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+/* Flecha del tooltip */
+.tooltip-icon .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* Muestra el tooltip al pasar el mouse */
+.tooltip-icon:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

@@ -69,12 +69,39 @@ $conex->close();
 
             <fieldset><legend><i class="fa-solid fa-file-lines"></i> <span data-translate-key="section_generalData">Datos Generales</span></legend>
                 <div class="form-row">
-                    <div class="form-group w-50"><label for="responsable" data-translate-key="label_personInCharge">Nombre del Responsable</label><input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" ></div>
-                    <div class="form-group w-25"><label for="numeroParte" data-translate-key="label_partNumber">Número de Parte</label><input type="text" id="numeroParte" name="numeroParte" required></div>
-                    <div class="form-group w-25"><label for="cantidad" data-translate-key="label_quantity">Cantidad</label><input type="number" id="cantidad" name="cantidad" required></div>
+                    <div class="form-group w-50">
+                        <label for="responsable" data-translate-key="label_personInCharge">Nombre del Responsable</label>
+                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
+                    </div>
+                    <div class="form-group w-25">
+                        <div class="label-with-tooltip">
+                            <label for="numeroParte" data-translate-key="label_partNumber">Número de Parte</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_partNumber">Identificador único del material o componente afectado.</span></div>
+                        </div>
+                        <input type="text" id="numeroParte" name="numeroParte" required>
+                    </div>
+                    <div class="form-group w-25">
+                        <div class="label-with-tooltip">
+                            <label for="cantidad" data-translate-key="label_quantity">Cantidad</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_quantity">Número total de piezas afectadas en la contención.</span></div>
+                        </div>
+                        <input type="number" id="cantidad" name="cantidad" required>
+                    </div>
                 </div>
-                <div class="form-group"><label for="descripcionParte" data-translate-key="label_partDescription">Descripción de Parte</label><input type="text" id="descripcionParte" name="descripcionParte" required></div>
-                <div class="form-group"><label for="descripcion" data-translate-key="label_problemDescription">Descripción del Problema</label><textarea id="descripcion" name="descripcion" rows="3" required></textarea></div>
+                <div class="form-group">
+                    <div class="label-with-tooltip">
+                        <label for="descripcionParte" data-translate-key="label_partDescription">Descripción de Parte</label>
+                        <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_partDescription">Nombre o descripción breve del material (ej: Tornillo Allen M5).</span></div>
+                    </div>
+                    <input type="text" id="descripcionParte" name="descripcionParte" required>
+                </div>
+                <div class="form-group">
+                    <div class="label-with-tooltip">
+                        <label for="descripcion" data-translate-key="label_problemDescription">Descripción del Problema</label>
+                        <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_problemDescription">Detalla el problema encontrado de la forma más clara posible.</span></div>
+                    </div>
+                    <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
+                </div>
 
                 <fieldset><legend><i class="fa-solid fa-bug"></i> <span data-translate-key="section_defects">Registro de Defectos</span></legend>
                     <div id="defectos-container"></div>
@@ -85,7 +112,10 @@ $conex->close();
             <fieldset><legend><i class="fa-solid fa-tags"></i> <span data-translate-key="section_classification">Clasificación</span></legend>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="proveedor" data-translate-key="label_supplier">Proveedor</label>
+                        <div class="label-with-tooltip">
+                            <label for="proveedor" data-translate-key="label_supplier">Proveedor</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_supplier">Selecciona el proveedor del material afectado.</span></div>
+                        </div>
                         <div class="select-with-button">
                             <select id="proveedor" name="IdProvedor" required>
                                 <option value="" disabled selected data-translate-key="select_supplier">Seleccione un proveedor</option>
@@ -95,7 +125,10 @@ $conex->close();
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="lugar" data-translate-key="label_location">Lugar de Contención</label>
+                        <div class="label-with-tooltip">
+                            <label for="lugar" data-translate-key="label_location">Lugar de Contención</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_location">Indica la planta o almacén donde se realizará la contención.</span></div>
+                        </div>
                         <div class="select-with-button">
                             <select id="lugar" name="IdLugar" required>
                                 <option value="" disabled selected data-translate-key="select_location">Seleccione un lugar</option>
@@ -105,7 +138,10 @@ $conex->close();
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="terciaria" data-translate-key="label_tertiary">Terciaria</label>
+                        <div class="label-with-tooltip">
+                            <label for="terciaria" data-translate-key="label_tertiary">Terciaria</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_tertiary">Si aplica, selecciona la empresa externa que realizará la contención.</span></div>
+                        </div>
                         <div class="select-with-button">
                             <select id="terciaria" name="IdTerciaria" required>
                                 <option value="" disabled selected data-translate-key="select_tertiary">Seleccione una terciaria</option>
@@ -123,7 +159,13 @@ $conex->close();
                     <label for="toggleMetodo" data-translate-key="label_attachMethod">Adjuntar Método de Trabajo (Opcional)</label>
                 </div>
                 <div id="metodo-trabajo-container" class="hidden-section">
-                    <div class="form-group"><label for="tituloMetodo" data-translate-key="label_methodName">Nombre del Método</label><input type="text" id="tituloMetodo" name="tituloMetodo"></div>
+                    <div class="form-group">
+                        <div class="label-with-tooltip">
+                            <label for="tituloMetodo" data-translate-key="label_methodName">Nombre del Método</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_methodName">Asigna un nombre descriptivo al documento que vas a subir.</span></div>
+                        </div>
+                        <input type="text" id="tituloMetodo" name="tituloMetodo">
+                    </div>
                     <div class="form-group">
                         <label for="metodoFile" data-translate-key="label_uploadPDF">Subir archivo PDF</label>
                         <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="span_selectFile">Seleccionar archivo...</span></label>
@@ -139,8 +181,6 @@ $conex->close();
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        // --- INICIO: CÓDIGO DE TRADUCCIÓN ---
 
         let currentLang = '<?php echo $idioma_actual; ?>';
 
@@ -166,7 +206,15 @@ $conex->close();
                 'swal_saving': 'Guardando Solicitud...', 'swal_savingText': 'Este proceso puede tardar un momento.',
                 'swal_missingDefectsTitle': 'Faltan Defectos', 'swal_missingDefectsText': 'Debes registrar al menos un defecto para poder guardar la solicitud.',
                 'swal_successTitle': '¡Solicitud Guardada!', 'swal_errorTitle': 'Error al Guardar', 'swal_connectionError': 'Error de Conexión',
-                'swal_connectionErrorText': 'No se pudo comunicar con el servidor.'
+                'swal_connectionErrorText': 'No se pudo comunicar con el servidor.',
+                'tooltip_partNumber': 'Identificador único del material o componente afectado.',
+                'tooltip_quantity': 'Número total de piezas afectadas en la contención.',
+                'tooltip_partDescription': 'Nombre o descripción breve del material (ej: Tornillo Allen M5).',
+                'tooltip_problemDescription': 'Detalla el problema encontrado de la forma más clara posible.',
+                'tooltip_supplier': 'Selecciona el proveedor del material afectado.',
+                'tooltip_location': 'Indica la planta o almacén donde se realizará la contención.',
+                'tooltip_tertiary': 'Si aplica, selecciona la empresa externa que realizará la contención.',
+                'tooltip_methodName': 'Asigna un nombre descriptivo al documento que vas a subir.'
             },
             'en': {
                 'pageTitle': 'New Request - ARCA', 'welcome': 'Welcome', 'logout': 'Log Out',
@@ -189,7 +237,15 @@ $conex->close();
                 'swal_saving': 'Saving Request...', 'swal_savingText': 'This may take a moment.',
                 'swal_missingDefectsTitle': 'Missing Defects', 'swal_missingDefectsText': 'You must register at least one defect to save the request.',
                 'swal_successTitle': 'Request Saved!', 'swal_errorTitle': 'Error Saving', 'swal_connectionError': 'Connection Error',
-                'swal_connectionErrorText': 'Could not communicate with the server.'
+                'swal_connectionErrorText': 'Could not communicate with the server.',
+                'tooltip_partNumber': 'Unique identifier for the affected material or component.',
+                'tooltip_quantity': 'Total number of affected pieces in the containment.',
+                'tooltip_partDescription': 'Name or brief description of the material (e.g., Allen Screw M5).',
+                'tooltip_problemDescription': 'Detail the problem found as clearly as possible.',
+                'tooltip_supplier': 'Select the supplier of the affected material.',
+                'tooltip_location': 'Indicate the plant or warehouse where the containment will be performed.',
+                'tooltip_tertiary': 'If applicable, select the external company that will perform the containment.',
+                'tooltip_methodName': 'Assign a descriptive name to the document you are uploading.'
             }
         };
 
@@ -198,14 +254,22 @@ $conex->close();
             document.documentElement.lang = lang;
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
-                if (translations[lang] && translations[lang][key]) {
-                    el.innerText = translations[lang][key];
+                const target = translations[lang];
+                if (target && target[key]) {
+                    // Mantiene el contenido HTML interno, como los iconos
+                    const icon = el.querySelector('i');
+                    if (icon) {
+                        el.innerHTML = icon.outerHTML + ' ' + target[key];
+                    } else {
+                        el.innerText = target[key];
+                    }
                 }
             });
             document.querySelectorAll('[data-translate-key-title]').forEach(el => {
                 const key = el.dataset.translateKeyTitle;
-                if(translations[lang] && translations[lang][key]) {
-                    el.title = translations[lang][key];
+                const target = translations[lang];
+                if(target && target[key]) {
+                    el.title = target[key];
                 }
             });
             document.title = translations[lang]['pageTitle'];
@@ -225,11 +289,6 @@ $conex->close();
         const savedLang = localStorage.getItem('userLanguage') || '<?php echo $idioma_actual; ?>';
         const langBtnToActivate = document.querySelector(`.lang-btn[data-lang="${savedLang}"]`);
         if (langBtnToActivate) langBtnToActivate.click();
-
-        // --- FIN: CÓDIGO DE TRADUCCIÓN ---
-
-
-        // --- INICIO: TU CÓDIGO ORIGINAL ---
 
         // Lógica para mostrar/ocultar el método de trabajo
         document.getElementById('toggleMetodo').addEventListener('change', function() {
@@ -290,11 +349,11 @@ $conex->close();
         document.querySelector('.form-container').addEventListener('change', function(e) {
             if (e.target.type === 'file') {
                 const labelSpan = e.target.previousElementSibling.querySelector('span');
-                const defaultText = labelSpan.dataset.defaultText;
+                const defaultTextKey = labelSpan.dataset.defaultText === 'Seleccionar archivo...' ? 'span_selectFile' : 'span_selectImage';
                 if (e.target.files.length > 0) {
                     labelSpan.textContent = e.target.files[0].name;
                 } else {
-                    labelSpan.textContent = defaultText;
+                    labelSpan.textContent = translations[currentLang][defaultTextKey];
                 }
             }
         });
