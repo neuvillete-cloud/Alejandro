@@ -171,14 +171,10 @@ $conex->close();
                 'swal_missingDefectsTitle': 'Faltan Defectos', 'swal_missingDefectsText': 'Debes registrar al menos un defecto para poder guardar la solicitud.',
                 'swal_successTitle': '¡Solicitud Guardada!', 'swal_errorTitle': 'Error al Guardar', 'swal_connectionError': 'Error de Conexión',
                 'swal_connectionErrorText': 'No se pudo comunicar con el servidor.',
-                'tooltip_partNumber': 'Identificador único del material o componente afectado.',
-                'tooltip_quantity': 'Número total de piezas afectadas en la contención.',
-                'tooltip_partDescription': 'Nombre o descripción breve del material (ej: Tornillo Allen M5).',
-                'tooltip_problemDescription': 'Detalla el problema encontrado de la forma más clara posible.',
-                'tooltip_supplier': 'Selecciona el proveedor del material afectado.',
-                'tooltip_location': 'Indica la planta o almacén donde se realizará la contención.',
-                'tooltip_tertiary': 'Si aplica, selecciona la empresa externa que realizará la contención.',
-                'tooltip_methodName': 'Asigna un nombre descriptivo al documento que vas a subir.'
+                'tooltip_partNumber': 'Identificador único del material o componente afectado.', 'tooltip_quantity': 'Número total de piezas afectadas en la contención.',
+                'tooltip_partDescription': 'Nombre o descripción breve del material (ej: Tornillo Allen M5).', 'tooltip_problemDescription': 'Detalla el problema encontrado de la forma más clara posible.',
+                'tooltip_supplier': 'Selecciona el proveedor del material afectado.', 'tooltip_location': 'Indica la planta o almacén donde se realizará la contención.',
+                'tooltip_tertiary': 'Si aplica, selecciona la empresa externa que realizará la contención.', 'tooltip_methodName': 'Asigna un nombre descriptivo al documento que vas a subir.'
             },
             'en': {
                 'pageTitle': 'New Request - ARCA', 'welcome': 'Welcome', 'logout': 'Log Out',
@@ -204,14 +200,6 @@ $conex->close();
                 'swal_missingDefectsTitle': 'Missing Defects', 'swal_missingDefectsText': 'You must register at least one defect to save the request.',
                 'swal_successTitle': 'Request Saved!', 'swal_errorTitle': 'Error Saving', 'swal_connectionError': 'Connection Error',
                 'swal_connectionErrorText': 'Could not communicate with the server.'
-                'tooltip_partNumber': 'Unique identifier for the affected material or component.',
-                'tooltip_quantity': 'Total number of affected pieces in the containment.',
-                'tooltip_partDescription': 'Name or brief description of the material (e.g., Allen Screw M5).',
-                'tooltip_problemDescription': 'Detail the problem found as clearly as possible.',
-                'tooltip_supplier': 'Select the supplier of the affected material.',
-                'tooltip_location': 'Indicate the plant or warehouse where the containment will be performed.',
-                'tooltip_tertiary': 'If applicable, select the external company that will perform the containment.',
-                'tooltip_methodName': 'Assign a descriptive name to the document you are uploading.'
             }
         };
 
