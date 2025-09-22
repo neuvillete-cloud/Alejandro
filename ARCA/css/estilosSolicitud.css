@@ -407,3 +407,45 @@ legend i {
     color: var(--color-blanco);
     cursor: default;
 }
+
+/* --- AÑADE ESTOS ESTILOS A TU ARCHIVO CSS --- */
+
+/* Estilo para la etiqueta que funciona como el botón de subir archivo */
+.file-upload-label {
+    border: 2px dashed var(--color-borde);
+    border-radius: 6px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #777;
+    background-color: #fdfdfd;
+}
+
+/* Efecto visual al pasar el mouse por encima */
+.file-upload-label:hover {
+    border-color: var(--color-secundario);
+    background-color: #f7f9fc;
+    color: var(--color-secundario);
+}
+
+/* Estilo para el ícono de nube */
+.file-upload-label i {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para el texto "Seleccionar archivo..." */
+.file-upload-label span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Regla MUY IMPORTANTE: Ocultamos el input de archivo original que es feo */
+input[type="file"] {
+    display: none;
+}
