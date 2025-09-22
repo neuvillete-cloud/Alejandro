@@ -455,8 +455,8 @@ input[type="file"] {
 /* Contenedor para la etiqueta y el icono */
 .label-with-tooltip {
     display: flex;
-    align-items: center;
-    gap: 8px; /* Espacio entre el texto y el icono */
+    align-items: baseline; /* <-- Esta es la corrección */
+    gap: 8px;
 }
 
 /* Estilo del icono de información */
