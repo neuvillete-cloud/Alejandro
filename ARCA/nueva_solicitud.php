@@ -20,6 +20,14 @@ $proveedores = $conex->query("SELECT IdProvedor, NombreProvedor FROM Provedores 
 $terciarias = $conex->query("SELECT IdTerciaria, NombreTerciaria FROM Terciarias ORDER BY NombreTerciaria ASC");
 $lugares = $conex->query("SELECT IdLugar, NombreLugar FROM Lugares ORDER BY NombreLugar ASC");
 
+// ADICIÓN: Cargar el nuevo Catálogo de Defectos
+$catalogo_defectos = $conex->query("SELECT IdDefectoCatalogo, NombreDefecto FROM CatalogoDefectos ORDER BY NombreDefecto ASC");
+// Preparamos las opciones en una variable para inyectarla en JavaScript
+$defectos_options_html = "";
+while($row = $catalogo_defectos->fetch_assoc()) {
+    $defectos_options_html .= "<option value='{$row['IdDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
+}
+
 $conex->close();
 ?>
 <!DOCTYPE html>
@@ -69,103 +77,54 @@ $conex->close();
 
             <fieldset><legend><i class="fa-solid fa-file-lines"></i> <span data-translate-key="section_generalData">Datos Generales</span></legend>
                 <div class="form-row">
-                    <div class="form-group w-50">
-                        <label for="responsable" data-translate-key="label_personInCharge">Nombre del Responsable</label>
-                        <input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" >
-                    </div>
-                    <div class="form-group w-25">
-                        <div class="label-with-tooltip">
-                            <label for="numeroParte" data-translate-key="label_partNumber">Número de Parte</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_partNumber">Identificador único del material o componente afectado.</span></div>
-                        </div>
-                        <input type="text" id="numeroParte" name="numeroParte" required>
-                    </div>
-                    <div class="form-group w-25">
-                        <div class="label-with-tooltip">
-                            <label for="cantidad" data-translate-key="label_quantity">Cantidad</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_quantity">Número total de piezas afectadas en la contención.</span></div>
-                        </div>
-                        <input type="number" id="cantidad" name="cantidad" required>
-                    </div>
+                    <div class="form-group w-50"><label for="responsable" data-translate-key="label_personInCharge">Nombre del Responsable</label><input type="text" id="responsable" name="responsable" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" ></div>
+                    <div class="form-group w-25"><div class="label-with-tooltip"><label for="numeroParte" data-translate-key="label_partNumber">Número de Parte</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_partNumber">Identificador único del material o componente afectado.</span></div></div><input type="text" id="numeroParte" name="numeroParte" required></div>
+                    <div class="form-group w-25"><div class="label-with-tooltip"><label for="cantidad" data-translate-key="label_quantity">Cantidad</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_quantity">Número total de piezas afectadas en la contención.</span></div></div><input type="number" id="cantidad" name="cantidad" required></div>
                 </div>
-                <div class="form-group">
-                    <div class="label-with-tooltip">
-                        <label for="descripcionParte" data-translate-key="label_partDescription">Descripción de Parte</label>
-                        <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_partDescription">Nombre o descripción breve del material (ej: Tornillo Allen M5).</span></div>
-                    </div>
-                    <input type="text" id="descripcionParte" name="descripcionParte" required>
-                </div>
-                <div class="form-group">
-                    <div class="label-with-tooltip">
-                        <label for="descripcion" data-translate-key="label_problemDescription">Descripción del Problema</label>
-                        <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_problemDescription">Detalla el problema encontrado de la forma más clara posible.</span></div>
-                    </div>
-                    <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
-                </div>
+                <div class="form-group"><div class="label-with-tooltip"><label for="descripcionParte" data-translate-key="label_partDescription">Descripción de Parte</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_partDescription">Nombre o descripción breve del material (ej: Tornillo Allen M5).</span></div></div><input type="text" id="descripcionParte" name="descripcionParte" required></div>
+                <div class="form-group"><div class="label-with-tooltip"><label for="descripcion" data-translate-key="label_problemDescription">Descripción del Problema</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_problemDescription">Detalla el problema encontrado de la forma más clara posible.</span></div></div><textarea id="descripcion" name="descripcion" rows="3" required></textarea></div>
 
                 <fieldset><legend><i class="fa-solid fa-bug"></i> <span data-translate-key="section_defects">Registro de Defectos</span></legend>
                     <div id="defectos-container"></div>
-                    <button type="button" id="btn-add-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_addDefect">Añadir Defecto</span></button>
+                    <div class="form-row">
+                        <button type="button" id="btn-add-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_addDefect">Añadir Defecto</span></button>
+                        <?php if ($esSuperUsuario): ?>
+                            <button type="button" class="btn-add" data-tipo="defectocatalogo" data-translate-key-title="title_addDefect" title="Añadir Defecto al Catálogo">+</button>
+                        <?php endif; ?>
+                    </div>
                 </fieldset>
             </fieldset>
 
             <fieldset><legend><i class="fa-solid fa-tags"></i> <span data-translate-key="section_classification">Clasificación</span></legend>
                 <div class="form-row">
-                    <div class="form-group">
-                        <div class="label-with-tooltip">
-                            <label for="proveedor" data-translate-key="label_supplier">Proveedor</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_supplier">Selecciona el proveedor del material afectado.</span></div>
-                        </div>
-                        <div class="select-with-button">
+                    <div class="form-group"><div class="label-with-tooltip"><label for="proveedor" data-translate-key="label_supplier">Proveedor</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_supplier">Selecciona el proveedor del material afectado.</span></div></div><div class="select-with-button">
                             <select id="proveedor" name="IdProvedor" required>
                                 <option value="" disabled selected data-translate-key="select_supplier">Seleccione un proveedor</option>
                                 <?php mysqli_data_seek($proveedores, 0); while($row = $proveedores->fetch_assoc()): ?><option value="<?php echo $row['IdProvedor']; ?>"><?php echo htmlspecialchars($row['NombreProvedor']); ?></option><?php endwhile; ?>
                             </select>
                             <?php if ($esSuperUsuario): ?><button type="button" class="btn-add" data-tipo="proveedor" data-translate-key-title="title_addSupplier" title="Añadir Nuevo Proveedor">+</button><?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="label-with-tooltip">
-                            <label for="lugar" data-translate-key="label_location">Lugar de Contención</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_location">Indica la planta o almacén donde se realizará la contención.</span></div>
-                        </div>
-                        <div class="select-with-button">
+                        </div></div>
+                    <div class="form-group"><div class="label-with-tooltip"><label for="lugar" data-translate-key="label_location">Lugar de Contención</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_location">Indica la planta o almacén donde se realizará la contención.</span></div></div><div class="select-with-button">
                             <select id="lugar" name="IdLugar" required>
                                 <option value="" disabled selected data-translate-key="select_location">Seleccione un lugar</option>
                                 <?php mysqli_data_seek($lugares, 0); while($row = $lugares->fetch_assoc()): ?><option value="<?php echo $row['IdLugar']; ?>"><?php echo htmlspecialchars($row['NombreLugar']); ?></option><?php endwhile; ?>
                             </select>
                             <?php if ($esSuperUsuario): ?><button type="button" class="btn-add" data-tipo="lugar" data-translate-key-title="title_addLocation" title="Añadir Nuevo Lugar">+</button><?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="label-with-tooltip">
-                            <label for="terciaria" data-translate-key="label_tertiary">Terciaria</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_tertiary">Si aplica, selecciona la empresa externa que realizará la contención.</span></div>
-                        </div>
-                        <div class="select-with-button">
+                        </div></div>
+                    <div class="form-group"><div class="label-with-tooltip"><label for="terciaria" data-translate-key="label_tertiary">Terciaria</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_tertiary">Si aplica, selecciona la empresa externa que realizará la contención.</span></div></div><div class="select-with-button">
                             <select id="terciaria" name="IdTerciaria" required>
                                 <option value="" disabled selected data-translate-key="select_tertiary">Seleccione una terciaria</option>
                                 <?php mysqli_data_seek($terciarias, 0); while($row = $terciarias->fetch_assoc()): ?><option value="<?php echo $row['IdTerciaria']; ?>"><?php echo htmlspecialchars($row['NombreTerciaria']); ?></option><?php endwhile; ?>
                             </select>
                             <?php if ($esSuperUsuario): ?><button type="button" class="btn-add" data-tipo="terciaria" data-translate-key-title="title_addTertiary" title="Añadir Nueva Terciaria">+</button><?php endif; ?>
-                        </div>
-                    </div>
+                        </div></div>
                 </div>
             </fieldset>
 
             <fieldset><legend><i class="fa-solid fa-paperclip"></i> <span data-translate-key="section_documentation">Documentación Adicional</span></legend>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="toggleMetodo">
-                    <label for="toggleMetodo" data-translate-key="label_attachMethod">Adjuntar Método de Trabajo (Opcional)</label>
-                </div>
+                <div class="form-group-checkbox"><input type="checkbox" id="toggleMetodo"><label for="toggleMetodo" data-translate-key="label_attachMethod">Adjuntar Método de Trabajo (Opcional)</label></div>
                 <div id="metodo-trabajo-container" class="hidden-section">
-                    <div class="form-group">
-                        <div class="label-with-tooltip">
-                            <label for="tituloMetodo" data-translate-key="label_methodName">Nombre del Método</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_methodName">Asigna un nombre descriptivo al documento que vas a subir.</span></div>
-                        </div>
-                        <input type="text" id="tituloMetodo" name="tituloMetodo">
-                    </div>
+                    <div class="form-group"><div class="label-with-tooltip"><label for="tituloMetodo" data-translate-key="label_methodName">Nombre del Método</label><div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_methodName">Asigna un nombre descriptivo al documento que vas a subir.</span></div></div><input type="text" id="tituloMetodo" name="tituloMetodo"></div>
                     <div class="form-group">
                         <label for="metodoFile" data-translate-key="label_uploadPDF">Subir archivo PDF</label>
                         <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="span_selectFile">Seleccionar archivo...</span></label>
@@ -174,12 +133,15 @@ $conex->close();
                 </div>
             </fieldset>
 
-            <div class="form-actions"><button type="submit" class="btn-primary" data-translate-key="btn_saveRequest">Guardar Solicitud</button></div>
+            <div class="form-actions"><button type="submit" class="btn-primary"><span data-translate-key="btn_saveRequest">Guardar Solicitud</span></button></div>
         </form>
     </div>
 </main>
 
 <script>
+    // ADICIÓN: Inyectamos las opciones de defectos desde PHP a una variable de JavaScript
+    let opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
+
     document.addEventListener('DOMContentLoaded', function() {
 
         let currentLang = '<?php echo $idioma_actual; ?>';
@@ -197,9 +159,11 @@ $conex->close();
                 'label_methodName': 'Nombre del Método', 'label_uploadPDF': 'Subir archivo PDF',
                 'btn_saveRequest': 'Guardar Solicitud',
                 'span_selectFile': 'Seleccionar archivo...', 'span_selectImage': 'Seleccionar imagen...',
-                'defecto': 'Defecto', 'label_defectName': 'Nombre del Defecto', 'label_photoOk': 'Foto OK (Ejemplo correcto)', 'label_photoNok': 'Foto NO OK (Evidencia del defecto)',
+                'defecto': 'Defecto', 'label_defectName': 'Tipo de Defecto', 'select_defect': 'Seleccione un defecto del catálogo',
+                'label_photoOk': 'Foto OK (Ejemplo correcto)', 'label_photoNok': 'Foto NO OK (Evidencia del defecto)',
                 'swal_limitTitle': 'Límite alcanzado', 'swal_limitText': 'Puedes registrar un máximo de 5 defectos por solicitud.',
                 'title_addSupplier': 'Añadir Nuevo Proveedor', 'title_addLocation': 'Añadir Nuevo Lugar', 'title_addTertiary': 'Añadir Nueva Terciaria',
+                'title_addDefect': 'Añadir Defecto al Catálogo',
                 'swal_inputLabel': 'Nombre del nuevo', 'swal_placeholder': 'Ingrese el nombre...',
                 'swal_btnSave': 'Guardar', 'swal_btnCancel': 'Cancelar', 'swal_validationEmpty': 'El nombre no puede estar vacío',
                 'swal_requestFail': 'La solicitud falló:', 'swal_saved': '¡Guardado!', 'swal_error': 'Error',
@@ -207,14 +171,10 @@ $conex->close();
                 'swal_missingDefectsTitle': 'Faltan Defectos', 'swal_missingDefectsText': 'Debes registrar al menos un defecto para poder guardar la solicitud.',
                 'swal_successTitle': '¡Solicitud Guardada!', 'swal_errorTitle': 'Error al Guardar', 'swal_connectionError': 'Error de Conexión',
                 'swal_connectionErrorText': 'No se pudo comunicar con el servidor.',
-                'tooltip_partNumber': 'Identificador único del material o componente afectado.',
-                'tooltip_quantity': 'Número total de piezas afectadas en la contención.',
-                'tooltip_partDescription': 'Nombre o descripción breve del material (ej: Tornillo Allen M5).',
-                'tooltip_problemDescription': 'Detalla el problema encontrado de la forma más clara posible.',
-                'tooltip_supplier': 'Selecciona el proveedor del material afectado.',
-                'tooltip_location': 'Indica la planta o almacén donde se realizará la contención.',
-                'tooltip_tertiary': 'Si aplica, selecciona la empresa externa que realizará la contención.',
-                'tooltip_methodName': 'Asigna un nombre descriptivo al documento que vas a subir.'
+                'tooltip_partNumber': 'Identificador único del material o componente afectado.', 'tooltip_quantity': 'Número total de piezas afectadas en la contención.',
+                'tooltip_partDescription': 'Nombre o descripción breve del material (ej: Tornillo Allen M5).', 'tooltip_problemDescription': 'Detalla el problema encontrado de la forma más clara posible.',
+                'tooltip_supplier': 'Selecciona el proveedor del material afectado.', 'tooltip_location': 'Indica la planta o almacén donde se realizará la contención.',
+                'tooltip_tertiary': 'Si aplica, selecciona la empresa externa que realizará la contención.', 'tooltip_methodName': 'Asigna un nombre descriptivo al documento que vas a subir.'
             },
             'en': {
                 'pageTitle': 'New Request - ARCA', 'welcome': 'Welcome', 'logout': 'Log Out',
@@ -228,24 +188,18 @@ $conex->close();
                 'label_methodName': 'Method Name', 'label_uploadPDF': 'Upload PDF file',
                 'btn_saveRequest': 'Save Request',
                 'span_selectFile': 'Select file...', 'span_selectImage': 'Select image...',
-                'defecto': 'Defect', 'label_defectName': 'Defect Name', 'label_photoOk': 'OK Photo (Correct example)', 'label_photoNok': 'NOK Photo (Defect evidence)',
+                'defecto': 'Defect', 'label_defectName': 'Defect Type', 'select_defect': 'Select a defect from the catalog',
+                'label_photoOk': 'OK Photo (Correct example)', 'label_photoNok': 'NOK Photo (Defect evidence)',
                 'swal_limitTitle': 'Limit Reached', 'swal_limitText': 'You can register a maximum of 5 defects per request.',
                 'title_addSupplier': 'Add New Supplier', 'title_addLocation': 'Add New Location', 'title_addTertiary': 'Add New Tertiary',
+                'title_addDefect': 'Add Defect to Catalog',
                 'swal_inputLabel': 'Name of the new', 'swal_placeholder': 'Enter the name...',
                 'swal_btnSave': 'Save', 'swal_btnCancel': 'Cancel', 'swal_validationEmpty': 'The name cannot be empty',
                 'swal_requestFail': 'The request failed:', 'swal_saved': 'Saved!', 'swal_error': 'Error',
                 'swal_saving': 'Saving Request...', 'swal_savingText': 'This may take a moment.',
                 'swal_missingDefectsTitle': 'Missing Defects', 'swal_missingDefectsText': 'You must register at least one defect to save the request.',
                 'swal_successTitle': 'Request Saved!', 'swal_errorTitle': 'Error Saving', 'swal_connectionError': 'Connection Error',
-                'swal_connectionErrorText': 'Could not communicate with the server.',
-                'tooltip_partNumber': 'Unique identifier for the affected material or component.',
-                'tooltip_quantity': 'Total number of affected pieces in the containment.',
-                'tooltip_partDescription': 'Name or brief description of the material (e.g., Allen Screw M5).',
-                'tooltip_problemDescription': 'Detail the problem found as clearly as possible.',
-                'tooltip_supplier': 'Select the supplier of the affected material.',
-                'tooltip_location': 'Indicate the plant or warehouse where the containment will be performed.',
-                'tooltip_tertiary': 'If applicable, select the external company that will perform the containment.',
-                'tooltip_methodName': 'Assign a descriptive name to the document you are uploading.'
+                'swal_connectionErrorText': 'Could not communicate with the server.'
             }
         };
 
@@ -254,22 +208,19 @@ $conex->close();
             document.documentElement.lang = lang;
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.dataset.translateKey;
-                const target = translations[lang];
-                if (target && target[key]) {
-                    // Mantiene el contenido HTML interno, como los iconos
+                if (translations[lang] && translations[lang][key]) {
                     const icon = el.querySelector('i');
-                    if (icon) {
-                        el.innerHTML = icon.outerHTML + ' ' + target[key];
+                    if (icon && (el.tagName === 'LEGEND' || el.tagName === 'H1')) {
+                        el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
                     } else {
-                        el.innerText = target[key];
+                        el.innerText = translations[lang][key];
                     }
                 }
             });
             document.querySelectorAll('[data-translate-key-title]').forEach(el => {
                 const key = el.dataset.translateKeyTitle;
-                const target = translations[lang];
-                if(target && target[key]) {
-                    el.title = target[key];
+                if(translations[lang] && translations[lang][key]) {
+                    el.title = translations[lang][key];
                 }
             });
             document.title = translations[lang]['pageTitle'];
@@ -287,8 +238,10 @@ $conex->close();
         });
 
         const savedLang = localStorage.getItem('userLanguage') || '<?php echo $idioma_actual; ?>';
-        const langBtnToActivate = document.querySelector(`.lang-btn[data-lang="${savedLang}"]`);
-        if (langBtnToActivate) langBtnToActivate.click();
+        if (savedLang) {
+            const langBtnToActivate = document.querySelector(`.lang-btn[data-lang="${savedLang}"]`);
+            if (langBtnToActivate) langBtnToActivate.click();
+        }
 
         // Lógica para mostrar/ocultar el método de trabajo
         document.getElementById('toggleMetodo').addEventListener('change', function() {
@@ -314,7 +267,10 @@ $conex->close();
                 </div>
                 <div class="form-group">
                     <label>${translations[currentLang].label_defectName}</label>
-                    <input type="text" name="defectos[${defectoCounter}][nombre]" required>
+                    <select name="defectos[${defectoCounter}][id]" required>
+                        <option value="" disabled selected>${translations[currentLang].select_defect}</option>
+                        ${opcionesDefectos}
+                    </select>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -366,13 +322,14 @@ $conex->close();
                 const titulos = {
                     proveedor: translations[currentLang].title_addSupplier,
                     lugar: translations[currentLang].title_addLocation,
-                    terciaria: translations[currentLang].title_addTertiary
+                    terciaria: translations[currentLang].title_addTertiary,
+                    defectocatalogo: translations[currentLang].title_addDefect
                 };
 
                 Swal.fire({
                     title: titulos[tipo],
                     input: 'text',
-                    inputLabel: `${translations[currentLang].swal_inputLabel} ${tipo}`,
+                    inputLabel: `${translations[currentLang].swal_inputLabel} ${tipo === 'defectocatalogo' ? 'defecto' : tipo}`,
                     inputPlaceholder: translations[currentLang].swal_placeholder,
                     showCancelButton: true,
                     confirmButtonText: translations[currentLang].swal_btnSave,
@@ -400,9 +357,19 @@ $conex->close();
                 }).then((result) => {
                     if (result.isConfirmed && result.value.status === 'success') {
                         Swal.fire(translations[currentLang].swal_saved, result.value.message, 'success');
-                        const select = document.getElementById(tipo);
+
                         const newOption = new Option(result.value.data.nombre, result.value.data.id, true, true);
-                        select.add(newOption);
+
+                        if (tipo === 'defectocatalogo') {
+                            opcionesDefectos += `<option value="${result.value.data.id}">${result.value.data.nombre}</option>`;
+                            document.querySelectorAll('select[name^="defectos"]').forEach(select => {
+                                select.add(new Option(result.value.data.nombre, result.value.data.id));
+                            });
+                        } else {
+                            const select = document.getElementById(tipo);
+                            select.add(newOption);
+                            select.value = result.value.data.id;
+                        }
                     } else if (result.value) {
                         Swal.fire(translations[currentLang].swal_error, result.value.message, 'error');
                     }

@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 // --- FIN MODO DE DEPURACIÓN ---
 
 // Incluimos los archivos necesarios.
+// Las rutas asumen que este archivo está en /dao/ y los otros en /dao/ también.
 include_once("verificar_sesion.php");
 include_once("conexionArca.php");
 
@@ -37,8 +38,8 @@ function procesarArchivoSubido($archivo, $subdirectorio, $prefijo) {
         throw new Exception("Error en la subida del archivo (código: {$archivo['error']}).");
     }
 
-    // Usamos rutas relativas desde la ubicación del script para mayor portabilidad.
-    $directorioDestino = realpath(dirname(__FILE__) . '/../') . '/' . $subdirectorio;
+    // Se construye la ruta física desde la raíz del servidor.
+    $directorioDestino = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/AleTest/ARCA/' . $subdirectorio;
 
     if (!is_dir($directorioDestino) && !mkdir($directorioDestino, 0775, true)) {
         throw new Exception("Error fatal: No se pudo crear la carpeta de destino: $subdirectorio");
@@ -93,23 +94,21 @@ try {
     }
 
     // 2. Insertar los datos principales en la tabla `Solicitudes`.
-    // --- CAMBIO AQUÍ: Se actualizó la consulta INSERT ---
     $stmt_solicitud = $conex->prepare(
         "INSERT INTO Solicitudes (IdUsuario, Responsable, NumeroParte, DescripcionParte, Cantidad, Descripcion, IdTerciaria, IdProvedor, IdLugar, IdEstatus, IdMetodo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     $idEstatusInicial = 1;
 
-    // --- CAMBIO AQUÍ: Se actualizó el bind_param para los nuevos campos ---
     $stmt_solicitud->bind_param("isssisiiiii",
         $_SESSION['user_id'],
         $_POST['responsable'],
         $_POST['numeroParte'],
-        $_POST['descripcionParte'], // <-- NUEVO
+        $_POST['descripcionParte'],
         $_POST['cantidad'],
         $_POST['descripcion'],
         $_POST['IdTerciaria'],
         $_POST['IdProvedor'],
-        $_POST['IdLugar'],          // <-- NUEVO
+        $_POST['IdLugar'],
         $idEstatusInicial,
         $idMetodoParaGuardar
     );
@@ -126,10 +125,11 @@ try {
     }
 
     foreach ($_POST['defectos'] as $key => $defecto) {
-        $nombre_defecto = trim($defecto['nombre']);
+        // --- CAMBIO AQUÍ: Ahora recibimos el ID del defecto desde el <select>
+        $id_defecto_catalogo = $defecto['id'];
 
         if ($_FILES['defectos']['error'][$key]['foto_ok'] !== UPLOAD_ERR_OK || $_FILES['defectos']['error'][$key]['foto_nok'] !== UPLOAD_ERR_OK) {
-            throw new Exception("Faltan fotos o hay un error en la subida para el defecto: " . htmlspecialchars($nombre_defecto));
+            throw new Exception("Faltan fotos o hay un error en la subida para el defecto seleccionado.");
         }
 
         $foto_ok_para_procesar = [
@@ -146,8 +146,12 @@ try {
         $rutaFotoOk = procesarArchivoSubido($foto_ok_para_procesar, 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_ok_");
         $rutaFotoNok = procesarArchivoSubido($foto_nok_para_procesar, 'imagenes/imagenesDefectos/', "defecto_{$id_solicitud_nueva}_nok_");
 
-        $stmt_defecto = $conex->prepare("INSERT INTO Defectos (IdSolicitud, NombreDefecto, RutaFotoOk, RutaFotoNoOk) VALUES (?, ?, ?, ?)");
-        $stmt_defecto->bind_param("isss", $id_solicitud_nueva, $nombre_defecto, $rutaFotoOk, $rutaFotoNok);
+        // --- CAMBIO AQUÍ: Se actualizó la consulta INSERT para la tabla Defectos
+        $stmt_defecto = $conex->prepare(
+            "INSERT INTO Defectos (IdSolicitud, IdDefectoCatalogo, RutaFotoOk, RutaFotoNoOk) VALUES (?, ?, ?, ?)"
+        );
+        // --- CAMBIO AQUÍ: Se actualizó el bind_param
+        $stmt_defecto->bind_param("iiss", $id_solicitud_nueva, $id_defecto_catalogo, $rutaFotoOk, $rutaFotoNok);
 
         if (!$stmt_defecto->execute()) {
             throw new Exception("Error al guardar el defecto: " . $stmt_defecto->error);
