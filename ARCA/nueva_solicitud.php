@@ -36,7 +36,6 @@ $conex->close();
 <header class="header">
     <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
     <div class="user-info">
-        <div id="google_translate_element"></div>
         <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
         <button class="logout-btn" onclick="window.location.href='dao/logout.php'">
             Cerrar Sesión <i class="fa-solid fa-right-from-bracket"></i>
@@ -322,11 +321,6 @@ $conex->close();
         });
     });
 </script>
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({pageLanguage: 'es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
