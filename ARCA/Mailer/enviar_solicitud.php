@@ -2,9 +2,9 @@
 session_start();
 // Asegúrate de que las rutas a estos archivos sean correctas desde /dao/
 include_once("conexionArca.php");
-require 'PHPMailer/Exception.php';
-require 'PHPMailer/PHPMailer.php';
-require 'PHPMailer/SMTP.php';
+require 'Phpmailer/Exception.php';
+require 'Phpmailer/PHPMailer.php';
+require 'Phpmailer/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
