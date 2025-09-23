@@ -1,59 +1,97 @@
 <?php
-// Incluye el script que verifica si hay una sesión activa o una cookie "remember_me"
+// Incluye el script que verifica si ya hay una sesión activa o una cookie
 include_once("dao/verificar_sesion.php");
 
-// Si después de la verificación, el usuario sigue sin estar logueado, se redirige a la página de acceso
+// --- NUEVA LÓGICA PARA MANEJAR TOKENS ---
+// Si se detecta un token en la URL, lo guardamos en la sesión y recargamos la página sin el token.
+// Esto es para limpiar la URL y por seguridad.
+if (isset($_GET['token'])) {
+    $_SESSION['token_pendiente'] = $_GET['token'];
+    header('Location: Historial.php'); // Redirige a la misma página (tu archivo original) para limpiar la URL
+    exit();
+}
+
+// Ahora, verificamos si el usuario está logueado. Si no, lo mandamos a acceso.php
+// Como el token (si existía) ya está en la sesión, no se perderá.
 if (!isset($_SESSION['loggedin'])) {
     header('Location: acceso.php');
     exit();
 }
+// --- FIN DE LA NUEVA LÓGICA ---
 
-// --- ADICIÓN: LÓGICA DE IDIOMA ---
+
+// --- LÓGICA DE IDIOMA Y CONEXIÓN (de tu código original) ---
 $idioma_actual = 'es';
 if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
     $idioma_actual = 'en';
 }
-
-// Incluimos la conexión a la base de datos
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// --- Lógica de Filtros ---
-$sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
+
+// --- NUEVA LÓGICA PARA DECIDIR QUÉ MOSTRAR (FUSIÓN DE AMBOS CÓDIGOS) ---
+$modoVista = 'usuario_logueado'; // Por defecto, el usuario ve sus propias solicitudes
+$tituloPagina = "Mis Solicitudes de Contención"; // Título por defecto
+
+$params = [];
+$types = "";
+
+if (isset($_SESSION['token_pendiente'])) {
+    // MODO INVITADO: El usuario acaba de iniciar sesión a través de un link con token.
+    $modoVista = 'invitado';
+    $tituloPagina = "Solicitud Compartida";
+    $token = $_SESSION['token_pendiente'];
+
+    // Preparamos la consulta para buscar solo la solicitud del token
+    $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
+                 FROM Solicitudes s
+                 JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud
+                 JOIN Provedores p ON s.IdProvedor = p.IdProvedor
+                 JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+                 WHERE sc.Token = ?";
+    $params[] = $token;
+    $types = "s";
+
+    // MUY IMPORTANTE: Usamos el token una vez y lo eliminamos de la sesión.
+    unset($_SESSION['token_pendiente']);
+
+} else {
+    // MODO NORMAL: El usuario navega por la app, ve sus solicitudes y usa los filtros.
+    // Se usa la lógica de tu archivo original.
+    $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
                  FROM Solicitudes s
                  JOIN Provedores p ON s.IdProvedor = p.IdProvedor
                  JOIN Estatus e ON s.IdEstatus = e.IdEstatus";
 
-$where_clauses = [];
-$params = [];
-$types = "";
+    $where_clauses = [];
 
-// Filtrar por el ID del usuario que hizo la solicitud
-$where_clauses[] = "s.IdUsuario = ?";
-$params[] = $_SESSION['user_id'];
-$types .= "i";
-
-// Filtrar por Folio (IdSolicitud)
-if (!empty($_GET['folio'])) {
-    $where_clauses[] = "s.IdSolicitud = ?";
-    $params[] = $_GET['folio'];
+    // Filtrar por el ID del usuario que hizo la solicitud
+    $where_clauses[] = "s.IdUsuario = ?";
+    $params[] = $_SESSION['user_id'];
     $types .= "i";
+
+    // Filtrar por Folio (IdSolicitud)
+    if (!empty($_GET['folio'])) {
+        $where_clauses[] = "s.IdSolicitud = ?";
+        $params[] = $_GET['folio'];
+        $types .= "i";
+    }
+
+    // Filtrar por Fecha
+    if (!empty($_GET['fecha'])) {
+        $where_clauses[] = "DATE(s.FechaRegistro) = ?";
+        $params[] = $_GET['fecha'];
+        $types .= "s";
+    }
+
+    if (count($where_clauses) > 0) {
+        $sql_base .= " WHERE " . implode(" AND ", $where_clauses);
+    }
 }
 
-// Filtrar por Fecha
-if (!empty($_GET['fecha'])) {
-    $where_clauses[] = "DATE(s.FechaRegistro) = ?";
-    $params[] = $_GET['fecha'];
-    $types .= "s";
-}
-
-if (count($where_clauses) > 0) {
-    $sql_base .= " WHERE " . implode(" AND ", $where_clauses);
-}
-
+// Esta parte es común para ambos modos
 $sql_base .= " ORDER BY s.IdSolicitud DESC";
-
 $stmt = $conex->prepare($sql_base);
 if (!empty($types)) {
     $stmt->bind_param($types, ...$params);
@@ -67,7 +105,8 @@ $conex->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate-key="pageTitle">Ver Solicitudes - ARCA</title>
+    <!-- El título ahora es dinámico -->
+    <title><?php echo htmlspecialchars($tituloPagina); ?> - ARCA</title>
     <link rel="stylesheet" href="css/estilosHistorial.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,24 +135,32 @@ $conex->close();
 
 <main class="container">
     <div class="page-header">
-        <h1><i class="fa-solid fa-list-check"></i><span data-translate-key="mainTitle">Mis Solicitudes de Contención</span></h1>
-        <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_createNewRequest">Crear Nueva Solicitud</span></a>
+        <!-- El H1 también es dinámico ahora -->
+        <h1><i class="fa-solid fa-list-check"></i><span data-translate-key="mainTitle"><?php echo htmlspecialchars($tituloPagina); ?></span></h1>
+
+        <!-- El botón de crear nueva solicitud solo se muestra si NO es modo invitado -->
+        <?php if ($modoVista === 'usuario_logueado'): ?>
+            <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_createNewRequest">Crear Nueva Solicitud</span></a>
+        <?php endif; ?>
     </div>
 
-    <div class="filter-bar">
-        <form action="Historial.php" method="GET" class="filter-form">
-            <div class="form-group">
-                <label for="folio" data-translate-key="label_searchByFolio">Buscar por Folio</label>
-                <input type="number" name="folio" id="folio" placeholder="Ej: 123" value="<?php echo htmlspecialchars($_GET['folio'] ?? ''); ?>">
-            </div>
-            <div class="form-group">
-                <label for="fecha" data-translate-key="label_searchByDate">Buscar por Fecha</label>
-                <input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>">
-            </div>
-            <button type="submit" class="btn-primary" data-translate-key="btn_filter">Filtrar</button>
-            <a href="Historial.php" class="btn-tertiary" data-translate-key="btn_clear">Limpiar</a>
-        </form>
-    </div>
+    <!-- La barra de filtros solo se muestra si NO es modo invitado -->
+    <?php if ($modoVista === 'usuario_logueado'): ?>
+        <div class="filter-bar">
+            <form action="Historial.php" method="GET" class="filter-form">
+                <div class="form-group">
+                    <label for="folio" data-translate-key="label_searchByFolio">Buscar por Folio</label>
+                    <input type="number" name="folio" id="folio" placeholder="Ej: 123" value="<?php echo htmlspecialchars($_GET['folio'] ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="fecha" data-translate-key="label_searchByDate">Buscar por Fecha</label>
+                    <input type="date" name="fecha" id="fecha" value="<?php echo htmlspecialchars($_GET['fecha'] ?? ''); ?>">
+                </div>
+                <button type="submit" class="btn-primary" data-translate-key="btn_filter">Filtrar</button>
+                <a href="Historial.php" class="btn-tertiary" data-translate-key="btn_clear">Limpiar</a>
+            </form>
+        </div>
+    <?php endif; ?>
 
     <div class="results-container">
         <table class="results-table">
@@ -140,8 +187,15 @@ $conex->close();
                             <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span>
                         </td>
                         <td class="actions-cell">
+                            <!-- El botón de detalles se muestra en ambos modos -->
                             <button class="btn-icon btn-details" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_viewDetails" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
-                            <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
+
+                            <!-- Lógica para mostrar acciones diferentes según el modo -->
+                            <?php if ($modoVista === 'usuario_logueado'): ?>
+                                <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
+                            <?php else: // Modo Invitado ?>
+                                <a href="trabajar_solicitud.php?id=<?php echo $row['IdSolicitud']; ?>" class="btn-primary" style="text-decoration:none; margin-left: 5px;"><i class="fa-solid fa-hammer"></i> Empezar a Trabajar</a>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -150,7 +204,16 @@ $conex->close();
                     <td colspan="6" class="no-results-cell">
                         <div class="no-results-content">
                             <i class="fa-solid fa-folder-open"></i>
-                            <p data-translate-key="noResults">No se encontraron solicitudes</p>
+                            <p data-translate-key="noResults">
+                                <?php
+                                // Mensaje personalizado si no hay resultados
+                                if ($modoVista === 'invitado') {
+                                    echo "No se encontró la solicitud compartida o el enlace ha expirado.";
+                                } else {
+                                    echo "No se encontraron solicitudes";
+                                }
+                                ?>
+                            </p>
                         </div>
                     </td>
                 </tr>
