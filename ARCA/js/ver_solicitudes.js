@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     formData.append('id', id);
                     formData.append('email', email);
 
-                    fetch('dao/enviar_solicitud.php', {
+                    fetch('https://grammermx.com/Mailer/enviar_solicitud.php', {
                         method: 'POST',
                         body: formData
                     })
