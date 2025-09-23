@@ -280,3 +280,10 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .status.status-asignado::before {
     background-color: #2196f3; /* Punto azul brillante */
 }
+
+/* Añade esto a tu archivo estilosHistorial.css */
+.btn-icon.sent {
+    background-color: #d1e7dd; /* Un verde suave */
+    color: #0f5132; /* Verde oscuro para el ícono */
+    cursor: not-allowed; /* Muestra que no se puede hacer clic */
+}

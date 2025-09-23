@@ -34,7 +34,6 @@ if (!isset($_SESSION['loggedin'])) {
 }
 // --- FIN DE LÓGICA DE SESIÓN MEJORADA ---
 
-// Este script puede ser redundante ahora, pero lo mantenemos por si realiza otras validaciones.
 include_once("dao/verificar_sesion.php");
 
 
@@ -54,12 +53,12 @@ $tituloPagina = "Mis Solicitudes de Contención";
 $params = [];
 $types = "";
 
-// Si tenemos un token guardado en la sesión, activamos el modo invitado.
 if (isset($_SESSION['vista_token_actual'])) {
     $modoVista = 'invitado';
     $tituloPagina = "Solicitud Compartida";
     $token = $_SESSION['vista_token_actual'];
 
+    // Consulta para el modo invitado (no necesita cambios)
     $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
                  FROM Solicitudes s
                  JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud
@@ -68,14 +67,21 @@ if (isset($_SESSION['vista_token_actual'])) {
                  WHERE sc.Token = ?";
     $params[] = $token;
     $types = "s";
-    // ¡YA NO SE USA UNSET() AQUÍ! La vista persiste al recargar.
 
 } else {
-    // MODO NORMAL: El usuario navega por la app (lógica original sin cambios)
-    $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
+    // --- MODO NORMAL: CONSULTA MODIFICADA PARA PERSISTENCIA ---
+    // Se añade un LEFT JOIN a SolicitudesCompartidas para saber si ya se envió un correo.
+    $sql_base = "SELECT 
+                    s.IdSolicitud, 
+                    s.NumeroParte, 
+                    s.FechaRegistro, 
+                    p.NombreProvedor, 
+                    e.NombreEstatus,
+                    MAX(sc.IdCompartido) as IdCompartido
                  FROM Solicitudes s
                  JOIN Provedores p ON s.IdProvedor = p.IdProvedor
-                 JOIN Estatus e ON s.IdEstatus = e.IdEstatus";
+                 JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+                 LEFT JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud";
 
     $where_clauses = [];
     $where_clauses[] = "s.IdUsuario = ?";
@@ -97,6 +103,9 @@ if (isset($_SESSION['vista_token_actual'])) {
     if (count($where_clauses) > 0) {
         $sql_base .= " WHERE " . implode(" AND ", $where_clauses);
     }
+
+    // Agrupamos para evitar filas duplicadas si una solicitud se comparte varias veces.
+    $sql_base .= " GROUP BY s.IdSolicitud";
 }
 
 $sql_base .= " ORDER BY s.IdSolicitud DESC";
@@ -146,7 +155,6 @@ $conex->close();
     <div class="page-header">
         <h1><i class="fa-solid fa-list-check"></i><span data-translate-key="mainTitle"><?php echo htmlspecialchars($tituloPagina); ?></span></h1>
 
-        <!-- CAMBIO: Botones dinámicos según el modo de vista -->
         <?php if ($modoVista === 'invitado'): ?>
             <a href="Historial.php?modo=propio" class="btn-primary" style="background-color: #6c757d;"><i class="fa-solid fa-arrow-left"></i> Volver a mis solicitudes</a>
         <?php elseif ($modoVista === 'usuario_logueado'): ?>
@@ -199,7 +207,21 @@ $conex->close();
                             <button class="btn-icon btn-details" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_viewDetails" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
 
                             <?php if ($modoVista === 'usuario_logueado'): ?>
-                                <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
+
+                                <?php // --- INICIO DE LA LÓGICA DE BOTÓN PERSISTENTE --- ?>
+                                <?php if (isset($row['IdCompartido']) && $row['IdCompartido'] !== null): ?>
+                                    <?php // Si ya fue compartida, muestra el botón desactivado con la palomita. ?>
+                                    <button class="btn-icon btn-email sent" data-translate-key-title="title_emailSent" title="Correo Enviado" disabled>
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <?php // Si no ha sido compartida, muestra el botón normal para enviar. ?>
+                                    <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <?php // --- FIN DE LA LÓGICA DE BOTÓN PERSISTENTE --- ?>
+
                             <?php else: // Modo Invitado ?>
                                 <a href="trabajar_solicitud.php?id=<?php echo $row['IdSolicitud']; ?>" class="btn-icon" title="Empezar a Trabajar" style="text-decoration: none; background-color: #5c85ad; color: #ffffff;"><i class="fa-solid fa-hammer"></i></a>
                             <?php endif; ?>
