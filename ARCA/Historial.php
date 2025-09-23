@@ -84,9 +84,17 @@ if (isset($_SESSION['vista_token_actual'])) {
                  LEFT JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud";
 
     $where_clauses = [];
-    $where_clauses[] = "s.IdUsuario = ?";
-    $params[] = $_SESSION['user_id'];
-    $types .= "i";
+
+    // --- INICIO DE LÓGICA DE ROLES ---
+    // Si el usuario NO es un administrador (ej. IdRol = 1), se filtra por su ID.
+    // Si es administrador, esta condición se omite, permitiéndole ver todo.
+    if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] != 1) { // <-- ¡CAMBIA EL '1' SI TU ID DE ADMIN ES OTRO!
+        $where_clauses[] = "s.IdUsuario = ?";
+        $params[] = $_SESSION['user_id'];
+        $types .= "i";
+    }
+    // --- FIN DE LÓGICA DE ROLES ---
+
 
     if (!empty($_GET['folio'])) {
         $where_clauses[] = "s.IdSolicitud = ?";
