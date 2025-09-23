@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'table_folio': 'Folio', 'table_partNumber': 'No. Parte', 'table_supplier': 'Proveedor',
             'table_date': 'Fecha de Registro', 'table_status': 'Estatus', 'table_actions': 'Acciones',
             'noResults': 'No se encontraron solicitudes', 'modal_title': 'Detalles de la Solicitud',
-            'title_viewDetails': 'Ver Detalles', 'title_sendByEmail': 'Enviar por Correo',
+            'title_viewDetails': 'Ver Detalles', 'title_sendByEmail': 'Enviar por Correo', 'title_emailSent': 'Correo Enviado',
             'loadingData': 'Cargando datos...', 'errorLoadingData': 'Error al cargar los datos.',
             'section_generalData': 'Datos Generales', 'label_personInCharge': 'Responsable', 'label_partNumberModal': 'Número de Parte',
             'label_quantity': 'Cantidad', 'label_partDescription': 'Descripción de Parte', 'label_problemDescription': 'Descripción del Problema',
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'swal_sendPlaceholder': 'ejemplo@dominio.com', 'swal_sendConfirm': 'Enviar', 'swal_sendCancel': 'Cancelar',
             'swal_sendValidation': 'Por favor, ingresa una dirección de correo.', 'swal_sending': 'Enviando...',
             'swal_sent': '¡Enviado!', 'swal_sentText': 'La solicitud ha sido enviada a',
-            'status_asignado': 'Asignado' // Estatus para la actualización dinámica
+            'status_asignado': 'Asignado'
         },
         'en': {
             'pageTitle': 'View Requests - ARCA', 'nav_dashboard': 'Dashboard', 'nav_myRequests': 'My Requests',
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'table_folio': 'Folio', 'table_partNumber': 'Part No.', 'table_supplier': 'Supplier',
             'table_date': 'Registration Date', 'table_status': 'Status', 'table_actions': 'Actions',
             'noResults': 'No requests found', 'modal_title': 'Request Details',
-            'title_viewDetails': 'View Details', 'title_sendByEmail': 'Send by Email',
+            'title_viewDetails': 'View Details', 'title_sendByEmail': 'Send by Email', 'title_emailSent': 'Email Sent',
             'loadingData': 'Loading data...', 'errorLoadingData': 'Error loading data.',
             'section_generalData': 'General Data', 'label_personInCharge': 'Person in Charge', 'label_partNumberModal': 'Part Number',
             'label_quantity': 'Quantity', 'label_partDescription': 'Part Description', 'label_problemDescription': 'Problem Description',
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'swal_sendPlaceholder': 'example@domain.com', 'swal_sendConfirm': 'Send', 'swal_sendCancel': 'Cancel',
             'swal_sendValidation': 'Please enter an email address.', 'swal_sending': 'Sending...',
             'swal_sent': 'Sent!', 'swal_sentText': 'The request has been sent to',
-            'status_asignado': 'Assigned' // Estatus para la actualización dinámica
+            'status_asignado': 'Assigned'
         }
     };
 
@@ -236,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (data.status === 'success') {
                                 Swal.fire('¡Enviado!', data.message, 'success');
 
+                                // Actualiza el estatus en la misma fila
                                 const fila = clickedButton.closest('tr');
                                 if (fila) {
                                     const celdaEstatus = fila.querySelector('.status');
@@ -244,6 +245,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                         celdaEstatus.className = "status status-asignado";
                                     }
                                 }
+
+                                // --- INICIO DE LA MODIFICACIÓN DEL BOTÓN ---
+                                clickedButton.disabled = true; // Desactiva el botón
+                                clickedButton.classList.add('sent'); // Añade una clase para estilizarlo (ej. color verde)
+                                clickedButton.innerHTML = '<i class="fa-solid fa-check"></i>'; // Cambia el ícono a una palomita
+                                clickedButton.title = translations[currentLang].title_emailSent; // Cambia el texto flotante (tooltip)
+                                // --- FIN DE LA MODIFICACIÓN DEL BOTÓN ---
+
                             } else {
                                 Swal.fire('Error', data.message, 'error');
                             }
