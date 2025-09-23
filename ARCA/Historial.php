@@ -7,7 +7,7 @@ include_once("dao/verificar_sesion.php");
 // Esto es para limpiar la URL y por seguridad.
 if (isset($_GET['token'])) {
     $_SESSION['token_pendiente'] = $_GET['token'];
-    header('Location: Historial.php'); // Redirige a la misma página (tu archivo original) para limpiar la URL
+    header('Location: Historial.php'); // Redirige a la misma página para limpiar la URL
     exit();
 }
 
@@ -20,7 +20,7 @@ if (!isset($_SESSION['loggedin'])) {
 // --- FIN DE LA NUEVA LÓGICA ---
 
 
-// --- LÓGICA DE IDIOMA Y CONEXIÓN (de tu código original) ---
+// --- LÓGICA DE IDIOMA Y CONEXIÓN ---
 $idioma_actual = 'es';
 if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
     $idioma_actual = 'en';
@@ -30,7 +30,7 @@ $con = new LocalConector();
 $conex = $con->conectar();
 
 
-// --- NUEVA LÓGICA PARA DECIDIR QUÉ MOSTRAR (FUSIÓN DE AMBOS CÓDIGOS) ---
+// --- NUEVA LÓGICA PARA DECIDIR QUÉ MOSTRAR ---
 $modoVista = 'usuario_logueado'; // Por defecto, el usuario ve sus propias solicitudes
 $tituloPagina = "Mis Solicitudes de Contención"; // Título por defecto
 
@@ -58,7 +58,6 @@ if (isset($_SESSION['token_pendiente'])) {
 
 } else {
     // MODO NORMAL: El usuario navega por la app, ve sus solicitudes y usa los filtros.
-    // Se usa la lógica de tu archivo original.
     $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
                  FROM Solicitudes s
                  JOIN Provedores p ON s.IdProvedor = p.IdProvedor
@@ -105,7 +104,6 @@ $conex->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- El título ahora es dinámico -->
     <title><?php echo htmlspecialchars($tituloPagina); ?> - ARCA</title>
     <link rel="stylesheet" href="css/estilosHistorial.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,7 +117,10 @@ $conex->close();
     <div class="header-left">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <nav class="main-nav">
-            <a href="index.php" data-translate-key="nav_dashboard">Dashboard</a>
+            <!-- CAMBIO: El enlace a Dashboard solo se muestra si NO es modo invitado -->
+            <?php if ($modoVista === 'usuario_logueado'): ?>
+                <a href="index.php" data-translate-key="nav_dashboard">Dashboard</a>
+            <?php endif; ?>
             <a href="Historial.php" class="active" data-translate-key="nav_myRequests">Mis Solicitudes</a>
         </nav>
     </div>
@@ -135,16 +136,13 @@ $conex->close();
 
 <main class="container">
     <div class="page-header">
-        <!-- El H1 también es dinámico ahora -->
         <h1><i class="fa-solid fa-list-check"></i><span data-translate-key="mainTitle"><?php echo htmlspecialchars($tituloPagina); ?></span></h1>
 
-        <!-- El botón de crear nueva solicitud solo se muestra si NO es modo invitado -->
         <?php if ($modoVista === 'usuario_logueado'): ?>
             <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_createNewRequest">Crear Nueva Solicitud</span></a>
         <?php endif; ?>
     </div>
 
-    <!-- La barra de filtros solo se muestra si NO es modo invitado -->
     <?php if ($modoVista === 'usuario_logueado'): ?>
         <div class="filter-bar">
             <form action="Historial.php" method="GET" class="filter-form">
@@ -187,10 +185,8 @@ $conex->close();
                             <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span>
                         </td>
                         <td class="actions-cell">
-                            <!-- El botón de detalles se muestra en ambos modos -->
                             <button class="btn-icon btn-details" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_viewDetails" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
 
-                            <!-- Lógica para mostrar acciones diferentes según el modo -->
                             <?php if ($modoVista === 'usuario_logueado'): ?>
                                 <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
                             <?php else: // Modo Invitado ?>
@@ -206,7 +202,6 @@ $conex->close();
                             <i class="fa-solid fa-folder-open"></i>
                             <p data-translate-key="noResults">
                                 <?php
-                                // Mensaje personalizado si no hay resultados
                                 if ($modoVista === 'invitado') {
                                     echo "No se encontró la solicitud compartida o el enlace ha expirado.";
                                 } else {
