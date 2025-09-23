@@ -190,7 +190,7 @@ $conex->close();
                             <?php if ($modoVista === 'usuario_logueado'): ?>
                                 <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo"><i class="fa-solid fa-envelope"></i></button>
                             <?php else: // Modo Invitado ?>
-                                <a href="trabajar_solicitud.php?id=<?php echo $row['IdSolicitud']; ?>" class="btn-primary" style="text-decoration:none; margin-left: 5px;"><i class="fa-solid fa-hammer"></i> Empezar a Trabajar</a>
+                                <a href="trabajar_solicitud.php?id=<?php echo $row['IdSolicitud']; ?>" class="btn-icon" title="Empezar a Trabajar" style="text-decoration: none; background-color: #5c85ad; color: #ffffff;"><i class="fa-solid fa-hammer"></i></a>
                             <?php endif; ?>
                         </td>
                     </tr>
