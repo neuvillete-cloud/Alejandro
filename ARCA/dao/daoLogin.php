@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // --- INICIO DE LA LÓGICA DE REDIRECCIÓN INTEGRADA ---
                 // Define la URL de redirección por defecto (dashboard).
-                $url_destino = '../index.php';
+                $url_destino = '..ARCA/index.php';
 
                 // Comprueba si existe una URL guardada para un invitado.
                 if (isset($_SESSION['url_destino_post_login'])) {
