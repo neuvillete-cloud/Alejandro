@@ -87,8 +87,9 @@
                         showConfirmButton: false,
                         timer: 1500 // Se cierra automáticamente
                     }).then(() => {
-                        // Redirige al dashboard principal
-                        window.location.href = 'index.php';
+                        // ¡ESTE ES EL CAMBIO!
+                        // Redirige a la URL que nos proporciona el PHP.
+                        window.location.href = data.redirect_url;
                     });
                 } else {
                     Swal.fire({
