@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'swal_sendTitle': 'Enviar Solicitud por Correo', 'swal_sendLabel': 'Dirección de correo electrónico del destinatario',
             'swal_sendPlaceholder': 'ejemplo@dominio.com', 'swal_sendConfirm': 'Enviar', 'swal_sendCancel': 'Cancelar',
             'swal_sendValidation': 'Por favor, ingresa una dirección de correo.', 'swal_sending': 'Enviando...',
-            'swal_sent': '¡Enviado!', 'swal_sentText': 'La solicitud ha sido enviada a'
+            'swal_sent': '¡Enviado!', 'swal_sentText': 'La solicitud ha sido enviada a',
+            'status_asignado': 'Asignado' // Estatus para la actualización dinámica
         },
         'en': {
             'pageTitle': 'View Requests - ARCA', 'nav_dashboard': 'Dashboard', 'nav_myRequests': 'My Requests',
@@ -42,7 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'swal_sendTitle': 'Send Request by Email', 'swal_sendLabel': 'Recipient\'s email address',
             'swal_sendPlaceholder': 'example@domain.com', 'swal_sendConfirm': 'Send', 'swal_sendCancel': 'Cancel',
             'swal_sendValidation': 'Please enter an email address.', 'swal_sending': 'Sending...',
-            'swal_sent': 'Sent!', 'swal_sentText': 'The request has been sent to'
+            'swal_sent': 'Sent!', 'swal_sentText': 'The request has been sent to',
+            'status_asignado': 'Assigned' // Estatus para la actualización dinámica
         }
     };
 
@@ -53,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const key = el.dataset.translateKey;
             const target = translations[lang];
             if (target && target[key]) {
-                // Mantiene el contenido HTML interno, como los iconos
                 const icon = el.querySelector('i');
                 if (icon) {
                     el.innerHTML = icon.outerHTML + ' ' + target[key];
@@ -89,12 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         const linkUrl = new URL(a.href);
                         linkUrl.searchParams.set('lang', selectedLang);
                         a.href = linkUrl.toString();
-                    } catch (e) {
-                        // Ignora enlaces inválidos o malformados
-                    }
+                    } catch (e) {}
                 }
             });
-
             const filterForm = document.querySelector('.filter-form');
             if (filterForm) {
                 const formUrl = new URL(filterForm.action);
@@ -117,13 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.lang-btn[data-lang="es"]').click();
         }
     }
-
     initializeLanguage();
-
     // --- FIN CÓDIGO DE TRADUCCIÓN ---
 
 
-    // --- CÓDIGO ORIGINAL QUE YA TENÍAS ---
+    // --- CÓDIGO DE LA PÁGINA ---
     const modal = document.getElementById('details-modal');
     const modalCloseBtn = document.getElementById('modal-close');
     const modalBody = document.getElementById('modal-body');
@@ -134,14 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     modalCloseBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
+        if (e.target === modal) closeModal();
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape" && modal.classList.contains('visible')) {
-            closeModal();
-        }
+        if (e.key === "Escape" && modal.classList.contains('visible')) closeModal();
     });
 
     document.querySelectorAll('.btn-details').forEach(button => {
@@ -151,8 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modalBody.innerHTML = `<p>${translations[currentLang].loadingData}</p>`;
             modal.classList.add('visible');
 
-            // Aseguramos que el idioma actual se pase al script de detalles
-            fetch(`dao/get_solicitud_details.php?id=${id}&lang=${currentLang}`)
+            fetch(`dao/get_solicitud_details.php?id=${id}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.status === 'success') {
@@ -168,14 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="defecto-view-item">
                                     <h4>${translations[currentLang].defect} #${index + 1}: ${defecto.NombreDefecto || ''}</h4>
                                     <div class="defect-view-gallery">
-                                        <div class="defect-photo-box ok-box">
-                                            <div class="box-label"><i class="fa-solid fa-thumbs-up"></i><span>${translations[currentLang].photo_ok}</span></div>
-                                            <img src="${defecto.RutaFotoOk}" alt="Foto OK: ${defecto.NombreDefecto}">
-                                        </div>
-                                        <div class="defect-photo-box nok-box">
-                                            <div class="box-label"><i class="fa-solid fa-triangle-exclamation"></i><span>${translations[currentLang].photo_nok}</span></div>
-                                            <img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK: ${defecto.NombreDefecto}">
-                                        </div>
+                                        <div class="defect-photo-box ok-box"><div class="box-label"><i class="fa-solid fa-thumbs-up"></i><span>${translations[currentLang].photo_ok}</span></div><img src="${defecto.RutaFotoOk}" alt="Foto OK: ${defecto.NombreDefecto}"></div>
+                                        <div class="defect-photo-box nok-box"><div class="box-label"><i class="fa-solid fa-triangle-exclamation"></i><span>${translations[currentLang].photo_nok}</span></div><img src="${defecto.RutaFotoNoOk}" alt="Foto NO OK: ${defecto.NombreDefecto}"></div>
                                     </div>
                                 </div>`;
                             });
@@ -224,6 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.btn-email').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
+            const clickedButton = this;
+
             Swal.fire({
                 title: translations[currentLang].swal_sendTitle, input: 'email',
                 inputLabel: translations[currentLang].swal_sendLabel,
@@ -235,13 +222,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.isConfirmed && result.value) {
                     const email = result.value;
                     Swal.fire({ title: translations[currentLang].swal_sending, text: `${translations[currentLang].swal_sentText} ${email}`, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-                    setTimeout(() => { Swal.fire(translations[currentLang].swal_sent, `La solicitud ha sido enviada a ${email}.`, 'success'); }, 1500);
+
+                    const formData = new FormData();
+                    formData.append('id', id);
+                    formData.append('email', email);
+
+                    fetch('dao/enviar_solicitud.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire('¡Enviado!', data.message, 'success');
+
+                                const fila = clickedButton.closest('tr');
+                                if (fila) {
+                                    const celdaEstatus = fila.querySelector('.status');
+                                    if (celdaEstatus) {
+                                        celdaEstatus.textContent = translations[currentLang].status_asignado;
+                                        celdaEstatus.className = "status status-asignado";
+                                    }
+                                }
+                            } else {
+                                Swal.fire('Error', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error de Conexión', 'No se pudo completar la solicitud.', 'error');
+                        });
                 }
             });
         });
     });
 
     const tableRows = document.querySelectorAll('.results-table tbody tr');
-    tableRows.forEach((row, index) => { row.style.animationDelay = `${index * 0.05}s`; });
-
+    tableRows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+    });
 });
