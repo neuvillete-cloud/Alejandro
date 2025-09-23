@@ -1,26 +1,44 @@
 <?php
-// Incluye el script que verifica si ya hay una sesión activa o una cookie
-include_once("dao/verificar_sesion.php");
+// --- INICIO DE LÓGICA DE SESIÓN MEJORADA ---
+// Iniciar la sesión al principio de todo es crucial.
+session_start();
 
-// --- NUEVA LÓGICA PARA MANEJAR TOKENS ---
-// Si se detecta un token en la URL, lo guardamos en la sesión y recargamos la página sin el token.
-// Esto es para limpiar la URL y por seguridad.
-if (isset($_GET['token'])) {
-    $_SESSION['token_pendiente'] = $_GET['token'];
-    header('Location: Historial.php'); // Redirige a la misma página para limpiar la URL
+// CASO 1: Un usuario NO logueado llega con un token.
+// Lo mandamos a iniciar sesión, pero guardamos a dónde debe volver.
+if (isset($_GET['token']) && !isset($_SESSION['loggedin'])) {
+    // El destino incluye el token para que podamos recuperarlo después del login.
+    $_SESSION['url_destino_post_login'] = 'Historial.php?token=' . urlencode($_GET['token']);
+    header('Location: acceso.php');
     exit();
 }
 
-// Ahora, verificamos si el usuario está logueado. Si no, lo mandamos a acceso.php
-// Como el token (si existía) ya está en la sesión, no se perderá.
+// CASO 2: Un usuario YA logueado recibe un nuevo token (ej. abre otro link).
+// Actualizamos el token que debe ver y limpiamos la URL.
+if (isset($_GET['token']) && isset($_SESSION['loggedin'])) {
+    $_SESSION['vista_token_actual'] = $_GET['token'];
+    header('Location: Historial.php'); // Redirigimos para limpiar la URL.
+    exit();
+}
+
+// CASO 3: El usuario quiere salir del modo invitado y ver sus propias solicitudes.
+if (isset($_GET['modo']) && $_GET['modo'] === 'propio') {
+    unset($_SESSION['vista_token_actual']);
+    header('Location: Historial.php');
+    exit();
+}
+
+// CASO 4: Intento de acceso sin estar logueado y sin token.
 if (!isset($_SESSION['loggedin'])) {
     header('Location: acceso.php');
     exit();
 }
-// --- FIN DE LA NUEVA LÓGICA ---
+// --- FIN DE LÓGICA DE SESIÓN MEJORADA ---
+
+// Este script puede ser redundante ahora, pero lo mantenemos por si realiza otras validaciones.
+include_once("dao/verificar_sesion.php");
 
 
-// --- LÓGICA DE IDIOMA Y CONEXIÓN ---
+// --- LÓGICA DE IDIOMA Y CONEXIÓN (sin cambios) ---
 $idioma_actual = 'es';
 if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
     $idioma_actual = 'en';
@@ -30,20 +48,18 @@ $con = new LocalConector();
 $conex = $con->conectar();
 
 
-// --- NUEVA LÓGICA PARA DECIDIR QUÉ MOSTRAR ---
-$modoVista = 'usuario_logueado'; // Por defecto, el usuario ve sus propias solicitudes
-$tituloPagina = "Mis Solicitudes de Contención"; // Título por defecto
-
+// --- LÓGICA DE VISTA MODIFICADA PARA SER PERSISTENTE ---
+$modoVista = 'usuario_logueado'; // Por defecto
+$tituloPagina = "Mis Solicitudes de Contención";
 $params = [];
 $types = "";
 
-if (isset($_SESSION['token_pendiente'])) {
-    // MODO INVITADO: El usuario acaba de iniciar sesión a través de un link con token.
+// Si tenemos un token guardado en la sesión, activamos el modo invitado.
+if (isset($_SESSION['vista_token_actual'])) {
     $modoVista = 'invitado';
     $tituloPagina = "Solicitud Compartida";
-    $token = $_SESSION['token_pendiente'];
+    $token = $_SESSION['vista_token_actual'];
 
-    // Preparamos la consulta para buscar solo la solicitud del token
     $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
                  FROM Solicitudes s
                  JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud
@@ -52,32 +68,26 @@ if (isset($_SESSION['token_pendiente'])) {
                  WHERE sc.Token = ?";
     $params[] = $token;
     $types = "s";
-
-    // MUY IMPORTANTE: Usamos el token una vez y lo eliminamos de la sesión.
-    unset($_SESSION['token_pendiente']);
+    // ¡YA NO SE USA UNSET() AQUÍ! La vista persiste al recargar.
 
 } else {
-    // MODO NORMAL: El usuario navega por la app, ve sus solicitudes y usa los filtros.
+    // MODO NORMAL: El usuario navega por la app (lógica original sin cambios)
     $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
                  FROM Solicitudes s
                  JOIN Provedores p ON s.IdProvedor = p.IdProvedor
                  JOIN Estatus e ON s.IdEstatus = e.IdEstatus";
 
     $where_clauses = [];
-
-    // Filtrar por el ID del usuario que hizo la solicitud
     $where_clauses[] = "s.IdUsuario = ?";
     $params[] = $_SESSION['user_id'];
     $types .= "i";
 
-    // Filtrar por Folio (IdSolicitud)
     if (!empty($_GET['folio'])) {
         $where_clauses[] = "s.IdSolicitud = ?";
         $params[] = $_GET['folio'];
         $types .= "i";
     }
 
-    // Filtrar por Fecha
     if (!empty($_GET['fecha'])) {
         $where_clauses[] = "DATE(s.FechaRegistro) = ?";
         $params[] = $_GET['fecha'];
@@ -89,7 +99,6 @@ if (isset($_SESSION['token_pendiente'])) {
     }
 }
 
-// Esta parte es común para ambos modos
 $sql_base .= " ORDER BY s.IdSolicitud DESC";
 $stmt = $conex->prepare($sql_base);
 if (!empty($types)) {
@@ -117,7 +126,6 @@ $conex->close();
     <div class="header-left">
         <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
         <nav class="main-nav">
-            <!-- CAMBIO: El enlace a Dashboard solo se muestra si NO es modo invitado -->
             <?php if ($modoVista === 'usuario_logueado'): ?>
                 <a href="index.php" data-translate-key="nav_dashboard">Dashboard</a>
             <?php endif; ?>
@@ -138,7 +146,10 @@ $conex->close();
     <div class="page-header">
         <h1><i class="fa-solid fa-list-check"></i><span data-translate-key="mainTitle"><?php echo htmlspecialchars($tituloPagina); ?></span></h1>
 
-        <?php if ($modoVista === 'usuario_logueado'): ?>
+        <!-- CAMBIO: Botones dinámicos según el modo de vista -->
+        <?php if ($modoVista === 'invitado'): ?>
+            <a href="Historial.php?modo=propio" class="btn-primary" style="background-color: #6c757d;"><i class="fa-solid fa-arrow-left"></i> Volver a mis solicitudes</a>
+        <?php elseif ($modoVista === 'usuario_logueado'): ?>
             <a href="nueva_solicitud.php" class="btn-primary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_createNewRequest">Crear Nueva Solicitud</span></a>
         <?php endif; ?>
     </div>
@@ -232,3 +243,4 @@ $conex->close();
 <script src="js/ver_solicitudes.js"></script>
 </body>
 </html>
+
