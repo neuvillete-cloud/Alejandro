@@ -1,4 +1,5 @@
 <?php
+// Incluye el script que verifica si hay una sesión activa
 include_once("dao/verificar_sesion.php");
 if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 
@@ -10,6 +11,7 @@ if (!isset($_GET['id'])) {
 }
 $idSolicitud = intval($_GET['id']);
 
+// Conexión y carga de datos para la página
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
@@ -66,7 +68,7 @@ $conex->close();
 <main class="container">
     <div class="form-container">
         <h1><i class="fa-solid fa-hammer"></i> Reporte de Inspección - Folio S-<?php echo str_pad($solicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></h1>
-        <p style="font-size: 18px;"><strong>No. de Parte:</strong> <?php echo htmlspecialchars($solicitud['NumeroParte']); ?></p>
+        <p style="font-size: 18px; font-weight: 600; color: var(--color-primario);">No. de Parte: <span style="font-weight: normal; color: var(--color-texto);"><?php echo htmlspecialchars($solicitud['NumeroParte']); ?></span></p>
 
         <?php
         $mostrarFormularioPrincipal = false;
@@ -93,7 +95,10 @@ $conex->close();
                         <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" required></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Nombre del Inspector</label><input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required></div>
+                        <div class="form-group">
+                            <label>Nombre del Inspector</label>
+                            <input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required>
+                        </div>
                         <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
                     </div>
                 </fieldset>
@@ -104,7 +109,14 @@ $conex->close();
                             <?php while($defecto = $defectos_originales->fetch_assoc()): ?>
                                 <div class="form-group">
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
-                                    <input type="text" name="lotes[<?php echo $defecto['IdDefecto']; ?>]" placeholder="Ingresa el Bach/Lote para este defecto...">
+                                    <div class="form-row">
+                                        <div class="form-group w-50">
+                                            <input type="number" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][cantidad]" placeholder="Cantidad de piezas con este defecto..." required>
+                                        </div>
+                                        <div class="form-group w-50">
+                                            <input type="text" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][lote]" placeholder="Ingresa el Bach/Lote...">
+                                        </div>
+                                    </div>
                                 </div>
                             <?php endwhile; ?>
                         <?php else: ?>
@@ -113,7 +125,7 @@ $conex->close();
                     </div>
                 </fieldset>
 
-                <fieldset><legend><i class="fa-solid fa-magnifying-glass-plus"></i> Nuevos Defectos Encontrados</legend>
+                <fieldset><legend><i class="fa-solid fa-magnifying-glass-plus"></i> Nuevos Defectos Encontrados (Opcional)</legend>
                     <div id="nuevos-defectos-container"></div>
                     <button type="button" id="btn-add-nuevo-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Nuevo Defecto</button>
                 </fieldset>
@@ -125,7 +137,7 @@ $conex->close();
                         <div class="select-with-button">
                             <select name="idTiempoMuerto">
                                 <option value="">Ninguno</option>
-                                <?php while($razon = $razones_tiempo_muerto->fetch_assoc()): ?>
+                                <?php mysqli_data_seek($razones_tiempo_muerto, 0); while($razon = $razones_tiempo_muerto->fetch_assoc()): ?>
                                     <option value="<?php echo $razon['IdTiempoMuerto']; ?>"><?php echo htmlspecialchars($razon['Razon']); ?></option>
                                 <?php endwhile; ?>
                             </select>
@@ -172,17 +184,23 @@ $conex->close();
                     <h4>Nuevo Defecto #${nuevoDefectoCounter}</h4>
                     <button type="button" class="btn-remove-defecto" data-defecto-id="${nuevoDefectoCounter}">&times;</button>
                 </div>
-                <div class="form-group">
-                    <label>Tipo de Defecto</label>
-                    <select name="nuevos_defectos[${nuevoDefectoCounter}][id]" required>
-                        <option value="" disabled selected>Seleccione un defecto</option>
-                        ${opcionesDefectos}
-                    </select>
+                <div class="form-row">
+                    <div class="form-group w-50">
+                        <label>Tipo de Defecto</label>
+                        <select name="nuevos_defectos[${nuevoDefectoCounter}][id]" required>
+                            <option value="" disabled selected>Seleccione un defecto</option>
+                            ${opcionesDefectos}
+                        </select>
+                    </div>
+                    <div class="form-group w-50">
+                        <label>Cantidad de Piezas</label>
+                        <input type="number" name="nuevos_defectos[${nuevoDefectoCounter}][cantidad]" placeholder="Cantidad con este defecto..." required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Foto de Evidencia</label>
                     <label class="file-upload-label" for="nuevoDefectoFoto-${nuevoDefectoCounter}">
-                        <i class="fa-solid fa-cloud-arrow-up"></i><span>Seleccionar imagen...</span>
+                        <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
                     </label>
                     <input type="file" id="nuevoDefectoFoto-${nuevoDefectoCounter}" name="nuevos_defectos[${nuevoDefectoCounter}][foto]" accept="image/*" required>
                 </div>
@@ -212,19 +230,46 @@ $conex->close();
         // Lógica para el envío de los formularios con fetch
         document.getElementById('reporteForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Lógica fetch para guardar el reporte
-            Swal.fire('Enviado', 'El reporte se ha guardado (simulación).', 'success');
+            const form = this;
+            const formData = new FormData(form);
+
+            Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            fetch(form.action, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.href = 'ver_solicitudes.php');
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
         });
 
         document.getElementById('metodoForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Lógica fetch para subir el método
-            Swal.fire('Enviado', 'El método se ha subido (simulación).', 'success').then(() => window.location.reload());
+            const form = this;
+            const formData = new FormData(form);
+
+            Swal.fire({ title: 'Subiendo Método...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            fetch(form.action, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
         });
 
         <?php if ($esSuperUsuario): ?>
         document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() {
             // Lógica Swal.fire para añadir nueva razón de tiempo muerto
+            // Similar a como lo hicimos en nueva_solicitud.php
         });
         <?php endif; ?>
 
