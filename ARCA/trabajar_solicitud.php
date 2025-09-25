@@ -97,7 +97,7 @@ $conex->close();
             <p><strong>Cantidad Total:</strong> <span><?php echo $cantidadSolicitada; ?></span></p>
             <p><strong>Defectos:</strong> <span><?php echo $nombresDefectosStr; ?></span></p>
         </div>
-        <hr style="margin-top: 20px; margin-bottom: 30px; border-color: var(--color-borde);">
+
 
         <?php
         $mostrarFormularioPrincipal = false;
