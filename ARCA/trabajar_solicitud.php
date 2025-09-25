@@ -116,10 +116,13 @@ $conex->close();
         <?php if ($mostrarFormularioPrincipal): ?>
             <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                <input type="hidden" name="idReporte" id="idReporte" value=""> <fieldset><legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
+                <input type="hidden" name="idReporte" id="idReporte" value="">
+                <fieldset>
+                    <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
                     <div class="form-row">
                         <div class="form-group"><label>Piezas Inspeccionadas</label><input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required></div>
                         <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
+                        <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
                         <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
                     </div>
                     <div class="form-row">
@@ -266,11 +269,12 @@ $conex->close();
 
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
-    let nuevoDefectoCounter = 0; // Se inicializa aquí para que no se resetee con cada edición.
+    let nuevoDefectoCounter = 0;
 
     document.addEventListener('DOMContentLoaded', function() {
         const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
         const piezasAceptadasInput = document.getElementById('piezasAceptadas');
+        const piezasRetrabajadasInput = document.getElementById('piezasRetrabajadas'); // Nuevo input
         const piezasRechazadasCalculadasInput = document.getElementById('piezasRechazadasCalculadas');
         const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
         const defectosOriginalesContainer = document.querySelector('.original-defect-list');
@@ -282,8 +286,26 @@ $conex->close();
         function actualizarContadores() {
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
-            const rechazadasCalculadas = inspeccionadas - aceptadas;
-            piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasCalculadas);
+            const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0; // Obtener retrabajadas
+
+            const rechazadasBrutas = inspeccionadas - aceptadas;
+            piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas); // Rechazadas "brutas" mostradas
+
+            // La lógica clave: rechazadas disponibles para clasificar son las brutas menos las retrabajadas
+            const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
+
+            if (retrabajadas > rechazadasBrutas) {
+                piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
+                piezasRetrabajadasInput.reportValidity();
+                btnGuardarReporte.disabled = true;
+                btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
+                piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+                piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles); // Mostrar el valor correcto aunque esté inválido
+                return; // Salir si hay una validación de retrabajadas
+            } else {
+                piezasRetrabajadasInput.setCustomValidity(''); // Limpiar el mensaje de validación
+            }
+
 
             let sumDefectosClasificados = 0;
             const defectoCantidadInputs = defectosOriginalesContainer.querySelectorAll('.defecto-cantidad');
@@ -291,13 +313,13 @@ $conex->close();
                 sumDefectosClasificados += parseInt(input.value) || 0;
             });
 
-            const restantes = rechazadasCalculadas - sumDefectosClasificados;
-            piezasRechazadasRestantesSpan.textContent = restantes;
+            const restantes = rechazadasDisponibles - sumDefectosClasificados;
+            piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
             if (restantes < 0) {
                 piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
                 btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas.';
+                btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
             } else if (restantes > 0) {
                 piezasRechazadasRestantesSpan.style.color = 'orange';
                 btnGuardarReporte.disabled = true;
@@ -312,6 +334,7 @@ $conex->close();
         if (piezasInspeccionadasInput) {
             piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
             piezasAceptadasInput.addEventListener('input', actualizarContadores);
+            piezasRetrabajadasInput.addEventListener('input', actualizarContadores); // Escuchar cambios en retrabajadas
             defectosOriginalesContainer.addEventListener('input', function(e) {
                 if (e.target.classList.contains('defecto-cantidad')) {
                     actualizarContadores();
@@ -322,7 +345,7 @@ $conex->close();
 
         // --- Lógica para añadir nuevos defectos ---
         btnAddNuevoDefecto?.addEventListener('click', function() {
-            nuevoDefectoCounter++; // Incrementa el contador global para IDs únicos
+            nuevoDefectoCounter++;
             const defectoHTML = `
             <div class="defecto-item" id="nuevo-defecto-${nuevoDefectoCounter}">
                 <div class="defecto-header">
@@ -351,8 +374,6 @@ $conex->close();
                 </div>
             </div>`;
             nuevosDefectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
-
-            // Re-adjuntar el listener para el cambio de nombre de archivo si es necesario
             document.getElementById(`nuevoDefectoFoto-${nuevoDefectoCounter}`).addEventListener('change', updateFileNameLabel);
         });
 
@@ -380,7 +401,6 @@ $conex->close();
             input.addEventListener('change', updateFileNameLabel);
         });
 
-
         // --- Lógica para mostrar/ocultar Tiempo Muerto ---
         const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
         const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
@@ -388,24 +408,33 @@ $conex->close();
         toggleTiempoMuertoBtn?.addEventListener('click', function() {
             tiempoMuertoActivo = !tiempoMuertoActivo;
             if (tiempoMuertoActivo) {
-                tiempoMuertoSection.style.display = 'block'; // Mostrar la sección
+                tiempoMuertoSection.style.display = 'block';
                 toggleTiempoMuertoBtn.innerHTML = `Sí <i class="fa-solid fa-toggle-on"></i>`;
-                toggleTiempoMuertoBtn.className = 'btn-primary'; // Estilo activo
+                toggleTiempoMuertoBtn.className = 'btn-primary';
             } else {
-                tiempoMuertoSection.style.display = 'none'; // Ocultar la sección
+                tiempoMuertoSection.style.display = 'none';
                 toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
-                toggleTiempoMuertoBtn.className = 'btn-secondary'; // Estilo inactivo
-                tiempoMuertoSection.querySelector('select').value = ''; // Limpiar selección al ocultar
+                toggleTiempoMuertoBtn.className = 'btn-secondary';
+                tiempoMuertoSection.querySelector('select').value = '';
             }
         });
 
         // --- Lógica para el envío de los formularios con fetch ---
-        // (Estas ya estaban bien, solo aseguro que no haya comentarios sueltos)
-
         document.getElementById('reporteForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const form = this;
             const formData = new FormData(form);
+
+            // Re-validar las piezas retrabajadas justo antes de enviar
+            const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
+            const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
+            const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
+            const rechazadasBrutas = inspeccionadas - aceptadas;
+
+            if (retrabajadas > rechazadasBrutas) {
+                Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
+                return;
+            }
 
             Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
@@ -413,7 +442,7 @@ $conex->close();
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload()); // Recargar para ver el nuevo registro
+                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
                     } else {
                         Swal.fire('Error', data.message, 'error');
                     }
@@ -421,7 +450,6 @@ $conex->close();
                 .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
         });
 
-        // Asumiendo que 'upload_metodo.php' existe y es para el método de trabajo
         document.getElementById('metodoForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const form = this;
@@ -461,8 +489,6 @@ $conex->close();
         });
 
         // --- Lógica para editar un registro (botón en la tabla) ---
-        // Esto aún es un placeholder, como mencionamos antes. Necesitaría un script PHP de backend
-        // para traer los datos de un reporte específico y rellenar el formulario.
         document.querySelectorAll('.btn-edit-reporte').forEach(button => {
             button.addEventListener('click', function() {
                 const idReporte = this.dataset.id;
@@ -472,31 +498,11 @@ $conex->close();
                     icon: 'info',
                     confirmButtonText: 'Entendido'
                 });
-                // Para una implementación real, harías algo como:
-                /*
-                fetch(`dao/obtener_reporte_para_edicion.php?id=${idReporte}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            // Rellenar el formulario con data.reporte y data.defectos
-                            document.getElementById('idReporte').value = data.reporte.IdReporte;
-                            piezasInspeccionadasInput.value = data.reporte.PiezasInspeccionadas;
-                            piezasAceptadasInput.value = data.reporte.PiezasAceptadas;
-                            // ... y así con todos los campos del formulario
-                            actualizarContadores(); // Para recalcular
-                            // También tendrías que limpiar y rellenar los "nuevos defectos" si se editan
-                            // y manejar el estado del tiempo muerto.
-                        } else {
-                            Swal.fire('Error', data.message, 'error');
-                        }
-                    })
-                    .catch(error => Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error'));
-                */
             });
         });
 
         <?php if ($esSuperUsuario): ?>
-        // Lógica para añadir nueva razón de tiempo muerto (si el superusuario la tiene habilitada)
+        // Lógica para añadir nueva razón de tiempo muerto
         document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() {
             Swal.fire({
                 title: 'Añadir Nueva Razón de Tiempo Muerto',
@@ -514,7 +520,6 @@ $conex->close();
             }).then((result) => {
                 if (result.isConfirmed) {
                     const nuevaRazon = result.value;
-                    // Aquí harías una llamada AJAX a un script PHP para guardar la nueva razón en la DB
                     fetch('dao/guardar_razon_tiempomuerto.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -524,7 +529,6 @@ $conex->close();
                         .then(data => {
                             if (data.status === 'success') {
                                 Swal.fire('¡Guardado!', data.message, 'success').then(() => {
-                                    // Recargar o añadir dinámicamente a la lista
                                     window.location.reload();
                                 });
                             } else {
