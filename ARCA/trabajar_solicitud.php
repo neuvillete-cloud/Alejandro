@@ -72,7 +72,6 @@ $conex->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Inspección - ARCA</title>
     <link rel="stylesheet" href="css/estilosT.css">
-    <!-- Links a Fonts, FontAwesome, SweetAlert2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
@@ -267,6 +266,7 @@ $conex->close();
 
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
+    let nuevoDefectoCounter = 0; // Se inicializa aquí para que no se resetee con cada edición.
 
     document.addEventListener('DOMContentLoaded', function() {
         const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
@@ -275,7 +275,10 @@ $conex->close();
         const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
         const defectosOriginalesContainer = document.querySelector('.original-defect-list');
         const btnGuardarReporte = document.getElementById('btnGuardarReporte');
+        const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
+        const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
 
+        // --- Funcionalidad del Contador de Piezas Rechazadas y Validación ---
         function actualizarContadores() {
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
@@ -314,41 +317,224 @@ $conex->close();
                     actualizarContadores();
                 }
             });
-            actualizarContadores();
+            actualizarContadores(); // Inicializa los contadores al cargar la página
         }
 
-        let nuevoDefectoCounter = 0;
-        const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
-        document.getElementById('btn-add-nuevo-defecto')?.addEventListener('click', function() { /* ... lógica para añadir nuevos defectos ... */ });
-        nuevosDefectosContainer?.addEventListener('click', function(e) { /* ... lógica para eliminar nuevos defectos ... */ });
+        // --- Lógica para añadir nuevos defectos ---
+        btnAddNuevoDefecto?.addEventListener('click', function() {
+            nuevoDefectoCounter++; // Incrementa el contador global para IDs únicos
+            const defectoHTML = `
+            <div class="defecto-item" id="nuevo-defecto-${nuevoDefectoCounter}">
+                <div class="defecto-header">
+                    <h4>Nuevo Defecto #${nuevoDefectoCounter}</h4>
+                    <button type="button" class="btn-remove-defecto" data-defecto-id="${nuevoDefectoCounter}">&times;</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group w-50">
+                        <label>Tipo de Defecto</label>
+                        <select name="nuevos_defectos[${nuevoDefectoCounter}][id]" required>
+                            <option value="" disabled selected>Seleccione un defecto</option>
+                            ${opcionesDefectos}
+                        </select>
+                    </div>
+                    <div class="form-group w-50">
+                        <label>Cantidad de Piezas</label>
+                        <input type="number" name="nuevos_defectos[${nuevoDefectoCounter}][cantidad]" placeholder="Cantidad con este defecto..." min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Foto de Evidencia</label>
+                    <label class="file-upload-label" for="nuevoDefectoFoto-${nuevoDefectoCounter}">
+                        <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
+                    </label>
+                    <input type="file" id="nuevoDefectoFoto-${nuevoDefectoCounter}" name="nuevos_defectos[${nuevoDefectoCounter}][foto]" accept="image/*" required>
+                </div>
+            </div>`;
+            nuevosDefectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
 
-        document.querySelector('.form-container')?.addEventListener('change', function(e) { /* ... lógica para file inputs ... */ });
+            // Re-adjuntar el listener para el cambio de nombre de archivo si es necesario
+            document.getElementById(`nuevoDefectoFoto-${nuevoDefectoCounter}`).addEventListener('change', updateFileNameLabel);
+        });
 
+        // --- Lógica para eliminar nuevos defectos ---
+        nuevosDefectosContainer?.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('btn-remove-defecto')) {
+                const defectoItem = document.getElementById(`nuevo-defecto-${e.target.dataset.defectoId}`);
+                if (defectoItem) {
+                    defectoItem.remove();
+                }
+            }
+        });
+
+        // --- Lógica para actualizar el nombre de archivo en la etiqueta del input file ---
+        function updateFileNameLabel(e) {
+            const labelSpan = e.target.previousElementSibling.querySelector('span');
+            const defaultText = labelSpan.dataset.defaultText || 'Seleccionar archivo...';
+            if (e.target.files.length > 0) {
+                labelSpan.textContent = e.target.files[0].name;
+            } else {
+                labelSpan.textContent = defaultText;
+            }
+        }
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', updateFileNameLabel);
+        });
+
+
+        // --- Lógica para mostrar/ocultar Tiempo Muerto ---
         const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
         const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
         let tiempoMuertoActivo = false;
         toggleTiempoMuertoBtn?.addEventListener('click', function() {
             tiempoMuertoActivo = !tiempoMuertoActivo;
             if (tiempoMuertoActivo) {
-                tiempoMuertoSection.style.display = 'block';
+                tiempoMuertoSection.style.display = 'block'; // Mostrar la sección
                 toggleTiempoMuertoBtn.innerHTML = `Sí <i class="fa-solid fa-toggle-on"></i>`;
-                toggleTiempoMuertoBtn.className = 'btn-primary';
+                toggleTiempoMuertoBtn.className = 'btn-primary'; // Estilo activo
             } else {
-                tiempoMuertoSection.style.display = 'none';
+                tiempoMuertoSection.style.display = 'none'; // Ocultar la sección
                 toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
-                toggleTiempoMuertoBtn.className = 'btn-secondary';
-                tiempoMuertoSection.querySelector('select').value = '';
+                toggleTiempoMuertoBtn.className = 'btn-secondary'; // Estilo inactivo
+                tiempoMuertoSection.querySelector('select').value = ''; // Limpiar selección al ocultar
             }
         });
 
-        document.getElementById('reporteForm')?.addEventListener('submit', function(e) { /* ... lógica fetch ... */ });
-        document.getElementById('metodoForm')?.addEventListener('submit', function(e) { /* ... lógica fetch ... */ });
-        document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) { /* ... lógica fetch ... */ });
+        // --- Lógica para el envío de los formularios con fetch ---
+        // (Estas ya estaban bien, solo aseguro que no haya comentarios sueltos)
 
-        document.querySelectorAll('.btn-edit-reporte').forEach(button => { /* ... lógica de edición ... */ });
+        document.getElementById('reporteForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            fetch(form.action, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload()); // Recargar para ver el nuevo registro
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+        });
+
+        // Asumiendo que 'upload_metodo.php' existe y es para el método de trabajo
+        document.getElementById('metodoForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            Swal.fire({ title: 'Subiendo Método...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            fetch(form.action, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+        });
+
+        document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            Swal.fire({ title: 'Guardando Tiempo Total...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            fetch(form.action, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+        });
+
+        // --- Lógica para editar un registro (botón en la tabla) ---
+        // Esto aún es un placeholder, como mencionamos antes. Necesitaría un script PHP de backend
+        // para traer los datos de un reporte específico y rellenar el formulario.
+        document.querySelectorAll('.btn-edit-reporte').forEach(button => {
+            button.addEventListener('click', function() {
+                const idReporte = this.dataset.id;
+                Swal.fire({
+                    title: 'Funcionalidad en Desarrollo',
+                    text: `La edición del reporte ID: ${idReporte} requiere una implementación de backend y la lógica para precargar el formulario.`,
+                    icon: 'info',
+                    confirmButtonText: 'Entendido'
+                });
+                // Para una implementación real, harías algo como:
+                /*
+                fetch(`dao/obtener_reporte_para_edicion.php?id=${idReporte}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Rellenar el formulario con data.reporte y data.defectos
+                            document.getElementById('idReporte').value = data.reporte.IdReporte;
+                            piezasInspeccionadasInput.value = data.reporte.PiezasInspeccionadas;
+                            piezasAceptadasInput.value = data.reporte.PiezasAceptadas;
+                            // ... y así con todos los campos del formulario
+                            actualizarContadores(); // Para recalcular
+                            // También tendrías que limpiar y rellenar los "nuevos defectos" si se editan
+                            // y manejar el estado del tiempo muerto.
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error'));
+                */
+            });
+        });
 
         <?php if ($esSuperUsuario): ?>
-        document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() { /* ... lógica Swal ... */ });
+        // Lógica para añadir nueva razón de tiempo muerto (si el superusuario la tiene habilitada)
+        document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() {
+            Swal.fire({
+                title: 'Añadir Nueva Razón de Tiempo Muerto',
+                input: 'text',
+                inputLabel: 'Nombre de la razón',
+                inputPlaceholder: 'Ingrese la nueva razón',
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return '¡Necesitas escribir algo!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const nuevaRazon = result.value;
+                    // Aquí harías una llamada AJAX a un script PHP para guardar la nueva razón en la DB
+                    fetch('dao/guardar_razon_tiempomuerto.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `razon=${encodeURIComponent(nuevaRazon)}`
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire('¡Guardado!', data.message, 'success').then(() => {
+                                    // Recargar o añadir dinámicamente a la lista
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', data.message, 'error');
+                            }
+                        })
+                        .catch(error => Swal.fire('Error de Conexión', 'No se pudo guardar la razón.', 'error'));
+                }
+            });
+        });
         <?php endif; ?>
     });
 </script>
