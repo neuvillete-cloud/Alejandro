@@ -30,7 +30,7 @@ if (!$solicitud) { die("Error: Solicitud no encontrada."); }
 
 // --- Datos para la cabecera del formulario ---
 $nombreResponsable = htmlspecialchars($solicitud['NombreCreador']);
-$numeroParte = htmlspecialchars($solicitud['NumeroParte']);
+$numeroParte = htmlspecialchars($solicitud['NumeroParte']); // Número de parte de la solicitud
 $cantidadSolicitada = htmlspecialchars($solicitud['Cantidad']);
 $nombreDefectosOriginales = [];
 $defectos_originales_query = $conex->query("SELECT d.IdDefecto, cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = $idSolicitud");
@@ -46,7 +46,11 @@ while($row = $catalogo_defectos_query->fetch_assoc()) {
     $defectos_options_html .= "<option value='{$row['IdDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
 }
 $razones_tiempo_muerto = $conex->query("SELECT IdTiempoMuerto, Razon FROM CatalogoTiempoMuerto ORDER BY Razon ASC");
-$rangos_horas = $conex->query("SELECT IdRangoHora, RangoHora FROM CatalogoRangosHoras ORDER BY IdRangoHora ASC");
+$rangos_horas_data = []; // Guardaremos los rangos de hora para calcular el turno
+$rangos_horas_query = $conex->query("SELECT IdRangoHora, RangoHora FROM CatalogoRangosHoras ORDER BY IdRangoHora ASC");
+while($rango = $rangos_horas_query->fetch_assoc()) {
+    $rangos_horas_data[$rango['IdRangoHora']] = $rango['RangoHora'];
+}
 $defectos_originales_formulario = $conex->query("SELECT d.IdDefecto, cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = $idSolicitud");
 
 // --- Carga de reportes existentes para la tabla ---
@@ -54,14 +58,72 @@ $reportes_anteriores_query = $conex->prepare("
     SELECT 
         ri.IdReporte, ri.FechaInspeccion, ri.NombreInspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
         (ri.PiezasInspeccionadas - ri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
-        ri.PiezasRetrabajadas, crh.RangoHora
+        ri.PiezasRetrabajadas, crh.RangoHora, ri.Comentarios, ri.IdRangoHora
     FROM ReportesInspeccion ri
     LEFT JOIN CatalogoRangosHoras crh ON ri.IdRangoHora = crh.IdRangoHora
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
 $reportes_anteriores_query->execute();
-$reportes_anteriores = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
+$reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+$reportes_procesados = [];
+foreach ($reportes_raw as $reporte) {
+    $reporte_id = $reporte['IdReporte'];
+
+    // Obtener defectos y lotes asociados a este reporte
+    $defectos_reporte_query = $conex->prepare("
+        SELECT 
+            rdo.CantidadEncontrada, rdo.Lote, cd.NombreDefecto 
+        FROM ReporteDefectosOriginales rdo
+        JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
+        JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo
+        WHERE rdo.IdReporte = ?
+    ");
+    $defectos_reporte_query->bind_param("i", $reporte_id);
+    $defectos_reporte_query->execute();
+    $defectos_reporte_result = $defectos_reporte_query->get_result();
+    $defectos_con_cantidades = [];
+    $lotes_encontrados = [];
+    while ($dr = $defectos_reporte_result->fetch_assoc()) {
+        $defectos_con_cantidades[] = htmlspecialchars($dr['NombreDefecto']) . " (" . htmlspecialchars($dr['CantidadEncontrada']) . ")";
+        if (!empty($dr['Lote'])) {
+            $lotes_encontrados[] = htmlspecialchars($dr['Lote']);
+        }
+    }
+    $reporte['DefectosConCantidades'] = implode("<br>", $defectos_con_cantidades);
+    $reporte['LotesEncontrados'] = empty($lotes_encontrados) ? 'N/A' : implode(", ", array_unique($lotes_encontrados));
+
+
+    // Calcular Turno del Shift Leader
+    $turno_shift_leader = 'N/A';
+    if (isset($rangos_horas_data[$reporte['IdRangoHora']])) {
+        $rangoHoraStr = $rangos_horas_data[$reporte['IdRangoHora']]; // "HH:MM am - HH:MM pm"
+        // Extraemos la primera hora del rango para la determinación del turno
+        preg_match('/(\d{1,2}:\d{2}\s*(?:am|pm))/i', $rangoHoraStr, $matches);
+        if (!empty($matches[1])) {
+            $hora_inicio_str = $matches[1];
+            $hora_inicio_timestamp = strtotime($hora_inicio_str); // Convertir a timestamp para comparación
+
+            // Definir rangos de turnos
+            $primer_turno_inicio = strtotime('06:30 am');
+            $primer_turno_fin = strtotime('02:30 pm'); // Excluyendo el fin, hasta las 2:30 pm
+            $segundo_turno_inicio = strtotime('02:40 pm');
+            $segundo_turno_fin = strtotime('10:30 pm'); // Excluyendo el fin, hasta las 10:30 pm
+
+            if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) {
+                $turno_shift_leader = 'Primer Turno';
+            } elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) {
+                $turno_shift_leader = 'Segundo Turno';
+            } else {
+                $turno_shift_leader = 'Tercer Turno / Otro'; // O cualquier otra designación
+            }
+        }
+    }
+    $reporte['TurnoShiftLeader'] = $turno_shift_leader;
+
+    $reportes_procesados[] = $reporte;
+}
 
 $conex->close();
 ?>
@@ -134,9 +196,9 @@ $conex->close();
                         <label>Rango de Hora de Inspección</label>
                         <select name="idRangoHora" required>
                             <option value="" disabled selected>Seleccione un rango</option>
-                            <?php mysqli_data_seek($rangos_horas, 0); while($rango = $rangos_horas->fetch_assoc()): ?>
-                                <option value="<?php echo $rango['IdRangoHora']; ?>"><?php echo htmlspecialchars($rango['RangoHora']); ?></option>
-                            <?php endwhile; ?>
+                            <?php foreach($rangos_horas_data as $id => $rango): ?>
+                                <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($rango); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </fieldset>
@@ -232,26 +294,42 @@ $conex->close();
         <hr style="margin-top: 40px; margin-bottom: 30px; border-color: var(--color-borde);">
 
         <h2 style="margin-top: 40px;"><i class="fa-solid fa-list-check"></i> Historial de Registros de Inspección</h2>
-        <?php if (count($reportes_anteriores) > 0): ?>
+        <?php if (count($reportes_procesados) > 0): ?>
             <div class="table-responsive">
                 <table class="data-table">
                     <thead>
                     <tr>
-                        <th>ID Reporte</th><th>Fecha Inspección</th><th>Rango Hora</th><th>Inspector</th>
-                        <th>Inspeccionadas</th><th>Aceptadas</th><th>Rechazadas</th><th>Retrabajadas</th><th>Acciones</th>
+                        <th>ID Reporte</th>
+                        <th>No. de Parte</th>
+                        <th>Fecha Inspección</th>
+                        <th>Rango Hora</th>
+                        <th>Turno Shift Leader</th>
+                        <th>Inspector</th>
+                        <th>Inspeccionadas</th>
+                        <th>Aceptadas</th>
+                        <th>Rechazadas</th>
+                        <th>Retrabajadas</th>
+                        <th>Defectos (Cant.)</th>
+                        <th>No. de Lote</th>
+                        <th>Comentarios</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($reportes_anteriores as $reporte): ?>
+                    <?php foreach ($reportes_procesados as $reporte): ?>
                         <tr>
                             <td><?php echo "R-" . str_pad($reporte['IdReporte'], 4, '0', STR_PAD_LEFT); ?></td>
-                            <td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
+                            <td><?php echo $numeroParte; ?></td><td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
                             <td><?php echo htmlspecialchars($reporte['RangoHora']); ?></td>
+                            <td><?php echo htmlspecialchars($reporte['TurnoShiftLeader']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['NombreInspector']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasInspeccionadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasAceptadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRetrabajadas']); ?></td>
+                            <td><?php echo $reporte['DefectosConCantidades']; ?></td>
+                            <td><?php echo $reporte['LotesEncontrados']; ?></td>
+                            <td><?php echo htmlspecialchars($reporte['Comentarios']); ?></td>
                             <td>
                                 <button class="btn-edit-reporte btn-primary btn-small" data-id="<?php echo $reporte['IdReporte']; ?>"><i class="fa-solid fa-pen-to-square"></i></button>
                             </td>
