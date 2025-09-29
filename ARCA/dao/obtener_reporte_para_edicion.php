@@ -1,70 +1,71 @@
 <?php
+include_once("conexionArca.php"); // Asegúrate de incluir tu conexión
 include_once("verificar_sesion.php");
-include_once("conexionArca.php");
+
 header('Content-Type: application/json');
+$response = ['status' => 'error', 'message' => '', 'reporte' => null, 'defectosOriginales' => [], 'nuevosDefectos' => []];
+
+if (!isset($_SESSION['loggedin'])) {
+    $response['message'] = 'No se ha iniciado sesión.';
+    echo json_encode($response);
+    exit();
+}
+
+$idReporte = $_GET['idReporte'] ?? null;
+
+if (!$idReporte) {
+    $response['message'] = 'ID de reporte no proporcionado.';
+    echo json_encode($response);
+    exit();
+}
 
 $con = new LocalConector();
 $conex = $con->conectar();
 
 try {
-    if (!isset($_GET['idReporte'])) {
-        throw new Exception("ID de reporte no proporcionado.");
-    }
+    // Obtener datos del reporte principal
+    $stmt = $conex->prepare("SELECT IdReporte, IdSolicitud, PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas, 
+                                   NombreInspector, FechaInspeccion, IdRangoHora, TiempoInspeccion, IdTiempoMuerto, Comentarios
+                            FROM ReportesInspeccion WHERE IdReporte = ?");
+    $stmt->bind_param("i", $idReporte);
+    $stmt->execute();
+    $reporte = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
-    $idReporte = intval($_GET['idReporte']);
-
-    // 1. Obtener datos del ReportesInspeccion
-    $stmt_reporte = $conex->prepare("SELECT * FROM ReportesInspeccion WHERE IdReporte = ?");
-    $stmt_reporte->bind_param("i", $idReporte);
-    $stmt_reporte->execute();
-    $reporte_data = $stmt_reporte->get_result()->fetch_assoc();
-    $stmt_reporte->close();
-
-    if (!$reporte_data) {
+    if (!$reporte) {
         throw new Exception("Reporte no encontrado.");
     }
 
-    // 2. Obtener Defectos Originales asociados
-    $stmt_defectos_originales = $conex->prepare("
-        SELECT rdo.IdDefecto, rdo.CantidadEncontrada, rdo.Lote, d.IdDefectoCatalogo
-        FROM ReporteDefectosOriginales rdo
-        JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
-        WHERE rdo.IdReporte = ?
-    ");
-    $stmt_defectos_originales->bind_param("i", $idReporte);
-    $stmt_defectos_originales->execute();
-    $result_defectos_originales = $stmt_defectos_originales->get_result();
-    $defectos_originales_data = [];
-    while ($row = $result_defectos_originales->fetch_assoc()) {
-        $defectos_originales_data[] = $row;
-    }
-    $stmt_defectos_originales->close();
+    // Obtener defectos originales del reporte
+    $stmt_do = $conex->prepare("SELECT IdDefecto, CantidadEncontrada, Lote 
+                               FROM ReporteDefectosOriginales WHERE IdReporte = ?");
+    $stmt_do->bind_param("i", $idReporte);
+    $stmt_do->execute();
+    $defectosOriginales = $stmt_do->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt_do->close();
 
-    // 3. Obtener Nuevos Defectos Encontrados (DefectosEncontrados)
-    $stmt_nuevos_defectos = $conex->prepare("
-        SELECT de.IdDefectoEncontrado, de.IdDefectoCatalogo, de.Cantidad, de.RutaFotoEvidencia
-        FROM DefectosEncontrados de
-        WHERE de.IdReporte = ?
-    ");
-    $stmt_nuevos_defectos->bind_param("i", $idReporte);
-    $stmt_nuevos_defectos->execute();
-    $result_nuevos_defectos = $stmt_nuevos_defectos->get_result();
-    $nuevos_defectos_data = [];
-    while ($row = $result_nuevos_defectos->fetch_assoc()) {
-        $nuevos_defectos_data[] = $row;
-    }
-    $stmt_nuevos_defectos->close();
+    // Obtener nuevos defectos encontrados del reporte
+    $stmt_de = $conex->prepare("SELECT IdDefectoEncontrado, IdDefectoCatalogo, Cantidad, RutaFotoEvidencia 
+                               FROM DefectosEncontrados WHERE IdReporte = ?");
+    $stmt_de->bind_param("i", $idReporte);
+    $stmt_de->execute();
+    $nuevosDefectos = $stmt_de->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt_de->close();
 
-    echo json_encode([
-        'status' => 'success',
-        'reporte' => $reporte_data,
-        'defectosOriginales' => $defectos_originales_data,
-        'nuevosDefectos' => $nuevos_defectos_data
-    ]);
+    // Formatear la fecha para el input type="date"
+    if ($reporte['FechaInspeccion']) {
+        $reporte['FechaInspeccion'] = date('Y-m-d', strtotime($reporte['FechaInspeccion']));
+    }
+
+    $response['status'] = 'success';
+    $response['reporte'] = $reporte;
+    $response['defectosOriginales'] = $defectosOriginales;
+    $response['nuevosDefectos'] = $nuevosDefectos;
 
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    $response['message'] = $e->getMessage();
+} finally {
+    $conex->close();
+    echo json_encode($response);
 }
-
-$conex->close();
 ?>
