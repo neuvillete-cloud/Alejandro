@@ -459,68 +459,69 @@ input[type="file"] {
     border-radius: 4px;
     cursor: pointer;
     border: none;
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; /* Añadimos box-shadow a la transición */
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none; /* Asegura que no haya subrayado si el botón es un enlace o tiene estilos de enlace */
 }
 
 /* --- Estilo Base para Botones de Peligro (Eliminar) --- */
 .btn-danger {
-    background-color: var(--color-error); /* Usa tu variable de color de error */
-    color: white; /* El texto en blanco para contraste con el rojo */
+    background-color: var(--color-error); /* Usa tu variable de color de error: #a83232 */
+    color: var(--color-blanco); /* Texto blanco para contraste con el rojo */
 }
 
 .btn-danger:hover {
-    /* Para el hover, podemos oscurecer el color de error o definir otra variable */
-    /* Aquí oscurezco ligeramente el color-error base para el hover */
-    background-color: #c82333; /* Podrías definir --color-error-hover */
+    /* Para el hover, vamos a oscurecer ligeramente tu color-error (#a83232) */
+    background-color: #8c2a2a; /* Versión un poco más oscura de #a83232 */
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .btn-danger:active {
     /* Para el active, aún más oscuro */
-    background-color: #bd2130; /* Podrías definir --color-error-active */
+    background-color: #7a2525; /* Versión aún más oscura de #a83232 */
     transform: translateY(0);
     box-shadow: none;
 }
 
 /* --- Estilo específico para el icono dentro del botón de eliminar --- */
 .btn-danger i {
-    margin-right: 0;
+    margin-right: 0; /* Si solo hay un icono, no necesita margen a la derecha */
 }
 
 /* --- Estilo para el botón de editar (para que se vea consistente) --- */
 .btn-primary.btn-small {
-    background-color: var(--color-principal); /* O var(--color-info) si es un azul más claro para acciones */
-    color: white;
-    margin-right: 5px;
+    background-color: var(--color-primario); /* Usa tu azul corporativo: #4a6984 */
+    color: var(--color-blanco); /* Texto blanco para contraste con el azul */
+    margin-right: 5px; /* Pequeño espacio entre botones de acción */
 }
 
 .btn-primary.btn-small:hover {
-    /* Oscurecer el color principal para el hover, o usar otra variable */
-    background-color: #2c3e50; /* O var(--color-principal-hover) */
+    /* Para el hover, vamos a oscurecer ligeramente tu color-primario (#4a6984) */
+    background-color: #3e586c; /* Versión un poco más oscura de #4a6984 */
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary.btn-small:active {
-    background-color: #243140; /* O var(--color-principal-active) */
+    /* Para el active, aún más oscuro */
+    background-color: #344a5b; /* Versión aún más oscura de #4a6984 */
     transform: translateY(0);
     box-shadow: none;
 }
 
 /* --- Asegúrate de que los botones en general no tengan un outline molesto al hacer foco --- */
 button:focus {
-    outline: 2px solid rgba(0, 123, 255, 0.5); /* Mantén un azul general o ajusta */
+    outline: 2px solid var(--color-acento); /* Usa tu azul claro sutil para el focus */
     outline-offset: 2px;
 }
 .btn-danger:focus {
-    outline: 2px solid var(--color-error); /* Usa tu variable de color de error */
+    outline: 2px solid var(--color-error); /* Usa tu color de error para el focus del botón de peligro */
     outline-offset: 2px;
 }
 .btn-primary.btn-small:focus {
-    outline: 2px solid var(--color-principal); /* O la variable que uses para el primary */
+    outline: 2px solid var(--color-primario); /* O el que uses para el primary */
     outline-offset: 2px;
 }
