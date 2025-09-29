@@ -42,9 +42,13 @@ $nombresDefectosStr = implode(", ", $nombreDefectosOriginales);
 // --- Catálogos para los formularios ---
 $catalogo_defectos_query = $conex->query("SELECT IdDefectoCatalogo, NombreDefecto FROM CatalogoDefectos ORDER BY NombreDefecto ASC");
 $defectos_options_html = "";
-while($row = $catalogo_defectos_query->fetch_assoc()) {
+// Necesitamos un mysqli_data_seek(0) si vamos a iterar el mismo resultado varias veces
+$catalogo_defectos_result = $catalogo_defectos_query->fetch_all(MYSQLI_ASSOC);
+foreach($catalogo_defectos_result as $row) {
     $defectos_options_html .= "<option value='{$row['IdDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
 }
+
+
 $razones_tiempo_muerto = $conex->query("SELECT IdTiempoMuerto, Razon FROM CatalogoTiempoMuerto ORDER BY Razon ASC");
 $rangos_horas_data = []; // Guardaremos los rangos de hora para calcular el turno
 $rangos_horas_query = $conex->query("SELECT IdRangoHora, RangoHora FROM CatalogoRangosHoras ORDER BY IdRangoHora ASC");
@@ -52,6 +56,11 @@ while($rango = $rangos_horas_query->fetch_assoc()) {
     $rangos_horas_data[$rango['IdRangoHora']] = $rango['RangoHora'];
 }
 $defectos_originales_formulario = $conex->query("SELECT d.IdDefecto, cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = $idSolicitud");
+$defectos_originales_para_js = [];
+mysqli_data_seek($defectos_originales_formulario, 0); // Resetear el puntero para JS
+while ($def = $defectos_originales_formulario->fetch_assoc()) {
+    $defectos_originales_para_js[$def['IdDefecto']] = htmlspecialchars($def['NombreDefecto']);
+}
 
 // --- Carga de reportes existentes para la tabla ---
 $reportes_anteriores_query = $conex->prepare("
@@ -178,8 +187,7 @@ $conex->close();
         <?php if ($mostrarFormularioPrincipal): ?>
             <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                <input type="hidden" name="idReporte" id="idReporte" value="">
-                <fieldset>
+                <input type="hidden" name="idReporte" id="idReporte" value=""> <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
                     <div class="form-row">
                         <div class="form-group"><label>Piezas Inspeccionadas</label><input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required></div>
@@ -194,7 +202,7 @@ $conex->close();
 
                     <div class="form-group">
                         <label>Rango de Hora de Inspección</label>
-                        <select name="idRangoHora" required>
+                        <select name="idRangoHora" id="idRangoHora" required>
                             <option value="" disabled selected>Seleccione un rango</option>
                             <?php foreach($rangos_horas_data as $id => $rango): ?>
                                 <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($rango); ?></option>
@@ -208,14 +216,14 @@ $conex->close();
                         <p class="piezas-rechazadas-info">Piezas rechazadas disponibles para clasificar: <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
                         <?php if ($defectos_originales_formulario->num_rows > 0): ?>
                             <?php mysqli_data_seek($defectos_originales_formulario, 0); while($defecto = $defectos_originales_formulario->fetch_assoc()): ?>
-                                <div class="form-group">
+                                <div class="form-group" data-id-defecto-original="<?php echo $defecto['IdDefecto']; ?>">
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="form-row">
                                         <div class="form-group w-50">
                                             <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][cantidad]" placeholder="Cantidad con este defecto..." value="0" min="0" required>
                                         </div>
                                         <div class="form-group w-50">
-                                            <input type="text" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][lote]" placeholder="Ingresa el Bach/Lote...">
+                                            <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][lote]" placeholder="Ingresa el Bach/Lote...">
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +240,7 @@ $conex->close();
                 </fieldset>
 
                 <fieldset><legend><i class="fa-solid fa-stopwatch"></i> Tiempos y Comentarios de la Sesión</legend>
-                    <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" placeholder="Ej: 2 horas 30 minutos"></div>
+                    <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" id="tiempoInspeccion" placeholder="Ej: 2 horas 30 minutos"></div>
 
                     <div class="form-group">
                         <label>¿Hubo Tiempo Muerto?</label>
@@ -243,7 +251,7 @@ $conex->close();
                         <div class="form-group">
                             <label>Razón de Tiempo Muerto</label>
                             <div class="select-with-button">
-                                <select name="idTiempoMuerto">
+                                <select name="idTiempoMuerto" id="idTiempoMuerto">
                                     <option value="">Seleccione una razón</option>
                                     <?php mysqli_data_seek($razones_tiempo_muerto, 0); while($razon = $razones_tiempo_muerto->fetch_assoc()): ?>
                                         <option value="<?php echo $razon['IdTiempoMuerto']; ?>"><?php echo htmlspecialchars($razon['Razon']); ?></option>
@@ -254,7 +262,7 @@ $conex->close();
                         </div>
                     </div>
 
-                    <div class="form-group"><label>Comentarios Adicionales de la Sesión</label><textarea name="comentarios" rows="4"></textarea></div>
+                    <div class="form-group"><label>Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
                 </fieldset>
 
                 <div class="form-actions"><button type="submit" class="btn-primary" id="btnGuardarReporte">Guardar Reporte de Sesión</button></div>
@@ -319,7 +327,8 @@ $conex->close();
                     <?php foreach ($reportes_procesados as $reporte): ?>
                         <tr>
                             <td><?php echo "R-" . str_pad($reporte['IdReporte'], 4, '0', STR_PAD_LEFT); ?></td>
-                            <td><?php echo $numeroParte; ?></td><td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
+                            <td><?php echo $numeroParte; ?></td>
+                            <td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
                             <td><?php echo htmlspecialchars($reporte['RangoHora']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['TurnoShiftLeader']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['NombreInspector']); ?></td>
@@ -332,6 +341,7 @@ $conex->close();
                             <td><?php echo htmlspecialchars($reporte['Comentarios']); ?></td>
                             <td>
                                 <button class="btn-edit-reporte btn-primary btn-small" data-id="<?php echo $reporte['IdReporte']; ?>"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn-delete-reporte btn-danger btn-small" data-id="<?php echo $reporte['IdReporte']; ?>"><i class="fa-solid fa-trash-can"></i></button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -347,12 +357,16 @@ $conex->close();
 
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
-    let nuevoDefectoCounter = 0;
+    const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
+    let nuevoDefectoCounter = 0; // Se usará para identificar nuevos defectos, incluso los cargados por edición
+    let editandoReporte = false; // Bandera para saber si estamos en modo edición
 
     document.addEventListener('DOMContentLoaded', function() {
+        const reporteForm = document.getElementById('reporteForm');
+        const idReporteInput = document.getElementById('idReporte');
         const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
         const piezasAceptadasInput = document.getElementById('piezasAceptadas');
-        const piezasRetrabajadasInput = document.getElementById('piezasRetrabajadas'); // Nuevo input
+        const piezasRetrabajadasInput = document.getElementById('piezasRetrabajadas');
         const piezasRechazadasCalculadasInput = document.getElementById('piezasRechazadasCalculadas');
         const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
         const defectosOriginalesContainer = document.querySelector('.original-defect-list');
@@ -360,16 +374,23 @@ $conex->close();
         const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
         const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
 
+        const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
+        const idRangoHoraSelect = document.getElementById('idRangoHora');
+        const tiempoInspeccionInput = document.getElementById('tiempoInspeccion');
+        const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
+        const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
+        const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
+        const comentariosTextarea = document.getElementById('comentarios');
+
         // --- Funcionalidad del Contador de Piezas Rechazadas y Validación ---
         function actualizarContadores() {
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
-            const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0; // Obtener retrabajadas
+            const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
             const rechazadasBrutas = inspeccionadas - aceptadas;
-            piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas); // Rechazadas "brutas" mostradas
+            piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
 
-            // La lógica clave: rechazadas disponibles para clasificar son las brutas menos las retrabajadas
             const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
 
             if (retrabajadas > rechazadasBrutas) {
@@ -378,18 +399,22 @@ $conex->close();
                 btnGuardarReporte.disabled = true;
                 btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
                 piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
-                piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles); // Mostrar el valor correcto aunque esté inválido
-                return; // Salir si hay una validación de retrabajadas
+                piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles);
+                return;
             } else {
-                piezasRetrabajadasInput.setCustomValidity(''); // Limpiar el mensaje de validación
+                piezasRetrabajadasInput.setCustomValidity('');
             }
-
 
             let sumDefectosClasificados = 0;
             const defectoCantidadInputs = defectosOriginalesContainer.querySelectorAll('.defecto-cantidad');
             defectoCantidadInputs.forEach(input => {
                 sumDefectosClasificados += parseInt(input.value) || 0;
             });
+            // Sumar también las cantidades de los nuevos defectos
+            nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => {
+                sumDefectosClasificados += parseInt(input.value) || 0;
+            });
+
 
             const restantes = rechazadasDisponibles - sumDefectosClasificados;
             piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
@@ -412,47 +437,70 @@ $conex->close();
         if (piezasInspeccionadasInput) {
             piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
             piezasAceptadasInput.addEventListener('input', actualizarContadores);
-            piezasRetrabajadasInput.addEventListener('input', actualizarContadores); // Escuchar cambios en retrabajadas
+            piezasRetrabajadasInput.addEventListener('input', actualizarContadores);
             defectosOriginalesContainer.addEventListener('input', function(e) {
                 if (e.target.classList.contains('defecto-cantidad')) {
+                    actualizarContadores();
+                }
+            });
+            nuevosDefectosContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('nuevo-defecto-cantidad')) {
                     actualizarContadores();
                 }
             });
             actualizarContadores(); // Inicializa los contadores al cargar la página
         }
 
-        // --- Lógica para añadir nuevos defectos ---
-        btnAddNuevoDefecto?.addEventListener('click', function() {
+        // --- Función para añadir un nuevo bloque de defecto (usado para agregar y para edición) ---
+        function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
             nuevoDefectoCounter++;
+            const currentCounter = nuevoDefectoCounter; // Usar un contador local para este bloque
             const defectoHTML = `
-            <div class="defecto-item" id="nuevo-defecto-${nuevoDefectoCounter}">
+            <div class="defecto-item" id="nuevo-defecto-${currentCounter}">
                 <div class="defecto-header">
-                    <h4>Nuevo Defecto #${nuevoDefectoCounter}</h4>
-                    <button type="button" class="btn-remove-defecto" data-defecto-id="${nuevoDefectoCounter}">&times;</button>
+                    <h4>Nuevo Defecto #${currentCounter}</h4>
+                    <button type="button" class="btn-remove-defecto" data-defecto-id="${currentCounter}">&times;</button>
                 </div>
                 <div class="form-row">
                     <div class="form-group w-50">
                         <label>Tipo de Defecto</label>
-                        <select name="nuevos_defectos[${nuevoDefectoCounter}][id]" required>
+                        <select name="nuevos_defectos[${currentCounter}][id]" required>
                             <option value="" disabled selected>Seleccione un defecto</option>
                             ${opcionesDefectos}
                         </select>
                     </div>
                     <div class="form-group w-50">
                         <label>Cantidad de Piezas</label>
-                        <input type="number" name="nuevos_defectos[${nuevoDefectoCounter}][cantidad]" placeholder="Cantidad con este defecto..." min="0" required>
+                        <input type="number" class="nuevo-defecto-cantidad" name="nuevos_defectos[${currentCounter}][cantidad]" placeholder="Cantidad con este defecto..." min="0" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Foto de Evidencia</label>
-                    <label class="file-upload-label" for="nuevoDefectoFoto-${nuevoDefectoCounter}">
+                    <label class="file-upload-label" for="nuevoDefectoFoto-${currentCounter}">
                         <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
                     </label>
-                    <input type="file" id="nuevoDefectoFoto-${nuevoDefectoCounter}" name="nuevos_defectos[${nuevoDefectoCounter}][foto]" accept="image/*" required>
+                    <input type="file" id="nuevoDefectoFoto-${currentCounter}" name="nuevos_defectos[${currentCounter}][foto]" accept="image/*" ${rutaFoto ? '' : 'required'}>
+                    ${rutaFoto ? `<p class="current-file-info">Archivo actual: <a href="${rutaFoto}" target="_blank">Ver foto</a> (Se reemplazará si subes uno nuevo)</p>
+                                   <input type="hidden" name="nuevos_defectos[${currentCounter}][foto_existente]" value="${rutaFoto}">
+                                   <input type="hidden" name="nuevos_defectos[${currentCounter}][idDefectoEncontrado]" value="${id}">` : ''}
                 </div>
             </div>`;
             nuevosDefectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
-            document.getElementById(`nuevoDefectoFoto-${nuevoDefectoCounter}`).addEventListener('change', updateFileNameLabel);
+
+            const newBlock = document.getElementById(`nuevo-defecto-${currentCounter}`);
+            if (idDefectoCatalogo) {
+                newBlock.querySelector(`select[name="nuevos_defectos[${currentCounter}][id]"]`).value = idDefectoCatalogo;
+            }
+            if (cantidad) {
+                newBlock.querySelector(`input[name="nuevos_defectos[${currentCounter}][cantidad]"]`).value = cantidad;
+            }
+            document.getElementById(`nuevoDefectoFoto-${currentCounter}`).addEventListener('change', updateFileNameLabel);
+            return newBlock; // Devuelve el nuevo bloque por si se necesita manipularlo
+        }
+
+        btnAddNuevoDefecto?.addEventListener('click', function() {
+            addNuevoDefectoBlock();
+            actualizarContadores();
         });
 
         // --- Lógica para eliminar nuevos defectos ---
@@ -460,7 +508,35 @@ $conex->close();
             if (e.target && e.target.classList.contains('btn-remove-defecto')) {
                 const defectoItem = document.getElementById(`nuevo-defecto-${e.target.dataset.defectoId}`);
                 if (defectoItem) {
-                    defectoItem.remove();
+                    // Si se está editando y el defecto tiene un ID de DefectoEncontrado, pedir confirmación para eliminar de la BD
+                    const idDefectoEncontradoInput = defectoItem.querySelector('input[name*="[idDefectoEncontrado]"]');
+                    if (editandoReporte && idDefectoEncontradoInput && idDefectoEncontradoInput.value) {
+                        Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: "Este defecto se eliminará permanentemente del reporte.",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Sí, eliminar',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Agregamos un campo oculto para indicar que este ID de defecto debe ser eliminado
+                                const inputEliminar = document.createElement('input');
+                                inputEliminar.type = 'hidden';
+                                inputEliminar.name = `defectos_encontrados_a_eliminar[]`;
+                                inputEliminar.value = idDefectoEncontradoInput.value;
+                                reporteForm.appendChild(inputEliminar);
+                                defectoItem.remove();
+                                actualizarContadores();
+                                Swal.fire('Eliminado!', 'El defecto será eliminado al guardar el reporte.', 'success');
+                            }
+                        });
+                    } else {
+                        defectoItem.remove();
+                        actualizarContadores();
+                    }
                 }
             }
         });
@@ -480,11 +556,9 @@ $conex->close();
         });
 
         // --- Lógica para mostrar/ocultar Tiempo Muerto ---
-        const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
-        const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
-        let tiempoMuertoActivo = false;
-        toggleTiempoMuertoBtn?.addEventListener('click', function() {
-            tiempoMuertoActivo = !tiempoMuertoActivo;
+        let tiempoMuertoActivo = false; // Estado inicial del toggle
+        function toggleTiempoMuertoSection(activate) {
+            tiempoMuertoActivo = activate;
             if (tiempoMuertoActivo) {
                 tiempoMuertoSection.style.display = 'block';
                 toggleTiempoMuertoBtn.innerHTML = `Sí <i class="fa-solid fa-toggle-on"></i>`;
@@ -493,12 +567,16 @@ $conex->close();
                 tiempoMuertoSection.style.display = 'none';
                 toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
                 toggleTiempoMuertoBtn.className = 'btn-secondary';
-                tiempoMuertoSection.querySelector('select').value = '';
+                idTiempoMuertoSelect.value = ''; // Limpiar selección si se desactiva
             }
+        }
+        toggleTiempoMuertoBtn?.addEventListener('click', function() {
+            toggleTiempoMuertoSection(!tiempoMuertoActivo);
         });
+        toggleTiempoMuertoSection(false); // Inicializar en "No"
 
         // --- Lógica para el envío de los formularios con fetch ---
-        document.getElementById('reporteForm')?.addEventListener('submit', function(e) {
+        reporteForm?.addEventListener('submit', function(e) {
             e.preventDefault();
             const form = this;
             const formData = new FormData(form);
@@ -566,18 +644,125 @@ $conex->close();
                 .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
         });
 
+        // --- Función para cargar el reporte en el formulario de edición ---
+        async function cargarReporteParaEdicion(idReporte) {
+            Swal.fire({ title: 'Cargando Reporte...', text: 'Obteniendo datos para edición.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            try {
+                const response = await fetch(`dao/obtener_reporte_para_edicion.php?idReporte=${idReporte}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const reporte = data.reporte;
+                    const defectosOriginales = data.defectosOriginales;
+                    const nuevosDefectos = data.nuevosDefectos;
+
+                    // 1. Rellenar campos del reporte principal
+                    idReporteInput.value = reporte.IdReporte;
+                    piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
+                    piezasAceptadasInput.value = reporte.PiezasAceptadas;
+                    piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
+                    // nombreInspector ya está prellenado con la sesión, si es el mismo, se mantiene.
+                    fechaInspeccionInput.value = reporte.FechaInspeccion;
+                    idRangoHoraSelect.value = reporte.IdRangoHora;
+                    tiempoInspeccionInput.value = reporte.TiempoInspeccion || '';
+                    comentariosTextarea.value = reporte.Comentarios || '';
+
+                    // Manejar tiempo muerto
+                    if (reporte.IdTiempoMuerto) {
+                        toggleTiempoMuertoSection(true);
+                        idTiempoMuertoSelect.value = reporte.IdTiempoMuerto;
+                    } else {
+                        toggleTiempoMuertoSection(false);
+                    }
+
+                    // 2. Rellenar clasificación de defectos originales
+                    // Primero, resetear los campos a 0/vacío para evitar datos antiguos
+                    defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => input.value = 0);
+                    defectosOriginalesContainer.querySelectorAll('.defecto-lote').forEach(input => input.value = '');
+
+                    defectosOriginales.forEach(defecto => {
+                        const inputCantidad = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][cantidad]"]`);
+                        const inputLote = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][lote]"]`);
+                        if (inputCantidad) inputCantidad.value = defecto.CantidadEncontrada;
+                        if (inputLote) inputLote.value = defecto.Lote;
+                    });
+
+                    // 3. Rellenar nuevos defectos encontrados
+                    nuevosDefectosContainer.innerHTML = ''; // Limpiar cualquier nuevo defecto existente
+                    nuevoDefectoCounter = 0; // Resetear el contador para que los nuevos IDs sean únicos
+                    nuevosDefectos.forEach(defecto => {
+                        const newBlock = addNuevoDefectoBlock(
+                            defecto.IdDefectoEncontrado, // id del defecto encontrado
+                            defecto.IdDefectoCatalogo,
+                            defecto.Cantidad,
+                            defecto.RutaFotoEvidencia
+                        );
+                        // Asegurarse de que el input de archivo no esté requerido si ya hay una foto existente
+                        const fileInput = newBlock.querySelector(`input[type="file"]`);
+                        if (defecto.RutaFotoEvidencia) {
+                            fileInput.removeAttribute('required');
+                            const labelSpan = fileInput.previousElementSibling.querySelector('span');
+                            labelSpan.textContent = "Archivo existente"; // O el nombre real si lo puedes extraer
+                        }
+                    });
+
+                    // 4. Actualizar contadores y estado de edición
+                    actualizarContadores();
+                    editandoReporte = true;
+                    btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
+                    reporteForm.action = 'dao/actualizar_reporte.php'; // Cambiar la acción del formulario
+                    Swal.close();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll al inicio del formulario
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error');
+            }
+        }
+
         // --- Lógica para editar un registro (botón en la tabla) ---
         document.querySelectorAll('.btn-edit-reporte').forEach(button => {
             button.addEventListener('click', function() {
-                const idReporte = this.dataset.id;
+                cargarReporteParaEdicion(this.dataset.id);
+            });
+        });
+
+        // --- Lógica para eliminar un registro (botón en la tabla) ---
+        document.querySelectorAll('.btn-delete-reporte').forEach(button => {
+            button.addEventListener('click', function() {
+                const idReporteAEliminar = this.dataset.id;
                 Swal.fire({
-                    title: 'Funcionalidad en Desarrollo',
-                    text: `La edición del reporte ID: ${idReporte} requiere una implementación de backend y la lógica para precargar el formulario.`,
-                    icon: 'info',
-                    confirmButtonText: 'Entendido'
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto! Se eliminará el reporte y todos los defectos y fotos asociados.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({ title: 'Eliminando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                        fetch('dao/eliminar_reporte.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `idReporte=${idReporteAEliminar}`
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    Swal.fire('¡Eliminado!', data.message, 'success').then(() => window.location.reload());
+                                } else {
+                                    Swal.fire('Error', data.message, 'error');
+                                }
+                            })
+                            .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor para eliminar el reporte.', 'error'));
+                    }
                 });
             });
         });
+
 
         <?php if ($esSuperUsuario): ?>
         // Lógica para añadir nueva razón de tiempo muerto
@@ -607,6 +792,8 @@ $conex->close();
                         .then(data => {
                             if (data.status === 'success') {
                                 Swal.fire('¡Guardado!', data.message, 'success').then(() => {
+                                    // Recargar solo el select para no perder el estado del formulario de edición
+                                    // Mejor opción sería un fetch y añadir la nueva opción dinámicamente
                                     window.location.reload();
                                 });
                             } else {
