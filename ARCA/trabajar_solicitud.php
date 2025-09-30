@@ -187,10 +187,17 @@ $conex->close();
         <?php if ($mostrarFormularioPrincipal): ?>
             <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                <input type="hidden" name="idReporte" id="idReporte" value=""> <fieldset>
+                <input type="hidden" name="idReporte" id="idReporte" value="">
+                <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
                     <div class="form-row">
-                        <div class="form-group"><label>Piezas Inspeccionadas</label><input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required></div>
+                        <div class="form-group" id="piezasInspeccionadasInputGroup">
+                            <label>Piezas Inspeccionadas</label>
+                            <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas"
+                                   min="0" required
+                                   data-max-cantidad-solicitada="<?php echo $cantidadSolicitada; ?>">
+                            <span id="piezasInspeccionadasFeedback" class="input-feedback"></span>
+                        </div>
                         <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
                         <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
                         <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
@@ -382,6 +389,13 @@ $conex->close();
         const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
         const comentariosTextarea = document.getElementById('comentarios');
 
+        // --- NUEVAS REFERENCIAS PARA LA VALIDACIÓN DE CANTIDAD INSPECCIONADA ---
+        const cantidadTotalSolicitada = parseInt(document.querySelector('.info-row span:nth-of-type(3)').textContent);
+        const piezasInspeccionadasInputGroup = document.getElementById('piezasInspeccionadasInputGroup');
+        const piezasInspeccionadasFeedback = document.getElementById('piezasInspeccionadasFeedback');
+        // --- FIN NUEVAS REFERENCIAS ---
+
+
         // --- Funcionalidad del Contador de Piezas Rechazadas y Validación ---
         function actualizarContadores() {
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
@@ -392,6 +406,30 @@ $conex->close();
             piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
 
             const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
+
+            // --- NUEVA LÓGICA DE VALIDACIÓN: PIEZAS INSPECCIONADAS VS CANTIDAD TOTAL ---
+            let isCantidadInspeccionadaValid = true;
+            if (inspeccionadas > cantidadTotalSolicitada) {
+                piezasInspeccionadasInputGroup.classList.remove('is-valid');
+                piezasInspeccionadasInputGroup.classList.add('is-invalid');
+                piezasInspeccionadasFeedback.textContent = `No puedes inspeccionar más de ${cantidadTotalSolicitada} piezas.`;
+                piezasInspeccionadasFeedback.style.color = 'var(--color-error)';
+                isCantidadInspeccionadaValid = false;
+            } else if (inspeccionadas < 0) {
+                piezasInspeccionadasInputGroup.classList.remove('is-valid');
+                piezasInspeccionadasInputGroup.classList.add('is-invalid');
+                piezasInspeccionadasFeedback.textContent = 'La cantidad inspeccionada no puede ser negativa.';
+                piezasInspeccionadasFeedback.style.color = 'var(--color-error)';
+                isCantidadInspeccionadaValid = false;
+            }
+            else {
+                piezasInspeccionadasInputGroup.classList.remove('is-invalid');
+                piezasInspeccionadasInputGroup.classList.add('is-valid');
+                piezasInspeccionadasFeedback.textContent = `Cantidad válida (Máx: ${cantidadTotalSolicitada})`;
+                piezasInspeccionadasFeedback.style.color = 'var(--color-exito)';
+            }
+            // --- FIN NUEVA LÓGICA DE VALIDACIÓN ---
+
 
             if (retrabajadas > rechazadasBrutas) {
                 piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
@@ -419,19 +457,28 @@ $conex->close();
             const restantes = rechazadasDisponibles - sumDefectosClasificados;
             piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
-            if (restantes < 0) {
-                piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+            // También consideraremos la nueva validación para habilitar/deshabilitar el botón
+            const formIsValid = isCantidadInspeccionadaValid && (restantes === 0);
+
+            if (!formIsValid) {
+                piezasRechazadasRestantesSpan.style.color = 'var(--color-error)'; // Puede ser naranja si solo faltan por clasificar
+                if (restantes > 0 && isCantidadInspeccionadaValid) { // Si solo faltan por clasificar, pero inspeccionadas es válido
+                    piezasRechazadasRestantesSpan.style.color = 'orange';
+                    btnGuardarReporte.title = 'Aún faltan piezas por clasificar.';
+                } else if (restantes < 0) { // Si se clasificaron más de las rechazadas
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+                    btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
+                } else if (!isCantidadInspeccionadaValid) { // Si piezas inspeccionadas es inválido
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)'; // Aunque no afecte directamente a restantes, el problema es mayor
+                    btnGuardarReporte.title = piezasInspeccionadasFeedback.textContent; // Mensaje del error principal
+                }
                 btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
-            } else if (restantes > 0) {
-                piezasRechazadasRestantesSpan.style.color = 'orange';
-                btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'Aún faltan piezas por clasificar.';
             } else {
                 piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
                 btnGuardarReporte.disabled = false;
                 btnGuardarReporte.title = '';
             }
+
         }
 
         if (piezasInspeccionadasInput) {
@@ -581,17 +628,28 @@ $conex->close();
             const form = this;
             const formData = new FormData(form);
 
-            // Re-validar las piezas retrabajadas justo antes de enviar
+            // Re-validar las piezas inspeccionadas y retrabajadas justo antes de enviar
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
             const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
             const rechazadasBrutas = inspeccionadas - aceptadas;
+
+            // NUEVA VALIDACIÓN EN EL SUBMIT
+            if (inspeccionadas > cantidadTotalSolicitada) {
+                Swal.fire('Error de Validación', `La cantidad inspeccionada (${inspeccionadas}) no puede exceder la cantidad total de la solicitud (${cantidadTotalSolicitada}).`, 'error');
+                return;
+            }
+            if (inspeccionadas < 0) {
+                Swal.fire('Error de Validación', 'La cantidad inspeccionada no puede ser negativa.', 'error');
+                return;
+            }
 
             if (retrabajadas > rechazadasBrutas) {
                 Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
                 return;
             }
 
+            // Si todas las validaciones pasan, proceder con el envío
             Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             fetch(form.action, { method: 'POST', body: formData })
