@@ -42,6 +42,13 @@
                     <input type="text" id="nombreUsuario" name="nombreUsuario" class="input-field" placeholder="Nombre de Usuario" required>
                 </div>
 
+                <!-- INICIO: Campo de Correo Electrónico Agregado -->
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" name="email" class="input-field" placeholder="Correo Electrónico" required>
+                </div>
+                <!-- FIN: Campo de Correo Electrónico Agregado -->
+
                 <div id="username-feedback" class="feedback-container">
                     <span id="username-status"></span>
                     <div id="username-suggestions"></div>
@@ -79,6 +86,8 @@
 
 <script>
     // --- LÓGICA COMPLETA PARA LA PÁGINA DE REGISTRO ---
+    // Tu JavaScript no necesita cambios, ya que new FormData(form)
+    // recogerá automáticamente el nuevo campo de correo electrónico.
 
     // --- Parte 1: Asistente de Contraseña ---
     const passwordInput = document.getElementById('password');
