@@ -1,8 +1,10 @@
 <?php
 // --- MODO DE DEPURACIÓN (eliminar en producción) ---
+/* Desactivamos la visualización de errores para no corromper la respuesta JSON
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+*/
 
 // Incluimos los archivos necesarios.
 include_once("verificar_sesion.php");
