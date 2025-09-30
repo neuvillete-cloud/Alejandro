@@ -73,7 +73,7 @@ $conex->close();
             <div class="step"><div class="step-icon">3</div><div class="step-label" data-translate-key="step3">Documentación</div></div>
         </div>
 
-        <form id="solicitudForm" action="dao/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
+        <form id="solicitudForm" action="https://grammermx.com/Mailer/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
 
             <fieldset><legend><i class="fa-solid fa-file-lines"></i> <span data-translate-key="section_generalData">Datos Generales</span></legend>
                 <div class="form-row">
