@@ -73,7 +73,7 @@ $conex->close();
             <div class="step"><div class="step-icon">3</div><div class="step-label" data-translate-key="step3">Documentación</div></div>
         </div>
 
-        <form id="solicitudForm" action="https://grammermx.com/Mailer/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
+        <form id="solicitudForm" action="dao/guardar_solicitud.php" method="POST" enctype="multipart/form-data">
 
             <fieldset><legend><i class="fa-solid fa-file-lines"></i> <span data-translate-key="section_generalData">Datos Generales</span></legend>
                 <div class="form-row">
@@ -401,7 +401,11 @@ $conex->close();
             const formData = new FormData(solicitudForm);
             Swal.fire({ title: translations[currentLang].swal_saving, text: translations[currentLang].swal_savingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-            fetch('https://grammermx.com/Mailer/guardar_solicitud.php', { method: 'POST', body: formData })
+            fetch('https://grammermx.com/Mailer/guardar_solicitud.php', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include' // <-- AÑADIDO PARA ENVIAR COOKIES DE SESIÓN
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -422,3 +426,4 @@ $conex->close();
 
 </body>
 </html>
+
