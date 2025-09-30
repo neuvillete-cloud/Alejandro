@@ -13,6 +13,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Usando los estilos que me proporcionaste -->
     <link rel="stylesheet" href="css/estilosRegistro.css">
 
 </head>
@@ -42,16 +43,17 @@
                     <input type="text" id="nombreUsuario" name="nombreUsuario" class="input-field" placeholder="Nombre de Usuario" required>
                 </div>
 
-                <!-- INICIO: Campo de Correo Electrónico Agregado -->
-                <div class="input-group">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="email" name="email" class="input-field" placeholder="Correo Electrónico" required>
-                </div>
-                <!-- FIN: Campo de Correo Electrónico Agregado -->
-
+                <!-- INICIO: CONTENEDOR DE FEEDBACK MOVIDO -->
+                <!-- Este bloque ahora está justo debajo del campo de nombre de usuario -->
                 <div id="username-feedback" class="feedback-container">
                     <span id="username-status"></span>
                     <div id="username-suggestions"></div>
+                </div>
+                <!-- FIN: CONTENEDOR DE FEEDBACK MOVIDO -->
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" name="email" class="input-field" placeholder="Correo Electrónico" required>
                 </div>
 
                 <div class="input-group">
@@ -86,8 +88,7 @@
 
 <script>
     // --- LÓGICA COMPLETA PARA LA PÁGINA DE REGISTRO ---
-    // Tu JavaScript no necesita cambios, ya que new FormData(form)
-    // recogerá automáticamente el nuevo campo de correo electrónico.
+    // Tu JavaScript no necesita cambios para este ajuste.
 
     // --- Parte 1: Asistente de Contraseña ---
     const passwordInput = document.getElementById('password');
