@@ -165,7 +165,7 @@ $conex->close();
         <div class="info-row">
             <p><strong>No. de Parte:</strong> <span><?php echo $numeroParte; ?></span></p>
             <p><strong>Responsable:</strong> <span><?php echo $nombreResponsable; ?></span></p>
-            <p><strong>Cantidad Total:</strong> <span><?php echo $cantidadSolicitada; ?></span></p>
+            <p><strong>Cantidad Total:</strong> <span id="cantidadTotalSolicitada"><?php echo $cantidadSolicitada; ?></span></p>
             <p><strong>Defectos:</strong> <span><?php echo $nombresDefectosStr; ?></span></p>
         </div>
 
@@ -358,6 +358,8 @@ $conex->close();
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
     const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
+    // --- NUEVO: Obtenemos la cantidad total del PHP para usarla en JavaScript ---
+    const cantidadTotalSolicitada = <?php echo intval($cantidadSolicitada); ?>;
     let nuevoDefectoCounter = 0; // Se usará para identificar nuevos defectos, incluso los cargados por edición
     let editandoReporte = false; // Bandera para saber si estamos en modo edición
 
@@ -382,11 +384,20 @@ $conex->close();
         const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
         const comentariosTextarea = document.getElementById('comentarios');
 
-        // --- Funcionalidad del Contador de Piezas Rechazadas y Validación ---
+        // --- MODIFICADO: Funcionalidad del Contador de Piezas Rechazadas y Validación ---
         function actualizarContadores() {
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
             const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
+
+            // --- VALIDACIÓN PRINCIPAL: No exceder la cantidad total ---
+            // Esta validación se realiza primero. Si falla, el mensaje de error aparecerá en el campo.
+            if (inspeccionadas > cantidadTotalSolicitada) {
+                piezasInspeccionadasInput.setCustomValidity(`La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`);
+                piezasInspeccionadasInput.reportValidity();
+            } else {
+                piezasInspeccionadasInput.setCustomValidity(''); // Limpiar el error si es válido
+            }
 
             const rechazadasBrutas = inspeccionadas - aceptadas;
             piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
@@ -400,7 +411,7 @@ $conex->close();
                 btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
                 piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
                 piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles);
-                return;
+                return; // Detiene la ejecución aquí para prevenir cálculos incorrectos
             } else {
                 piezasRetrabajadasInput.setCustomValidity('');
             }
@@ -415,11 +426,15 @@ $conex->close();
                 sumDefectosClasificados += parseInt(input.value) || 0;
             });
 
-
             const restantes = rechazadasDisponibles - sumDefectosClasificados;
             piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
-            if (restantes < 0) {
+            // --- LÓGICA FINAL PARA HABILITAR/DESHABILITAR BOTÓN ---
+            // El botón solo se habilitará si TODAS las condiciones son correctas.
+            if (inspeccionadas > cantidadTotalSolicitada) {
+                btnGuardarReporte.disabled = true;
+                btnGuardarReporte.title = 'La cantidad inspeccionada excede el total solicitado.';
+            } else if (restantes < 0) {
                 piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
                 btnGuardarReporte.disabled = true;
                 btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
@@ -433,6 +448,7 @@ $conex->close();
                 btnGuardarReporte.title = '';
             }
         }
+
 
         if (piezasInspeccionadasInput) {
             piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
@@ -589,6 +605,11 @@ $conex->close();
 
             if (retrabajadas > rechazadasBrutas) {
                 Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
+                return;
+            }
+
+            if (inspeccionadas > cantidadTotalSolicitada) {
+                Swal.fire('Error de Validación', `La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`, 'error');
                 return;
             }
 
