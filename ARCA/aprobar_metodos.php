@@ -59,6 +59,13 @@ if ($pendientes === false) {
 
         /* --- INICIO DE ESTILOS RESPONSIVOS --- */
         @media (max-width: 768px) {
+            /* Hacemos que el panel contenedor sea transparente en móviles */
+            .results-container {
+                background-color: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
             /* Ocultamos el encabezado de la tabla en móviles */
             .results-table thead {
                 display: none;
@@ -134,8 +141,8 @@ if ($pendientes === false) {
         <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes de Aprobación</h1>
     </div>
 
-    <!-- En móvil, el contenedor de resultados se vuelve transparente para mostrar las tarjetas -->
-    <div class="results-container" style="background-color: transparent; box-shadow: none;">
+    <!-- Se elimina el estilo en línea para que el diseño de escritorio se aplique correctamente -->
+    <div class="results-container">
         <table class="results-table">
             <thead>
             <tr>
