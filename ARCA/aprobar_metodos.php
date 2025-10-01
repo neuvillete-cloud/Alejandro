@@ -38,72 +38,32 @@ if ($pendientes === false) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Métodos de Trabajo - ARCA</title>
-    <!-- Se enlaza a la hoja de estilos general que ya contiene los nuevos estilos -->
-    <link rel="stylesheet" href="css/estilosAprobarM.css">
+    <!-- Se enlaza a la hoja de estilos de Historial para unificar el diseño -->
+    <link rel="stylesheet" href="css/estilosHistorial.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- INICIO DE MEJORAS DE DISEÑO -->
+    <!-- Estilos adicionales para los botones de aprobar/rechazar -->
     <style>
-        /* Añade un patrón de fondo sutil a toda la página */
-        body {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dbe1e8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        /* Animación para que las filas aparezcan suavemente */
-        @keyframes fadeInRow {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .panel-aprobacion .data-table tbody tr {
-            animation: fadeInRow 0.5s ease-out forwards;
-            opacity: 0;
-        }
-
-        .folio-cell {
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            color: var(--color-primario);
-            font-size: 1.05em;
-        }
-
-        .panel-aprobacion .data-table td {
-            padding-top: 16px;
-            padding-bottom: 16px;
-        }
-
-        /* Estilo para los nuevos iconos dentro de las celdas y cabeceras */
-        .data-table th i, .data-table td i.cell-icon {
-            margin-right: 8px;
-            color: var(--color-acento);
-            font-size: 0.9em;
-        }
-
-        /* --- NUEVO: Aumentar tamaño del título y su ícono --- */
-        .panel-header h1 {
-            font-size: 28px; /* Tamaño del texto del título aumentado */
-            gap: 18px; /* Aumenta el espacio entre el icono y el texto */
-        }
-        .panel-header h1 i {
-            font-size: 1.1em; /* Hace el icono un 10% más grande que el texto */
-        }
-
+        .btn-icon.aprobar { background-color: #e8f5e9; color: #1b5e20; }
+        .btn-icon.aprobar:hover { background-color: var(--color-exito); color: var(--color-blanco); }
+        .btn-icon.rechazar { background-color: #fdecea; color: #a83232; }
+        .btn-icon.rechazar:hover { background-color: var(--color-error); color: var(--color-blanco); }
     </style>
-    <!-- FIN DE MEJORAS DE DISEÑO -->
 </head>
 <body>
 <header class="header">
-    <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
+    <div class="header-left">
+        <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
+        <nav class="main-nav">
+            <a href="index.php">Dashboard</a>
+            <a href="Historial.php">Mis Solicitudes</a>
+            <a href="aprobar_metodos.php" class="active">Aprobar Métodos</a>
+        </nav>
+    </div>
     <div class="user-info">
         <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
         <button class="logout-btn" onclick="window.location.href='dao/logout.php'">Cerrar Sesión <i class="fa-solid fa-right-from-bracket"></i></button>
@@ -111,64 +71,60 @@ if ($pendientes === false) {
 </header>
 
 <main class="container">
-    <div class="panel-aprobacion">
-        <div class="panel-header">
-            <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes</h1>
-        </div>
+    <div class="page-header">
+        <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes de Aprobación</h1>
+    </div>
 
-        <?php if ($pendientes->num_rows > 0): ?>
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                    <tr>
-                        <th><i class="fa-solid fa-hashtag"></i>Folio Solicitud</th>
-                        <th><i class="fa-solid fa-barcode"></i>No. de Parte</th>
-                        <th><i class="fa-solid fa-user"></i>Responsable</th>
-                        <th><i class="fa-solid fa-file-signature"></i>Nombre del Método</th>
-                        <th><i class="fa-solid fa-download"></i>Archivo</th>
-                        <th style="text-align: center;"><i class="fa-solid fa-cogs"></i>Acciones</th>
+    <div class="results-container">
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th><i class="fa-solid fa-hashtag"></i>Folio</th>
+                <th><i class="fa-solid fa-barcode"></i>No. de Parte</th>
+                <th><i class="fa-solid fa-user"></i>Responsable</th>
+                <th><i class="fa-solid fa-file-signature"></i>Nombre del Método</th>
+                <th style="text-align: center;"><i class="fa-solid fa-cogs"></i>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if ($pendientes->num_rows > 0): ?>
+                <?php while ($row = $pendientes->fetch_assoc()): ?>
+                    <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>">
+                        <td><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
+                        <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
+                        <td><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
+                        <td><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
+                        <td class="actions-cell">
+                            <a href="<?php echo htmlspecialchars($row['RutaArchivo']); ?>" target="_blank" class="btn-icon" title="Ver PDF">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </a>
+                            <button class="btn-icon aprobar" data-id="<?php echo $row['IdMetodo']; ?>" title="Aprobar Método">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button class="btn-icon rechazar" data-id="<?php echo $row['IdMetodo']; ?>" data-solicitud="S-<?php echo str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?>" data-email-responsable="<?php echo htmlspecialchars($row['EmailResponsable']); ?>" title="Rechazar Método">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <?php $loop_iterator = 0; ?>
-                    <?php while ($row = $pendientes->fetch_assoc()): ?>
-                        <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>" style="animation-delay: <?php echo $loop_iterator; ?>s;">
-                            <td class="folio-cell"><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
-                            <td><i class="fa-solid fa-tag cell-icon"></i><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
-                            <td><i class="fa-solid fa-user-tie cell-icon"></i><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
-                            <td><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
-                            <td>
-                                <a href="<?php echo htmlspecialchars($row['RutaArchivo']); ?>" target="_blank" class="btn-accion ver-pdf">
-                                    <i class="fa-solid fa-file-pdf"></i> Ver
-                                </a>
-                            </td>
-                            <td class="acciones-cell">
-                                <button class="btn-accion aprobar" data-id="<?php echo $row['IdMetodo']; ?>">
-                                    <i class="fa-solid fa-check"></i> Aprobar
-                                </button>
-                                <button class="btn-accion rechazar" data-id="<?php echo $row['IdMetodo']; ?>" data-solicitud="S-<?php echo str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?>" data-email-responsable="<?php echo htmlspecialchars($row['EmailResponsable']); ?>">
-                                    <i class="fa-solid fa-times"></i> Rechazar
-                                </button>
-                            </td>
-                        </tr>
-                        <?php $loop_iterator += 0.05; ?>
-                    <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php else: ?>
-            <div style="text-align: center; padding: 40px 20px;">
-                <i class="fa-solid fa-check-circle" style="font-size: 50px; color: var(--color-exito); margin-bottom: 15px;"></i>
-                <h2 style="font-family: 'Montserrat', sans-serif; margin: 0;">¡Todo al día!</h2>
-                <p style="font-size: 1.1em; color: #666; margin-top: 10px;">No hay métodos de trabajo pendientes de revisión.</p>
-            </div>
-        <?php endif; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" class="no-results-cell">
+                        <div class="no-results-content">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <p>¡Todo al día! No hay métodos pendientes de revisión.</p>
+                        </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 </main>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.btn-accion.aprobar').forEach(button => {
+        document.querySelectorAll('.btn-icon.aprobar').forEach(button => {
             button.addEventListener('click', function() {
                 const idMetodo = this.dataset.id;
                 Swal.fire({
@@ -188,7 +144,7 @@ if ($pendientes === false) {
             });
         });
 
-        document.querySelectorAll('.btn-accion.rechazar').forEach(button => {
+        document.querySelectorAll('.btn-icon.rechazar').forEach(button => {
             button.addEventListener('click', function() {
                 const idMetodo = this.dataset.id;
                 const folioSolicitud = this.dataset.solicitud;
@@ -244,11 +200,11 @@ if ($pendientes === false) {
                         Swal.fire('¡Éxito!', data.message, 'success');
                         const fila = document.getElementById(`fila-metodo-${idMetodo}`);
                         if (fila) {
-                            fila.style.transition = 'opacity 0.5s ease';
+                            // La animación de desvanecimiento ya está en el CSS
                             fila.style.opacity = '0';
                             setTimeout(() => {
                                 fila.remove();
-                            }, 500);
+                            }, 500); // Espera a que termine la animación
                         }
                     } else {
                         Swal.fire('Error', data.message, 'error');
@@ -258,6 +214,12 @@ if ($pendientes === false) {
                     Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
                 });
         }
+
+        // Aplica la animación a las filas al cargar la página
+        const tableRows = document.querySelectorAll('.results-table tbody tr');
+        tableRows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.05}s`;
+        });
     });
 </script>
 </body>
