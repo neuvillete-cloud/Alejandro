@@ -267,7 +267,7 @@ if ($pendientes === false) {
 
             Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            fetch('dao/procesar_aprobacion.php', { method: 'POST', body: formData })
+            fetch('https://grammermx.com/Mailer/procesar_aprobacion.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
