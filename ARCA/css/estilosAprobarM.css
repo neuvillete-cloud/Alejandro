@@ -525,3 +525,132 @@ button:focus {
     outline: 2px solid var(--color-primario); /* O el que uses para el primary */
     outline-offset: 2px;
 }
+
+/* =================================================================
+   NUEVOS ESTILOS PARA LA PÁGINA DE APROBACIÓN
+   ================================================================= */
+
+/* --- 1. Estructura y Panel Principal --- */
+.panel-aprobacion {
+    background-color: var(--color-blanco);
+    border-radius: 12px;
+    padding: 30px 40px;
+    box-shadow: var(--sombra-suave);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-borde);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.panel-header h1 {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Badge para el contador de pendientes */
+.badge-contador {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    font-size: 16px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* --- 2. Botones de Acción Rediseñados --- */
+.acciones-cell {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-accion {
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-accion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-accion:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Botón Aprobar */
+.btn-accion.aprobar {
+    background: linear-gradient(145deg, #34c759, #28a745);
+    color: var(--color-blanco);
+}
+
+/* Botón Rechazar */
+.btn-accion.rechazar {
+    background: linear-gradient(145deg, #ff4d4f, #d63031);
+    color: var(--color-blanco);
+}
+
+/* Botón Ver PDF (consistente con tu paleta) */
+.btn-accion.ver-pdf {
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+}
+.btn-accion.ver-pdf:hover {
+    background-color: var(--color-primario);
+}
+
+
+/* --- 3. Mejoras en la Tabla --- */
+.data-table {
+    border: none; /* Quitamos el borde colapsado para un look más moderno */
+}
+
+/* Sobreescribimos el estilo del encabezado de la tabla para esta página */
+.panel-aprobacion .data-table th {
+    background-color: transparent;
+    color: var(--color-primario);
+    border-bottom: 2px solid var(--color-borde);
+    text-transform: none;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.data-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Sobreescribimos el estilo del hover de la tabla para esta página */
+.panel-aprobacion .data-table tbody tr:hover {
+    background-color: #f7f9fc; /* Un hover un poco más azulado */
+}
+
+.data-table td {
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
