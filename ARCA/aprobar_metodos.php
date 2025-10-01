@@ -39,25 +39,78 @@ if ($pendientes === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Métodos de Trabajo - ARCA</title>
     <!-- Se enlaza a la hoja de estilos de Historial para unificar el diseño -->
-    <link rel="stylesheet" href="css/estilosAprobarM.css">
+    <link rel="stylesheet" href="css/estilosHistorial.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Estilos adicionales para los botones de aprobar/rechazar -->
+    <!-- Estilos adicionales para los botones de aprobar/rechazar y responsividad -->
     <style>
         .btn-icon.aprobar { background-color: #e8f5e9; color: #1b5e20; }
         .btn-icon.aprobar:hover { background-color: var(--color-exito); color: var(--color-blanco); }
         .btn-icon.rechazar { background-color: #fdecea; color: #a83232; }
         .btn-icon.rechazar:hover { background-color: var(--color-error); color: var(--color-blanco); }
 
-        /* --- INICIO DE LA CORRECCIÓN: Centrar botones --- */
         .actions-cell {
             justify-content: center; /* Centra los botones de ícono dentro de su celda */
         }
-        /* --- FIN DE LA CORRECCIÓN --- */
+
+        /* --- INICIO DE ESTILOS RESPONSIVOS --- */
+        @media (max-width: 768px) {
+            /* Ocultamos el encabezado de la tabla en móviles */
+            .results-table thead {
+                display: none;
+            }
+
+            /* Convertimos cada fila en una "tarjeta" */
+            .results-table tr {
+                display: block;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                background-color: var(--color-blanco);
+                box-shadow: var(--sombra-suave);
+                overflow: hidden;
+                border: 1px solid var(--color-borde);
+            }
+
+            /* Convertimos cada celda en una fila dentro de la tarjeta */
+            .results-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 15px;
+                border-bottom: 1px solid #f0f0f0;
+                text-align: right; /* Alineamos el valor a la derecha */
+            }
+
+            .results-table td:last-child {
+                border-bottom: none;
+            }
+
+            /* Usamos el atributo 'data-label' para mostrar el encabezado de la columna */
+            .results-table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: var(--color-primario);
+                text-align: left;
+                margin-right: 15px;
+            }
+
+            /* Estilos específicos para la celda de acciones en móvil */
+            .actions-cell {
+                justify-content: flex-end; /* Alinea los botones a la derecha */
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+        }
+        /* --- FIN DE ESTILOS RESPONSIVOS --- */
+
     </style>
 </head>
 <body>
@@ -81,7 +134,8 @@ if ($pendientes === false) {
         <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes de Aprobación</h1>
     </div>
 
-    <div class="results-container">
+    <!-- En móvil, el contenedor de resultados se vuelve transparente para mostrar las tarjetas -->
+    <div class="results-container" style="background-color: transparent; box-shadow: none;">
         <table class="results-table">
             <thead>
             <tr>
@@ -96,11 +150,12 @@ if ($pendientes === false) {
             <?php if ($pendientes->num_rows > 0): ?>
                 <?php while ($row = $pendientes->fetch_assoc()): ?>
                     <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>">
-                        <td><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
-                        <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
-                        <td><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
-                        <td><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
-                        <td class="actions-cell">
+                        <!-- Se añaden los atributos data-label para la vista móvil -->
+                        <td data-label="Folio"><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
+                        <td data-label="No. de Parte"><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
+                        <td data-label="Responsable"><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
+                        <td data-label="Método"><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
+                        <td data-label="Acciones" class="actions-cell">
                             <a href="<?php echo htmlspecialchars($row['RutaArchivo']); ?>" target="_blank" class="btn-icon" title="Ver PDF">
                                 <i class="fa-solid fa-file-pdf"></i>
                             </a>
