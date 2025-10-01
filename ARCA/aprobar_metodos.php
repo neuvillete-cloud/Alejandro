@@ -10,8 +10,7 @@ include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// --- INICIO DE LA CORRECCIÓN ---
-// Se cambió u.Email por u.Correo para que coincida con la estructura de tu base de datos.
+// Se corrigió u.Email por u.Correo
 $query = "
     SELECT 
         s.IdSolicitud,
@@ -27,7 +26,6 @@ $query = "
     WHERE m.EstatusAprobacion = 'Pendiente'
     ORDER BY s.IdSolicitud ASC
 ";
-// --- FIN DE LA CORRECCIÓN ---
 $pendientes = $conex->query($query);
 
 if ($pendientes === false) {
@@ -40,7 +38,8 @@ if ($pendientes === false) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Métodos de Trabajo - ARCA</title>
-    <link rel="stylesheet" href="css/estilosAprobarM.css">
+    <!-- Se enlaza a la hoja de estilos general que ya contiene los nuevos estilos -->
+    <link rel="stylesheet" href="css/estilosT.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
@@ -57,54 +56,68 @@ if ($pendientes === false) {
 </header>
 
 <main class="container">
-    <h1><i class="fa-solid fa-clipboard-check"></i> Métodos de Trabajo Pendientes de Aprobación</h1>
-
-    <?php if ($pendientes->num_rows > 0): ?>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                <tr>
-                    <th>Folio Solicitud</th>
-                    <th>No. de Parte</th>
-                    <th>Responsable</th>
-                    <th>Nombre del Método</th>
-                    <th>Archivo</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php while ($row = $pendientes->fetch_assoc()): ?>
-                    <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>">
-                        <td><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
-                        <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
-                        <td><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
-                        <td><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
-                        <td>
-                            <a href="<?php echo htmlspecialchars($row['RutaArchivo']); ?>" target="_blank" class="btn-primary btn-small">
-                                <i class="fa-solid fa-file-pdf"></i> Ver PDF
-                            </a>
-                        </td>
-                        <td>
-                            <button class="btn-aprobar btn-primary btn-small" data-id="<?php echo $row['IdMetodo']; ?>" style="background-color: var(--color-exito);">
-                                <i class="fa-solid fa-check"></i> Aprobar
-                            </button>
-                            <button class="btn-rechazar btn-danger btn-small" data-id="<?php echo $row['IdMetodo']; ?>" data-solicitud="S-<?php echo str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?>" data-email-responsable="<?php echo htmlspecialchars($row['EmailResponsable']); ?>">
-                                <i class="fa-solid fa-times"></i> Rechazar
-                            </button>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-                </tbody>
-            </table>
+    <!-- Se envuelve todo en el nuevo panel de diseño -->
+    <div class="panel-aprobacion">
+        <div class="panel-header">
+            <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes</h1>
+            <span class="badge-contador"><?php echo $pendientes->num_rows; ?></span>
         </div>
-    <?php else: ?>
-        <p style="text-align: center; font-size: 1.1em; color: #666; margin-top: 30px;">¡Excelente! No hay métodos de trabajo pendientes de revisión.</p>
-    <?php endif; ?>
+
+        <?php if ($pendientes->num_rows > 0): ?>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Folio Solicitud</th>
+                        <th>No. de Parte</th>
+                        <th>Responsable</th>
+                        <th>Nombre del Método</th>
+                        <th>Archivo</th>
+                        <th style="text-align: center;">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php while ($row = $pendientes->fetch_assoc()): ?>
+                        <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>">
+                            <td><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
+                            <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
+                            <td><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
+                            <td><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
+                            <td>
+                                <!-- Se usan las nuevas clases de botón -->
+                                <a href="<?php echo htmlspecialchars($row['RutaArchivo']); ?>" target="_blank" class="btn-accion ver-pdf">
+                                    <i class="fa-solid fa-file-pdf"></i> Ver
+                                </a>
+                            </td>
+                            <!-- Se usan las nuevas clases de botón -->
+                            <td class="acciones-cell">
+                                <button class="btn-accion aprobar" data-id="<?php echo $row['IdMetodo']; ?>">
+                                    <i class="fa-solid fa-check"></i> Aprobar
+                                </button>
+                                <button class="btn-accion rechazar" data-id="<?php echo $row['IdMetodo']; ?>" data-solicitud="S-<?php echo str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?>" data-email-responsable="<?php echo htmlspecialchars($row['EmailResponsable']); ?>">
+                                    <i class="fa-solid fa-times"></i> Rechazar
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <!-- Se mejora el mensaje de "no hay pendientes" -->
+            <div style="text-align: center; padding: 40px 20px;">
+                <i class="fa-solid fa-check-circle" style="font-size: 50px; color: var(--color-exito); margin-bottom: 15px;"></i>
+                <h2 style="font-family: 'Montserrat', sans-serif; margin: 0;">¡Todo al día!</h2>
+                <p style="font-size: 1.1em; color: #666; margin-top: 10px;">No hay métodos de trabajo pendientes de revisión.</p>
+            </div>
+        <?php endif; ?>
+    </div>
 </main>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.btn-aprobar').forEach(button => {
+        // Se cambia el selector para que apunte a las nuevas clases de botón
+        document.querySelectorAll('.btn-accion.aprobar').forEach(button => {
             button.addEventListener('click', function() {
                 const idMetodo = this.dataset.id;
                 Swal.fire({
@@ -124,7 +137,8 @@ if ($pendientes === false) {
             });
         });
 
-        document.querySelectorAll('.btn-rechazar').forEach(button => {
+        // Se cambia el selector para que apunte a las nuevas clases de botón
+        document.querySelectorAll('.btn-accion.rechazar').forEach(button => {
             button.addEventListener('click', function() {
                 const idMetodo = this.dataset.id;
                 const folioSolicitud = this.dataset.solicitud;
@@ -139,7 +153,7 @@ if ($pendientes === false) {
                 `,
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#a83232',
+                    confirmButtonColor: '#d63031', // Color rojo del nuevo botón
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Rechazar y Notificar',
                     cancelButtonText: 'Cancelar',
@@ -178,7 +192,19 @@ if ($pendientes === false) {
                 .then(data => {
                     if (data.status === 'success') {
                         Swal.fire('¡Éxito!', data.message, 'success');
-                        document.getElementById(`fila-metodo-${idMetodo}`).remove();
+                        const fila = document.getElementById(`fila-metodo-${idMetodo}`);
+                        if (fila) {
+                            fila.style.transition = 'opacity 0.5s ease';
+                            fila.style.opacity = '0';
+                            setTimeout(() => {
+                                fila.remove();
+                                // Actualizar contador
+                                const badge = document.querySelector('.badge-contador');
+                                if (badge) {
+                                    badge.textContent = parseInt(badge.textContent) - 1;
+                                }
+                            }, 500);
+                        }
                     } else {
                         Swal.fire('Error', data.message, 'error');
                     }
