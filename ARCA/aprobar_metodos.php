@@ -89,7 +89,14 @@ if ($pendientes === false) {
             font-size: 0.9em;
         }
 
-        /* CORRECCIÓN: Se eliminó la regla que hacía invisibles los iconos del encabezado */
+        /* --- NUEVO: Aumentar tamaño del título y su ícono --- */
+        .panel-header h1 {
+            font-size: 28px; /* Tamaño del texto del título aumentado */
+            gap: 18px; /* Aumenta el espacio entre el icono y el texto */
+        }
+        .panel-header h1 i {
+            font-size: 1.1em; /* Hace el icono un 10% más grande que el texto */
+        }
 
     </style>
     <!-- FIN DE MEJORAS DE DISEÑO -->
