@@ -401,7 +401,7 @@ $conex->close();
             const formData = new FormData(solicitudForm);
             Swal.fire({ title: translations[currentLang].swal_saving, text: translations[currentLang].swal_savingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-            fetch('https://grammermx.com/Mailer/guardar_solicitud.php', { method: 'POST', body: formData })
+            fetch('https://grammermx.com/Mailer/guardar_solicitud2.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
