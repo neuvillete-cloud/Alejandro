@@ -10,13 +10,14 @@ include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// Consulta para obtener las solicitudes con métodos pendientes
+// --- INICIO DE LA CORRECCIÓN ---
+// Se cambió u.Email por u.Correo para que coincida con la estructura de tu base de datos.
 $query = "
     SELECT 
         s.IdSolicitud,
         s.NumeroParte,
         u.Nombre AS NombreResponsable,
-        u.Email AS EmailResponsable,
+        u.Correo AS EmailResponsable, 
         m.IdMetodo,
         m.TituloMetodo,
         m.RutaArchivo
@@ -26,9 +27,9 @@ $query = "
     WHERE m.EstatusAprobacion = 'Pendiente'
     ORDER BY s.IdSolicitud ASC
 ";
+// --- FIN DE LA CORRECCIÓN ---
 $pendientes = $conex->query($query);
 
-// Se añade una verificación para manejar posibles errores en la consulta SQL.
 if ($pendientes === false) {
     die("Error al ejecutar la consulta en la base de datos: " . $conex->error);
 }
@@ -39,7 +40,7 @@ if ($pendientes === false) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Métodos de Trabajo - ARCA</title>
-    <link rel="stylesheet" href="css/estilosT.css"> <!-- Reutilizamos tus estilos existentes -->
+    <link rel="stylesheet" href="css/estilosT.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
