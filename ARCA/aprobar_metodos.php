@@ -57,21 +57,34 @@ if ($pendientes === false) {
             justify-content: center; /* Centra los botones de ícono dentro de su celda */
         }
 
+        /* --- INICIO DE ESTILOS PERSONALIZADOS PARA SWEETALERT --- */
+        .swal-custom-container .swal2-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--color-primario);
+        }
+        .swal-custom-container .swal2-html-container {
+            font-family: 'Lato', sans-serif;
+        }
+        .swal-custom-input, .swal-custom-textarea {
+            font-family: 'Lato', sans-serif !important;
+            font-size: 16px !important;
+            border-radius: 6px !important;
+            border: 1px solid #ccc !important;
+            box-shadow: none !important;
+        }
+        .swal-custom-textarea {
+            min-height: 100px;
+        }
+        /* --- FIN DE ESTILOS PERSONALIZADOS PARA SWEETALERT --- */
+
         /* --- INICIO DE ESTILOS RESPONSIVOS --- */
         @media (max-width: 768px) {
-            /* Hacemos que el panel contenedor sea transparente en móviles */
             .results-container {
                 background-color: transparent !important;
                 box-shadow: none !important;
                 border: none !important;
             }
-
-            /* Ocultamos el encabezado de la tabla en móviles */
-            .results-table thead {
-                display: none;
-            }
-
-            /* Convertimos cada fila en una "tarjeta" */
+            .results-table thead { display: none; }
             .results-table tr {
                 display: block;
                 margin-bottom: 15px;
@@ -81,22 +94,15 @@ if ($pendientes === false) {
                 overflow: hidden;
                 border: 1px solid var(--color-borde);
             }
-
-            /* Convertimos cada celda en una fila dentro de la tarjeta */
             .results-table td {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 padding: 12px 15px;
                 border-bottom: 1px solid #f0f0f0;
-                text-align: right; /* Alineamos el valor a la derecha */
+                text-align: right;
             }
-
-            .results-table td:last-child {
-                border-bottom: none;
-            }
-
-            /* Usamos el atributo 'data-label' para mostrar el encabezado de la columna */
+            .results-table td:last-child { border-bottom: none; }
             .results-table td::before {
                 content: attr(data-label);
                 font-weight: bold;
@@ -104,17 +110,12 @@ if ($pendientes === false) {
                 text-align: left;
                 margin-right: 15px;
             }
-
-            /* Estilos específicos para la celda de acciones en móvil */
             .actions-cell {
-                justify-content: flex-end; /* Alinea los botones a la derecha */
+                justify-content: flex-end;
                 gap: 15px;
                 padding: 15px;
             }
-
-            .page-header h1 {
-                font-size: 22px;
-            }
+            .page-header h1 { font-size: 22px; }
         }
         /* --- FIN DE ESTILOS RESPONSIVOS --- */
 
@@ -141,7 +142,6 @@ if ($pendientes === false) {
         <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes de Aprobación</h1>
     </div>
 
-    <!-- Se elimina el estilo en línea para que el diseño de escritorio se aplique correctamente -->
     <div class="results-container">
         <table class="results-table">
             <thead>
@@ -157,7 +157,6 @@ if ($pendientes === false) {
             <?php if ($pendientes->num_rows > 0): ?>
                 <?php while ($row = $pendientes->fetch_assoc()): ?>
                     <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>">
-                        <!-- Se añaden los atributos data-label para la vista móvil -->
                         <td data-label="Folio"><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
                         <td data-label="No. de Parte"><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
                         <td data-label="Responsable"><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
@@ -221,7 +220,7 @@ if ($pendientes === false) {
                 Swal.fire({
                     title: `Rechazar Método - ${folioSolicitud}`,
                     html: `
-                    <p style="text-align:left; margin-bottom:5px;">Se notificará a:</p>
+                    <p style="text-align:left; margin-bottom:15px; font-size: 1em;">Se enviará una notificación a:</p>
                     <input type="email" id="swal-email" class="swal2-input" value="${emailResponsable}" placeholder="Correo del solicitante">
                     <textarea id="swal-motivo" class="swal2-textarea" placeholder="Describe aquí el motivo del rechazo..."></textarea>
                 `,
@@ -231,6 +230,13 @@ if ($pendientes === false) {
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Rechazar y Notificar',
                     cancelButtonText: 'Cancelar',
+                    // --- INICIO DE LA MODIFICACIÓN ---
+                    customClass: {
+                        container: 'swal-custom-container',
+                        input: 'swal-custom-input',
+                        textarea: 'swal-custom-textarea',
+                    },
+                    // --- FIN DE LA MODIFICACIÓN ---
                     preConfirm: () => {
                         const email = document.getElementById('swal-email').value;
                         const motivo = document.getElementById('swal-motivo').value;
@@ -261,18 +267,18 @@ if ($pendientes === false) {
 
             Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            fetch('https://grammermx.com/Mailer/procesar_aprobacion.php', { method: 'POST', body: formData })
+            fetch('dao/procesar_aprobacion.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
                         Swal.fire('¡Éxito!', data.message, 'success');
                         const fila = document.getElementById(`fila-metodo-${idMetodo}`);
                         if (fila) {
-                            // La animación de desvanecimiento ya está en el CSS
+                            fila.style.transition = 'opacity 0.5s ease';
                             fila.style.opacity = '0';
                             setTimeout(() => {
                                 fila.remove();
-                            }, 500); // Espera a que termine la animación
+                            }, 500);
                         }
                     } else {
                         Swal.fire('Error', data.message, 'error');
@@ -283,7 +289,6 @@ if ($pendientes === false) {
                 });
         }
 
-        // Aplica la animación a las filas al cargar la página
         const tableRows = document.querySelectorAll('.results-table tbody tr');
         tableRows.forEach((row, index) => {
             row.style.animationDelay = `${index * 0.05}s`;
