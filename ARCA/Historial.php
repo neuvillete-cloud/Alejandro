@@ -286,10 +286,12 @@ $conex->close();
             <form id="resubmitMetodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="idSolicitud" id="resubmitIdSolicitud">
                 <div class="form-group">
-                    <label class="file-upload-label" for="metodoFileResubmit" style="margin-top: 15px; border-style: solid; background-color: #f8f9fa;">
+                    <!-- INICIO DE LA CORRECCIÓN: Se eliminó el estilo en línea -->
+                    <label class="file-upload-label" for="metodoFileResubmit" style="margin-top: 15px;">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         <span data-default-text="Seleccionar nuevo archivo PDF...">Seleccionar nuevo archivo PDF...</span>
                     </label>
+                    <!-- FIN DE LA CORRECCIÓN -->
                     <input type="file" id="metodoFileResubmit" name="metodoFile" accept=".pdf" required>
                 </div>
                 <div class="form-actions" style="margin-top: 25px;">
