@@ -104,9 +104,11 @@ echo json_encode($response);
  */
 function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
     $folio = "S-" . str_pad($datosSolicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT);
-    $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
+    // --- LÓGICA GUARDADA PARA FUTURO ---
+    // $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
+    // --- CAMBIO: El enlace ahora apunta a Historial.php ---
+    $linkSolicitud = BASE_URL . '/Historial.php';
     $asunto = "Acción Requerida: Método de Trabajo Rechazado para Folio $folio";
-    // --- CORRECCIÓN: Se obtiene el año actual para usarlo en la plantilla ---
     $currentYear = date('Y');
 
     $cuerpoHTML = <<<HTML
@@ -130,7 +132,7 @@ function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
 
             <p style='color:#6c757d;line-height:1.6;'>Por favor, accede a la solicitud para subir una versión corregida del método de trabajo y continuar con el proceso.</p>
             <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' style='padding:20px 0;'>
-                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a la Solicitud</a>
+                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a Mis Solicitudes</a>
             </td></tr></table>
         </td></tr>
         <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
@@ -147,9 +149,11 @@ function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
  */
 function enviarCorreoAprobacion($emailDestino, $datosSolicitud) {
     $folio = "S-" . str_pad($datosSolicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT);
-    $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
+    // --- LÓGICA GUARDADA PARA FUTURO ---
+    // $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
+    // --- CAMBIO: El enlace ahora apunta a Historial.php ---
+    $linkSolicitud = BASE_URL . '/Historial.php';
     $asunto = "Información: Método de Trabajo Aprobado para Folio $folio";
-    // --- CORRECCIÓN: Se obtiene el año actual para usarlo en la plantilla ---
     $currentYear = date('Y');
 
     $cuerpoHTML = <<<HTML
@@ -165,7 +169,7 @@ function enviarCorreoAprobacion($emailDestino, $datosSolicitud) {
             <p style='color:#6c757d;line-height:1.6;'>¡Buenas noticias! El método de trabajo para la solicitud <strong style='color:#0056b3;'>$folio</strong> (No. Parte: {$datosSolicitud['NumeroParte']}) ha sido aprobado.</p>
             <p style='color:#6c757d;line-height:1.6;'>Ya puedes continuar con las siguientes etapas del proceso de contención.</p>
             <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' style='padding:20px 0;'>
-                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a la Solicitud</a>
+                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a Mis Solicitudes</a>
             </td></tr></table>
         </td></tr>
         <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
