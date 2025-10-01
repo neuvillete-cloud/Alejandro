@@ -26,6 +26,14 @@ $query = "
     ORDER BY s.IdSolicitud ASC
 ";
 $pendientes = $conex->query($query);
+
+// --- INICIO DE LA CORRECCIÓN ---
+// Se añade una verificación para manejar posibles errores en la consulta SQL.
+// Si la consulta falla, $pendientes será 'false' y el script se detendrá con un mensaje claro.
+if ($pendientes === false) {
+    die("Error al ejecutar la consulta en la base de datos: " . $conex->error);
+}
+// --- FIN DE LA CORRECCIÓN ---
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -184,5 +192,4 @@ $pendientes = $conex->query($query);
 </script>
 </body>
 </html>
-
 
