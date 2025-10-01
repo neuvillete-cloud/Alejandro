@@ -1,6 +1,7 @@
 <?php
-// Incluye el script que verifica si hay una sesión activa y si es SuperUsuario
+// Se revierte a las rutas relativas que funcionan en tus otros archivos.
 include_once("dao/verificar_sesion.php");
+
 if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] != 1) { die("Acceso denegado. Esta página es solo para administradores."); }
 
@@ -27,13 +28,10 @@ $query = "
 ";
 $pendientes = $conex->query($query);
 
-// --- INICIO DE LA CORRECCIÓN ---
 // Se añade una verificación para manejar posibles errores en la consulta SQL.
-// Si la consulta falla, $pendientes será 'false' y el script se detendrá con un mensaje claro.
 if ($pendientes === false) {
     die("Error al ejecutar la consulta en la base de datos: " . $conex->error);
 }
-// --- FIN DE LA CORRECCIÓN ---
 ?>
 <!DOCTYPE html>
 <html lang="es">
