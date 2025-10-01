@@ -283,7 +283,7 @@ $conex->close();
         </div>
         <div class="modal-body">
             <p style="font-size: 1em; color: #555; margin-top: 0;">El método anterior fue rechazado. Por favor, sube una nueva versión corregida en formato PDF.</p>
-            <form id="resubmitMetodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data">
+            <form id="resubmitMetodoForm" action="https://grammermx.com/Mailer/resubir_metodo.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="idSolicitud" id="resubmitIdSolicitud">
                 <div class="form-group">
                     <!-- CORRECCIÓN: Se eliminó el estilo en línea que sobreescribía el diseño -->
