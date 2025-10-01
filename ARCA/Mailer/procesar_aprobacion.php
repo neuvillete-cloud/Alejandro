@@ -36,12 +36,13 @@ $con = new LocalConector();
 $conex = $con->conectar();
 
 try {
-    // Obtenemos los datos necesarios para la notificación
+    // --- CORRECCIÓN: Obtenemos también el correo del creador ---
     $stmt_datos = $conex->prepare("
         SELECT 
             s.IdSolicitud, 
             s.NumeroParte,
-            u.Nombre AS NombreCreador
+            u.Nombre AS NombreCreador,
+            u.Correo AS EmailCreador
         FROM Metodos m
         JOIN Solicitudes s ON m.IdMetodo = s.IdMetodo
         JOIN Usuarios u ON s.IdUsuario = u.IdUsuario
@@ -61,10 +62,11 @@ try {
         $stmt->bind_param("i", $idMetodo);
         $stmt->execute();
 
-        // (Opcional) Aquí podrías llamar a una función para notificar la aprobación.
-        // enviarCorreoAprobacion($_POST['email'], $datosSolicitud);
+        // --- CORRECCIÓN: Se activa el envío de correo de aprobación ---
+        $emailDestino = $datosSolicitud['EmailCreador'];
+        enviarCorreoAprobacion($emailDestino, $datosSolicitud);
 
-        $response = ['status' => 'success', 'message' => 'Método de trabajo aprobado correctamente.'];
+        $response = ['status' => 'success', 'message' => 'Método de trabajo aprobado y notificación enviada.'];
 
     } elseif ($accion === 'rechazar') {
         if (empty($_POST['email']) || empty($_POST['motivo'])) {
@@ -81,7 +83,6 @@ try {
         $stmt->bind_param("i", $idMetodo);
         $stmt->execute();
 
-        // Enviar notificación de rechazo
         enviarCorreoRechazo($emailDestino, $motivoRechazo, $datosSolicitud);
 
         $response = ['status' => 'success', 'message' => 'Método rechazado y notificación enviada.'];
@@ -105,6 +106,8 @@ function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
     $folio = "S-" . str_pad($datosSolicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT);
     $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
     $asunto = "Acción Requerida: Método de Trabajo Rechazado para Folio $folio";
+    // --- CORRECCIÓN: Se obtiene el año actual para usarlo en la plantilla ---
+    $currentYear = date('Y');
 
     $cuerpoHTML = <<<HTML
     <!DOCTYPE html><html><head><style> @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'); </style></head><body style='margin:0;padding:0;background-color:#f8f9fa;font-family:"Lato", Arial, sans-serif;'>
@@ -130,13 +133,12 @@ function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
                 <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a la Solicitud</a>
             </td></tr></table>
         </td></tr>
-        <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; " . date('Y') . " ARCA Systems. Notificación automatizada.</p></td></tr>
+        <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
     </table>
     </td></tr></table>
     </body></html>
     HTML;
 
-    // Configuración y envío con PHPMailer...
     enviarCorreo($emailDestino, $asunto, $cuerpoHTML);
 }
 
@@ -147,6 +149,8 @@ function enviarCorreoAprobacion($emailDestino, $datosSolicitud) {
     $folio = "S-" . str_pad($datosSolicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT);
     $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
     $asunto = "Información: Método de Trabajo Aprobado para Folio $folio";
+    // --- CORRECCIÓN: Se obtiene el año actual para usarlo en la plantilla ---
+    $currentYear = date('Y');
 
     $cuerpoHTML = <<<HTML
     <!DOCTYPE html><html><head><style> @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'); </style></head><body style='margin:0;padding:0;background-color:#f8f9fa;font-family:"Lato", Arial, sans-serif;'>
@@ -164,13 +168,12 @@ function enviarCorreoAprobacion($emailDestino, $datosSolicitud) {
                 <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a la Solicitud</a>
             </td></tr></table>
         </td></tr>
-        <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; " . date('Y') . " ARCA Systems. Notificación automatizada.</p></td></tr>
+        <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
     </table>
     </td></tr></table>
     </body></html>
     HTML;
 
-    // Configuración y envío con PHPMailer...
     enviarCorreo($emailDestino, $asunto, $cuerpoHTML);
 }
 
@@ -190,17 +193,16 @@ function enviarCorreo($destinatario, $asunto, $cuerpo) {
         $mail->Port = 465;
         $mail->setFrom('sistema_arca@grammermx.com', 'Sistema ARCA');
         $mail->addAddress($destinatario);
+        $mail->addBCC('sistema_ats@grammermx.com');
+        $mail->addBCC('extern.alejandro.torres@grammer.com');
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         $mail->Subject = $asunto;
         $mail->Body = $cuerpo;
         $mail->send();
     } catch (Exception $e) {
-        // En un entorno de producción, sería bueno registrar este error en un log.
-        // Por ahora, lanzamos una excepción para que el JSON de respuesta la capture.
         throw new Exception("El cambio en la base de datos fue exitoso, pero el correo no pudo ser enviado. Error: {$mail->ErrorInfo}");
     }
 }
 ?>
-
 
