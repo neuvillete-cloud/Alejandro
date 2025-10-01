@@ -1,11 +1,16 @@
 <?php
-// Incluye el script que verifica si hay una sesión activa y si es SuperUsuario
-include_once("dao/verificar_sesion.php");
+// --- INICIO DE LA CORRECCIÓN ---
+// Se utilizan rutas absolutas para asegurar que los archivos siempre se encuentren.
+include_once(__DIR__ . "/dao/verificar_sesion.php");
+// --- FIN DE LA CORRECCIÓN ---
+
 if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] != 1) { die("Acceso denegado. Esta página es solo para administradores."); }
 
 // Conexión a la base de datos
-include_once("dao/conexionArca.php");
+// --- INICIO DE LA CORRECCIÓN ---
+include_once(__DIR__ . "/dao/conexionArca.php");
+// --- FIN DE LA CORRECCIÓN ---
 $con = new LocalConector();
 $conex = $con->conectar();
 
@@ -27,13 +32,11 @@ $query = "
 ";
 $pendientes = $conex->query($query);
 
-// --- INICIO DE LA CORRECCIÓN ---
 // Se añade una verificación para manejar posibles errores en la consulta SQL.
 // Si la consulta falla, $pendientes será 'false' y el script se detendrá con un mensaje claro.
 if ($pendientes === false) {
     die("Error al ejecutar la consulta en la base de datos: " . $conex->error);
 }
-// --- FIN DE LA CORRECCIÓN ---
 ?>
 <!DOCTYPE html>
 <html lang="es">
