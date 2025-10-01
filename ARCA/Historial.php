@@ -58,43 +58,42 @@ if (isset($_SESSION['vista_token_actual'])) {
     $tituloPagina = "Solicitud Compartida";
     $token = $_SESSION['vista_token_actual'];
 
-    // Consulta para el modo invitado (no necesita cambios)
-    $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus 
+    // --- INICIO DE LA MODIFICACIÓN: Añadir EstatusAprobacion a la consulta de invitado ---
+    $sql_base = "SELECT s.IdSolicitud, s.NumeroParte, s.FechaRegistro, p.NombreProvedor, e.NombreEstatus, m.EstatusAprobacion 
                  FROM Solicitudes s
                  JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud
                  JOIN Provedores p ON s.IdProvedor = p.IdProvedor
                  JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+                 LEFT JOIN Metodos m ON s.IdMetodo = m.IdMetodo
                  WHERE sc.Token = ?";
     $params[] = $token;
     $types = "s";
 
 } else {
-    // --- MODO NORMAL: CONSULTA MODIFICADA PARA PERSISTENCIA ---
-    // Se añade un LEFT JOIN a SolicitudesCompartidas para saber si ya se envió un correo.
+    // --- INICIO DE LA MODIFICACIÓN: Añadir EstatusAprobacion a la consulta principal ---
     $sql_base = "SELECT 
                     s.IdSolicitud, 
                     s.NumeroParte, 
                     s.FechaRegistro, 
                     p.NombreProvedor, 
                     e.NombreEstatus,
-                    MAX(sc.IdCompartido) as IdCompartido
+                    MAX(sc.IdCompartido) as IdCompartido,
+                    m.EstatusAprobacion
                  FROM Solicitudes s
                  JOIN Provedores p ON s.IdProvedor = p.IdProvedor
                  JOIN Estatus e ON s.IdEstatus = e.IdEstatus
-                 LEFT JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud";
+                 LEFT JOIN SolicitudesCompartidas sc ON s.IdSolicitud = sc.IdSolicitud
+                 LEFT JOIN Metodos m ON s.IdMetodo = m.IdMetodo";
 
     $where_clauses = [];
 
     // --- INICIO DE LÓGICA DE ROLES ---
-    // Si el usuario NO es un administrador (ej. IdRol = 1), se filtra por su ID.
-    // Si es administrador, esta condición se omite, permitiéndole ver todo.
-    if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] != 1) { // <-- ¡CAMBIA EL '1' SI TU ID DE ADMIN ES OTRO!
+    if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] != 1) {
         $where_clauses[] = "s.IdUsuario = ?";
         $params[] = $_SESSION['user_id'];
         $types .= "i";
     }
     // --- FIN DE LÓGICA DE ROLES ---
-
 
     if (!empty($_GET['folio'])) {
         $where_clauses[] = "s.IdSolicitud = ?";
@@ -112,7 +111,6 @@ if (isset($_SESSION['vista_token_actual'])) {
         $sql_base .= " WHERE " . implode(" AND ", $where_clauses);
     }
 
-    // Agrupamos para evitar filas duplicadas si una solicitud se comparte varias veces.
     $sql_base .= " GROUP BY s.IdSolicitud";
 }
 
@@ -137,6 +135,18 @@ $conex->close();
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- INICIO DE NUEVOS ESTILOS -->
+    <style>
+        .btn-icon.resubir {
+            background-color: #fff3e0;
+            color: #b75c09;
+        }
+        .btn-icon.resubir:hover {
+            background-color: #ff9800;
+            color: var(--color-blanco);
+        }
+    </style>
+    <!-- FIN DE NUEVOS ESTILOS -->
 </head>
 <body>
 <header class="header">
@@ -216,19 +226,21 @@ $conex->close();
 
                             <?php if ($modoVista === 'usuario_logueado'): ?>
 
-                                <?php // --- INICIO DE LA LÓGICA DE BOTÓN PERSISTENTE --- ?>
                                 <?php if (isset($row['IdCompartido']) && $row['IdCompartido'] !== null): ?>
-                                    <?php // Si ya fue compartida, muestra el botón desactivado con la palomita. ?>
                                     <button class="btn-icon btn-email sent" data-translate-key-title="title_emailSent" title="Correo Enviado" disabled>
                                         <i class="fa-solid fa-check"></i>
                                     </button>
                                 <?php else: ?>
-                                    <?php // Si no ha sido compartida, muestra el botón normal para enviar. ?>
                                     <button class="btn-icon btn-email" data-id="<?php echo $row['IdSolicitud']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo">
                                         <i class="fa-solid fa-envelope"></i>
                                     </button>
                                 <?php endif; ?>
-                                <?php // --- FIN DE LA LÓGICA DE BOTÓN PERSISTENTE --- ?>
+
+                                <!-- INICIO DE LA NUEVA LÓGICA -->
+                                <?php if (isset($row['EstatusAprobacion']) && $row['EstatusAprobacion'] === 'Rechazado'): ?>
+                                    <button class="btn-icon resubir" data-id="<?php echo $row['IdSolicitud']; ?>" title="Corregir Método de Trabajo"><i class="fa-solid fa-upload"></i></button>
+                                <?php endif; ?>
+                                <!-- FIN DE LA NUEVA LÓGICA -->
 
                             <?php else: // Modo Invitado ?>
                                 <a href="trabajar_solicitud.php?id=<?php echo $row['IdSolicitud']; ?>" class="btn-icon" title="Empezar a Trabajar" style="text-decoration: none; background-color: #5c85ad; color: #ffffff;"><i class="fa-solid fa-hammer"></i></a>
@@ -241,15 +253,7 @@ $conex->close();
                     <td colspan="6" class="no-results-cell">
                         <div class="no-results-content">
                             <i class="fa-solid fa-folder-open"></i>
-                            <p data-translate-key="noResults">
-                                <?php
-                                if ($modoVista === 'invitado') {
-                                    echo "No se encontró la solicitud compartida o el enlace ha expirado.";
-                                } else {
-                                    echo "No se encontraron solicitudes";
-                                }
-                                ?>
-                            </p>
+                            <p data-translate-key="noResults">No se encontraron solicitudes</p>
                         </div>
                     </td>
                 </tr>
@@ -270,7 +274,106 @@ $conex->close();
     </div>
 </div>
 
+<!-- INICIO DEL NUEVO MODAL PARA RESUBIR -->
+<div id="resubmit-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2>Corregir Método de Trabajo</h2>
+            <button id="resubmit-modal-close" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 1em; color: #555; margin-top: 0;">El método anterior fue rechazado. Por favor, sube una nueva versión corregida en formato PDF.</p>
+            <form id="resubmitMetodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="idSolicitud" id="resubmitIdSolicitud">
+                <div class="form-group">
+                    <label class="file-upload-label" for="metodoFileResubmit" style="margin-top: 15px; border-style: solid; background-color: #f8f9fa;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span data-default-text="Seleccionar nuevo archivo PDF...">Seleccionar nuevo archivo PDF...</span>
+                    </label>
+                    <input type="file" id="metodoFileResubmit" name="metodoFile" accept=".pdf" required>
+                </div>
+                <div class="form-actions" style="margin-top: 25px;">
+                    <button type="submit" class="btn-primary">Subir y Notificar al Administrador</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- FIN DEL NUEVO MODAL -->
+
 <script src="js/ver_solicitudes.js"></script>
+
+<!-- INICIO DEL NUEVO SCRIPT PARA EL MODAL -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const resubmitModal = document.getElementById('resubmit-modal');
+        const resubmitModalCloseBtn = document.getElementById('resubmit-modal-close');
+        const resubmitForm = document.getElementById('resubmitMetodoForm');
+        const resubmitIdInput = document.getElementById('resubmitIdSolicitud');
+        const fileInputResubmit = document.getElementById('metodoFileResubmit');
+        const fileLabelSpan = fileInputResubmit.previousElementSibling.querySelector('span');
+        const defaultFileText = fileLabelSpan.dataset.defaultText;
+
+        if (resubmitModal) {
+            document.querySelectorAll('.btn-icon.resubir').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    resubmitIdInput.value = id;
+                    resubmitModal.classList.add('visible');
+                });
+            });
+
+            function closeResubmitModal() {
+                resubmitModal.classList.remove('visible');
+                resubmitForm.reset();
+                fileLabelSpan.textContent = defaultFileText;
+            }
+
+            resubmitModalCloseBtn.addEventListener('click', closeResubmitModal);
+            resubmitModal.addEventListener('click', (e) => {
+                if (e.target === resubmitModal) closeResubmitModal();
+            });
+
+            fileInputResubmit.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    fileLabelSpan.textContent = this.files[0].name;
+                } else {
+                    fileLabelSpan.textContent = defaultFileText;
+                }
+            });
+
+            resubmitForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                Swal.fire({
+                    title: 'Subiendo Método...',
+                    text: 'Por favor, espera.',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                fetch(this.action, { method: 'POST', body: formData })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire('¡Éxito!', data.message, 'success').then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
+                    });
+            });
+        }
+    });
+</script>
+<!-- FIN DEL NUEVO SCRIPT -->
+
 </body>
 </html>
 
