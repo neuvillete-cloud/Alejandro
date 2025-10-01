@@ -1,6 +1,6 @@
 <?php
-// session_start() es crucial para poder crear y manejar la sesión del usuario.
-session_start();
+// CORRECCIÓN: Se añade 'cookie_path' => '/' para que la sesión sea válida en todo el dominio.
+session_start(['cookie_path' => '/']);
 
 // Incluimos tu archivo de conexión
 include_once("conexionArca.php");

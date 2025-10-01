@@ -1,7 +1,8 @@
 <?php
 // Inicia la sesión si no está iniciada
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+    // CORRECCIÓN: Se añade 'cookie_path' => '/' para que la sesión sea válida en todo el dominio.
+    session_start(['cookie_path' => '/']);
 }
 
 // Si el usuario NO está logueado pero SÍ tiene una cookie "remember_me"
