@@ -52,6 +52,12 @@ if ($pendientes === false) {
         .btn-icon.aprobar:hover { background-color: var(--color-exito); color: var(--color-blanco); }
         .btn-icon.rechazar { background-color: #fdecea; color: #a83232; }
         .btn-icon.rechazar:hover { background-color: var(--color-error); color: var(--color-blanco); }
+
+        /* --- INICIO DE LA CORRECCIÓN: Centrar botones --- */
+        .actions-cell {
+            justify-content: center; /* Centra los botones de ícono dentro de su celda */
+        }
+        /* --- FIN DE LA CORRECCIÓN --- */
     </style>
 </head>
 <body>
