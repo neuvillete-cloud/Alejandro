@@ -1,7 +1,7 @@
 <?php
 // Incluimos los archivos necesarios.
 // Ahora que la sesión es válida en todo el dominio, la comprobación funcionará sin cabeceras adicionales.
-include_once("verificar_sesion.php");
+include_once("/dao/verificar_sesion.php");
 include_once("conexionArca.php");
 require 'Phpmailer/Exception.php';
 require 'Phpmailer/PHPMailer.php';
