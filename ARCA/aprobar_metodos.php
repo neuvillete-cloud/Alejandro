@@ -39,7 +39,7 @@ if ($pendientes === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Métodos de Trabajo - ARCA</title>
     <!-- Se enlaza a la hoja de estilos general que ya contiene los nuevos estilos -->
-    <link rel="stylesheet" href="css/estilosAprobarM.css">
+    <link rel="stylesheet" href="css/estilosT.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
@@ -48,6 +48,11 @@ if ($pendientes === false) {
 
     <!-- INICIO DE MEJORAS DE DISEÑO -->
     <style>
+        /* Añade un patrón de fondo sutil a toda la página */
+        body {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dbe1e8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
         /* Animación para que las filas aparezcan suavemente */
         @keyframes fadeInRow {
             from {
@@ -60,13 +65,11 @@ if ($pendientes === false) {
             }
         }
 
-        /* Aplicar la animación a las filas de la tabla */
         .panel-aprobacion .data-table tbody tr {
             animation: fadeInRow 0.5s ease-out forwards;
-            opacity: 0; /* Inicia invisible para que la animación funcione */
+            opacity: 0;
         }
 
-        /* Celda del Folio con más énfasis visual */
         .folio-cell {
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
@@ -74,10 +77,19 @@ if ($pendientes === false) {
             font-size: 1.05em;
         }
 
-        /* Aumentar el espaciado vertical para mejor legibilidad */
         .panel-aprobacion .data-table td {
             padding-top: 16px;
             padding-bottom: 16px;
+        }
+
+        /* Estilo para los nuevos iconos dentro de las celdas y cabeceras */
+        .data-table th i, .data-table td i.cell-icon {
+            margin-right: 8px;
+            color: var(--color-acento);
+            font-size: 0.9em;
+        }
+        .panel-aprobacion .data-table th i {
+            color: rgba(255, 255, 255, 0.7);
         }
     </style>
     <!-- FIN DE MEJORAS DE DISEÑO -->
@@ -95,7 +107,6 @@ if ($pendientes === false) {
     <div class="panel-aprobacion">
         <div class="panel-header">
             <h1><i class="fa-solid fa-clipboard-check"></i> Métodos Pendientes</h1>
-            <!-- Se eliminó el contador de aquí -->
         </div>
 
         <?php if ($pendientes->num_rows > 0): ?>
@@ -103,21 +114,21 @@ if ($pendientes === false) {
                 <table class="data-table">
                     <thead>
                     <tr>
-                        <th>Folio Solicitud</th>
-                        <th>No. de Parte</th>
-                        <th>Responsable</th>
-                        <th>Nombre del Método</th>
-                        <th>Archivo</th>
-                        <th style="text-align: center;">Acciones</th>
+                        <th><i class="fa-solid fa-hashtag"></i>Folio Solicitud</th>
+                        <th><i class="fa-solid fa-barcode"></i>No. de Parte</th>
+                        <th><i class="fa-solid fa-user"></i>Responsable</th>
+                        <th><i class="fa-solid fa-file-signature"></i>Nombre del Método</th>
+                        <th><i class="fa-solid fa-download"></i>Archivo</th>
+                        <th style="text-align: center;"><i class="fa-solid fa-cogs"></i>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
+                    <?php $loop_iterator = 0; ?>
                     <?php while ($row = $pendientes->fetch_assoc()): ?>
-                        <!-- Se añade un delay a la animación de cada fila -->
-                        <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>" style="animation-delay: <?php echo $loop_iterator ?? 0; $loop_iterator = ($loop_iterator ?? 0) + 0.05; ?>s;">
+                        <tr id="fila-metodo-<?php echo $row['IdMetodo']; ?>" style="animation-delay: <?php echo $loop_iterator; ?>s;">
                             <td class="folio-cell"><?php echo "S-" . str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
-                            <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
-                            <td><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
+                            <td><i class="fa-solid fa-tag cell-icon"></i><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
+                            <td><i class="fa-solid fa-user-tie cell-icon"></i><?php echo htmlspecialchars($row['NombreResponsable']); ?></td>
                             <td><?php echo htmlspecialchars($row['TituloMetodo']); ?></td>
                             <td>
                                 <a href="<?php echo htmlspecialchars($row['RutaArchivo']); ?>" target="_blank" class="btn-accion ver-pdf">
@@ -133,6 +144,7 @@ if ($pendientes === false) {
                                 </button>
                             </td>
                         </tr>
+                        <?php $loop_iterator += 0.05; ?>
                     <?php endwhile; ?>
                     </tbody>
                 </table>
