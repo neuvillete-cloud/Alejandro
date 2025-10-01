@@ -39,7 +39,7 @@ if ($pendientes === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprobar Métodos de Trabajo - ARCA</title>
     <!-- Se enlaza a la hoja de estilos general que ya contiene los nuevos estilos -->
-    <link rel="stylesheet" href="css/estilosAprobarM.css">
+    <link rel="stylesheet" href="css/estilosT.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
@@ -88,9 +88,9 @@ if ($pendientes === false) {
             color: var(--color-acento);
             font-size: 0.9em;
         }
-        .panel-aprobacion .data-table th i {
-            color: rgba(255, 255, 255, 0.7);
-        }
+
+        /* CORRECCIÓN: Se eliminó la regla que hacía invisibles los iconos del encabezado */
+
     </style>
     <!-- FIN DE MEJORAS DE DISEÑO -->
 </head>
