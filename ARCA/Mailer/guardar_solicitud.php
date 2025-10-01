@@ -1,24 +1,6 @@
 <?php
-// =================================================================
-// INICIO DE LA CORRECCIÓN: CABECERAS CORS
-// =================================================================
-// Estas líneas le dan permiso a tu página para enviar solicitudes autenticadas.
-// ¡IMPORTANTE! Asegúrate de que el dominio aquí sea exactamente donde está alojada tu aplicación.
-header("Access-Control-Allow-Origin: https://grammermx.com");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, X-Requested-With");
-
-// El navegador envía una solicitud 'OPTIONS' de prueba antes del POST.
-// Si es así, respondemos que todo está bien y terminamos el script.
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit(0);
-}
-// =================================================================
-// FIN DE LA CORRECCIÓN
-// =================================================================
-
 // Incluimos los archivos necesarios.
+// Ahora que la sesión es válida en todo el dominio, la comprobación funcionará sin cabeceras adicionales.
 include_once("verificar_sesion.php");
 include_once("conexionArca.php");
 require 'Phpmailer/Exception.php';
