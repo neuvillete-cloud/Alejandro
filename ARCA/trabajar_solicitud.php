@@ -316,7 +316,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         <!-- INICIO DE LA MODIFICACIÓN: Lógica condicional para el formulario de subida -->
         <?php if (!$mostrarFormularioPrincipal): ?>
             <?php if ($solicitud['IdMetodo'] === NULL): // Caso: Primera vez que se sube ?>
-                <form id="metodoForm" action="dao/upload_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                <form id="metodoForm" action="https://grammermx.com/Mailer/upload_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
                         <legend><i class="fa-solid fa-paperclip"></i> Subir Método de Trabajo</legend>
