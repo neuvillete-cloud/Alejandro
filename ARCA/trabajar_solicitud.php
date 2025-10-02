@@ -135,6 +135,13 @@ foreach ($reportes_raw as $reporte) {
 }
 
 $conex->close();
+
+// --- INICIO DE NUEVA LÓGICA: Variable para controlar el visor de PDF ---
+$mostrarVisorPDF = false;
+if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] === 'Aprobado' && !empty($solicitud['RutaMetodo'])) {
+    $mostrarVisorPDF = true;
+}
+// --- FIN DE NUEVA LÓGICA ---
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -148,6 +155,16 @@ $conex->close();
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- INICIO DE NUEVOS ESTILOS -->
+    <style>
+        .pdf-viewer-container {
+            border: 1px solid var(--color-borde);
+            border-radius: 8px;
+            overflow: hidden; /* Para que el iframe respete los bordes redondeados */
+            margin-top: 15px;
+        }
+    </style>
+    <!-- FIN DE NUEVOS ESTILOS -->
 </head>
 <body>
 <header class="header">
@@ -169,6 +186,16 @@ $conex->close();
             <p><strong>Defectos:</strong> <span><?php echo $nombresDefectosStr; ?></span></p>
         </div>
 
+        <!-- INICIO DE NUEVA SECCIÓN: Visor de PDF para métodos aprobados -->
+        <?php if ($mostrarVisorPDF): ?>
+            <fieldset>
+                <legend><i class="fa-solid fa-file-shield"></i> Método de Trabajo Aprobado</legend>
+                <div class="pdf-viewer-container">
+                    <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>" width="100%" height="600px" frameborder="0"></iframe>
+                </div>
+            </fieldset>
+        <?php endif; ?>
+        <!-- FIN DE NUEVA SECCIÓN -->
 
         <?php
         $mostrarFormularioPrincipal = false;
@@ -180,7 +207,10 @@ $conex->close();
             if ($solicitud['IdMetodo'] !== NULL && $solicitud['EstatusAprobacion'] === 'Pendiente') {
                 echo "<div class='notification-box info'><i class='fa-solid fa-clock'></i> <strong>Aviso:</strong> El método de trabajo está pendiente de aprobación. Puedes continuar con el registro.</div>";
             }
-            $mostrarFormularioPrincipal = true;
+            // MODIFICACIÓN: El formulario principal solo se muestra si el método está Aprobado o Pendiente
+            if ($solicitud['EstatusAprobacion'] === 'Aprobado' || $solicitud['EstatusAprobacion'] === 'Pendiente') {
+                $mostrarFormularioPrincipal = true;
+            }
         }
         ?>
 
@@ -284,18 +314,18 @@ $conex->close();
         <?php endif; ?>
 
         <?php if (!$mostrarFormularioPrincipal): ?>
-            <form id="metodoForm" action="dao/upload_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+            <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                 <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                 <fieldset>
                     <legend><i class="fa-solid fa-paperclip"></i> Subir Método de Trabajo</legend>
-                    <div class="form-group"><label>Nombre del Método</label><input type="text" name="tituloMetodo" required></div>
+                    <!-- CAMBIO: Se elimina el campo de título, ya no es necesario al resubir -->
                     <div class="form-group">
                         <label>Archivo PDF</label>
                         <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span></label>
                         <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
                     </div>
                 </fieldset>
-                <div class="form-actions"><button type="submit" class="btn-primary">Subir Método y Notificar</button></div>
+                <div class="form-actions"><button type="submit" class="btn-primary">Subir y Notificar</button></div>
             </form>
         <?php endif; ?>
 
@@ -390,13 +420,11 @@ $conex->close();
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
             const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-            // --- VALIDACIÓN PRINCIPAL: No exceder la cantidad total ---
-            // Esta validación se realiza primero. Si falla, el mensaje de error aparecerá en el campo.
             if (inspeccionadas > cantidadTotalSolicitada) {
                 piezasInspeccionadasInput.setCustomValidity(`La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`);
                 piezasInspeccionadasInput.reportValidity();
             } else {
-                piezasInspeccionadasInput.setCustomValidity(''); // Limpiar el error si es válido
+                piezasInspeccionadasInput.setCustomValidity('');
             }
 
             const rechazadasBrutas = inspeccionadas - aceptadas;
@@ -411,7 +439,7 @@ $conex->close();
                 btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
                 piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
                 piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles);
-                return; // Detiene la ejecución aquí para prevenir cálculos incorrectos
+                return;
             } else {
                 piezasRetrabajadasInput.setCustomValidity('');
             }
@@ -421,7 +449,6 @@ $conex->close();
             defectoCantidadInputs.forEach(input => {
                 sumDefectosClasificados += parseInt(input.value) || 0;
             });
-            // Sumar también las cantidades de los nuevos defectos
             nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => {
                 sumDefectosClasificados += parseInt(input.value) || 0;
             });
@@ -429,8 +456,6 @@ $conex->close();
             const restantes = rechazadasDisponibles - sumDefectosClasificados;
             piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
-            // --- LÓGICA FINAL PARA HABILITAR/DESHABILITAR BOTÓN ---
-            // El botón solo se habilitará si TODAS las condiciones son correctas.
             if (inspeccionadas > cantidadTotalSolicitada) {
                 btnGuardarReporte.disabled = true;
                 btnGuardarReporte.title = 'La cantidad inspeccionada excede el total solicitado.';
@@ -464,13 +489,13 @@ $conex->close();
                     actualizarContadores();
                 }
             });
-            actualizarContadores(); // Inicializa los contadores al cargar la página
+            actualizarContadores();
         }
 
         // --- Función para añadir un nuevo bloque de defecto (usado para agregar y para edición) ---
         function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
             nuevoDefectoCounter++;
-            const currentCounter = nuevoDefectoCounter; // Usar un contador local para este bloque
+            const currentCounter = nuevoDefectoCounter;
             const defectoHTML = `
             <div class="defecto-item" id="nuevo-defecto-${currentCounter}">
                 <div class="defecto-header">
@@ -511,7 +536,7 @@ $conex->close();
                 newBlock.querySelector(`input[name="nuevos_defectos[${currentCounter}][cantidad]"]`).value = cantidad;
             }
             document.getElementById(`nuevoDefectoFoto-${currentCounter}`).addEventListener('change', updateFileNameLabel);
-            return newBlock; // Devuelve el nuevo bloque por si se necesita manipularlo
+            return newBlock;
         }
 
         btnAddNuevoDefecto?.addEventListener('click', function() {
@@ -524,7 +549,6 @@ $conex->close();
             if (e.target && e.target.classList.contains('btn-remove-defecto')) {
                 const defectoItem = document.getElementById(`nuevo-defecto-${e.target.dataset.defectoId}`);
                 if (defectoItem) {
-                    // Si se está editando y el defecto tiene un ID de DefectoEncontrado, pedir confirmación para eliminar de la BD
                     const idDefectoEncontradoInput = defectoItem.querySelector('input[name*="[idDefectoEncontrado]"]');
                     if (editandoReporte && idDefectoEncontradoInput && idDefectoEncontradoInput.value) {
                         Swal.fire({
@@ -538,7 +562,6 @@ $conex->close();
                             cancelButtonText: 'Cancelar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // Agregamos un campo oculto para indicar que este ID de defecto debe ser eliminado
                                 const inputEliminar = document.createElement('input');
                                 inputEliminar.type = 'hidden';
                                 inputEliminar.name = `defectos_encontrados_a_eliminar[]`;
@@ -572,7 +595,7 @@ $conex->close();
         });
 
         // --- Lógica para mostrar/ocultar Tiempo Muerto ---
-        let tiempoMuertoActivo = false; // Estado inicial del toggle
+        let tiempoMuertoActivo = false;
         function toggleTiempoMuertoSection(activate) {
             tiempoMuertoActivo = activate;
             if (tiempoMuertoActivo) {
@@ -583,13 +606,13 @@ $conex->close();
                 tiempoMuertoSection.style.display = 'none';
                 toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
                 toggleTiempoMuertoBtn.className = 'btn-secondary';
-                idTiempoMuertoSelect.value = ''; // Limpiar selección si se desactiva
+                idTiempoMuertoSelect.value = '';
             }
         }
         toggleTiempoMuertoBtn?.addEventListener('click', function() {
             toggleTiempoMuertoSection(!tiempoMuertoActivo);
         });
-        toggleTiempoMuertoSection(false); // Inicializar en "No"
+        toggleTiempoMuertoSection(false);
 
         // --- Lógica para el envío de los formularios con fetch ---
         reporteForm?.addEventListener('submit', function(e) {
@@ -597,7 +620,6 @@ $conex->close();
             const form = this;
             const formData = new FormData(form);
 
-            // Re-validar las piezas retrabajadas justo antes de enviar
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
             const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
@@ -677,18 +699,15 @@ $conex->close();
                     const defectosOriginales = data.defectosOriginales;
                     const nuevosDefectos = data.nuevosDefectos;
 
-                    // 1. Rellenar campos del reporte principal
                     idReporteInput.value = reporte.IdReporte;
                     piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
                     piezasAceptadasInput.value = reporte.PiezasAceptadas;
                     piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
-                    // nombreInspector ya está prellenado con la sesión, si es el mismo, se mantiene.
                     fechaInspeccionInput.value = reporte.FechaInspeccion;
                     idRangoHoraSelect.value = reporte.IdRangoHora;
                     tiempoInspeccionInput.value = reporte.TiempoInspeccion || '';
                     comentariosTextarea.value = reporte.Comentarios || '';
 
-                    // Manejar tiempo muerto
                     if (reporte.IdTiempoMuerto) {
                         toggleTiempoMuertoSection(true);
                         idTiempoMuertoSelect.value = reporte.IdTiempoMuerto;
@@ -696,8 +715,6 @@ $conex->close();
                         toggleTiempoMuertoSection(false);
                     }
 
-                    // 2. Rellenar clasificación de defectos originales
-                    // Primero, resetear los campos a 0/vacío para evitar datos antiguos
                     defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => input.value = 0);
                     defectosOriginalesContainer.querySelectorAll('.defecto-lote').forEach(input => input.value = '');
 
@@ -708,32 +725,29 @@ $conex->close();
                         if (inputLote) inputLote.value = defecto.Lote;
                     });
 
-                    // 3. Rellenar nuevos defectos encontrados
-                    nuevosDefectosContainer.innerHTML = ''; // Limpiar cualquier nuevo defecto existente
-                    nuevoDefectoCounter = 0; // Resetear el contador para que los nuevos IDs sean únicos
+                    nuevosDefectosContainer.innerHTML = '';
+                    nuevoDefectoCounter = 0;
                     nuevosDefectos.forEach(defecto => {
                         const newBlock = addNuevoDefectoBlock(
-                            defecto.IdDefectoEncontrado, // id del defecto encontrado
+                            defecto.IdDefectoEncontrado,
                             defecto.IdDefectoCatalogo,
                             defecto.Cantidad,
                             defecto.RutaFotoEvidencia
                         );
-                        // Asegurarse de que el input de archivo no esté requerido si ya hay una foto existente
                         const fileInput = newBlock.querySelector(`input[type="file"]`);
                         if (defecto.RutaFotoEvidencia) {
                             fileInput.removeAttribute('required');
                             const labelSpan = fileInput.previousElementSibling.querySelector('span');
-                            labelSpan.textContent = "Archivo existente"; // O el nombre real si lo puedes extraer
+                            labelSpan.textContent = "Archivo existente";
                         }
                     });
 
-                    // 4. Actualizar contadores y estado de edición
                     actualizarContadores();
                     editandoReporte = true;
                     btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
-                    reporteForm.action = 'dao/actualizar_reporte.php'; // Cambiar la acción del formulario
+                    reporteForm.action = 'dao/actualizar_reporte.php';
                     Swal.close();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll al inicio del formulario
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }
@@ -742,14 +756,12 @@ $conex->close();
             }
         }
 
-        // --- Lógica para editar un registro (botón en la tabla) ---
         document.querySelectorAll('.btn-edit-reporte').forEach(button => {
             button.addEventListener('click', function() {
                 cargarReporteParaEdicion(this.dataset.id);
             });
         });
 
-        // --- Lógica para eliminar un registro (botón en la tabla) ---
         document.querySelectorAll('.btn-delete-reporte').forEach(button => {
             button.addEventListener('click', function() {
                 const idReporteAEliminar = this.dataset.id;
@@ -786,7 +798,6 @@ $conex->close();
 
 
         <?php if ($esSuperUsuario): ?>
-        // Lógica para añadir nueva razón de tiempo muerto
         document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() {
             Swal.fire({
                 title: 'Añadir Nueva Razón de Tiempo Muerto',
@@ -813,8 +824,6 @@ $conex->close();
                         .then(data => {
                             if (data.status === 'success') {
                                 Swal.fire('¡Guardado!', data.message, 'success').then(() => {
-                                    // Recargar solo el select para no perder el estado del formulario de edición
-                                    // Mejor opción sería un fetch y añadir la nueva opción dinámicamente
                                     window.location.reload();
                                 });
                             } else {
