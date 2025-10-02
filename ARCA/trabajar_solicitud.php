@@ -313,21 +313,41 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         <?php endif; ?>
 
+        <!-- INICIO DE LA MODIFICACIÓN: Lógica condicional para el formulario de subida -->
         <?php if (!$mostrarFormularioPrincipal): ?>
-            <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
-                <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                <fieldset>
-                    <legend><i class="fa-solid fa-paperclip"></i> Subir Método de Trabajo</legend>
-                    <!-- CAMBIO: Se elimina el campo de título, ya no es necesario al resubir -->
-                    <div class="form-group">
-                        <label>Archivo PDF</label>
-                        <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span></label>
-                        <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
-                    </div>
-                </fieldset>
-                <div class="form-actions"><button type="submit" class="btn-primary">Subir y Notificar</button></div>
-            </form>
+            <?php if ($solicitud['IdMetodo'] === NULL): // Caso: Primera vez que se sube ?>
+                <form id="metodoForm" action="dao/upload_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                    <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
+                    <fieldset>
+                        <legend><i class="fa-solid fa-paperclip"></i> Subir Método de Trabajo</legend>
+                        <div class="form-group">
+                            <label>Nombre del Método</label>
+                            <input type="text" name="tituloMetodo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Archivo PDF</label>
+                            <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span></label>
+                            <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
+                        </div>
+                    </fieldset>
+                    <div class="form-actions"><button type="submit" class="btn-primary">Subir y Notificar</button></div>
+                </form>
+            <?php else: // Caso: El método fue rechazado y se debe resubir ?>
+                <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                    <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
+                    <fieldset>
+                        <legend><i class="fa-solid fa-paperclip"></i> Corregir Método de Trabajo</legend>
+                        <div class="form-group">
+                            <label>Archivo PDF</label>
+                            <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span></label>
+                            <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
+                        </div>
+                    </fieldset>
+                    <div class="form-actions"><button type="submit" class="btn-primary">Subir y Notificar</button></div>
+                </form>
+            <?php endif; ?>
         <?php endif; ?>
+        <!-- FIN DE LA MODIFICACIÓN -->
 
         <hr style="margin-top: 40px; margin-bottom: 30px; border-color: var(--color-borde);">
 
