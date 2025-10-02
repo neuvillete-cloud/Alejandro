@@ -45,16 +45,40 @@ function notificarAdminNuevoMetodo($idSolicitud, $datosSolicitud) {
     $asunto = "ARCA: Método Corregido para Revisión - Folio S-" . str_pad($idSolicitud, 4, '0', STR_PAD_LEFT);
     $linkAprobacion = BASE_URL . '/aprobar_metodos.php';
     $currentYear = date('Y');
-    // Esta es una plantilla de correo simplificada. Puedes copiar y pegar la plantilla completa de tus otros archivos si lo deseas.
+
+    // --- INICIO DE LA PLANTILLA DE CORREO MEJORADA ---
     $cuerpoHTML = <<<HTML
-    <!DOCTYPE html><html><body>
-    <p>Hola Administrador,</p>
-    <p>Se ha subido una versión corregida del método de trabajo para la solicitud con folio <strong>S-{$idSolicitud}</strong> y requiere tu aprobación.</p>
-    <p><strong>Creador:</strong> {$datosSolicitud['responsable']}<br><strong>No. de Parte:</strong> {$datosSolicitud['numeroParte']}</p>
-    <a href='{$linkAprobacion}'>Ir al Panel de Aprobación</a>
-    <p>&copy; {$currentYear} ARCA Systems.</p>
+    <!DOCTYPE html><html><head><style> @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'); </style></head><body style='margin:0;padding:0;background-color:#f8f9fa;font-family:"Lato", Arial, sans-serif;'>
+    <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td style='padding:20px 0;'>
+    <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse:collapse;background-color:#ffffff;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);border: 1px solid #dee2e6;'>
+        <tr><td align='center' style='background-color:#4a6984;padding:25px;border-top-left-radius:12px;border-top-right-radius:12px;'>
+            <h1 style='color:#ffffff;margin:0;font-size:28px;letter-spacing:1px;'>ARCA</h1>
+        </td></tr>
+        <tr><td style='padding:40px 30px;'>
+            <h2 style='color:#343a40;margin-top:0;font-size:22px;'>Acción Requerida: Revisar Método Corregido</h2>
+            <p style='color:#6c757d;line-height:1.6;'>Hola Administrador,</p>
+            <p style='color:#6c757d;line-height:1.6;'>Se ha subido una <strong>versión corregida</strong> del método de trabajo para la solicitud con folio <strong style='color:#0056b3;'>S-{$idSolicitud}</strong> y requiere tu aprobación.</p>
+            <table border='0' cellpadding='10' cellspacing='0' width='100%' style='border-collapse:collapse;margin:25px 0;background-color:#f8f9fa;border-radius:8px;'>
+                <tr>
+                    <td style='width:30%;font-weight:bold;color:#495057;'>Creador:</td>
+                    <td style='color:#212529;'>{$datosSolicitud['responsable']}</td>
+                </tr>
+                <tr>
+                    <td style='font-weight:bold;color:#495057;'>No. de Parte:</td>
+                    <td style='color:#212529;'>{$datosSolicitud['numeroParte']}</td>
+                </tr>
+            </table>
+            <p style='color:#6c757d;line-height:1.6;'>Por favor, accede al panel de administración para aprobar o rechazar el método.</p>
+            <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' style='padding:20px 0;'>
+                <a href='{$linkAprobacion}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir al Panel de Aprobación</a>
+            </td></tr></table>
+        </td></tr>
+        <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
+    </table>
+    </td></tr></table>
     </body></html>
     HTML;
+    // --- FIN DE LA PLANTILLA DE CORREO MEJORADA ---
 
     $mail = new PHPMailer(true);
     try {
@@ -122,5 +146,4 @@ try {
 
 echo json_encode($response);
 ?>
-
 
