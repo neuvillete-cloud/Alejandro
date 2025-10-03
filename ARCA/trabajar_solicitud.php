@@ -670,55 +670,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
         });
 
-        // --- INICIO DE LA NUEVA LÓGICA DE FETCH PARA EL FORMULARIO DE MÉTODO ---
-        document.getElementById('metodoForm')?.addEventListener('submit', function(e) {
-            e.preventDefault(); // Previene el envío tradicional
-            const form = this;
-            const formData = new FormData(form);
-
-            Swal.fire({
-                title: 'Subiendo Método...',
-                text: 'Por favor, espera.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                credentials: 'include' // Importante si usas sesiones en dominios/subdominios diferentes
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Éxito!',
-                            text: data.message
-                        }).then(() => {
-                            window.location.reload(); // Recarga la página para mostrar el nuevo estado
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: data.message
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de Conexión',
-                        text: 'No se pudo comunicar con el servidor.'
-                    });
-                });
-        });
-        // --- FIN DE LA NUEVA LÓGICA ---
-
         document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const form = this;
@@ -886,6 +837,43 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
         });
         <?php endif; ?>
+
+        // --- INICIO DEL NUEVO SCRIPT AGREGADO ---
+        const metodoForm = document.getElementById('metodoForm');
+        if (metodoForm) {
+            metodoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const formData = new FormData(form);
+
+                Swal.fire({
+                    title: 'Subiendo Método...',
+                    text: 'Por favor, espera.',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire('¡Éxito!', data.message, 'success').then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
+                    });
+            });
+        }
+        // --- FIN DEL NUEVO SCRIPT AGREGADO ---
     });
 </script>
 </body>
