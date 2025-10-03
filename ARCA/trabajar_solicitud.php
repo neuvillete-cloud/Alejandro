@@ -436,6 +436,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         // --- MODIFICADO: Funcionalidad del Contador de Piezas Rechazadas y Validación ---
         function actualizarContadores() {
+            if (!piezasInspeccionadasInput) return; // Si el formulario principal no está visible, no hacer nada.
             const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
             const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
             const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
@@ -669,24 +670,54 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
         });
 
+        // --- INICIO DE LA NUEVA LÓGICA DE FETCH PARA EL FORMULARIO DE MÉTODO ---
         document.getElementById('metodoForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Previene el envío tradicional
             const form = this;
             const formData = new FormData(form);
 
-            Swal.fire({ title: 'Subiendo Método...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            Swal.fire({
+                title: 'Subiendo Método...',
+                text: 'Por favor, espera.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-            fetch(form.action, { method: 'POST', body: formData })
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include' // Importante si usas sesiones en dominios/subdominios diferentes
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: data.message
+                        }).then(() => {
+                            window.location.reload(); // Recarga la página para mostrar el nuevo estado
+                        });
                     } else {
-                        Swal.fire('Error', data.message, 'error');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message
+                        });
                     }
                 })
-                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de Conexión',
+                        text: 'No se pudo comunicar con el servidor.'
+                    });
+                });
         });
+        // --- FIN DE LA NUEVA LÓGICA ---
 
         document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
