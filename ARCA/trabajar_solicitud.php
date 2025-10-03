@@ -330,7 +330,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
                         </div>
                     </fieldset>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Subir y Notificar</button></div>
+                    <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
                 </form>
             <?php else: // Caso: El método fue rechazado y se debe resubir ?>
                 <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
@@ -343,7 +343,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
                         </div>
                     </fieldset>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Subir y Notificar</button></div>
+                    <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
                 </form>
             <?php endif; ?>
         <?php endif; ?>
@@ -840,15 +840,20 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         // --- INICIO DEL SCRIPT PARA MANEJAR LA SUBIDA DEL MÉTODO DE TRABAJO ---
         const metodoForm = document.getElementById('metodoForm');
-        if (metodoForm) {
-            metodoForm.addEventListener('submit', function(e) {
-                // Prevenimos el comportamiento por defecto del formulario (la redirección)
-                e.preventDefault();
+        const btnSubirMetodo = document.getElementById('btnSubirMetodo');
 
-                const form = this;
-                const formData = new FormData(form);
+        if (metodoForm && btnSubirMetodo) {
+            btnSubirMetodo.addEventListener('click', function() {
+                const formData = new FormData(metodoForm);
+                const tituloMetodoInput = metodoForm.querySelector('[name="tituloMetodo"]');
+                const fileInput = document.getElementById('metodoFile');
 
-                // Mostramos una alerta de carga
+                // Validación simple para asegurar que los campos no estén vacíos
+                if ((tituloMetodoInput && !tituloMetodoInput.value) || !fileInput || fileInput.files.length === 0) {
+                    Swal.fire('Campos Incompletos', 'Por favor, completa todos los campos requeridos antes de subir.', 'warning');
+                    return;
+                }
+
                 Swal.fire({
                     title: 'Subiendo Método...',
                     text: 'Por favor, espera.',
@@ -856,28 +861,34 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     didOpen: () => { Swal.showLoading(); }
                 });
 
-                // Enviamos los datos del formulario usando fetch
-                fetch(form.action, {
+                fetch(metodoForm.action, {
                     method: 'POST',
                     body: formData
                 })
-                    .then(response => response.json()) // Esperamos una respuesta en formato JSON
+                    .then(response => {
+                        // Primero, verificamos si la respuesta es realmente JSON
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            return response.json();
+                        } else {
+                            // Si no es JSON, podría ser un error de PHP no capturado.
+                            return response.text().then(text => {
+                                throw new Error("El servidor no respondió en formato JSON. Respuesta: " + text);
+                            });
+                        }
+                    })
                     .then(data => {
                         if (data.status === 'success') {
-                            // Si el servidor responde con éxito, mostramos una alerta de éxito
                             Swal.fire('¡Éxito!', data.message, 'success').then(() => {
-                                // Y luego recargamos la página para ver el nuevo estado
                                 window.location.reload();
                             });
                         } else {
-                            // Si el servidor responde con un error, mostramos la alerta de error
                             Swal.fire('Error', data.message, 'error');
                         }
                     })
                     .catch(error => {
-                        // Si hay un error de red o de conexión, mostramos una alerta genérica
                         console.error('Error:', error);
-                        Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
+                        Swal.fire('Error de Conexión', 'Hubo un problema al procesar la respuesta del servidor. Revisa la consola del navegador para más detalles.', 'error');
                     });
             });
         }
@@ -886,3 +897,4 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 </script>
 </body>
 </html>
+
