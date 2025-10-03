@@ -838,14 +838,17 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         });
         <?php endif; ?>
 
-        // --- INICIO DEL NUEVO SCRIPT AGREGADO ---
+        // --- INICIO DEL SCRIPT PARA MANEJAR LA SUBIDA DEL MÉTODO DE TRABAJO ---
         const metodoForm = document.getElementById('metodoForm');
         if (metodoForm) {
             metodoForm.addEventListener('submit', function(e) {
+                // Prevenimos el comportamiento por defecto del formulario (la redirección)
                 e.preventDefault();
+
                 const form = this;
                 const formData = new FormData(form);
 
+                // Mostramos una alerta de carga
                 Swal.fire({
                     title: 'Subiendo Método...',
                     text: 'Por favor, espera.',
@@ -853,27 +856,32 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     didOpen: () => { Swal.showLoading(); }
                 });
 
+                // Enviamos los datos del formulario usando fetch
                 fetch(form.action, {
                     method: 'POST',
                     body: formData
                 })
-                    .then(response => response.json())
+                    .then(response => response.json()) // Esperamos una respuesta en formato JSON
                     .then(data => {
                         if (data.status === 'success') {
+                            // Si el servidor responde con éxito, mostramos una alerta de éxito
                             Swal.fire('¡Éxito!', data.message, 'success').then(() => {
+                                // Y luego recargamos la página para ver el nuevo estado
                                 window.location.reload();
                             });
                         } else {
+                            // Si el servidor responde con un error, mostramos la alerta de error
                             Swal.fire('Error', data.message, 'error');
                         }
                     })
                     .catch(error => {
+                        // Si hay un error de red o de conexión, mostramos una alerta genérica
                         console.error('Error:', error);
                         Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
                     });
             });
         }
-        // --- FIN DEL NUEVO SCRIPT AGREGADO ---
+        // --- FIN DEL SCRIPT ---
     });
 </script>
 </body>
