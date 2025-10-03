@@ -616,17 +616,22 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
             toggleTiempoMuertoSection(false);
 
-            reporteForm?.addEventListener('submit', function(e) {
+            reporteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const form = this;
                 const formData = new FormData(form);
 
-                if (retrabajadas > (parseInt(piezasInspeccionadasInput.value) || 0) - (parseInt(piezasAceptadasInput.value) || 0)) {
+                const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
+                const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
+                const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
+                const rechazadasBrutas = inspeccionadas - aceptadas;
+
+                if (retrabajadas > rechazadasBrutas) {
                     Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
                     return;
                 }
-                if ((parseInt(piezasInspeccionadasInput.value) || 0) > cantidadTotalSolicitada) {
-                    Swal.fire('Error de Validación', `La cantidad inspeccionada (${(parseInt(piezasInspeccionadasInput.value) || 0)}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`, 'error');
+                if (inspeccionadas > cantidadTotalSolicitada) {
+                    Swal.fire('Error de Validación', `La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`, 'error');
                     return;
                 }
 
