@@ -408,437 +408,410 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
     const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
-    // --- NUEVO: Obtenemos la cantidad total del PHP para usarla en JavaScript ---
     const cantidadTotalSolicitada = <?php echo intval($cantidadSolicitada); ?>;
-    let nuevoDefectoCounter = 0; // Se usará para identificar nuevos defectos, incluso los cargados por edición
-    let editandoReporte = false; // Bandera para saber si estamos en modo edición
+    let nuevoDefectoCounter = 0;
+    let editandoReporte = false;
 
     document.addEventListener('DOMContentLoaded', function() {
+
+        // --- LOGIC FOR THE MAIN INSPECTION FORM ---
         const reporteForm = document.getElementById('reporteForm');
-        const idReporteInput = document.getElementById('idReporte');
-        const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
-        const piezasAceptadasInput = document.getElementById('piezasAceptadas');
-        const piezasRetrabajadasInput = document.getElementById('piezasRetrabajadas');
-        const piezasRechazadasCalculadasInput = document.getElementById('piezasRechazadasCalculadas');
-        const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
-        const defectosOriginalesContainer = document.querySelector('.original-defect-list');
-        const btnGuardarReporte = document.getElementById('btnGuardarReporte');
-        const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
-        const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
+        if (reporteForm) {
+            const idReporteInput = document.getElementById('idReporte');
+            const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
+            const piezasAceptadasInput = document.getElementById('piezasAceptadas');
+            const piezasRetrabajadasInput = document.getElementById('piezasRetrabajadas');
+            const piezasRechazadasCalculadasInput = document.getElementById('piezasRechazadasCalculadas');
+            const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
+            const defectosOriginalesContainer = document.querySelector('.original-defect-list');
+            const btnGuardarReporte = document.getElementById('btnGuardarReporte');
+            const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
+            const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
+            const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
+            const idRangoHoraSelect = document.getElementById('idRangoHora');
+            const tiempoInspeccionInput = document.getElementById('tiempoInspeccion');
+            const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
+            const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
+            const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
+            const comentariosTextarea = document.getElementById('comentarios');
 
-        const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
-        const idRangoHoraSelect = document.getElementById('idRangoHora');
-        const tiempoInspeccionInput = document.getElementById('tiempoInspeccion');
-        const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
-        const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
-        const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
-        const comentariosTextarea = document.getElementById('comentarios');
+            function actualizarContadores() {
+                if (!piezasInspeccionadasInput) return;
+                const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
+                const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
+                const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-        // --- MODIFICADO: Funcionalidad del Contador de Piezas Rechazadas y Validación ---
-        function actualizarContadores() {
-            if (!piezasInspeccionadasInput) return; // Si el formulario principal no está visible, no hacer nada.
-            const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
-            const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
-            const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
-
-            if (inspeccionadas > cantidadTotalSolicitada) {
-                piezasInspeccionadasInput.setCustomValidity(`La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`);
-                piezasInspeccionadasInput.reportValidity();
-            } else {
-                piezasInspeccionadasInput.setCustomValidity('');
-            }
-
-            const rechazadasBrutas = inspeccionadas - aceptadas;
-            piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
-
-            const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
-
-            if (retrabajadas > rechazadasBrutas) {
-                piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
-                piezasRetrabajadasInput.reportValidity();
-                btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
-                piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
-                piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles);
-                return;
-            } else {
-                piezasRetrabajadasInput.setCustomValidity('');
-            }
-
-            let sumDefectosClasificados = 0;
-            const defectoCantidadInputs = defectosOriginalesContainer.querySelectorAll('.defecto-cantidad');
-            defectoCantidadInputs.forEach(input => {
-                sumDefectosClasificados += parseInt(input.value) || 0;
-            });
-            nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => {
-                sumDefectosClasificados += parseInt(input.value) || 0;
-            });
-
-            const restantes = rechazadasDisponibles - sumDefectosClasificados;
-            piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
-
-            if (inspeccionadas > cantidadTotalSolicitada) {
-                btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'La cantidad inspeccionada excede el total solicitado.';
-            } else if (restantes < 0) {
-                piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
-                btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
-            } else if (restantes > 0) {
-                piezasRechazadasRestantesSpan.style.color = 'orange';
-                btnGuardarReporte.disabled = true;
-                btnGuardarReporte.title = 'Aún faltan piezas por clasificar.';
-            } else {
-                piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
-                btnGuardarReporte.disabled = false;
-                btnGuardarReporte.title = '';
-            }
-        }
-
-
-        if (piezasInspeccionadasInput) {
-            piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
-            piezasAceptadasInput.addEventListener('input', actualizarContadores);
-            piezasRetrabajadasInput.addEventListener('input', actualizarContadores);
-            defectosOriginalesContainer.addEventListener('input', function(e) {
-                if (e.target.classList.contains('defecto-cantidad')) {
-                    actualizarContadores();
+                if (inspeccionadas > cantidadTotalSolicitada) {
+                    piezasInspeccionadasInput.setCustomValidity(`La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`);
+                    piezasInspeccionadasInput.reportValidity();
+                } else {
+                    piezasInspeccionadasInput.setCustomValidity('');
                 }
-            });
-            nuevosDefectosContainer.addEventListener('input', function(e) {
-                if (e.target.classList.contains('nuevo-defecto-cantidad')) {
-                    actualizarContadores();
+
+                const rechazadasBrutas = inspeccionadas - aceptadas;
+                piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
+                const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
+
+                if (retrabajadas > rechazadasBrutas) {
+                    piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
+                    piezasRetrabajadasInput.reportValidity();
+                    btnGuardarReporte.disabled = true;
+                    btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+                    piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles);
+                    return;
+                } else {
+                    piezasRetrabajadasInput.setCustomValidity('');
                 }
-            });
-            actualizarContadores();
-        }
 
-        // --- Función para añadir un nuevo bloque de defecto (usado para agregar y para edición) ---
-        function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
-            nuevoDefectoCounter++;
-            const currentCounter = nuevoDefectoCounter;
-            const defectoHTML = `
-            <div class="defecto-item" id="nuevo-defecto-${currentCounter}">
-                <div class="defecto-header">
-                    <h4>Nuevo Defecto #${currentCounter}</h4>
-                    <button type="button" class="btn-remove-defecto" data-defecto-id="${currentCounter}">&times;</button>
-                </div>
-                <div class="form-row">
-                    <div class="form-group w-50">
-                        <label>Tipo de Defecto</label>
-                        <select name="nuevos_defectos[${currentCounter}][id]" required>
-                            <option value="" disabled selected>Seleccione un defecto</option>
-                            ${opcionesDefectos}
-                        </select>
-                    </div>
-                    <div class="form-group w-50">
-                        <label>Cantidad de Piezas</label>
-                        <input type="number" class="nuevo-defecto-cantidad" name="nuevos_defectos[${currentCounter}][cantidad]" placeholder="Cantidad con este defecto..." min="0" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Foto de Evidencia</label>
-                    <label class="file-upload-label" for="nuevoDefectoFoto-${currentCounter}">
-                        <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
-                    </label>
-                    <input type="file" id="nuevoDefectoFoto-${currentCounter}" name="nuevos_defectos[${currentCounter}][foto]" accept="image/*" ${rutaFoto ? '' : 'required'}>
-                    ${rutaFoto ? `<p class="current-file-info">Archivo actual: <a href="${rutaFoto}" target="_blank">Ver foto</a> (Se reemplazará si subes uno nuevo)</p>
-                                   <input type="hidden" name="nuevos_defectos[${currentCounter}][foto_existente]" value="${rutaFoto}">
-                                   <input type="hidden" name="nuevos_defectos[${currentCounter}][idDefectoEncontrado]" value="${id}">` : ''}
-                </div>
-            </div>`;
-            nuevosDefectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
+                let sumDefectosClasificados = 0;
+                const defectoCantidadInputs = defectosOriginalesContainer.querySelectorAll('.defecto-cantidad');
+                defectoCantidadInputs.forEach(input => {
+                    sumDefectosClasificados += parseInt(input.value) || 0;
+                });
+                nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => {
+                    sumDefectosClasificados += parseInt(input.value) || 0;
+                });
 
-            const newBlock = document.getElementById(`nuevo-defecto-${currentCounter}`);
-            if (idDefectoCatalogo) {
-                newBlock.querySelector(`select[name="nuevos_defectos[${currentCounter}][id]"]`).value = idDefectoCatalogo;
+                const restantes = rechazadasDisponibles - sumDefectosClasificados;
+                piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
+
+                if (inspeccionadas > cantidadTotalSolicitada) {
+                    btnGuardarReporte.disabled = true;
+                    btnGuardarReporte.title = 'La cantidad inspeccionada excede el total solicitado.';
+                } else if (restantes < 0) {
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+                    btnGuardarReporte.disabled = true;
+                    btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
+                } else if (restantes > 0) {
+                    piezasRechazadasRestantesSpan.style.color = 'orange';
+                    btnGuardarReporte.disabled = true;
+                    btnGuardarReporte.title = 'Aún faltan piezas por clasificar.';
+                } else {
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
+                    btnGuardarReporte.disabled = false;
+                    btnGuardarReporte.title = '';
+                }
             }
-            if (cantidad) {
-                newBlock.querySelector(`input[name="nuevos_defectos[${currentCounter}][cantidad]"]`).value = cantidad;
-            }
-            document.getElementById(`nuevoDefectoFoto-${currentCounter}`).addEventListener('change', updateFileNameLabel);
-            return newBlock;
-        }
 
-        btnAddNuevoDefecto?.addEventListener('click', function() {
-            addNuevoDefectoBlock();
-            actualizarContadores();
-        });
-
-        // --- Lógica para eliminar nuevos defectos ---
-        nuevosDefectosContainer?.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('btn-remove-defecto')) {
-                const defectoItem = document.getElementById(`nuevo-defecto-${e.target.dataset.defectoId}`);
-                if (defectoItem) {
-                    const idDefectoEncontradoInput = defectoItem.querySelector('input[name*="[idDefectoEncontrado]"]');
-                    if (editandoReporte && idDefectoEncontradoInput && idDefectoEncontradoInput.value) {
-                        Swal.fire({
-                            title: '¿Estás seguro?',
-                            text: "Este defecto se eliminará permanentemente del reporte.",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#3085d6',
-                            confirmButtonText: 'Sí, eliminar',
-                            cancelButtonText: 'Cancelar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                const inputEliminar = document.createElement('input');
-                                inputEliminar.type = 'hidden';
-                                inputEliminar.name = `defectos_encontrados_a_eliminar[]`;
-                                inputEliminar.value = idDefectoEncontradoInput.value;
-                                reporteForm.appendChild(inputEliminar);
-                                defectoItem.remove();
-                                actualizarContadores();
-                                Swal.fire('Eliminado!', 'El defecto será eliminado al guardar el reporte.', 'success');
-                            }
-                        });
-                    } else {
-                        defectoItem.remove();
+            if (piezasInspeccionadasInput) {
+                piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
+                piezasAceptadasInput.addEventListener('input', actualizarContadores);
+                piezasRetrabajadasInput.addEventListener('input', actualizarContadores);
+                defectosOriginalesContainer.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('defecto-cantidad')) {
                         actualizarContadores();
                     }
+                });
+                nuevosDefectosContainer.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('nuevo-defecto-cantidad')) {
+                        actualizarContadores();
+                    }
+                });
+                actualizarContadores();
+            }
+
+            function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
+                nuevoDefectoCounter++;
+                const currentCounter = nuevoDefectoCounter;
+                const defectoHTML = `
+                <div class="defecto-item" id="nuevo-defecto-${currentCounter}">
+                    <div class="defecto-header">
+                        <h4>Nuevo Defecto #${currentCounter}</h4>
+                        <button type="button" class="btn-remove-defecto" data-defecto-id="${currentCounter}">&times;</button>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group w-50">
+                            <label>Tipo de Defecto</label>
+                            <select name="nuevos_defectos[${currentCounter}][id]" required>
+                                <option value="" disabled selected>Seleccione un defecto</option>
+                                ${opcionesDefectos}
+                            </select>
+                        </div>
+                        <div class="form-group w-50">
+                            <label>Cantidad de Piezas</label>
+                            <input type="number" class="nuevo-defecto-cantidad" name="nuevos_defectos[${currentCounter}][cantidad]" placeholder="Cantidad con este defecto..." min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto de Evidencia</label>
+                        <label class="file-upload-label" for="nuevoDefectoFoto-${currentCounter}">
+                            <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
+                        </label>
+                        <input type="file" id="nuevoDefectoFoto-${currentCounter}" name="nuevos_defectos[${currentCounter}][foto]" accept="image/*" ${rutaFoto ? '' : 'required'}>
+                        ${rutaFoto ? `<p class="current-file-info">Archivo actual: <a href="${rutaFoto}" target="_blank">Ver foto</a> (Se reemplazará si subes uno nuevo)</p>
+                                       <input type="hidden" name="nuevos_defectos[${currentCounter}][foto_existente]" value="${rutaFoto}">
+                                       <input type="hidden" name="nuevos_defectos[${currentCounter}][idDefectoEncontrado]" value="${id}">` : ''}
+                    </div>
+                </div>`;
+                nuevosDefectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
+
+                const newBlock = document.getElementById(`nuevo-defecto-${currentCounter}`);
+                if (idDefectoCatalogo) {
+                    newBlock.querySelector(`select[name="nuevos_defectos[${currentCounter}][id]"]`).value = idDefectoCatalogo;
+                }
+                if (cantidad) {
+                    newBlock.querySelector(`input[name="nuevos_defectos[${currentCounter}][cantidad]"]`).value = cantidad;
+                }
+                document.getElementById(`nuevoDefectoFoto-${currentCounter}`).addEventListener('change', updateFileNameLabel);
+                return newBlock;
+            }
+
+            btnAddNuevoDefecto?.addEventListener('click', function() {
+                addNuevoDefectoBlock();
+                actualizarContadores();
+            });
+
+            nuevosDefectosContainer?.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('btn-remove-defecto')) {
+                    const defectoItem = document.getElementById(`nuevo-defecto-${e.target.dataset.defectoId}`);
+                    if (defectoItem) {
+                        const idDefectoEncontradoInput = defectoItem.querySelector('input[name*="[idDefectoEncontrado]"]');
+                        if (editandoReporte && idDefectoEncontradoInput && idDefectoEncontradoInput.value) {
+                            Swal.fire({
+                                title: '¿Estás seguro?',
+                                text: "Este defecto se eliminará permanentemente del reporte.",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Sí, eliminar',
+                                cancelButtonText: 'Cancelar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    const inputEliminar = document.createElement('input');
+                                    inputEliminar.type = 'hidden';
+                                    inputEliminar.name = `defectos_encontrados_a_eliminar[]`;
+                                    inputEliminar.value = idDefectoEncontradoInput.value;
+                                    reporteForm.appendChild(inputEliminar);
+                                    defectoItem.remove();
+                                    actualizarContadores();
+                                    Swal.fire('Eliminado!', 'El defecto será eliminado al guardar el reporte.', 'success');
+                                }
+                            });
+                        } else {
+                            defectoItem.remove();
+                            actualizarContadores();
+                        }
+                    }
+                }
+            });
+
+            let tiempoMuertoActivo = false;
+            function toggleTiempoMuertoSection(activate) {
+                tiempoMuertoActivo = activate;
+                if (tiempoMuertoActivo) {
+                    tiempoMuertoSection.style.display = 'block';
+                    toggleTiempoMuertoBtn.innerHTML = `Sí <i class="fa-solid fa-toggle-on"></i>`;
+                    toggleTiempoMuertoBtn.className = 'btn-primary';
+                } else {
+                    tiempoMuertoSection.style.display = 'none';
+                    toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
+                    toggleTiempoMuertoBtn.className = 'btn-secondary';
+                    idTiempoMuertoSelect.value = '';
                 }
             }
-        });
+            toggleTiempoMuertoBtn?.addEventListener('click', function() {
+                toggleTiempoMuertoSection(!tiempoMuertoActivo);
+            });
+            toggleTiempoMuertoSection(false);
 
-        // --- Lógica para actualizar el nombre de archivo en la etiqueta del input file ---
-        function updateFileNameLabel(e) {
-            const labelSpan = e.target.previousElementSibling.querySelector('span');
-            const defaultText = labelSpan.dataset.defaultText || 'Seleccionar archivo...';
-            if (e.target.files.length > 0) {
-                labelSpan.textContent = e.target.files[0].name;
-            } else {
-                labelSpan.textContent = defaultText;
-            }
-        }
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', updateFileNameLabel);
-        });
+            reporteForm?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const formData = new FormData(form);
 
-        // --- Lógica para mostrar/ocultar Tiempo Muerto ---
-        let tiempoMuertoActivo = false;
-        function toggleTiempoMuertoSection(activate) {
-            tiempoMuertoActivo = activate;
-            if (tiempoMuertoActivo) {
-                tiempoMuertoSection.style.display = 'block';
-                toggleTiempoMuertoBtn.innerHTML = `Sí <i class="fa-solid fa-toggle-on"></i>`;
-                toggleTiempoMuertoBtn.className = 'btn-primary';
-            } else {
-                tiempoMuertoSection.style.display = 'none';
-                toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
-                toggleTiempoMuertoBtn.className = 'btn-secondary';
-                idTiempoMuertoSelect.value = '';
-            }
-        }
-        toggleTiempoMuertoBtn?.addEventListener('click', function() {
-            toggleTiempoMuertoSection(!tiempoMuertoActivo);
-        });
-        toggleTiempoMuertoSection(false);
+                if (retrabajadas > (parseInt(piezasInspeccionadasInput.value) || 0) - (parseInt(piezasAceptadasInput.value) || 0)) {
+                    Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
+                    return;
+                }
+                if ((parseInt(piezasInspeccionadasInput.value) || 0) > cantidadTotalSolicitada) {
+                    Swal.fire('Error de Validación', `La cantidad inspeccionada (${(parseInt(piezasInspeccionadasInput.value) || 0)}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`, 'error');
+                    return;
+                }
 
-        // --- Lógica para el envío de los formularios con fetch ---
-        reporteForm?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const form = this;
-            const formData = new FormData(form);
+                Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
-            const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
-            const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
-            const rechazadasBrutas = inspeccionadas - aceptadas;
+                fetch(form.action, { method: 'POST', body: formData })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+            });
 
-            if (retrabajadas > rechazadasBrutas) {
-                Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
-                return;
-            }
+            document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const formData = new FormData(form);
 
-            if (inspeccionadas > cantidadTotalSolicitada) {
-                Swal.fire('Error de Validación', `La cantidad inspeccionada (${inspeccionadas}) no puede ser mayor que la cantidad total solicitada (${cantidadTotalSolicitada}).`, 'error');
-                return;
-            }
+                Swal.fire({ title: 'Guardando Tiempo Total...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                fetch(form.action, { method: 'POST', body: formData })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    })
+                    .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+            });
 
-            fetch(form.action, { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => {
+            async function cargarReporteParaEdicion(idReporte) {
+                Swal.fire({ title: 'Cargando Reporte...', text: 'Obteniendo datos para edición.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                try {
+                    const response = await fetch(`dao/obtener_reporte_para_edicion.php?idReporte=${idReporte}`);
+                    const data = await response.json();
+
                     if (data.status === 'success') {
-                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                        const reporte = data.reporte;
+                        const defectosOriginales = data.defectosOriginales;
+                        const nuevosDefectos = data.nuevosDefectos;
+
+                        idReporteInput.value = reporte.IdReporte;
+                        piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
+                        piezasAceptadasInput.value = reporte.PiezasAceptadas;
+                        piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
+                        fechaInspeccionInput.value = reporte.FechaInspeccion;
+                        idRangoHoraSelect.value = reporte.IdRangoHora;
+                        tiempoInspeccionInput.value = reporte.TiempoInspeccion || '';
+                        comentariosTextarea.value = reporte.Comentarios || '';
+
+                        if (reporte.IdTiempoMuerto) {
+                            toggleTiempoMuertoSection(true);
+                            idTiempoMuertoSelect.value = reporte.IdTiempoMuerto;
+                        } else {
+                            toggleTiempoMuertoSection(false);
+                        }
+
+                        defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => input.value = 0);
+                        defectosOriginalesContainer.querySelectorAll('.defecto-lote').forEach(input => input.value = '');
+
+                        defectosOriginales.forEach(defecto => {
+                            const inputCantidad = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][cantidad]"]`);
+                            const inputLote = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][lote]"]`);
+                            if (inputCantidad) inputCantidad.value = defecto.CantidadEncontrada;
+                            if (inputLote) inputLote.value = defecto.Lote;
+                        });
+
+                        nuevosDefectosContainer.innerHTML = '';
+                        nuevoDefectoCounter = 0;
+                        nuevosDefectos.forEach(defecto => {
+                            const newBlock = addNuevoDefectoBlock(
+                                defecto.IdDefectoEncontrado,
+                                defecto.IdDefectoCatalogo,
+                                defecto.Cantidad,
+                                defecto.RutaFotoEvidencia
+                            );
+                            const fileInput = newBlock.querySelector(`input[type="file"]`);
+                            if (defecto.RutaFotoEvidencia) {
+                                fileInput.removeAttribute('required');
+                                const labelSpan = fileInput.previousElementSibling.querySelector('span');
+                                labelSpan.textContent = "Archivo existente";
+                            }
+                        });
+
+                        actualizarContadores();
+                        editandoReporte = true;
+                        btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
+                        reporteForm.action = 'dao/actualizar_reporte.php';
+                        Swal.close();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     } else {
                         Swal.fire('Error', data.message, 'error');
                     }
-                })
-                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
-        });
+                } catch (error) {
+                    Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error');
+                }
+            }
 
-        document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const form = this;
-            const formData = new FormData(form);
+            document.querySelectorAll('.btn-edit-reporte').forEach(button => {
+                button.addEventListener('click', function() {
+                    cargarReporteParaEdicion(this.dataset.id);
+                });
+            });
 
-            Swal.fire({ title: 'Guardando Tiempo Total...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-            fetch(form.action, { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
-                    } else {
-                        Swal.fire('Error', data.message, 'error');
-                    }
-                })
-                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
-        });
-
-        // --- Función para cargar el reporte en el formulario de edición ---
-        async function cargarReporteParaEdicion(idReporte) {
-            Swal.fire({ title: 'Cargando Reporte...', text: 'Obteniendo datos para edición.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            try {
-                const response = await fetch(`dao/obtener_reporte_para_edicion.php?idReporte=${idReporte}`);
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    const reporte = data.reporte;
-                    const defectosOriginales = data.defectosOriginales;
-                    const nuevosDefectos = data.nuevosDefectos;
-
-                    idReporteInput.value = reporte.IdReporte;
-                    piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
-                    piezasAceptadasInput.value = reporte.PiezasAceptadas;
-                    piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
-                    fechaInspeccionInput.value = reporte.FechaInspeccion;
-                    idRangoHoraSelect.value = reporte.IdRangoHora;
-                    tiempoInspeccionInput.value = reporte.TiempoInspeccion || '';
-                    comentariosTextarea.value = reporte.Comentarios || '';
-
-                    if (reporte.IdTiempoMuerto) {
-                        toggleTiempoMuertoSection(true);
-                        idTiempoMuertoSelect.value = reporte.IdTiempoMuerto;
-                    } else {
-                        toggleTiempoMuertoSection(false);
-                    }
-
-                    defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => input.value = 0);
-                    defectosOriginalesContainer.querySelectorAll('.defecto-lote').forEach(input => input.value = '');
-
-                    defectosOriginales.forEach(defecto => {
-                        const inputCantidad = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][cantidad]"]`);
-                        const inputLote = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][lote]"]`);
-                        if (inputCantidad) inputCantidad.value = defecto.CantidadEncontrada;
-                        if (inputLote) inputLote.value = defecto.Lote;
-                    });
-
-                    nuevosDefectosContainer.innerHTML = '';
-                    nuevoDefectoCounter = 0;
-                    nuevosDefectos.forEach(defecto => {
-                        const newBlock = addNuevoDefectoBlock(
-                            defecto.IdDefectoEncontrado,
-                            defecto.IdDefectoCatalogo,
-                            defecto.Cantidad,
-                            defecto.RutaFotoEvidencia
-                        );
-                        const fileInput = newBlock.querySelector(`input[type="file"]`);
-                        if (defecto.RutaFotoEvidencia) {
-                            fileInput.removeAttribute('required');
-                            const labelSpan = fileInput.previousElementSibling.querySelector('span');
-                            labelSpan.textContent = "Archivo existente";
+            document.querySelectorAll('.btn-delete-reporte').forEach(button => {
+                button.addEventListener('click', function() {
+                    const idReporteAEliminar = this.dataset.id;
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¡No podrás revertir esto! Se eliminará el reporte y todos los defectos y fotos asociados.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({ title: 'Eliminando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                            fetch('dao/eliminar_reporte.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `idReporte=${idReporteAEliminar}`
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        Swal.fire('¡Eliminado!', data.message, 'success').then(() => window.location.reload());
+                                    } else {
+                                        Swal.fire('Error', data.message, 'error');
+                                    }
+                                })
+                                .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor para eliminar el reporte.', 'error'));
                         }
                     });
-
-                    actualizarContadores();
-                    editandoReporte = true;
-                    btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
-                    reporteForm.action = 'dao/actualizar_reporte.php';
-                    Swal.close();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            } catch (error) {
-                Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error');
-            }
-        }
-
-        document.querySelectorAll('.btn-edit-reporte').forEach(button => {
-            button.addEventListener('click', function() {
-                cargarReporteParaEdicion(this.dataset.id);
+                });
             });
-        });
 
-        document.querySelectorAll('.btn-delete-reporte').forEach(button => {
-            button.addEventListener('click', function() {
-                const idReporteAEliminar = this.dataset.id;
+            <?php if ($esSuperUsuario): ?>
+            document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() {
                 Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "¡No podrás revertir esto! Se eliminará el reporte y todos los defectos y fotos asociados.",
-                    icon: 'warning',
+                    title: 'Añadir Nueva Razón de Tiempo Muerto',
+                    input: 'text',
+                    inputLabel: 'Nombre de la razón',
+                    inputPlaceholder: 'Ingrese la nueva razón',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
+                    confirmButtonText: 'Guardar',
+                    cancelButtonText: 'Cancelar',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return '¡Necesitas escribir algo!';
+                        }
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Swal.fire({ title: 'Eliminando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                        fetch('dao/eliminar_reporte.php', {
+                        const nuevaRazon = result.value;
+                        fetch('dao/guardar_razon_tiempomuerto.php', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: `idReporte=${idReporteAEliminar}`
+                            body: `razon=${encodeURIComponent(nuevaRazon)}`
                         })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'success') {
-                                    Swal.fire('¡Eliminado!', data.message, 'success').then(() => window.location.reload());
+                                    Swal.fire('¡Guardado!', data.message, 'success').then(() => {
+                                        window.location.reload();
+                                    });
                                 } else {
                                     Swal.fire('Error', data.message, 'error');
                                 }
                             })
-                            .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor para eliminar el reporte.', 'error'));
+                            .catch(error => Swal.fire('Error de Conexión', 'No se pudo guardar la razón.', 'error'));
                     }
                 });
             });
-        });
+            <?php endif; ?>
+        }
 
-
-        <?php if ($esSuperUsuario): ?>
-        document.querySelector('.btn-add[data-tipo="tiempomuerto"]')?.addEventListener('click', function() {
-            Swal.fire({
-                title: 'Añadir Nueva Razón de Tiempo Muerto',
-                input: 'text',
-                inputLabel: 'Nombre de la razón',
-                inputPlaceholder: 'Ingrese la nueva razón',
-                showCancelButton: true,
-                confirmButtonText: 'Guardar',
-                cancelButtonText: 'Cancelar',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return '¡Necesitas escribir algo!';
-                    }
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const nuevaRazon = result.value;
-                    fetch('dao/guardar_razon_tiempomuerto.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `razon=${encodeURIComponent(nuevaRazon)}`
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                Swal.fire('¡Guardado!', data.message, 'success').then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire('Error', data.message, 'error');
-                            }
-                        })
-                        .catch(error => Swal.fire('Error de Conexión', 'No se pudo guardar la razón.', 'error'));
-                }
-            });
-        });
-        <?php endif; ?>
-
-        // --- INICIO DEL SCRIPT PARA MANEJAR LA SUBIDA DEL MÉTODO DE TRABAJO ---
+        // --- LOGIC FOR THE METHOD UPLOAD FORM ---
         const metodoForm = document.getElementById('metodoForm');
         const btnSubirMetodo = document.getElementById('btnSubirMetodo');
 
@@ -848,7 +821,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 const tituloMetodoInput = metodoForm.querySelector('[name="tituloMetodo"]');
                 const fileInput = document.getElementById('metodoFile');
 
-                // Validación simple para asegurar que los campos no estén vacíos
                 if ((tituloMetodoInput && !tituloMetodoInput.value) || !fileInput || fileInput.files.length === 0) {
                     Swal.fire('Campos Incompletos', 'Por favor, completa todos los campos requeridos antes de subir.', 'warning');
                     return;
@@ -866,12 +838,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     body: formData
                 })
                     .then(response => {
-                        // Primero, verificamos si la respuesta es realmente JSON
                         const contentType = response.headers.get("content-type");
                         if (contentType && contentType.indexOf("application/json") !== -1) {
                             return response.json();
                         } else {
-                            // Si no es JSON, podría ser un error de PHP no capturado.
                             return response.text().then(text => {
                                 throw new Error("El servidor no respondió en formato JSON. Respuesta: " + text);
                             });
@@ -892,7 +862,21 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     });
             });
         }
-        // --- FIN DEL SCRIPT ---
+
+        // --- COMMON LOGIC FOR ALL VIEWS ---
+        function updateFileNameLabel(e) {
+            const labelSpan = e.target.previousElementSibling.querySelector('span');
+            const defaultText = labelSpan.dataset.defaultText || 'Seleccionar archivo...';
+            if (e.target.files.length > 0) {
+                labelSpan.textContent = e.target.files[0].name;
+            } else {
+                labelSpan.textContent = defaultText;
+            }
+        }
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', updateFileNameLabel);
+        });
+
     });
 </script>
 </body>
