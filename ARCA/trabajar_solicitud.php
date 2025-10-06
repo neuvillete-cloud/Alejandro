@@ -333,7 +333,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
                 </form>
             <?php else: // Caso: El método fue rechazado y se debe resubir ?>
-                <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                <form id="metodoForm" action="https://grammermx.com/Mailer/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
                         <legend><i class="fa-solid fa-paperclip"></i> Corregir Método de Trabajo</legend>
