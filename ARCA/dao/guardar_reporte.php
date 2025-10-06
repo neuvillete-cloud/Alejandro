@@ -79,7 +79,10 @@ try {
     $idReporte = isset($_POST['idReporte']) && $_POST['idReporte'] !== '' ? intval($_POST['idReporte']) : null; // Para edición
     $nombreInspector = trim($_POST['nombreInspector']);
     $fechaInspeccion = trim($_POST['fechaInspeccion']);
-    $idRangoHora = intval($_POST['idRangoHora']);
+
+    // --- MODIFICACIÓN: Capturar el rango de hora como texto ---
+    $rangoHora = trim($_POST['rangoHoraCompleto']);
+
     $piezasInspeccionadas = intval($_POST['piezasInspeccionadas']);
     $piezasAceptadas = intval($_POST['piezasAceptadas']);
     $piezasRetrabajadas = intval($_POST['piezasRetrabajadas']);
@@ -87,8 +90,8 @@ try {
     $comentarios = trim($_POST['comentarios']);
     $idTiempoMuerto = isset($_POST['idTiempoMuerto']) && $_POST['idTiempoMuerto'] !== '' ? intval($_POST['idTiempoMuerto']) : null;
 
-    // Validación básica de datos
-    if (empty($nombreInspector) || empty($fechaInspeccion) || empty($idRangoHora) || $piezasInspeccionadas < 0 || $piezasAceptadas < 0 || $piezasRetrabajadas < 0) {
+    // --- MODIFICACIÓN: Actualizar validación de datos ---
+    if (empty($nombreInspector) || empty($fechaInspeccion) || empty($rangoHora) || $piezasInspeccionadas < 0 || $piezasAceptadas < 0 || $piezasRetrabajadas < 0) {
         throw new Exception("Por favor, complete todos los campos requeridos y asegúrese de que las cantidades sean válidas.");
     }
     if ($piezasAceptadas > $piezasInspeccionadas) {
@@ -106,13 +109,15 @@ try {
     if ($idReporte) { // Modo edición (placeholder por ahora)
         throw new Exception("La funcionalidad de edición de reportes no está implementada en este script.");
     } else { // Modo inserción
+        // --- MODIFICACIÓN: Se inserta en la nueva columna RangoHora ---
         $stmt_reporte = $conex->prepare("INSERT INTO ReportesInspeccion (
-                                            IdSolicitud, NombreInspector, FechaInspeccion, IdRangoHora,
+                                            IdSolicitud, NombreInspector, FechaInspeccion, RangoHora,
                                             PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas,
                                             TiempoInspeccion, Comentarios, IdTiempoMuerto
                                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // --- MODIFICACIÓN: Se ajusta el bind_param para usar la variable de texto ---
         $stmt_reporte->bind_param("isssiiiiss",
-            $idSolicitud, $nombreInspector, $fechaInspeccion, $idRangoHora,
+            $idSolicitud, $nombreInspector, $fechaInspeccion, $rangoHora,
             $piezasInspeccionadas, $piezasAceptadas, $piezasRetrabajadas,
             $tiempoInspeccion, $comentarios, $idTiempoMuerto);
     }
