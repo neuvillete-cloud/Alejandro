@@ -68,8 +68,11 @@ $reportes_anteriores_query = $conex->prepare("
     SELECT 
         ri.IdReporte, ri.FechaInspeccion, ri.NombreInspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
         (ri.PiezasInspeccionadas - ri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
-        ri.PiezasRetrabajadas, ri.RangoHora, ri.Comentarios
+        ri.PiezasRetrabajadas, 
+        COALESCE(ri.RangoHora, crh.RangoHora) AS RangoHora, 
+        ri.Comentarios
     FROM ReportesInspeccion ri
+    LEFT JOIN CatalogoRangosHoras crh ON ri.IdRangoHora = crh.IdRangoHora
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
