@@ -421,6 +421,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     let editandoReporte = false;
 
     document.addEventListener('DOMContentLoaded', function() {
+        // --- INICIALIZACIÓN EXPLÍCITA DEL RELOJ ---
+        Clocklet.run();
 
         const reporteForm = document.getElementById('reporteForm');
         if (reporteForm) {
