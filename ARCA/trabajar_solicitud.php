@@ -50,7 +50,8 @@ foreach($catalogo_defectos_result as $row) {
 
 
 $razones_tiempo_muerto = $conex->query("SELECT IdTiempoMuerto, Razon FROM CatalogoTiempoMuerto ORDER BY Razon ASC");
-$rangos_horas_data = []; // Guardaremos los rangos de hora para calcular el turno
+// Mantenemos esta consulta para la visualización de reportes antiguos y el cálculo de turnos
+$rangos_horas_data = [];
 $rangos_horas_query = $conex->query("SELECT IdRangoHora, RangoHora FROM CatalogoRangosHoras ORDER BY IdRangoHora ASC");
 while($rango = $rangos_horas_query->fetch_assoc()) {
     $rangos_horas_data[$rango['IdRangoHora']] = $rango['RangoHora'];
@@ -62,7 +63,7 @@ while ($def = $defectos_originales_formulario->fetch_assoc()) {
     $defectos_originales_para_js[$def['IdDefecto']] = htmlspecialchars($def['NombreDefecto']);
 }
 
-// --- Carga de reportes existentes para la tabla ---
+// --- Carga de reportes existentes para la tabla (CORRECCIÓN APLICADA AQUÍ) ---
 $reportes_anteriores_query = $conex->prepare("
     SELECT 
         ri.IdReporte, ri.FechaInspeccion, ri.NombreInspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
@@ -106,26 +107,24 @@ foreach ($reportes_raw as $reporte) {
 
     // Calcular Turno del Shift Leader
     $turno_shift_leader = 'N/A';
-    if (isset($rangos_horas_data[$reporte['IdRangoHora']])) {
-        $rangoHoraStr = $rangos_horas_data[$reporte['IdRangoHora']]; // "HH:MM am - HH:MM pm"
-        // Extraemos la primera hora del rango para la determinación del turno
+    if (isset($reporte['RangoHora'])) {
+        $rangoHoraStr = $reporte['RangoHora'];
         preg_match('/(\d{1,2}:\d{2}\s*(?:am|pm))/i', $rangoHoraStr, $matches);
         if (!empty($matches[1])) {
             $hora_inicio_str = $matches[1];
-            $hora_inicio_timestamp = strtotime($hora_inicio_str); // Convertir a timestamp para comparación
+            $hora_inicio_timestamp = strtotime($hora_inicio_str);
 
-            // Definir rangos de turnos
             $primer_turno_inicio = strtotime('06:30 am');
-            $primer_turno_fin = strtotime('02:30 pm'); // Excluyendo el fin, hasta las 2:30 pm
+            $primer_turno_fin = strtotime('02:30 pm');
             $segundo_turno_inicio = strtotime('02:40 pm');
-            $segundo_turno_fin = strtotime('10:30 pm'); // Excluyendo el fin, hasta las 10:30 pm
+            $segundo_turno_fin = strtotime('10:30 pm');
 
             if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) {
                 $turno_shift_leader = 'Primer Turno';
             } elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) {
                 $turno_shift_leader = 'Segundo Turno';
             } else {
-                $turno_shift_leader = 'Tercer Turno / Otro'; // O cualquier otra designación
+                $turno_shift_leader = 'Tercer Turno / Otro';
             }
         }
     }
@@ -217,7 +216,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         <?php if ($mostrarFormularioPrincipal): ?>
             <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                <input type="hidden" name="idReporte" id="idReporte" value=""> <fieldset>
+                <input type="hidden" name="idReporte" id="idReporte" value="">
+                <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
                     <div class="form-row">
                         <div class="form-group"><label>Piezas Inspeccionadas</label><input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required></div>
@@ -230,15 +230,21 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Rango de Hora de Inspección</label>
-                        <select name="idRangoHora" id="idRangoHora" required>
-                            <option value="" disabled selected>Seleccione un rango</option>
-                            <?php foreach($rangos_horas_data as $id => $rango): ?>
-                                <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($rango); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                    <!-- INICIO CAMBIO A RELOJ -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hora de Inicio</label>
+                            <input type="time" name="horaInicio" id="horaInicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora de Fin (1 hora)</label>
+                            <input type="time" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                        </div>
                     </div>
+                    <!-- Hidden input to send the formatted time range to the server -->
+                    <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
+                    <!-- FIN CAMBIO A RELOJ -->
+
                 </fieldset>
 
                 <fieldset><legend><i class="fa-solid fa-clipboard-check"></i> Clasificación de Defectos Originales</legend>
@@ -428,12 +434,35 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
             const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
             const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
-            const idRangoHoraSelect = document.getElementById('idRangoHora');
+
+            // --- TIME INPUT LOGIC ---
+            const horaInicioInput = document.getElementById('horaInicio');
+            const horaFinInput = document.getElementById('horaFin');
+            const rangoHoraCompletoInput = document.getElementById('rangoHoraCompleto');
+
             const tiempoInspeccionInput = document.getElementById('tiempoInspeccion');
             const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
             const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
             const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
             const comentariosTextarea = document.getElementById('comentarios');
+
+            // Auto-calculate end time
+            horaInicioInput.addEventListener('change', function() {
+                if (this.value) {
+                    const [hours, minutes] = this.value.split(':');
+                    const startTime = new Date();
+                    startTime.setHours(parseInt(hours), parseInt(minutes), 0);
+                    startTime.setHours(startTime.getHours() + 1); // Add one hour
+
+                    const endHours = String(startTime.getHours()).padStart(2, '0');
+                    const endMinutes = String(startTime.getMinutes()).padStart(2, '0');
+
+                    horaFinInput.value = `${endHours}:${endMinutes}`;
+                } else {
+                    horaFinInput.value = '';
+                }
+            });
+
 
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
@@ -618,6 +647,24 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
             reporteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+
+                // Format and set the hidden time range input before creating FormData
+                if (horaInicioInput.value && horaFinInput.value) {
+                    const formatTo12Hour = (timeStr) => {
+                        if (!timeStr) return '';
+                        const [hours, minutes] = timeStr.split(':');
+                        let h = parseInt(hours);
+                        const ampm = h >= 12 ? 'pm' : 'am';
+                        h = h % 12;
+                        h = h ? h : 12;
+                        return `${String(h).padStart(2, '0')}:${minutes} ${ampm}`;
+                    };
+                    const formattedRange = `${formatTo12Hour(horaInicioInput.value)} - ${formatTo12Hour(horaFinInput.value)}`;
+                    rangoHoraCompletoInput.value = formattedRange;
+                } else {
+                    rangoHoraCompletoInput.value = '';
+                }
+
                 const form = this;
                 const formData = new FormData(form);
 
@@ -684,7 +731,27 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         piezasAceptadasInput.value = reporte.PiezasAceptadas;
                         piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
                         fechaInspeccionInput.value = reporte.FechaInspeccion;
-                        idRangoHoraSelect.value = reporte.IdRangoHora;
+
+                        // --- TIME LOGIC FOR EDITING ---
+                        if (reporte.RangoHora) {
+                            const convertTo24Hour = (timeStr) => {
+                                if (!timeStr) return '';
+                                let [time, modifier] = timeStr.trim().split(' ');
+                                let [hours, minutes] = time.split(':');
+                                if (hours === '12') hours = '00';
+                                if (modifier && modifier.toLowerCase() === 'pm') hours = parseInt(hours, 10) + 12;
+                                return `${String(hours).padStart(2, '0')}:${minutes}`;
+                            };
+                            const [startStr, endStr] = reporte.RangoHora.split(' - ');
+                            if (startStr && endStr) {
+                                horaInicioInput.value = convertTo24Hour(startStr);
+                                horaFinInput.value = convertTo24Hour(endStr);
+                            }
+                        } else {
+                            horaInicioInput.value = '';
+                            horaFinInput.value = '';
+                        }
+
                         tiempoInspeccionInput.value = reporte.TiempoInspeccion || '';
                         comentariosTextarea.value = reporte.Comentarios || '';
 
