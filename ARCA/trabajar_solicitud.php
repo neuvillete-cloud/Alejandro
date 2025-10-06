@@ -157,10 +157,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Librería para el reloj analógico (cargada en el head) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clocklet@0.3.0/css/clocklet.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/clocklet@0.3.0/js/clocklet.min.js"></script>
-
     <style>
         .pdf-viewer-container {
             border: 1px solid var(--color-borde);
@@ -173,6 +169,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             cursor: pointer;
             background-color: #fff;
         }
+        /* Estilos de la librería del reloj (Clocklet) */
+        .clocklet-modal-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;transition:background-color .3s;background-color:rgba(0,0,0,0);pointer-events:none}.clocklet-modal-container.is-shown{background-color:rgba(0,0,0,.6);pointer-events:auto}.clocklet-modal{position:absolute;top:50%;left:50%;z-index:1;border-radius:2px;transform:translate(-50%,-50%) scale(.7);transition:opacity .3s,transform .3s;opacity:0;background-color:#fff}.clocklet-modal.is-shown{transform:translate(-50%,-50%) scale(1);opacity:1}.clocklet-header{position:relative;border-radius:2px 2px 0 0;padding:0 24px;background-color:#009688}.clocklet-header-time{line-height:64px;font-size:32px;text-align:center;color:#b2dfdb}.clocklet-header-time.is-active{color:#fff}.clocklet-header-time:first-child{float:left}.clocklet-header-time:last-child{float:right}.clocklet-header-time::after{content:':';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);margin-top:-1px}.clocklet-display{overflow:hidden;padding:12px;user-select:none}.clocklet-plate{position:relative;border:1px solid #eee;border-radius:50%;width:240px;height:240px}.clocklet-face{position:absolute;top:0;left:0;border-radius:50%;width:100%;height:100%}.clocklet-face.is-hidden{visibility:hidden}.clocklet-hand{position:absolute;top:50%;left:50%;transform-origin:50% 0;width:2px;height:50%;background-color:#009688}.clocklet-hand-point{position:absolute;top:-8px;left:-8px;border:8px solid #009688;border-radius:50%}.clocklet-tick{position:absolute;top:50%;left:50%;border-radius:50%;transform:translate(-50%,-50%);width:32px;height:32px;line-height:32px;font-size:13px;text-align:center;cursor:pointer;color:#000}.clocklet-tick:hover{background-color:#eee}.clocklet-tick.is-active{background-color:#009688;color:#fff}.clocklet-tick.is-disabled{pointer-events:none;color:#9e9e9e}.clocklet-footer{padding:8px;text-align:right}.clocklet-button{display:inline-block;border:none;border-radius:2px;padding:0 12px;min-width:52px;height:36px;line-height:36px;font-size:14px;font-weight:600;text-align:center;text-decoration:none;text-transform:uppercase;cursor:pointer;color:#009688;background:none}.clocklet-button:hover{background-color:#eee}
     </style>
 </head>
 <body>
