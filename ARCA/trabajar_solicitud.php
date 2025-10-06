@@ -68,9 +68,8 @@ $reportes_anteriores_query = $conex->prepare("
     SELECT 
         ri.IdReporte, ri.FechaInspeccion, ri.NombreInspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
         (ri.PiezasInspeccionadas - ri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
-        ri.PiezasRetrabajadas, crh.RangoHora, ri.Comentarios, ri.IdRangoHora
+        ri.PiezasRetrabajadas, ri.RangoHora, ri.Comentarios
     FROM ReportesInspeccion ri
-    LEFT JOIN CatalogoRangosHoras crh ON ri.IdRangoHora = crh.IdRangoHora
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
@@ -154,16 +153,23 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- INICIO DE NUEVOS ESTILOS -->
+
+    <!-- Librería para el reloj analógico -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clocklet@0.3.0/css/clocklet.min.css">
+
     <style>
         .pdf-viewer-container {
             border: 1px solid var(--color-borde);
             border-radius: 8px;
-            overflow: hidden; /* Para que el iframe respete los bordes redondeados */
+            overflow: hidden;
             margin-top: 15px;
         }
+        /* Estilos para el input del reloj */
+        input[data-clocklet] {
+            cursor: pointer;
+            background-color: #fff;
+        }
     </style>
-    <!-- FIN DE NUEVOS ESTILOS -->
 </head>
 <body>
 <header class="header">
@@ -185,7 +191,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             <p><strong>Defectos:</strong> <span><?php echo $nombresDefectosStr; ?></span></p>
         </div>
 
-        <!-- INICIO DE NUEVA SECCIÓN: Visor de PDF para métodos aprobados -->
         <?php if ($mostrarVisorPDF): ?>
             <fieldset>
                 <legend><i class="fa-solid fa-file-shield"></i> Método de Trabajo Aprobado</legend>
@@ -194,7 +199,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </div>
             </fieldset>
         <?php endif; ?>
-        <!-- FIN DE NUEVA SECCIÓN -->
 
         <?php
         $mostrarFormularioPrincipal = false;
@@ -206,7 +210,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             if ($solicitud['IdMetodo'] !== NULL && $solicitud['EstatusAprobacion'] === 'Pendiente') {
                 echo "<div class='notification-box info'><i class='fa-solid fa-clock'></i> <strong>Aviso:</strong> El método de trabajo está pendiente de aprobación. Puedes continuar con el registro.</div>";
             }
-            // MODIFICACIÓN: El formulario principal solo se muestra si el método está Aprobado o Pendiente
             if ($solicitud['EstatusAprobacion'] === 'Aprobado' || $solicitud['EstatusAprobacion'] === 'Pendiente') {
                 $mostrarFormularioPrincipal = true;
             }
@@ -230,20 +233,17 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
                     </div>
 
-                    <!-- INICIO CAMBIO A RELOJ -->
                     <div class="form-row">
                         <div class="form-group">
                             <label>Hora de Inicio</label>
-                            <input type="time" name="horaInicio" id="horaInicio" required>
+                            <input type="text" data-clocklet name="horaInicio" id="horaInicio" autocomplete="off" required>
                         </div>
                         <div class="form-group">
                             <label>Hora de Fin (1 hora)</label>
-                            <input type="time" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                            <input type="text" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
                         </div>
                     </div>
-                    <!-- Hidden input to send the formatted time range to the server -->
                     <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
-                    <!-- FIN CAMBIO A RELOJ -->
 
                 </fieldset>
 
@@ -319,9 +319,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         <?php endif; ?>
 
-        <!-- INICIO DE LA MODIFICACIÓN: Lógica condicional para el formulario de subida -->
         <?php if (!$mostrarFormularioPrincipal): ?>
-            <?php if ($solicitud['IdMetodo'] === NULL): // Caso: Primera vez que se sube ?>
+            <?php if ($solicitud['IdMetodo'] === NULL): ?>
                 <form id="metodoForm" action="https://grammermx.com/Mailer/upload_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
@@ -353,7 +352,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </form>
             <?php endif; ?>
         <?php endif; ?>
-        <!-- FIN DE LA MODIFICACIÓN -->
 
         <hr style="margin-top: 40px; margin-bottom: 30px; border-color: var(--color-borde);">
 
@@ -411,6 +409,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/clocklet@0.3.0/js/clocklet.min.js"></script>
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
     const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
@@ -420,7 +419,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- LOGIC FOR THE MAIN INSPECTION FORM ---
         const reporteForm = document.getElementById('reporteForm');
         if (reporteForm) {
             const idReporteInput = document.getElementById('idReporte');
@@ -435,7 +433,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
             const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
 
-            // --- TIME INPUT LOGIC ---
             const horaInicioInput = document.getElementById('horaInicio');
             const horaFinInput = document.getElementById('horaFin');
             const rangoHoraCompletoInput = document.getElementById('rangoHoraCompleto');
@@ -446,23 +443,36 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
             const comentariosTextarea = document.getElementById('comentarios');
 
-            // Auto-calculate end time
+            // Función para formatear la hora a AM/PM
+            const formatTo12HourClock = (date) => {
+                let hours = date.getHours();
+                let minutes = date.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // La hora '0' debe ser '12'
+                minutes = minutes < 10 ? '0'+minutes : minutes;
+                return `${hours}:${minutes} ${ampm}`;
+            };
+
+            // Evento para cuando el valor del reloj cambia
             horaInicioInput.addEventListener('change', function() {
                 if (this.value) {
-                    const [hours, minutes] = this.value.split(':');
+                    const [time, period] = this.value.split(' ');
+                    const [hours, minutes] = time.split(':');
+
                     const startTime = new Date();
-                    startTime.setHours(parseInt(hours), parseInt(minutes), 0);
-                    startTime.setHours(startTime.getHours() + 1); // Add one hour
+                    let h = parseInt(hours);
+                    if (period === 'PM' && h < 12) h += 12;
+                    if (period === 'AM' && h === 12) h = 0;
 
-                    const endHours = String(startTime.getHours()).padStart(2, '0');
-                    const endMinutes = String(startTime.getMinutes()).padStart(2, '0');
+                    startTime.setHours(h, parseInt(minutes), 0);
+                    startTime.setHours(startTime.getHours() + 1);
 
-                    horaFinInput.value = `${endHours}:${endMinutes}`;
+                    horaFinInput.value = formatTo12HourClock(startTime);
                 } else {
                     horaFinInput.value = '';
                 }
             });
-
 
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
@@ -648,19 +658,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             reporteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                // Format and set the hidden time range input before creating FormData
                 if (horaInicioInput.value && horaFinInput.value) {
-                    const formatTo12Hour = (timeStr) => {
-                        if (!timeStr) return '';
-                        const [hours, minutes] = timeStr.split(':');
-                        let h = parseInt(hours);
-                        const ampm = h >= 12 ? 'pm' : 'am';
-                        h = h % 12;
-                        h = h ? h : 12;
-                        return `${String(h).padStart(2, '0')}:${minutes} ${ampm}`;
-                    };
-                    const formattedRange = `${formatTo12Hour(horaInicioInput.value)} - ${formatTo12Hour(horaFinInput.value)}`;
-                    rangoHoraCompletoInput.value = formattedRange;
+                    rangoHoraCompletoInput.value = `${horaInicioInput.value} - ${horaFinInput.value}`;
                 } else {
                     rangoHoraCompletoInput.value = '';
                 }
@@ -732,20 +731,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
                         fechaInspeccionInput.value = reporte.FechaInspeccion;
 
-                        // --- TIME LOGIC FOR EDITING ---
                         if (reporte.RangoHora) {
-                            const convertTo24Hour = (timeStr) => {
-                                if (!timeStr) return '';
-                                let [time, modifier] = timeStr.trim().split(' ');
-                                let [hours, minutes] = time.split(':');
-                                if (hours === '12') hours = '00';
-                                if (modifier && modifier.toLowerCase() === 'pm') hours = parseInt(hours, 10) + 12;
-                                return `${String(hours).padStart(2, '0')}:${minutes}`;
-                            };
                             const [startStr, endStr] = reporte.RangoHora.split(' - ');
                             if (startStr && endStr) {
-                                horaInicioInput.value = convertTo24Hour(startStr);
-                                horaFinInput.value = convertTo24Hour(endStr);
+                                horaInicioInput.value = startStr.trim().toUpperCase();
+                                horaFinInput.value = endStr.trim().toUpperCase();
                             }
                         } else {
                             horaInicioInput.value = '';
@@ -883,7 +873,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             <?php endif; ?>
         }
 
-        // --- LOGIC FOR THE METHOD UPLOAD FORM ---
         const metodoForm = document.getElementById('metodoForm');
         const btnSubirMetodo = document.getElementById('btnSubirMetodo');
 
@@ -935,7 +924,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
         }
 
-        // --- COMMON LOGIC FOR ALL VIEWS ---
         function updateFileNameLabel(e) {
             const labelSpan = e.target.previousElementSibling.querySelector('span');
             const defaultText = labelSpan.dataset.defaultText || 'Seleccionar archivo...';
