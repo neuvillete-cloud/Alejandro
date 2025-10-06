@@ -36,16 +36,18 @@ $con = new LocalConector();
 $conex = $con->conectar();
 
 try {
-    // --- CORRECCIÓN: Obtenemos también el correo del creador ---
+    // --- CORRECCIÓN: Se usa s.FechaRegistro en lugar de s.FechaCreacion ---
     $stmt_datos = $conex->prepare("
         SELECT 
             s.IdSolicitud, 
             s.NumeroParte,
-            u.Nombre AS NombreCreador,
-            u.Correo AS EmailCreador
+            u_creador.Nombre AS NombreCreador,
+            u_creador.Correo AS EmailCreador,
+            m.FechaCarga,
+            s.FechaRegistro AS FechaCreacion
         FROM Metodos m
         JOIN Solicitudes s ON m.IdMetodo = s.IdMetodo
-        JOIN Usuarios u ON s.IdUsuario = u.IdUsuario
+        JOIN Usuarios u_creador ON s.IdUsuario = u_creador.IdUsuario
         WHERE m.IdMetodo = ?
     ");
     $stmt_datos->bind_param("i", $idMetodo);
@@ -62,7 +64,6 @@ try {
         $stmt->bind_param("i", $idMetodo);
         $stmt->execute();
 
-        // --- CORRECCIÓN: Se activa el envío de correo de aprobación ---
         $emailDestino = $datosSolicitud['EmailCreador'];
         enviarCorreoAprobacion($emailDestino, $datosSolicitud);
 
@@ -104,10 +105,23 @@ echo json_encode($response);
  */
 function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
     $folio = "S-" . str_pad($datosSolicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT);
-    // --- LÓGICA GUARDADA PARA FUTURO ---
-    // $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
-    // --- CAMBIO: El enlace ahora apunta a Historial.php ---
+
+    // --- LÓGICA DE REDIRECCIÓN BASADA EN TIEMPO DE CARGA ---
     $linkSolicitud = BASE_URL . '/Historial.php';
+    $buttonText = 'Ir a Mis Solicitudes';
+
+    // Comparamos la fecha de creación de la solicitud con la fecha de carga del método.
+    $fechaCreacion = new DateTime($datosSolicitud['FechaCreacion']);
+    $fechaCarga = new DateTime($datosSolicitud['FechaCarga']);
+    $diferenciaSegundos = $fechaCarga->getTimestamp() - $fechaCreacion->getTimestamp();
+
+    // Si el método se subió más de 5 minutos (300 segundos) después, fue desde la página de trabajo.
+    if ($diferenciaSegundos > 300) {
+        $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
+        $buttonText = 'Ir a la Solicitud';
+    }
+    // --- FIN DE LÓGICA DE REDIRECCIÓN ---
+
     $asunto = "Acción Requerida: Método de Trabajo Rechazado para Folio $folio";
     $currentYear = date('Y');
 
@@ -132,7 +146,7 @@ function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
 
             <p style='color:#6c757d;line-height:1.6;'>Por favor, accede a la solicitud para subir una versión corregida del método de trabajo y continuar con el proceso.</p>
             <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' style='padding:20px 0;'>
-                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a Mis Solicitudes</a>
+                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>{$buttonText}</a>
             </td></tr></table>
         </td></tr>
         <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
@@ -149,10 +163,23 @@ function enviarCorreoRechazo($emailDestino, $motivo, $datosSolicitud) {
  */
 function enviarCorreoAprobacion($emailDestino, $datosSolicitud) {
     $folio = "S-" . str_pad($datosSolicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT);
-    // --- LÓGICA GUARDADA PARA FUTURO ---
-    // $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
-    // --- CAMBIO: El enlace ahora apunta a Historial.php ---
+
+    // --- LÓGICA DE REDIRECCIÓN BASADA EN TIEMPO DE CARGA ---
     $linkSolicitud = BASE_URL . '/Historial.php';
+    $buttonText = 'Ir a Mis Solicitudes';
+
+    // Comparamos la fecha de creación de la solicitud con la fecha de carga del método.
+    $fechaCreacion = new DateTime($datosSolicitud['FechaCreacion']);
+    $fechaCarga = new DateTime($datosSolicitud['FechaCarga']);
+    $diferenciaSegundos = $fechaCarga->getTimestamp() - $fechaCreacion->getTimestamp();
+
+    // Si el método se subió más de 5 minutos (300 segundos) después, fue desde la página de trabajo.
+    if ($diferenciaSegundos > 300) {
+        $linkSolicitud = BASE_URL . '/trabajar_solicitud.php?id=' . $datosSolicitud['IdSolicitud'];
+        $buttonText = 'Ir a la Solicitud';
+    }
+    // --- FIN DE LÓGICA DE REDIRECCIÓN ---
+
     $asunto = "Información: Método de Trabajo Aprobado para Folio $folio";
     $currentYear = date('Y');
 
@@ -169,7 +196,7 @@ function enviarCorreoAprobacion($emailDestino, $datosSolicitud) {
             <p style='color:#6c757d;line-height:1.6;'>¡Buenas noticias! El método de trabajo para la solicitud <strong style='color:#0056b3;'>$folio</strong> (No. Parte: {$datosSolicitud['NumeroParte']}) ha sido aprobado.</p>
             <p style='color:#6c757d;line-height:1.6;'>Ya puedes continuar con las siguientes etapas del proceso de contención.</p>
             <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td align='center' style='padding:20px 0;'>
-                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>Ir a Mis Solicitudes</a>
+                <a href='{$linkSolicitud}' target='_blank' style='font-size:16px;font-family:"Lato", Arial, sans-serif;color:#ffffff;text-decoration:none;background-color:#5c85ad;border-radius:8px;padding:15px 30px;display:inline-block;font-weight:bold;'>{$buttonText}</a>
             </td></tr></table>
         </td></tr>
         <tr><td align='center' style='background-color:#e9ecef;padding:20px;font-size:12px;color:#6c757d;border-bottom-left-radius:12px;border-bottom-right-radius:12px;'><p style='margin:0;'>&copy; {$currentYear} ARCA Systems. Notificación automatizada.</p></td></tr>
