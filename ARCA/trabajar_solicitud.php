@@ -163,15 +163,17 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             margin-top: 15px;
         }
         .form-row.defect-entry-row {
+            display: flex;
+            gap: 10px;
             align-items: flex-end;
             margin-bottom: 10px;
         }
         .form-row.defect-entry-row .form-group {
+            flex: 1; /* Inputs share space */
             margin-bottom: 0;
         }
         .btn-remove-batch {
-            margin-left: 10px;
-            height: 42px; /* Alinea con la altura del input */
+            flex-shrink: 0; /* Prevent button from shrinking */
         }
     </style>
 </head>
@@ -265,10 +267,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="defect-entries-container">
                                         <div class="form-row defect-entry-row">
-                                            <div class="form-group w-50">
+                                            <div class="form-group">
                                                 <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                                             </div>
-                                            <div class="form-group w-50">
+                                            <div class="form-group">
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
                                         </div>
@@ -1001,10 +1003,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
                     const newRowHtml = `
                         <div class="form-row defect-entry-row">
-                            <div class="form-group w-50">
+                            <div class="form-group">
                                 <input type="number" class="defecto-cantidad" name="defectos_originales[${defectoId}][entries][${newIndex}][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                             </div>
-                            <div class="form-group w-50">
+                            <div class="form-group">
                                 <input type="text" class="defecto-lote" name="defectos_originales[${defectoId}][entries][${newIndex}][lote]" placeholder="Bach/Lote...">
                             </div>
                             <button type="button" class="btn-remove-batch btn-danger btn-small"><i class="fa-solid fa-trash-can"></i></button>
