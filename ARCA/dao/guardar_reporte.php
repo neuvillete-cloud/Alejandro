@@ -109,13 +109,13 @@ try {
     if ($idReporte) { // Modo edición (placeholder por ahora)
         throw new Exception("La funcionalidad de edición de reportes no está implementada en este script.");
     } else { // Modo inserción
-        // --- MODIFICACIÓN: Se inserta en la nueva columna RangoHora ---
+        // --- MODIFICACIÓN: Se inserta en la nueva columna RangoHora y se deja IdRangoHora como NULL ---
         $stmt_reporte = $conex->prepare("INSERT INTO ReportesInspeccion (
-                                            IdSolicitud, NombreInspector, FechaInspeccion, RangoHora,
+                                            IdSolicitud, NombreInspector, FechaInspeccion, RangoHora, IdRangoHora,
                                             PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas,
                                             TiempoInspeccion, Comentarios, IdTiempoMuerto
-                                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        // --- MODIFICACIÓN: Se ajusta el bind_param para usar la variable de texto ---
+                                        ) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?)");
+        // --- MODIFICACIÓN: Se ajusta el bind_param para usar la variable de texto y omitir el IdRangoHora ---
         $stmt_reporte->bind_param("isssiiiiss",
             $idSolicitud, $nombreInspector, $fechaInspeccion, $rangoHora,
             $piezasInspeccionadas, $piezasAceptadas, $piezasRetrabajadas,
@@ -199,3 +199,4 @@ try {
 
 $conex->close();
 ?>
+
