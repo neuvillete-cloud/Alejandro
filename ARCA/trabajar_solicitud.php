@@ -50,12 +50,7 @@ foreach($catalogo_defectos_result as $row) {
 
 
 $razones_tiempo_muerto = $conex->query("SELECT IdTiempoMuerto, Razon FROM CatalogoTiempoMuerto ORDER BY Razon ASC");
-// Mantenemos esta consulta para la visualización de reportes antiguos y el cálculo de turnos
-$rangos_horas_data = [];
-$rangos_horas_query = $conex->query("SELECT IdRangoHora, RangoHora FROM CatalogoRangosHoras ORDER BY IdRangoHora ASC");
-while($rango = $rangos_horas_query->fetch_assoc()) {
-    $rangos_horas_data[$rango['IdRangoHora']] = $rango['RangoHora'];
-}
+
 $defectos_originales_formulario = $conex->query("SELECT d.IdDefecto, cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = $idSolicitud");
 $defectos_originales_para_js = [];
 mysqli_data_seek($defectos_originales_formulario, 0); // Resetear el puntero para JS
@@ -157,11 +152,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- FIX: Se reemplaza Flatpickr por jQuery Clock Timepicker -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-clock-timepicker@2.6.5/jquery-clock-timepicker.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/jquery-clock-timepicker@2.6.5/jquery-clock-timepicker.min.js"></script>
-
     <style>
         .pdf-viewer-container {
             border: 1px solid var(--color-borde);
@@ -236,11 +226,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <div class="form-row">
                         <div class="form-group">
                             <label>Hora de Inicio</label>
-                            <input type="text" name="horaInicio" id="horaInicio" autocomplete="off" required>
+                            <input type="time" name="horaInicio" id="horaInicio" required>
                         </div>
                         <div class="form-group">
                             <label>Hora de Fin (1 hora)</label>
-                            <input type="text" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                            <input type="time" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
                         </div>
                     </div>
                     <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
@@ -337,8 +327,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     </fieldset>
                     <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
                 </form>
-            <?php else: // Caso: El método fue rechazado y se debe resubir ?>
-                <form id="metodoForm" action="https://grammermx.com/Mailer/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+            <?php else: ?>
+                <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
                         <legend><i class="fa-solid fa-paperclip"></i> Corregir Método de Trabajo</legend>
@@ -417,9 +407,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     let editandoReporte = false;
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializa el nuevo jQuery Clock Timepicker.
-        $('#horaInicio').clockTimePicker({});
-
         const reporteForm = document.getElementById('reporteForm');
         if (reporteForm) {
             const idReporteInput = document.getElementById('idReporte');
@@ -444,40 +431,20 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
             const comentariosTextarea = document.getElementById('comentarios');
 
-            // Función para formatear la hora a AM/PM
-            const formatTo12HourClock = (date) => {
-                let hours = date.getHours();
-                let minutes = date.getMinutes();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12; // La hora '0' debe ser '12'
-                minutes = minutes < 10 ? '0'+minutes : minutes;
-                return `${hours}:${minutes} ${ampm}`;
-            };
-
-            // Evento para cuando el valor del reloj cambia
+            // --- LÓGICA PARA EL SELECTOR DE HORA NATIVO ---
             horaInicioInput.addEventListener('change', function() {
-                if (this.value && this.value.includes(':')) { // Asegurarse que es un valor de hora
-                    // El valor del plugin viene en formato HH:mm (ej: 15:30)
+                if (this.value) {
                     const [hours, minutes] = this.value.split(':');
-
                     const startTime = new Date();
-                    startTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
+                    startTime.setHours(parseInt(hours), parseInt(minutes), 0);
+                    startTime.setHours(startTime.getHours() + 1); // Añadir una hora
 
-                    // Sumar una hora para la hora de fin
-                    const endTime = new Date(startTime.getTime());
-                    endTime.setHours(endTime.getHours() + 1);
+                    const endHours = String(startTime.getHours()).padStart(2, '0');
+                    const endMinutes = String(startTime.getMinutes()).padStart(2, '0');
 
-                    // Re-formatear el input de inicio a 12h AM/PM para consistencia visual
-                    this.value = formatTo12HourClock(startTime);
-
-                    // Establecer el valor del input de fin
-                    horaFinInput.value = formatTo12HourClock(endTime);
+                    horaFinInput.value = `${endHours}:${endMinutes}`;
                 } else {
-                    // Si el valor no es válido, limpiar el campo de fin
-                    if(!this.value.includes('AM') && !this.value.includes('PM')) {
-                        horaFinInput.value = '';
-                    }
+                    horaFinInput.value = '';
                 }
             });
 
@@ -666,7 +633,18 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 e.preventDefault();
 
                 if (horaInicioInput.value && horaFinInput.value) {
-                    rangoHoraCompletoInput.value = `${horaInicioInput.value} - ${horaFinInput.value}`;
+                    const formatTo12Hour = (timeStr) => {
+                        if (!timeStr) return '';
+                        const [hours, minutes] = timeStr.split(':');
+                        let h = parseInt(hours);
+                        const ampm = h >= 12 ? 'pm' : 'am';
+                        h = h % 12;
+                        h = h ? h : 12; // la hora '0' debe ser '12'
+                        const finalHours = String(h).padStart(2, '0');
+                        return `${finalHours}:${minutes} ${ampm}`;
+                    };
+                    const formattedRange = `${formatTo12Hour(horaInicioInput.value)} - ${formatTo12Hour(horaFinInput.value)}`;
+                    rangoHoraCompletoInput.value = formattedRange;
                 } else {
                     rangoHoraCompletoInput.value = '';
                 }
@@ -739,10 +717,22 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         fechaInspeccionInput.value = reporte.FechaInspeccion;
 
                         if (reporte.RangoHora) {
+                            const convertTo24Hour = (timeStr) => {
+                                if (!timeStr) return '';
+                                let [time, modifier] = timeStr.trim().split(' ');
+                                let [hours, minutes] = time.split(':');
+                                if (hours === '12') {
+                                    hours = '00';
+                                }
+                                if (modifier && modifier.toUpperCase() === 'PM') {
+                                    hours = parseInt(hours, 10) + 12;
+                                }
+                                return `${String(hours).padStart(2, '0')}:${minutes}`;
+                            };
                             const [startStr, endStr] = reporte.RangoHora.split(' - ');
                             if (startStr && endStr) {
-                                horaInicioInput.value = startStr.trim().toUpperCase();
-                                horaFinInput.value = endStr.trim().toUpperCase();
+                                horaInicioInput.value = convertTo24Hour(startStr);
+                                horaFinInput.value = convertTo24Hour(endStr);
                             }
                         } else {
                             horaInicioInput.value = '';
