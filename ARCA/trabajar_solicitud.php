@@ -162,6 +162,21 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             overflow: hidden;
             margin-top: 15px;
         }
+        .defect-entry-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .defect-entry-row .form-group {
+            margin-bottom: 0;
+            flex-grow: 1;
+        }
+        .btn-remove-batch {
+            padding: 10px 15px;
+            height: fit-content;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -252,14 +267,17 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             <?php mysqli_data_seek($defectos_originales_formulario, 0); while($defecto = $defectos_originales_formulario->fetch_assoc()): ?>
                                 <div class="form-group" data-id-defecto-original="<?php echo $defecto['IdDefecto']; ?>">
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
-                                    <div class="form-row">
-                                        <div class="form-group w-50">
-                                            <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][cantidad]" placeholder="Cantidad con este defecto..." value="0" min="0" required>
-                                        </div>
-                                        <div class="form-group w-50">
-                                            <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][lote]" placeholder="Ingresa el Bach/Lote...">
+                                    <div class="defect-entries-container">
+                                        <div class="defect-entry-row">
+                                            <div class="form-group">
+                                                <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
+                                            </div>
                                         </div>
                                     </div>
+                                    <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> Añadir Lote</button>
                                 </div>
                             <?php endwhile; ?>
                         <?php else: ?>
