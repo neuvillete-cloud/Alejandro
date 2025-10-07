@@ -165,15 +165,16 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .form-row.defect-entry-row {
             display: flex;
             gap: 10px;
-            align-items: flex-end;
+            align-items: flex-end; /* Alinea los elementos en la parte inferior */
             margin-bottom: 10px;
         }
         .form-row.defect-entry-row .form-group {
-            flex: 1; /* Inputs share space */
+            flex: 1 1 0; /* Permite que los inputs crezcan y se encojan */
+            min-width: 0; /* Permite que los inputs se encojan más allá de su tamaño de contenido */
             margin-bottom: 0;
         }
         .btn-remove-batch {
-            flex-shrink: 0; /* Prevent button from shrinking */
+            flex-shrink: 0; /* Evita que el botón de eliminar se encoja */
         }
     </style>
 </head>
@@ -273,6 +274,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                             <div class="form-group">
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
+                                            <!-- Placeholder for alignment -->
+                                            <button type="button" class="btn-remove-batch btn-danger btn-small" style="visibility: hidden; pointer-events: none;"><i class="fa-solid fa-trash-can"></i></button>
                                         </div>
                                     </div>
                                     <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> Añadir Lote</button>
