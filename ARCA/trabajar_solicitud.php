@@ -187,8 +187,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         <?php if ($mostrarVisorPDF): ?>
             <fieldset>
                 <legend><i class="fa-solid fa-file-shield"></i> Método de Trabajo Aprobado</legend>
-                <div class="pdf-viewer-container">
-                    <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>" width="100%" height="600px" frameborder="0"></iframe>
+                <div class="form-actions" style="margin-bottom: 15px;">
+                    <button type="button" id="togglePdfViewerBtn" class="btn-secondary"><i class="fa-solid fa-eye"></i> Ver Método de Trabajo</button>
+                </div>
+                <div id="pdfViewerWrapper" style="display: none;">
+                    <div class="pdf-viewer-container">
+                        <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>" width="100%" height="600px" frameborder="0"></iframe>
+                    </div>
                 </div>
             </fieldset>
         <?php endif; ?>
@@ -938,6 +943,27 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         document.querySelectorAll('input[type="file"]').forEach(input => {
             input.addEventListener('change', updateFileNameLabel);
         });
+
+        // --- LÓGICA PARA MOSTRAR/OCULTAR VISOR DE PDF ---
+        const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
+        const pdfWrapper = document.getElementById('pdfViewerWrapper');
+
+        if (togglePdfBtn && pdfWrapper) {
+            togglePdfBtn.addEventListener('click', function() {
+                const isHidden = pdfWrapper.style.display === 'none';
+                if (isHidden) {
+                    pdfWrapper.style.display = 'block';
+                    this.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Método de Trabajo';
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-primary');
+                } else {
+                    pdfWrapper.style.display = 'none';
+                    this.innerHTML = '<i class="fa-solid fa-eye"></i> Ver Método de Trabajo';
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-secondary');
+                }
+            });
+        }
 
     });
 </script>
