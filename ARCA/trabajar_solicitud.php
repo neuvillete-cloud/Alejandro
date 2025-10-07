@@ -75,6 +75,9 @@ $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
 
 $reportes_procesados = [];
+// --- NUEVA LÓGICA: Calcular el tiempo total ---
+$totalHorasRegistradas = count($reportes_raw);
+
 foreach ($reportes_raw as $reporte) {
     $reporte_id = $reporte['IdReporte'];
 
@@ -266,7 +269,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </fieldset>
 
                 <fieldset><legend><i class="fa-solid fa-stopwatch"></i> Tiempos y Comentarios de la Sesión</legend>
-                    <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" id="tiempoInspeccion" placeholder="Ej: 2 horas 30 minutos"></div>
+                    <!-- CAMPO AUTOMÁTICO -->
+                    <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="1 hora" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
 
                     <div class="form-group">
                         <label>¿Hubo Tiempo Muerto?</label>
@@ -295,13 +299,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             </form>
 
             <?php if (empty($solicitud['TiempoTotalInspeccion'])): ?>
+                <!-- FORMULARIO DE FINALIZACIÓN AUTOMÁTICO -->
                 <form id="tiempoTotalForm" action="dao/guardar_tiempo_total.php" method="POST" style="margin-top: 40px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset><legend><i class="fa-solid fa-hourglass-end"></i> Finalizar Contención (Tiempo Total)</legend>
-                        <p class="info-text">Este campo se llenará una única vez al finalizar toda la inspección de la contención.</p>
-                        <div class="form-group"><label>Tiempo Total de Inspección de la Contención</label><input type="text" name="tiempoTotalInspeccion" placeholder="Ej: 20 horas 15 minutos" required></div>
+                        <p class="info-text">El tiempo total de las sesiones ya registradas es de <strong><?php echo $totalHorasRegistradas; ?> hora(s)</strong>. Al finalizar, este será el valor guardado.</p>
+                        <input type="hidden" name="tiempoTotalInspeccion" value="<?php echo $totalHorasRegistradas . ' hora(s)'; ?>">
                     </fieldset>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Guardar Tiempo Total y Finalizar</button></div>
+                    <div class="form-actions"><button type="submit" class="btn-primary">Finalizar Contención y Guardar Tiempo Total</button></div>
                 </form>
             <?php else: ?>
                 <div class='notification-box info' style='margin-top: 40px;'><i class='fa-solid fa-circle-check'></i> <strong>Contención Finalizada:</strong> El tiempo total de inspección ya fue registrado (<?php echo htmlspecialchars($solicitud['TiempoTotalInspeccion']); ?>).</div>
@@ -328,7 +333,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
                 </form>
             <?php else: ?>
-                <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                <form id="metodoForm" action="https://grammermx.com/Mailer/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
                         <legend><i class="fa-solid fa-paperclip"></i> Corregir Método de Trabajo</legend>
