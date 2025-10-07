@@ -128,19 +128,23 @@ try {
     $lastIdReporte = $stmt_reporte->insert_id;
     $stmt_reporte->close();
 
-    // 3. Procesar Defectos Originales
+    // 3. Procesar Defectos Originales (LÓGICA ACTUALIZADA PARA MÚLTIPLES LOTES)
     if (isset($_POST['defectos_originales']) && is_array($_POST['defectos_originales'])) {
-        foreach ($_POST['defectos_originales'] as $idDefectoOriginal => $data) {
-            $cantidad = intval($data['cantidad']);
-            $lote = isset($data['lote']) ? trim($data['lote']) : null;
+        foreach ($_POST['defectos_originales'] as $idDefectoOriginal => $defectData) {
+            if (isset($defectData['entries']) && is_array($defectData['entries'])) {
+                foreach ($defectData['entries'] as $entry) {
+                    $cantidad = intval($entry['cantidad']);
+                    $lote = isset($entry['lote']) ? trim($entry['lote']) : null;
 
-            if ($cantidad > 0) {
-                $stmt_defecto_original = $conex->prepare("INSERT INTO ReporteDefectosOriginales (IdReporte, IdDefecto, CantidadEncontrada, Lote) VALUES (?, ?, ?, ?)");
-                $stmt_defecto_original->bind_param("iiis", $lastIdReporte, $idDefectoOriginal, $cantidad, $lote);
-                if (!$stmt_defecto_original->execute()) {
-                    throw new Exception("Error al guardar defecto original #{$idDefectoOriginal}: " . $stmt_defecto_original->error);
+                    if ($cantidad > 0) {
+                        $stmt_defecto_original = $conex->prepare("INSERT INTO ReporteDefectosOriginales (IdReporte, IdDefecto, CantidadEncontrada, Lote) VALUES (?, ?, ?, ?)");
+                        $stmt_defecto_original->bind_param("iiis", $lastIdReporte, $idDefectoOriginal, $cantidad, $lote);
+                        if (!$stmt_defecto_original->execute()) {
+                            throw new Exception("Error al guardar defecto original #{$idDefectoOriginal} con lote {$lote}: " . $stmt_defecto_original->error);
+                        }
+                        $stmt_defecto_original->close();
+                    }
                 }
-                $stmt_defecto_original->close();
             }
         }
     }
