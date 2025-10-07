@@ -162,20 +162,16 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             overflow: hidden;
             margin-top: 15px;
         }
-        .defect-entry-row {
-            display: flex;
+        .form-row.defect-entry-row {
             align-items: flex-end;
-            gap: 10px;
             margin-bottom: 10px;
         }
-        .defect-entry-row .form-group {
+        .form-row.defect-entry-row .form-group {
             margin-bottom: 0;
-            flex-grow: 1;
         }
         .btn-remove-batch {
-            padding: 10px 15px;
-            height: fit-content;
-            margin-bottom: 0;
+            margin-left: 10px;
+            height: 42px; /* Alinea con la altura del input */
         }
     </style>
 </head>
@@ -268,11 +264,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                 <div class="form-group" data-id-defecto-original="<?php echo $defecto['IdDefecto']; ?>">
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="defect-entries-container">
-                                        <div class="defect-entry-row">
-                                            <div class="form-group">
+                                        <div class="form-row defect-entry-row">
+                                            <div class="form-group w-50">
                                                 <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group w-50">
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
                                         </div>
@@ -979,6 +975,49 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     this.innerHTML = '<i class="fa-solid fa-eye"></i> Ver Método de Trabajo';
                     this.classList.remove('btn-primary');
                     this.classList.add('btn-secondary');
+                }
+            });
+        }
+
+        // --- LÓGICA PARA AÑADIR/QUITAR LOTES DE DEFECTOS ---
+        const originalDefectList = document.querySelector('.original-defect-list');
+
+        if (originalDefectList) {
+            let batchCounters = {};
+
+            originalDefectList.addEventListener('click', function(e) {
+                // Handle adding a batch
+                const addBtn = e.target.closest('.btn-add-batch');
+                if (addBtn) {
+                    const defectoId = addBtn.dataset.defectoId;
+                    const container = addBtn.previousElementSibling; // .defect-entries-container
+
+                    if (batchCounters[defectoId] === undefined) {
+                        batchCounters[defectoId] = container.querySelectorAll('.form-row').length;
+                    }
+
+                    const newIndex = batchCounters[defectoId];
+                    batchCounters[defectoId]++;
+
+                    const newRowHtml = `
+                        <div class="form-row defect-entry-row">
+                            <div class="form-group w-50">
+                                <input type="number" class="defecto-cantidad" name="defectos_originales[${defectoId}][entries][${newIndex}][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
+                            </div>
+                            <div class="form-group w-50">
+                                <input type="text" class="defecto-lote" name="defectos_originales[${defectoId}][entries][${newIndex}][lote]" placeholder="Bach/Lote...">
+                            </div>
+                            <button type="button" class="btn-remove-batch btn-danger btn-small"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>`;
+
+                    container.insertAdjacentHTML('beforeend', newRowHtml);
+                }
+
+                // Handle removing a batch
+                const removeBtn = e.target.closest('.btn-remove-batch');
+                if (removeBtn) {
+                    removeBtn.parentElement.remove(); // Remove the entire .form-row
+                    actualizarContadores();
                 }
             });
         }
