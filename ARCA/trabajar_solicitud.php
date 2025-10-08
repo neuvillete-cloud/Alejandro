@@ -82,6 +82,24 @@ $totalHorasRegistradas = count($reportes_raw);
 foreach ($reportes_raw as $reporte) {
     $reporte_id = $reporte['IdReporte'];
 
+    // --- MODIFICACIÓN: OBTENER NÚMEROS DE PARTE ESPECÍFICOS SI ES 'VARIOS' ---
+    if ($isVariosPartes) {
+        $desglose_query = $conex->prepare("SELECT NumeroParte FROM ReporteDesglosePartes WHERE IdReporte = ?");
+        $desglose_query->bind_param("i", $reporte_id);
+        $desglose_query->execute();
+        $desglose_result = $desglose_query->get_result();
+        $partes_desglosadas = [];
+        while ($fila = $desglose_result->fetch_assoc()) {
+            $partes_desglosadas[] = htmlspecialchars($fila['NumeroParte']);
+        }
+        // Usamos array_unique para no repetir números de parte si aparecen varias veces
+        $reporte['NumeroParteParaMostrar'] = empty($partes_desglosadas) ? 'Varios (Sin Desglose)' : implode("<br>", array_unique($partes_desglosadas));
+        $desglose_query->close();
+    } else {
+        $reporte['NumeroParteParaMostrar'] = $numeroParte;
+    }
+    // --- FIN DE LA MODIFICACIÓN ---
+
     // Obtener defectos y lotes asociados a este reporte (VERSIÓN CORREGIDA)
     $defectos_reporte_query = $conex->prepare("
         SELECT 
@@ -424,7 +442,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <?php foreach ($reportes_procesados as $reporte): ?>
                         <tr>
                             <td><?php echo "R-" . str_pad($reporte['IdReporte'], 4, '0', STR_PAD_LEFT); ?></td>
-                            <td><?php echo $numeroParte; ?></td>
+                            <td><?php echo $reporte['NumeroParteParaMostrar']; ?></td>
                             <td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
                             <td><?php echo htmlspecialchars($reporte['RangoHora']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['TurnoShiftLeader']); ?></td>
