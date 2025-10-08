@@ -31,6 +31,7 @@ if (!$solicitud) { die("Error: Solicitud no encontrada."); }
 // --- Datos para la cabecera del formulario ---
 $nombreResponsable = htmlspecialchars($solicitud['NombreCreador']);
 $numeroParte = htmlspecialchars($solicitud['NumeroParte']); // Número de parte de la solicitud
+$isVariosPartes = (strtolower($numeroParte) === 'varios'); // NUEVA LÓGICA
 $cantidadSolicitada = htmlspecialchars($solicitud['Cantidad']);
 $nombreDefectosOriginales = [];
 $defectos_originales_query = $conex->query("SELECT d.IdDefecto, cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = $idSolicitud");
@@ -84,7 +85,7 @@ foreach ($reportes_raw as $reporte) {
     // Obtener defectos y lotes asociados a este reporte
     $defectos_reporte_query = $conex->prepare("
         SELECT 
-            rdo.CantidadEncontrada, rdo.Lote, cd.NombreDefecto 
+            rdo.CantidadEncontrada, rdo.Lote, cd.NombreDefecto, rdo.NumeroParte
         FROM ReporteDefectosOriginales rdo
         JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
         JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo
@@ -96,7 +97,8 @@ foreach ($reportes_raw as $reporte) {
     $defectos_con_cantidades = [];
     $lotes_encontrados = [];
     while ($dr = $defectos_reporte_result->fetch_assoc()) {
-        $defectos_con_cantidades[] = htmlspecialchars($dr['NombreDefecto']) . " (" . htmlspecialchars($dr['CantidadEncontrada']) . ")";
+        $parteInfo = $isVariosPartes && !empty($dr['NumeroParte']) ? ' | Parte: ' . htmlspecialchars($dr['NumeroParte']) : '';
+        $defectos_con_cantidades[] = htmlspecialchars($dr['NombreDefecto']) . " (" . htmlspecialchars($dr['CantidadEncontrada']) . $parteInfo . ")";
         if (!empty($dr['Lote'])) {
             $lotes_encontrados[] = htmlspecialchars($dr['Lote']);
         }
@@ -268,6 +270,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="defect-entries-container">
                                         <div class="form-row defect-entry-row">
+                                            <?php if ($isVariosPartes): ?>
+                                                <div class="form-group">
+                                                    <input type="text" class="defecto-parte" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][parte]" placeholder="No. de Parte..." required>
+                                                </div>
+                                            <?php endif; ?>
                                             <div class="form-group">
                                                 <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                                             </div>
@@ -275,7 +282,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
                                             <!-- Placeholder for alignment -->
-                                            <button type="button" class="btn-remove-batch btn-danger btn-small" style="visibility: hidden; pointer-events: none;"><i class="fa-solid fa-trash-can"></i></button>
+                                            <div style="width: 42px; flex-shrink: 0;"></div>
                                         </div>
                                     </div>
                                     <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> Añadir Lote</button>
@@ -432,6 +439,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
     const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
     const cantidadTotalSolicitada = <?php echo intval($cantidadSolicitada); ?>;
+    const isVariosPartes = <?php echo json_encode($isVariosPartes); ?>;
     let nuevoDefectoCounter = 0;
     let editandoReporte = false;
 
@@ -556,12 +564,20 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
                 nuevoDefectoCounter++;
                 const currentCounter = nuevoDefectoCounter;
+
+                const parteInputHtml = isVariosPartes ? `
+                    <div class="form-group">
+                        <label>Número de Parte</label>
+                        <input type="text" name="nuevos_defectos[${currentCounter}][parte]" placeholder="No. de Parte..." required>
+                    </div>` : '';
+
                 const defectoHTML = `
                 <div class="defecto-item" id="nuevo-defecto-${currentCounter}">
                     <div class="defecto-header">
                         <h4>Nuevo Defecto #${currentCounter}</h4>
                         <button type="button" class="btn-remove-defecto" data-defecto-id="${currentCounter}">&times;</button>
                     </div>
+                    ${parteInputHtml}
                     <div class="form-row">
                         <div class="form-group w-50">
                             <label>Tipo de Defecto</label>
@@ -1004,8 +1020,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     const newIndex = batchCounters[defectoId];
                     batchCounters[defectoId]++;
 
+                    const parteInputHtml = isVariosPartes ? `
+                        <div class="form-group">
+                            <input type="text" class="defecto-parte" name="defectos_originales[${defectoId}][entries][${newIndex}][parte]" placeholder="No. de Parte..." required>
+                        </div>` : '';
+
                     const newRowHtml = `
                         <div class="form-row defect-entry-row">
+                            ${parteInputHtml}
                             <div class="form-group">
                                 <input type="number" class="defecto-cantidad" name="defectos_originales[${defectoId}][entries][${newIndex}][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                             </div>
