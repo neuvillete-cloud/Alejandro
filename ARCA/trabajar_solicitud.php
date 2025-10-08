@@ -930,6 +930,57 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 });
             });
             <?php endif; ?>
+
+            // --- INICIO DE LA LÓGICA PARA "VARIOS" NÚMEROS DE PARTE (CORREGIDO) ---
+            const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
+            const addParteBtn = document.getElementById('btn-add-parte-inspeccionada');
+
+            if(isVariosPartes && desgloseContainer && addParteBtn) {
+                let parteCounter = 0;
+
+                function addParteRow() {
+                    const newIndex = parteCounter++;
+                    const newRowHtml = `
+                        <div class="form-row parte-inspeccionada-row">
+                            <div class="form-group">
+                                <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="No. de Parte..." required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" name="partes_inspeccionadas[${newIndex}][cantidad]" class="cantidad-parte-inspeccionada" placeholder="Cantidad..." min="0" required>
+                            </div>
+                            <button type="button" class="btn-remove-parte btn-danger btn-small"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>`;
+                    desgloseContainer.insertAdjacentHTML('beforeend', newRowHtml);
+                }
+
+                function updateTotalInspeccionadas() {
+                    let total = 0;
+                    const cantidades = desgloseContainer.querySelectorAll('.cantidad-parte-inspeccionada');
+                    cantidades.forEach(input => {
+                        total += parseInt(input.value) || 0;
+                    });
+                    piezasInspeccionadasInput.value = total;
+                    piezasInspeccionadasInput.dispatchEvent(new Event('input'));
+                }
+
+                addParteBtn.addEventListener('click', addParteRow);
+
+                desgloseContainer.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('cantidad-parte-inspeccionada')) {
+                        updateTotalInspeccionadas();
+                    }
+                });
+
+                desgloseContainer.addEventListener('click', function(e) {
+                    const removeBtn = e.target.closest('.btn-remove-parte');
+                    if(removeBtn) {
+                        removeBtn.parentElement.remove();
+                        updateTotalInspeccionadas();
+                    }
+                });
+
+                addParteRow();
+            }
         }
 
         const metodoForm = document.getElementById('metodoForm');
@@ -1065,68 +1116,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 }
             });
         }
-
-        // --- INICIO DE LA LÓGICA PARA TU REQUERIMIENTO: Desglose de "Varios" Números de Parte ---
-        const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
-        const addParteBtn = document.getElementById('btn-add-parte-inspeccionada');
-
-        if(isVariosPartes && desgloseContainer && addParteBtn) {
-            let parteCounter = 0;
-
-            // Función para añadir una nueva fila para un número de parte y su cantidad
-            function addParteRow() {
-                const newIndex = parteCounter++;
-                const newRowHtml = `
-                    <div class="form-row parte-inspeccionada-row">
-                        <div class="form-group">
-                            <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="No. de Parte..." required>
-                        </div>
-                        <div class="form-group">
-                            <input type="number" name="partes_inspeccionadas[${newIndex}][cantidad]" class="cantidad-parte-inspeccionada" placeholder="Cantidad..." min="0" required>
-                        </div>
-                        <button type="button" class="btn-remove-parte btn-danger btn-small"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>`;
-                desgloseContainer.insertAdjacentHTML('beforeend', newRowHtml);
-            }
-
-            // Esta función suma las cantidades de cada fila que añades...
-            function updateTotalInspeccionadas() {
-                let total = 0;
-                const cantidades = desgloseContainer.querySelectorAll('.cantidad-parte-inspeccionada');
-                cantidades.forEach(input => {
-                    total += parseInt(input.value) || 0;
-                });
-                // ...y actualiza el campo "Total de Piezas Inspeccionadas", que está como solo lectura.
-                piezasInspeccionadasInput.value = total;
-                // También dispara un evento para que el resto de los cálculos de la página (defectos, etc.) se actualicen.
-                piezasInspeccionadasInput.dispatchEvent(new Event('input'));
-            }
-
-            // Cada vez que haces clic en "Añadir No. de Parte", se llama a esta función para crear una nueva fila.
-            addParteBtn.addEventListener('click', addParteRow);
-
-            // Cuando escribes en un campo de cantidad, se actualiza el total.
-            desgloseContainer.addEventListener('input', function(e) {
-                if (e.target.classList.contains('cantidad-parte-inspeccionada')) {
-                    updateTotalInspeccionadas();
-                }
-            });
-
-            // Permite eliminar una fila y recalcular el total.
-            desgloseContainer.addEventListener('click', function(e) {
-                const removeBtn = e.target.closest('.btn-remove-parte');
-                if(removeBtn) {
-                    removeBtn.parentElement.remove();
-                    updateTotalInspeccionadas();
-                }
-            });
-
-            // Añadir la primera fila por defecto al cargar la página.
-            addParteRow();
-        }
-        // --- FIN DE LA LÓGICA PARA TU REQUERIMIENTO ---
-
     });
 </script>
 </body>
 </html>
+
