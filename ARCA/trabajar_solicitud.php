@@ -163,19 +163,23 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             overflow: hidden;
             margin-top: 15px;
         }
-        .form-row.defect-entry-row {
+        .form-row.defect-entry-row, .form-row.parte-inspeccionada-row {
             display: flex;
             gap: 10px;
             align-items: flex-end; /* Alinea los elementos en la parte inferior */
             margin-bottom: 10px;
         }
-        .form-row.defect-entry-row .form-group {
+        .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group {
             flex: 1 1 0; /* Permite que los inputs crezcan y se encojan */
             min-width: 0; /* Permite que los inputs se encojan más allá de su tamaño de contenido */
             margin-bottom: 0;
         }
-        .btn-remove-batch {
+        .btn-remove-batch, .btn-remove-parte {
             flex-shrink: 0; /* Evita que el botón de eliminar se encoja */
+        }
+        #partes-inspeccionadas-container {
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -235,8 +239,22 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 <input type="hidden" name="idReporte" id="idReporte" value="">
                 <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
+
+                    <?php if ($isVariosPartes): ?>
+                        <div id="desglose-partes-container">
+                            <label>Desglose de Piezas por No. de Parte</label>
+                            <div id="partes-inspeccionadas-container">
+                                <!-- Las filas se añadirán aquí dinámicamente -->
+                            </div>
+                            <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> Añadir No. de Parte</button>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="form-row">
-                        <div class="form-group"><label>Piezas Inspeccionadas</label><input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required></div>
+                        <div class="form-group">
+                            <label>Total de Piezas Inspeccionadas</label>
+                            <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required <?php if($isVariosPartes) echo 'readonly style="background-color: #e9ecef;"'; ?>>
+                        </div>
                         <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
                         <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
                         <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
@@ -269,14 +287,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="defect-entries-container">
                                         <div class="form-row defect-entry-row">
-                                            <div class="form-group">
-                                                <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
-                                            </div>
                                             <?php if ($isVariosPartes): ?>
                                                 <div class="form-group">
                                                     <input type="text" class="defecto-parte" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][parte]" placeholder="No. de Parte..." required>
                                                 </div>
                                             <?php endif; ?>
+                                            <div class="form-group">
+                                                <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
+                                            </div>
                                             <div class="form-group">
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
