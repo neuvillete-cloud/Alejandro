@@ -163,23 +163,19 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             overflow: hidden;
             margin-top: 15px;
         }
-        .form-row.defect-entry-row, .form-row.parte-inspeccionada-row {
+        .form-row.defect-entry-row {
             display: flex;
             gap: 10px;
             align-items: flex-end; /* Alinea los elementos en la parte inferior */
             margin-bottom: 10px;
         }
-        .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group {
+        .form-row.defect-entry-row .form-group {
             flex: 1 1 0; /* Permite que los inputs crezcan y se encojan */
             min-width: 0; /* Permite que los inputs se encojan más allá de su tamaño de contenido */
             margin-bottom: 0;
         }
-        .btn-remove-batch, .btn-remove-parte {
+        .btn-remove-batch {
             flex-shrink: 0; /* Evita que el botón de eliminar se encoja */
-        }
-        #partes-inspeccionadas-container {
-            margin-top: 15px;
-            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -239,22 +235,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 <input type="hidden" name="idReporte" id="idReporte" value="">
                 <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
-
-                    <?php if ($isVariosPartes): ?>
-                        <div id="desglose-partes-container">
-                            <label>Desglose de Piezas por No. de Parte</label>
-                            <div id="partes-inspeccionadas-container">
-                                <!-- Las filas se añadirán aquí dinámicamente -->
-                            </div>
-                            <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> Añadir No. de Parte</button>
-                        </div>
-                    <?php endif; ?>
-
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Total de Piezas Inspeccionadas</label>
-                            <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required <?php if($isVariosPartes) echo 'readonly style="background-color: #e9ecef;"'; ?>>
-                        </div>
+                        <div class="form-group"><label>Piezas Inspeccionadas</label><input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required></div>
                         <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
                         <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
                         <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
@@ -287,11 +269,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="defect-entries-container">
                                         <div class="form-row defect-entry-row">
-                                            <?php if ($isVariosPartes): ?>
-                                                <div class="form-group">
-                                                    <input type="text" class="defecto-parte" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][parte]" placeholder="No. de Parte..." required>
-                                                </div>
-                                            <?php endif; ?>
                                             <div class="form-group">
                                                 <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                                             </div>
@@ -381,7 +358,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
                 </form>
             <?php else: ?>
-                <form id="metodoForm" action="https://grammermx.com/Mailer/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                <form id="metodoForm" action="dao/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
                         <legend><i class="fa-solid fa-paperclip"></i> Corregir Método de Trabajo</legend>
@@ -1064,6 +1041,59 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     actualizarContadores();
                 }
             });
+        }
+
+        // --- LÓGICA PARA DESGLOSE DE PIEZAS INSPECCIONADAS ---
+        const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
+        const addParteBtn = document.getElementById('btn-add-parte-inspeccionada');
+
+        if(isVariosPartes && desgloseContainer && addParteBtn) {
+            let parteCounter = 0;
+
+            function addParteRow() {
+                const newIndex = parteCounter++;
+                const newRowHtml = `
+                    <div class="form-row parte-inspeccionada-row">
+                        <div class="form-group">
+                            <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="No. de Parte..." required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" name="partes_inspeccionadas[${newIndex}][cantidad]" class="cantidad-parte-inspeccionada" placeholder="Cantidad..." min="0" required>
+                        </div>
+                        <button type="button" class="btn-remove-parte btn-danger btn-small"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>`;
+                desgloseContainer.insertAdjacentHTML('beforeend', newRowHtml);
+            }
+
+            function updateTotalInspeccionadas() {
+                let total = 0;
+                const cantidades = desgloseContainer.querySelectorAll('.cantidad-parte-inspeccionada');
+                cantidades.forEach(input => {
+                    total += parseInt(input.value) || 0;
+                });
+                piezasInspeccionadasInput.value = total;
+                // Disparar evento de input para que el contador de defectos se actualice
+                piezasInspeccionadasInput.dispatchEvent(new Event('input'));
+            }
+
+            addParteBtn.addEventListener('click', addParteRow);
+
+            desgloseContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('cantidad-parte-inspeccionada')) {
+                    updateTotalInspeccionadas();
+                }
+            });
+
+            desgloseContainer.addEventListener('click', function(e) {
+                const removeBtn = e.target.closest('.btn-remove-parte');
+                if(removeBtn) {
+                    removeBtn.parentElement.remove();
+                    updateTotalInspeccionadas();
+                }
+            });
+
+            // Añadir la primera fila por defecto
+            addParteRow();
         }
 
     });
