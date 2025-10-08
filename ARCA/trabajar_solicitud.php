@@ -931,7 +931,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
             <?php endif; ?>
 
-            // --- INICIO DE LA LÓGICA PARA "VARIOS" NÚMEROS DE PARTE (CORREGIDO) ---
+            // --- LÓGICA PARA "VARIOS" NÚMEROS DE PARTE ---
             const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
             const addParteBtn = document.getElementById('btn-add-parte-inspeccionada');
 
@@ -959,7 +959,25 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     cantidades.forEach(input => {
                         total += parseInt(input.value) || 0;
                     });
+
+                    // *** INICIO DE LA NUEVA VALIDACIÓN ***
+                    // Validamos que el total no exceda la cantidad solicitada en el reporte
+                    if (total > cantidadTotalSolicitada) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'warning',
+                            title: 'Cantidad Excedida',
+                            text: `El total de piezas (${total}) supera la cantidad solicitada (${cantidadTotalSolicitada}).`,
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true
+                        });
+                    }
+                    // *** FIN DE LA NUEVA VALIDACIÓN ***
+
                     piezasInspeccionadasInput.value = total;
+                    // Disparamos el evento para que se ejecuten las otras validaciones (actualizarContadores)
                     piezasInspeccionadasInput.dispatchEvent(new Event('input'));
                 }
 
