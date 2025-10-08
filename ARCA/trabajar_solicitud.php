@@ -503,6 +503,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
             const comentariosTextarea = document.getElementById('comentarios');
 
+            // Contenedor para desglose de partes (caso "Varios")
+            const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
+
             // --- LÓGICA PARA EL SELECTOR DE HORA NATIVO ---
             horaInicioInput.addEventListener('change', function() {
                 if (this.value) {
@@ -596,7 +599,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 actualizarContadores();
             }
 
-            function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
+            function addNuevoDefectoBlock(id = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '', parte = '') {
                 nuevoDefectoCounter++;
                 const currentCounter = nuevoDefectoCounter;
 
@@ -645,6 +648,12 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 }
                 if (cantidad) {
                     newBlock.querySelector(`input[name="nuevos_defectos[${currentCounter}][cantidad]"]`).value = cantidad;
+                }
+                if (isVariosPartes) {
+                    const parteInput = newBlock.querySelector(`input[name="nuevos_defectos[${currentCounter}][parte]"]`);
+                    if (parteInput) {
+                        parteInput.value = parte || '';
+                    }
                 }
                 document.getElementById(`nuevoDefectoFoto-${currentCounter}`).addEventListener('change', updateFileNameLabel);
                 return newBlock;
@@ -789,39 +798,36 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         const reporte = data.reporte;
                         const defectosOriginales = data.defectosOriginales;
                         const nuevosDefectos = data.nuevosDefectos;
+                        const desglosePartes = data.desglosePartes;
 
+                        // --- RELLENAR CAMPOS PRINCIPALES ---
                         idReporteInput.value = reporte.IdReporte;
                         piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
                         piezasAceptadasInput.value = reporte.PiezasAceptadas;
                         piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
                         fechaInspeccionInput.value = reporte.FechaInspeccion;
+                        comentariosTextarea.value = reporte.Comentarios || '';
 
+                        // --- RELLENAR HORAS ---
                         if (reporte.RangoHora) {
                             const convertTo24Hour = (timeStr) => {
                                 if (!timeStr) return '';
                                 let [time, modifier] = timeStr.trim().split(' ');
+                                if (!modifier) return timeStr; // Ya está en formato 24h
                                 let [hours, minutes] = time.split(':');
-                                if (hours === '12') {
-                                    hours = '00';
-                                }
-                                if (modifier && modifier.toUpperCase() === 'PM') {
-                                    hours = parseInt(hours, 10) + 12;
-                                }
+                                if (hours === '12') hours = '00';
+                                if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
                                 return `${String(hours).padStart(2, '0')}:${minutes}`;
                             };
                             const [startStr, endStr] = reporte.RangoHora.split(' - ');
-                            if (startStr && endStr) {
-                                horaInicioInput.value = convertTo24Hour(startStr);
-                                horaFinInput.value = convertTo24Hour(endStr);
-                            }
+                            if (startStr) horaInicioInput.value = convertTo24Hour(startStr);
+                            if (endStr) horaFinInput.value = convertTo24Hour(endStr);
                         } else {
                             horaInicioInput.value = '';
                             horaFinInput.value = '';
                         }
 
-                        tiempoInspeccionInput.value = reporte.TiempoInspeccion || '';
-                        comentariosTextarea.value = reporte.Comentarios || '';
-
+                        // --- RELLENAR TIEMPO MUERTO ---
                         if (reporte.IdTiempoMuerto) {
                             toggleTiempoMuertoSection(true);
                             idTiempoMuertoSelect.value = reporte.IdTiempoMuerto;
@@ -829,43 +835,95 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             toggleTiempoMuertoSection(false);
                         }
 
-                        defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => input.value = 0);
-                        defectosOriginalesContainer.querySelectorAll('.defecto-lote').forEach(input => input.value = '');
+                        // --- RELLENAR DESGLOSE DE PARTES (SI APLICA) ---
+                        if (isVariosPartes && desgloseContainer) {
+                            desgloseContainer.innerHTML = ''; // Limpiar
+                            parteCounter = 0; // Resetear contador global de filas de parte
+                            if (desglosePartes && desglosePartes.length > 0) {
+                                desglosePartes.forEach(parte => {
+                                    addParteRow(parte.NumeroParte, parte.Cantidad);
+                                });
+                            } else {
+                                addParteRow(); // Añadir una fila vacía si no hay datos
+                            }
+                        }
 
-                        defectosOriginales.forEach(defecto => {
-                            const inputCantidad = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][cantidad]"]`);
-                            const inputLote = defectosOriginalesContainer.querySelector(`input[name="defectos_originales[${defecto.IdDefecto}][lote]"]`);
-                            if (inputCantidad) inputCantidad.value = defecto.CantidadEncontrada;
-                            if (inputLote) inputLote.value = defecto.Lote;
-                        });
-
-                        nuevosDefectosContainer.innerHTML = '';
-                        nuevoDefectoCounter = 0;
-                        nuevosDefectos.forEach(defecto => {
-                            const newBlock = addNuevoDefectoBlock(
-                                defecto.IdDefectoEncontrado,
-                                defecto.IdDefectoCatalogo,
-                                defecto.Cantidad,
-                                defecto.RutaFotoEvidencia
-                            );
-                            const fileInput = newBlock.querySelector(`input[type="file"]`);
-                            if (defecto.RutaFotoEvidencia) {
-                                fileInput.removeAttribute('required');
-                                const labelSpan = fileInput.previousElementSibling.querySelector('span');
-                                labelSpan.textContent = "Archivo existente";
+                        // --- RELLENAR DEFECTOS ORIGINALES (LÓGICA CORREGIDA) ---
+                        // 1. Limpiar el formulario de defectos
+                        defectosOriginalesContainer.querySelectorAll('.defect-entries-container').forEach(container => {
+                            const rows = container.querySelectorAll('.defect-entry-row');
+                            for (let i = 1; i < rows.length; i++) rows[i].remove(); // Eliminar filas extra
+                            const firstRow = rows[0];
+                            if (firstRow) {
+                                firstRow.querySelectorAll('input').forEach(input => input.value = '');
+                                firstRow.querySelector('.defecto-cantidad').value = 0;
                             }
                         });
 
+                        // 2. Agrupar y rellenar los datos
+                        if (defectosOriginales && defectosOriginales.length > 0) {
+                            const defectosAgrupados = defectosOriginales.reduce((acc, def) => {
+                                acc[def.IdDefecto] = acc[def.IdDefecto] || [];
+                                acc[def.IdDefecto].push(def);
+                                return acc;
+                            }, {});
+
+                            for (const idDefecto in defectosAgrupados) {
+                                const entradas = defectosAgrupados[idDefecto];
+                                const container = defectosOriginalesContainer.querySelector(`.form-group[data-id-defecto-original="${idDefecto}"] .defect-entries-container`);
+                                if (container && entradas.length > 0) {
+                                    const primeraEntrada = entradas.shift();
+                                    const firstRow = container.querySelector('.defect-entry-row');
+                                    firstRow.querySelector('.defecto-cantidad').value = primeraEntrada.CantidadEncontrada;
+                                    firstRow.querySelector('.defecto-lote').value = primeraEntrada.Lote || '';
+                                    if (isVariosPartes) firstRow.querySelector('.defecto-parte').value = primeraEntrada.NumeroParte || '';
+
+                                    entradas.forEach(entrada => {
+                                        const addBtn = container.nextElementSibling;
+                                        if (addBtn) addBtn.click();
+                                        const newRow = container.querySelector('.defect-entry-row:last-child');
+                                        if (newRow) {
+                                            newRow.querySelector('.defecto-cantidad').value = entrada.CantidadEncontrada;
+                                            newRow.querySelector('.defecto-lote').value = entrada.Lote || '';
+                                            if (isVariosPartes) newRow.querySelector('.defecto-parte').value = entrada.NumeroParte || '';
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        // --- RELLENAR NUEVOS DEFECTOS ---
+                        nuevosDefectosContainer.innerHTML = '';
+                        nuevoDefectoCounter = 0;
+                        if (nuevosDefectos && nuevosDefectos.length > 0) {
+                            nuevosDefectos.forEach(defecto => {
+                                const newBlock = addNuevoDefectoBlock(
+                                    defecto.IdDefectoEncontrado,
+                                    defecto.IdDefectoCatalogo,
+                                    defecto.Cantidad,
+                                    defecto.RutaFotoEvidencia,
+                                    defecto.NumeroParte
+                                );
+                                const fileInput = newBlock.querySelector(`input[type="file"]`);
+                                if (defecto.RutaFotoEvidencia) {
+                                    fileInput.removeAttribute('required');
+                                }
+                            });
+                        }
+
+                        // --- FINALIZAR ---
                         actualizarContadores();
                         editandoReporte = true;
                         btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
                         reporteForm.action = 'dao/actualizar_reporte.php';
                         Swal.close();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
+
                     } else {
                         Swal.fire('Error', data.message, 'error');
                     }
                 } catch (error) {
+                    console.error("Error al cargar reporte:", error);
                     Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error');
                 }
             }
@@ -949,22 +1007,21 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
             <?php endif; ?>
 
-            // --- LÓGICA PARA "VARIOS" NÚMEROS DE PARTE ---
-            const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
+            // --- LÓGICA PARA "VARIOS" NÚMEROS DE PARTE (CON FUNCIONES MEJORADAS PARA EDICIÓN) ---
             const addParteBtn = document.getElementById('btn-add-parte-inspeccionada');
 
             if(isVariosPartes && desgloseContainer && addParteBtn) {
                 let parteCounter = 0;
 
-                function addParteRow() {
+                function addParteRow(parte = '', cantidad = '') {
                     const newIndex = parteCounter++;
                     const newRowHtml = `
                         <div class="form-row parte-inspeccionada-row">
                             <div class="form-group">
-                                <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="No. de Parte..." required>
+                                <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="No. de Parte..." required value="${parte}">
                             </div>
                             <div class="form-group">
-                                <input type="number" name="partes_inspeccionadas[${newIndex}][cantidad]" class="cantidad-parte-inspeccionada" placeholder="Cantidad..." min="0" required>
+                                <input type="number" name="partes_inspeccionadas[${newIndex}][cantidad]" class="cantidad-parte-inspeccionada" placeholder="Cantidad..." min="0" required value="${cantidad}">
                             </div>
                             <button type="button" class="btn-remove-parte btn-danger btn-small"><i class="fa-solid fa-trash-can"></i></button>
                         </div>`;
@@ -978,8 +1035,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         total += parseInt(input.value) || 0;
                     });
 
-                    // *** INICIO DE LA NUEVA VALIDACIÓN ***
-                    // Validamos que el total no exceda la cantidad solicitada en el reporte
                     if (total > cantidadTotalSolicitada) {
                         Swal.fire({
                             toast: true,
@@ -992,14 +1047,12 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             timerProgressBar: true
                         });
                     }
-                    // *** FIN DE LA NUEVA VALIDACIÓN ***
 
                     piezasInspeccionadasInput.value = total;
-                    // Disparamos el evento para que se ejecuten las otras validaciones (actualizarContadores)
                     piezasInspeccionadasInput.dispatchEvent(new Event('input'));
                 }
 
-                addParteBtn.addEventListener('click', addParteRow);
+                addParteBtn.addEventListener('click', () => addParteRow()); // Sin argumentos para crear fila vacía
 
                 desgloseContainer.addEventListener('input', function(e) {
                     if (e.target.classList.contains('cantidad-parte-inspeccionada')) {
@@ -1015,7 +1068,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     }
                 });
 
-                addParteRow();
+                addParteRow(); // Añadir la primera fila por defecto al cargar
             }
         }
 
