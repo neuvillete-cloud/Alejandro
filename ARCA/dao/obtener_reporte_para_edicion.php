@@ -3,7 +3,8 @@ include_once("conexionArca.php"); // Asegúrate de incluir tu conexión
 include_once("verificar_sesion.php");
 
 header('Content-Type: application/json');
-$response = ['status' => 'error', 'message' => '', 'reporte' => null, 'defectosOriginales' => [], 'nuevosDefectos' => []];
+// --- MODIFICADO: Se añade la nueva clave para el desglose de partes ---
+$response = ['status' => 'error', 'message' => '', 'reporte' => null, 'defectosOriginales' => [], 'nuevosDefectos' => [], 'desglosePartes' => []];
 
 if (!isset($_SESSION['loggedin'])) {
     $response['message'] = 'No se ha iniciado sesión.';
@@ -23,9 +24,9 @@ $con = new LocalConector();
 $conex = $con->conectar();
 
 try {
-    // Obtener datos del reporte principal
+    // --- MODIFICADO: Obtener RangoHora como texto ---
     $stmt = $conex->prepare("SELECT IdReporte, IdSolicitud, PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas, 
-                                   NombreInspector, FechaInspeccion, IdRangoHora, TiempoInspeccion, IdTiempoMuerto, Comentarios
+                                   NombreInspector, FechaInspeccion, RangoHora, TiempoInspeccion, IdTiempoMuerto, Comentarios
                             FROM ReportesInspeccion WHERE IdReporte = ?");
     $stmt->bind_param("i", $idReporte);
     $stmt->execute();
@@ -36,16 +37,23 @@ try {
         throw new Exception("Reporte no encontrado.");
     }
 
-    // Obtener defectos originales del reporte
-    $stmt_do = $conex->prepare("SELECT IdDefecto, CantidadEncontrada, Lote 
+    // --- NUEVO: Obtener el desglose de números de parte si existen ---
+    $stmt_desglose = $conex->prepare("SELECT NumeroParte, Cantidad FROM ReporteDesglosePartes WHERE IdReporte = ?");
+    $stmt_desglose->bind_param("i", $idReporte);
+    $stmt_desglose->execute();
+    $desglosePartes = $stmt_desglose->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt_desglose->close();
+
+    // --- MODIFICADO: Obtener NumeroParte de los defectos originales ---
+    $stmt_do = $conex->prepare("SELECT IdDefecto, CantidadEncontrada, Lote, NumeroParte
                                FROM ReporteDefectosOriginales WHERE IdReporte = ?");
     $stmt_do->bind_param("i", $idReporte);
     $stmt_do->execute();
     $defectosOriginales = $stmt_do->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt_do->close();
 
-    // Obtener nuevos defectos encontrados del reporte
-    $stmt_de = $conex->prepare("SELECT IdDefectoEncontrado, IdDefectoCatalogo, Cantidad, RutaFotoEvidencia 
+    // --- MODIFICADO: Obtener NumeroParte de los nuevos defectos ---
+    $stmt_de = $conex->prepare("SELECT IdDefectoEncontrado, IdDefectoCatalogo, Cantidad, RutaFotoEvidencia, NumeroParte
                                FROM DefectosEncontrados WHERE IdReporte = ?");
     $stmt_de->bind_param("i", $idReporte);
     $stmt_de->execute();
@@ -59,6 +67,7 @@ try {
 
     $response['status'] = 'success';
     $response['reporte'] = $reporte;
+    $response['desglosePartes'] = $desglosePartes; // Añadir al response
     $response['defectosOriginales'] = $defectosOriginales;
     $response['nuevosDefectos'] = $nuevosDefectos;
 
