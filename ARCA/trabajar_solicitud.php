@@ -269,14 +269,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                     <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
                                     <div class="defect-entries-container">
                                         <div class="form-row defect-entry-row">
+                                            <div class="form-group">
+                                                <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
+                                            </div>
                                             <?php if ($isVariosPartes): ?>
                                                 <div class="form-group">
                                                     <input type="text" class="defecto-parte" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][parte]" placeholder="No. de Parte..." required>
                                                 </div>
                                             <?php endif; ?>
-                                            <div class="form-group">
-                                                <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
-                                            </div>
                                             <div class="form-group">
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
@@ -1026,10 +1026,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
                     const newRowHtml = `
                         <div class="form-row defect-entry-row">
-                            ${parteInputHtml}
                             <div class="form-group">
                                 <input type="number" class="defecto-cantidad" name="defectos_originales[${defectoId}][entries][${newIndex}][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
                             </div>
+                            ${parteInputHtml}
                             <div class="form-group">
                                 <input type="text" class="defecto-lote" name="defectos_originales[${defectoId}][entries][${newIndex}][lote]" placeholder="Bach/Lote...">
                             </div>
