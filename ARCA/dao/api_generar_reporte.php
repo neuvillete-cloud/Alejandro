@@ -160,14 +160,51 @@ try {
         $desgloseDiario[] = [ 'fecha' => $fecha, 'totales' => $totales_por_dia[$fecha] ?? ['inspeccionadas' => 0, 'aceptadas' => 0, 'retrabajadas' => 0], 'entradas' => $entradas_con_partes ];
     }
 
-    // 5. Construir la respuesta final
+    // --- NUEVO: 5. OBTENER DATOS PARA DASHBOARDS ---
+    $dashboardData = [];
+    // 5.1 Pareto de Defectos
+    $todos_los_defectos = [];
+    if ($isVariosPartes) {
+        foreach ($defectos_finales as $grupo) {
+            foreach ($grupo['defectos'] as $defecto) {
+                if (!isset($todos_los_defectos[$defecto['nombre']])) { $todos_los_defectos[$defecto['nombre']] = 0; }
+                $todos_los_defectos[$defecto['nombre']] += $defecto['cantidad'];
+            }
+        }
+    } else {
+        foreach ($defectos_finales as $defecto) { $todos_los_defectos[$defecto['nombre']] = $defecto['cantidad']; }
+    }
+    arsort($todos_los_defectos);
+    $totalDefectos = array_sum($todos_los_defectos);
+    $paretoData = [];
+    $cumulativePercentage = 0;
+    if ($totalDefectos > 0) {
+        $top5_defectos = array_slice($todos_los_defectos, 0, 5, true);
+        foreach ($top5_defectos as $nombre => $cantidad) {
+            $percentage = ($cantidad / $totalDefectos) * 100;
+            $cumulativePercentage += $percentage;
+            $paretoData[] = [ 'defecto' => $nombre, 'cantidad' => $cantidad, 'porcentajeAcumulado' => round($cumulativePercentage) ];
+        }
+    }
+    $dashboardData['pareto'] = $paretoData;
+
+    // 5.2 Rechazadas por Semana
+    $query_semanal = "SELECT YEARWEEK(ri.FechaInspeccion, 1) as semana, SUM(ri.PiezasInspeccionadas - ri.PiezasAceptadas) as rechazadas_semana FROM ReportesInspeccion ri {$whereClause} GROUP BY semana ORDER BY semana ASC";
+    $stmt_semanal = $conex->prepare($query_semanal);
+    $stmt_semanal->bind_param($types, ...$params);
+    $stmt_semanal->execute();
+    $rechazadas_semanal = $stmt_semanal->get_result()->fetch_all(MYSQLI_ASSOC);
+    $dashboardData['rechazadasPorSemana'] = $rechazadas_semanal;
+
+    // 6. Construir la respuesta final
     $response['status'] = 'success';
     $final_report_data = [
         'titulo' => $tipoReporte === 'parcial' ? 'Reporte Parcial de Contención' : 'Reporte Final de Contención',
         'folio' => $idSolicitud,
         'info' => [ 'numeroParte' => $infoSolicitud['NumeroParte'], 'responsable' => $infoSolicitud['Responsable'], 'cantidadTotal' => $infoSolicitud['Cantidad'] ],
         'resumen' => [ 'inspeccionadas' => (int)($resumen['inspeccionadas'] ?? 0), 'aceptadas' => (int)($resumen['aceptadas'] ?? 0), 'rechazadas' => (int)($resumen['rechazadas'] ?? 0), 'retrabajadas' => (int)($resumen['retrabajadas'] ?? 0), 'tiempoTotal' => $tiempoTotal ],
-        'desgloseDiario' => $desgloseDiario
+        'desgloseDiario' => $desgloseDiario,
+        'dashboardData' => $dashboardData // Se añaden los datos para las gráficas
     ];
 
     if ($isVariosPartes) {

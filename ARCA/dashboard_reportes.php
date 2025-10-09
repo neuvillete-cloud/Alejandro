@@ -72,7 +72,7 @@ $conex->close();
         /* Contenedor para las gráficas */
         .charts-container {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
@@ -241,8 +241,7 @@ $conex->close();
         const btnDescargarPdf = document.getElementById('btn-descargar-pdf');
         const reporteContainer = document.getElementById('reporte-generado-container');
         const contenidoReporteDiv = document.getElementById('contenido-reporte');
-        let pieChartInstance = null;
-        let barChartInstance = null;
+        let paretoChartInstance, weeklyRejectsChartInstance, rejectionRateChartInstance, dailyProgressChartInstance = null;
 
         const fetchReportData = (url) => {
             Swal.fire({ title: 'Generando Reporte', text: 'Consultando la información...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
@@ -311,7 +310,6 @@ $conex->close();
         function renderizarReporte(data) {
             const isVarios = strtolower(data.info.numeroParte) === 'varios';
 
-            // --- SECCIÓN DE INFORMACIÓN GENERAL ---
             let infoHtml = `
             <p><strong>No. de Parte:</strong> ${data.info.numeroParte}</p>
             <p><strong>Responsable:</strong> ${data.info.responsable}</p>
@@ -328,7 +326,6 @@ $conex->close();
             `;
             }
 
-            // --- SECCIÓN DE DESGLOSE DIARIO Y HORA X HORA ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 desgloseHtml = `<h4><i class="fa-solid fa-calendar-day"></i> Desglose Hora por Hora</h4>`;
@@ -362,7 +359,6 @@ $conex->close();
                 });
             }
 
-            // --- SECCIÓN DE DETALLE DE DEFECTOS ---
             let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Resumen de Defectos del Periodo</h4>`;
             if (isVarios) {
                 if (data.defectosPorParte && data.defectosPorParte.length > 0) {
@@ -385,22 +381,28 @@ $conex->close();
                 defectosHtml += `</tbody></table>`;
             }
 
-            // --- NUEVO: SECCIÓN DE GRÁFICAS ---
-            let chartsHtml = `
+            let dashboardHtml = `
             <h4><i class="fa-solid fa-chart-line"></i> Dashboards Visuales</h4>
             <div class="charts-container">
                 <div class="chart-box">
-                    <h5>Distribución de Defectos</h5>
-                    <canvas id="pieChart"></canvas>
+                    <h5>Pareto de Defectos (Top 5)</h5>
+                    <canvas id="paretoChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h5>Rechazadas por Semana</h5>
+                    <canvas id="weeklyRejectsChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h5>% Piezas Rechazadas</h5>
+                    <canvas id="rejectionRateChart"></canvas>
                 </div>
                 <div class="chart-box">
                     <h5>Progreso Diario de Inspección</h5>
-                    <canvas id="barChart"></canvas>
+                    <canvas id="dailyProgressChart"></canvas>
                 </div>
             </div>
         `;
 
-            // --- CONSTRUCCIÓN DEL HTML FINAL ---
             let html = `
             <div class="report-title">${data.titulo}</div>
             <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
@@ -418,88 +420,86 @@ $conex->close();
             </table>
             ${desgloseHtml}
             ${defectosHtml}
-            ${chartsHtml}
+            ${dashboardHtml}
         `;
 
             contenidoReporteDiv.innerHTML = html;
             reporteContainer.style.display = 'block';
 
-            // --- Renderizar las gráficas después de que el HTML esté en el DOM ---
-            renderizarGraficas(data);
+            renderizarDashboards(data);
 
             reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function renderizarGraficas(data) {
-            // Destruir instancias previas para evitar errores
-            if (pieChartInstance) pieChartInstance.destroy();
-            if (barChartInstance) barChartInstance.destroy();
+        function renderizarDashboards(data) {
+            if (paretoChartInstance) paretoChartInstance.destroy();
+            if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.destroy();
+            if (rejectionRateChartInstance) rejectionRateChartInstance.destroy();
+            if (dailyProgressChartInstance) dailyProgressChartInstance.destroy();
 
-            // --- GRÁFICA DE PASTEL (DEFECTOS) ---
-            const pieCtx = document.getElementById('pieChart').getContext('2d');
-            const isVarios = strtolower(data.info.numeroParte) === 'varios';
-            let defectosData = { labels: [], values: [] };
+            const dashboardData = data.dashboardData;
+            const resumen = data.resumen;
 
-            const allDefects = {};
-            if (isVarios) {
-                (data.defectosPorParte || []).forEach(grupo => {
-                    (grupo.defectos || []).forEach(defecto => {
-                        allDefects[defecto.nombre] = (allDefects[defecto.nombre] || 0) + defecto.cantidad;
-                    });
-                });
-            } else {
-                (data.defectos || []).forEach(defecto => {
-                    allDefects[defecto.nombre] = (allDefects[defecto.nombre] || 0) + defecto.cantidad;
+            // --- PARETO CHART ---
+            const paretoCtx = document.getElementById('paretoChart').getContext('2d');
+            if (dashboardData.pareto && dashboardData.pareto.length > 0) {
+                const paretoLabels = dashboardData.pareto.map(item => item.defecto);
+                const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
+                const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
+                paretoChartInstance = new Chart(paretoCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: paretoLabels,
+                        datasets: [
+                            { label: 'Cantidad', data: paretoCounts, backgroundColor: '#5c85ad', yAxisID: 'y' },
+                            { label: '% Acumulado', data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' }
+                        ]
+                    },
+                    options: { responsive: true, interaction: { mode: 'index', intersect: false }, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } } }
                 });
             }
-            defectosData.labels = Object.keys(allDefects);
-            defectosData.values = Object.values(allDefects);
 
-            pieChartInstance = new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: defectosData.labels,
-                    datasets: [{
-                        label: 'Cantidad de Defectos',
-                        data: defectosData.values,
-                        backgroundColor: ['#4a6984', '#5c85ad', '#8ab4d7', '#adcbe3', '#e7eff6', '#63ace5'],
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: true }
-            });
+            // --- WEEKLY REJECTS CHART ---
+            const weeklyCtx = document.getElementById('weeklyRejectsChart').getContext('2d');
+            if (dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
+                const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `Semana ${String(item.semana).substring(4)}`);
+                const weeklyCounts = dashboardData.rechazadasPorSemana.map(item => item.rechazadas_semana);
+                weeklyRejectsChartInstance = new Chart(weeklyCtx, {
+                    type: 'line',
+                    data: { labels: weeklyLabels, datasets: [{ label: 'Piezas Rechazadas', data: weeklyCounts, borderColor: '#4a6984', backgroundColor: 'rgba(74, 105, 132, 0.2)', fill: true, tension: 0.1 }] },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+            }
 
-            // --- GRÁFICA DE BARRAS (PROGRESO DIARIO) ---
-            const barCtx = document.getElementById('barChart').getContext('2d');
+            // --- REJECTION RATE DOUGHNUT CHART ---
+            const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
+            if (resumen && resumen.inspeccionadas > 0) {
+                const rechazoTotal = resumen.rechazadas;
+                const aceptadoTotal = resumen.inspeccionadas - rechazoTotal;
+                const porcentajeRechazo = ((rechazoTotal / resumen.inspeccionadas) * 100).toFixed(1);
+                rejectionRateChartInstance = new Chart(rejectionCtx, {
+                    type: 'doughnut',
+                    data: { labels: ['Rechazadas', 'Aceptadas'], datasets: [{ data: [rechazoTotal, aceptadoTotal], backgroundColor: ['#a83232', '#28a745'] }] },
+                    options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: `${porcentajeRechazo}% Rechazadas` } } }
+                });
+            }
+
+            // --- DAILY PROGRESS CHART ---
+            const dailyCtx = document.getElementById('dailyProgressChart').getContext('2d');
             const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
-
             (data.desgloseDiario || []).forEach(dia => {
                 dailyData.labels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX', {month: 'short', day: 'numeric'}));
                 dailyData.inspected.push(dia.totales.inspeccionadas);
                 dailyData.accepted.push(dia.totales.aceptadas);
                 dailyData.rejected.push(dia.totales.inspeccionadas - dia.totales.aceptadas);
             });
-
-            barChartInstance = new Chart(barCtx, {
+            dailyProgressChartInstance = new Chart(dailyCtx, {
                 type: 'bar',
-                data: {
-                    labels: dailyData.labels,
-                    datasets: [
-                        { label: 'Inspeccionadas', data: dailyData.inspected, backgroundColor: '#8ab4d7' },
-                        { label: 'Aceptadas', data: dailyData.accepted, backgroundColor: '#28a745' },
-                        { label: 'Rechazadas', data: dailyData.rejected, backgroundColor: '#a83232' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
+                data: { labels: dailyData.labels, datasets: [ { label: 'Inspeccionadas', data: dailyData.inspected, backgroundColor: '#8ab4d7' }, { label: 'Aceptadas', data: dailyData.accepted, backgroundColor: '#28a745' }, { label: 'Rechazadas', data: dailyData.rejected, backgroundColor: '#a83232' } ] },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
             });
         }
 
-        // Helper para evitar errores si la función no existe
         const strtolower = (str) => String(str).toLowerCase();
     });
 </script>
