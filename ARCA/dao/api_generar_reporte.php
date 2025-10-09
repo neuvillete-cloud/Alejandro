@@ -18,23 +18,16 @@ if (!isset($_SESSION['loggedin'])) {
  */
 function calcularTurnoShiftLeader($rangoHoraStr) {
     if (empty($rangoHoraStr)) return 'N/A';
-
     preg_match('/(\d{1,2}:\d{2}\s*(?:am|pm))/i', $rangoHoraStr, $matches);
     if (empty($matches[1])) return 'N/A';
-
     $hora_inicio_timestamp = strtotime($matches[1]);
     $primer_turno_inicio = strtotime('06:30 am');
     $primer_turno_fin = strtotime('02:30 pm');
     $segundo_turno_inicio = strtotime('02:40 pm');
     $segundo_turno_fin = strtotime('10:30 pm');
-
-    if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) {
-        return 'Primer Turno';
-    } elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) {
-        return 'Segundo Turno';
-    } else {
-        return 'Tercer Turno / Otro';
-    }
+    if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) { return 'Primer Turno'; }
+    elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) { return 'Segundo Turno'; }
+    else { return 'Tercer Turno / Otro'; }
 }
 
 $con = new LocalConector();
@@ -49,18 +42,11 @@ try {
     }
 
     // 1. Obtener información base de la solicitud
-    $stmt_solicitud = $conex->prepare(
-        "SELECT s.NumeroParte, u.Nombre AS Responsable, s.Cantidad, s.TiempoTotalInspeccion 
-         FROM Solicitudes s 
-         JOIN Usuarios u ON s.IdUsuario = u.IdUsuario 
-         WHERE s.IdSolicitud = ?"
-    );
+    $stmt_solicitud = $conex->prepare("SELECT s.NumeroParte, u.Nombre AS Responsable, s.Cantidad, s.TiempoTotalInspeccion FROM Solicitudes s JOIN Usuarios u ON s.IdUsuario = u.IdUsuario WHERE s.IdSolicitud = ?");
     $stmt_solicitud->bind_param("i", $idSolicitud);
     $stmt_solicitud->execute();
     $infoSolicitud = $stmt_solicitud->get_result()->fetch_assoc();
-    if (!$infoSolicitud) {
-        throw new Exception("Solicitud no encontrada.");
-    }
+    if (!$infoSolicitud) { throw new Exception("Solicitud no encontrada."); }
     $isVariosPartes = (strtolower($infoSolicitud['NumeroParte']) === 'varios');
 
     $whereClause = "WHERE ri.IdSolicitud = ?";
@@ -70,29 +56,20 @@ try {
     if ($tipoReporte === 'parcial') {
         $fechaInicio = $_GET['inicio'] ?? null;
         $fechaFin = $_GET['fin'] ?? null;
-        if (!$fechaInicio || !$fechaFin) {
-            throw new Exception("Debe proporcionar un rango de fechas para el reporte parcial.");
-        }
+        if (!$fechaInicio || !$fechaFin) { throw new Exception("Debe proporcionar un rango de fechas para el reporte parcial."); }
         $whereClause .= " AND ri.FechaInspeccion BETWEEN ? AND ?";
         array_push($params, $fechaInicio, $fechaFin);
         $types .= "ss";
     }
 
     // 2. Obtener resumen de inspección
-    $query_resumen = "SELECT 
-                        SUM(ri.PiezasInspeccionadas) AS inspeccionadas,
-                        SUM(ri.PiezasAceptadas) AS aceptadas,
-                        SUM(ri.PiezasRetrabajadas) AS retrabajadas,
-                        COUNT(ri.IdReporte) AS total_horas
-                      FROM ReportesInspeccion ri {$whereClause}";
+    $query_resumen = "SELECT SUM(ri.PiezasInspeccionadas) AS inspeccionadas, SUM(ri.PiezasAceptadas) AS aceptadas, SUM(ri.PiezasRetrabajadas) AS retrabajadas, COUNT(ri.IdReporte) AS total_horas FROM ReportesInspeccion ri {$whereClause}";
     $stmt_resumen = $conex->prepare($query_resumen);
     $stmt_resumen->bind_param($types, ...$params);
     $stmt_resumen->execute();
     $resumen = $stmt_resumen->get_result()->fetch_assoc();
     $resumen['rechazadas'] = ($resumen['inspeccionadas'] ?? 0) - ($resumen['aceptadas'] ?? 0);
-    $tiempoTotal = ($tipoReporte === 'final' && !empty($infoSolicitud['TiempoTotalInspeccion']))
-        ? $infoSolicitud['TiempoTotalInspeccion']
-        : ($resumen['total_horas'] ?? 0) . ' hora(s)';
+    $tiempoTotal = ($tipoReporte === 'final' && !empty($infoSolicitud['TiempoTotalInspeccion'])) ? $infoSolicitud['TiempoTotalInspeccion'] : ($resumen['total_horas'] ?? 0) . ' hora(s)';
 
     // 3. OBTENER DETALLE DE DEFECTOS
     $defectos_finales = [];
@@ -106,36 +83,19 @@ try {
         $partes_result = $stmt_partes->get_result();
         while($row = $partes_result->fetch_assoc()) { $numeros_parte_lista[] = $row['NumeroParte']; }
 
-        $query_defectos_varios = "
-            (SELECT rdo.NumeroParte, cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes
-            FROM ReporteDefectosOriginales rdo
-            JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
-            JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo
-            JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte
-            {$whereClause} AND rdo.NumeroParte IS NOT NULL
-            GROUP BY rdo.NumeroParte, cd.NombreDefecto)
-            UNION ALL
-            (SELECT de.NumeroParte, cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes
-            FROM DefectosEncontrados de
-            JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
-            JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte
-            {$whereClause} AND de.NumeroParte IS NOT NULL
-            GROUP BY de.NumeroParte, cd.NombreDefecto)";
-
+        $query_defectos_varios = "(SELECT rdo.NumeroParte, cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes FROM ReporteDefectosOriginales rdo JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte {$whereClause} AND rdo.NumeroParte IS NOT NULL GROUP BY rdo.NumeroParte, cd.NombreDefecto) UNION ALL (SELECT de.NumeroParte, cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes FROM DefectosEncontrados de JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte {$whereClause} AND de.NumeroParte IS NOT NULL GROUP BY de.NumeroParte, cd.NombreDefecto)";
         $stmt_defectos = $conex->prepare($query_defectos_varios);
         $union_params = array_merge($params, $params);
         $union_types = $types . $types;
         $stmt_defectos->bind_param($union_types, ...$union_params);
         $stmt_defectos->execute();
         $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
-
         $defectos_por_parte = [];
         foreach($defectos_result as $def) {
             if (!isset($defectos_por_parte[$def['NumeroParte']])) { $defectos_por_parte[$def['NumeroParte']] = ['numeroParte' => $def['NumeroParte'], 'defectos' => []]; }
             $defectos_por_parte[$def['NumeroParte']]['defectos'][] = ['nombre' => $def['NombreDefecto'], 'cantidad' => (int)$def['Cantidad'], 'lotes' => ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) ? explode(', ', $def['Lotes']) : []];
         }
         $defectos_finales = array_values($defectos_por_parte);
-
     } else {
         $query_defectos_single = "(SELECT cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes FROM ReporteDefectosOriginales rdo JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte {$whereClause} GROUP BY cd.NombreDefecto) UNION ALL (SELECT cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes FROM DefectosEncontrados de JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte {$whereClause} GROUP BY cd.NombreDefecto)";
         $stmt_defectos = $conex->prepare($query_defectos_single);
@@ -144,27 +104,31 @@ try {
         $stmt_defectos->bind_param($union_types, ...$union_params);
         $stmt_defectos->execute();
         $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
-
         $defectos_consolidados = [];
         foreach ($defectos_result as $def) {
             if (!isset($defectos_consolidados[$def['NombreDefecto']])) { $defectos_consolidados[$def['NombreDefecto']] = ['nombre' => $def['NombreDefecto'], 'cantidad' => 0, 'lotes' => []]; }
             $defectos_consolidados[$def['NombreDefecto']]['cantidad'] += $def['Cantidad'];
-            if ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) {
-                $lotes_arr = explode(', ', $def['Lotes']);
-                $defectos_consolidados[$def['NombreDefecto']]['lotes'] = array_unique(array_merge($defectos_consolidados[$def['NombreDefecto']]['lotes'], $lotes_arr));
-            }
+            if ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) { $defectos_consolidados[$def['NombreDefecto']]['lotes'] = array_unique(array_merge($defectos_consolidados[$def['NombreDefecto']]['lotes'], explode(', ', $def['Lotes']))); }
         }
         $defectos_finales = array_values($defectos_consolidados);
     }
 
     // 4. OBTENER DESGLOSE DIARIO Y HORA X HORA
-    $desgloseDiario = [];
+    $totales_por_dia = [];
+    $query_diario_totals = "SELECT ri.FechaInspeccion, SUM(ri.PiezasInspeccionadas) AS totalInspeccionadasDia, SUM(ri.PiezasAceptadas) AS totalAceptadasDia, SUM(ri.PiezasRetrabajadas) AS totalRetrabajadasDia FROM ReportesInspeccion ri {$whereClause} GROUP BY ri.FechaInspeccion ORDER BY ri.FechaInspeccion ASC";
+    $stmt_diario_totals = $conex->prepare($query_diario_totals);
+    $stmt_diario_totals->bind_param($types, ...$params);
+    $stmt_diario_totals->execute();
+    $result_diario_totals = $stmt_diario_totals->get_result();
+    while ($row = $result_diario_totals->fetch_assoc()) {
+        $totales_por_dia[$row['FechaInspeccion']] = [ 'inspeccionadas' => (int)$row['totalInspeccionadasDia'], 'aceptadas' => (int)$row['totalAceptadasDia'], 'retrabajadas' => (int)$row['totalRetrabajadasDia'] ];
+    }
+
     $query_entradas = "SELECT ri.IdReporte, ri.FechaInspeccion, ri.RangoHora, ri.Comentarios, ri.PiezasInspeccionadas, ri.PiezasAceptadas, ri.PiezasRetrabajadas FROM ReportesInspeccion ri {$whereClause} ORDER BY ri.FechaInspeccion ASC, ri.RangoHora ASC";
     $stmt_entradas = $conex->prepare($query_entradas);
     $stmt_entradas->bind_param($types, ...$params);
     $stmt_entradas->execute();
     $result_entradas = $stmt_entradas->get_result();
-
     $entradas_por_dia = [];
     $reporte_ids = [];
     while ($row = $result_entradas->fetch_assoc()) {
@@ -186,15 +150,14 @@ try {
         }
     }
 
+    $desgloseDiario = [];
     foreach ($entradas_por_dia as $fecha => $entradas) {
         $entradas_con_partes = [];
         foreach ($entradas as $entrada) {
-            if ($isVariosPartes) {
-                $entrada['partes'] = $partes_por_reporte[$entrada['IdReporte']] ?? [];
-            }
+            if ($isVariosPartes) { $entrada['partes'] = $partes_por_reporte[$entrada['IdReporte']] ?? []; }
             $entradas_con_partes[] = $entrada;
         }
-        $desgloseDiario[] = ['fecha' => $fecha, 'entradas' => $entradas_con_partes];
+        $desgloseDiario[] = [ 'fecha' => $fecha, 'totales' => $totales_por_dia[$fecha] ?? ['inspeccionadas' => 0, 'aceptadas' => 0, 'retrabajadas' => 0], 'entradas' => $entradas_con_partes ];
     }
 
     // 5. Construir la respuesta final
@@ -202,18 +165,8 @@ try {
     $final_report_data = [
         'titulo' => $tipoReporte === 'parcial' ? 'Reporte Parcial de Contención' : 'Reporte Final de Contención',
         'folio' => $idSolicitud,
-        'info' => [
-            'numeroParte' => $infoSolicitud['NumeroParte'],
-            'responsable' => $infoSolicitud['Responsable'],
-            'cantidadTotal' => $infoSolicitud['Cantidad']
-        ],
-        'resumen' => [
-            'inspeccionadas' => (int)($resumen['inspeccionadas'] ?? 0),
-            'aceptadas' => (int)($resumen['aceptadas'] ?? 0),
-            'rechazadas' => (int)($resumen['rechazadas'] ?? 0),
-            'retrabajadas' => (int)($resumen['retrabajadas'] ?? 0),
-            'tiempoTotal' => $tiempoTotal
-        ],
+        'info' => [ 'numeroParte' => $infoSolicitud['NumeroParte'], 'responsable' => $infoSolicitud['Responsable'], 'cantidadTotal' => $infoSolicitud['Cantidad'] ],
+        'resumen' => [ 'inspeccionadas' => (int)($resumen['inspeccionadas'] ?? 0), 'aceptadas' => (int)($resumen['aceptadas'] ?? 0), 'rechazadas' => (int)($resumen['rechazadas'] ?? 0), 'retrabajadas' => (int)($resumen['retrabajadas'] ?? 0), 'tiempoTotal' => $tiempoTotal ],
         'desgloseDiario' => $desgloseDiario
     ];
 

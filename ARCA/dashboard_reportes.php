@@ -304,6 +304,12 @@ $conex->close();
                 data.desgloseDiario.forEach(dia => {
                     const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                     desgloseHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
+
+                    if (dia.totales) {
+                        const rechazadasDia = dia.totales.inspeccionadas - dia.totales.aceptadas;
+                        desgloseHtml += `<p>Totales del día: <strong>${dia.totales.inspeccionadas}</strong> Inspeccionadas, <strong>${dia.totales.aceptadas}</strong> Aceptadas, <strong>${rechazadasDia}</strong> Rechazadas.</p>`;
+                    }
+
                     if (isVarios) {
                         desgloseHtml += `<table><thead><tr><th>Hora x Hora</th><th>Turno</th><th>Inspeccionadas</th><th>Desglose por Parte</th><th>Comentarios</th></tr></thead><tbody>`;
                         dia.entradas.forEach(entrada => {
