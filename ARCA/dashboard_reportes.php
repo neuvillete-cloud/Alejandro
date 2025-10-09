@@ -249,15 +249,17 @@ $conex->close();
                 const imgProps = pdf.getImageProperties(imgData);
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
-                let ratio = imgProps.height / imgProps.width;
-                let imgWidth = pdfWidth - 20;
-                let imgHeight = imgWidth * ratio;
+                const ratio = imgProps.height / imgProps.width;
+                const imgWidth = pdfWidth - 20; // Margen de 10mm a cada lado
+                const imgHeight = imgWidth * ratio;
                 let heightLeft = imgHeight;
-                let position = 10;
+                let position = 10; // Margen superior
+
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                 heightLeft -= (pdfHeight - 20);
+
                 while (heightLeft > 0) {
-                    position = heightLeft - imgHeight + 10;
+                    position = heightLeft - imgHeight + 10; // Mueve la imagen "hacia arriba" en la nueva página
                     pdf.addPage();
                     pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                     heightLeft -= (pdfHeight - 20);
@@ -309,8 +311,7 @@ $conex->close();
                 } else {
                     desgloseHtml += `<table><thead><tr><th>Fecha</th><th>Inspeccionadas</th><th>Aceptadas</th><th>Rechazadas</th><th>Retrabajadas</th></tr></thead><tbody>`;
                     data.desgloseDiario.forEach(dia => {
-                        // --- CORRECCIÓN AQUÍ ---
-                        const fechaFormateada = new Date(dia.FechaInspeccion + 'T00:00:00').toLocaleDateString('es-MX');
+                        const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX');
                         desgloseHtml += `<tr><td>${fechaFormateada}</td><td>${dia.inspeccionadas}</td><td>${dia.aceptadas}</td><td>${parseInt(dia.inspeccionadas) - parseInt(dia.aceptadas)}</td><td>${dia.retrabajadas}</td></tr>`;
                     });
                     desgloseHtml += `</tbody></table>`;
