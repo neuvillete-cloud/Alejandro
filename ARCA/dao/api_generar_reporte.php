@@ -13,6 +13,30 @@ if (!isset($_SESSION['loggedin'])) {
     exit();
 }
 
+/**
+ * Función para calcular el turno del Shift Leader.
+ */
+function calcularTurnoShiftLeader($rangoHoraStr) {
+    if (empty($rangoHoraStr)) return 'N/A';
+
+    preg_match('/(\d{1,2}:\d{2}\s*(?:am|pm))/i', $rangoHoraStr, $matches);
+    if (empty($matches[1])) return 'N/A';
+
+    $hora_inicio_timestamp = strtotime($matches[1]);
+    $primer_turno_inicio = strtotime('06:30 am');
+    $primer_turno_fin = strtotime('02:30 pm');
+    $segundo_turno_inicio = strtotime('02:40 pm');
+    $segundo_turno_fin = strtotime('10:30 pm');
+
+    if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) {
+        return 'Primer Turno';
+    } elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) {
+        return 'Segundo Turno';
+    } else {
+        return 'Tercer Turno / Otro';
+    }
+}
+
 $con = new LocalConector();
 $conex = $con->conectar();
 
@@ -70,7 +94,7 @@ try {
         ? $infoSolicitud['TiempoTotalInspeccion']
         : ($resumen['total_horas'] ?? 0) . ' hora(s)';
 
-    // 3. OBTENER DETALLE DE DEFECTOS (SECCIÓN RESTAURADA)
+    // 3. OBTENER DETALLE DE DEFECTOS
     $defectos_finales = [];
     $numeros_parte_lista = [];
 
@@ -107,9 +131,7 @@ try {
 
         $defectos_por_parte = [];
         foreach($defectos_result as $def) {
-            if (!isset($defectos_por_parte[$def['NumeroParte']])) {
-                $defectos_por_parte[$def['NumeroParte']] = ['numeroParte' => $def['NumeroParte'], 'defectos' => []];
-            }
+            if (!isset($defectos_por_parte[$def['NumeroParte']])) { $defectos_por_parte[$def['NumeroParte']] = ['numeroParte' => $def['NumeroParte'], 'defectos' => []]; }
             $defectos_por_parte[$def['NumeroParte']]['defectos'][] = ['nombre' => $def['NombreDefecto'], 'cantidad' => (int)$def['Cantidad'], 'lotes' => ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) ? explode(', ', $def['Lotes']) : []];
         }
         $defectos_finales = array_values($defectos_por_parte);
@@ -135,30 +157,45 @@ try {
         $defectos_finales = array_values($defectos_consolidados);
     }
 
-    // 4. OBTENER DESGLOSE DIARIO
+    // 4. OBTENER DESGLOSE DIARIO Y HORA X HORA
     $desgloseDiario = [];
-    $query_diario_totals = "SELECT ri.FechaInspeccion, SUM(ri.PiezasInspeccionadas) AS totalInspeccionadasDia, SUM(ri.PiezasAceptadas) AS totalAceptadasDia, SUM(ri.PiezasRetrabajadas) AS totalRetrabajadasDia FROM ReportesInspeccion ri {$whereClause} GROUP BY ri.FechaInspeccion ORDER BY ri.FechaInspeccion ASC";
-    $stmt_diario_totals = $conex->prepare($query_diario_totals);
-    $stmt_diario_totals->bind_param($types, ...$params);
-    $stmt_diario_totals->execute();
-    $result_diario_totals = $stmt_diario_totals->get_result();
-    while ($row = $result_diario_totals->fetch_assoc()) {
-        $desgloseDiario[$row['FechaInspeccion']] = [ 'fecha' => $row['FechaInspeccion'], 'inspeccionadas' => (int)$row['totalInspeccionadasDia'], 'aceptadas' => (int)$row['totalAceptadasDia'], 'retrabajadas' => (int)$row['totalRetrabajadasDia'], 'partes' => [] ];
+    $query_entradas = "SELECT ri.IdReporte, ri.FechaInspeccion, ri.RangoHora, ri.Comentarios, ri.PiezasInspeccionadas, ri.PiezasAceptadas, ri.PiezasRetrabajadas FROM ReportesInspeccion ri {$whereClause} ORDER BY ri.FechaInspeccion ASC, ri.RangoHora ASC";
+    $stmt_entradas = $conex->prepare($query_entradas);
+    $stmt_entradas->bind_param($types, ...$params);
+    $stmt_entradas->execute();
+    $result_entradas = $stmt_entradas->get_result();
+
+    $entradas_por_dia = [];
+    $reporte_ids = [];
+    while ($row = $result_entradas->fetch_assoc()) {
+        $fecha = $row['FechaInspeccion'];
+        if (!isset($entradas_por_dia[$fecha])) { $entradas_por_dia[$fecha] = []; }
+        $row['turno'] = calcularTurnoShiftLeader($row['RangoHora']);
+        $entradas_por_dia[$fecha][] = $row;
+        $reporte_ids[] = $row['IdReporte'];
     }
 
-    if ($isVariosPartes) {
-        $query_diario_parts = "SELECT ri.FechaInspeccion, rdp.NumeroParte, SUM(rdp.Cantidad) AS Cantidad FROM ReporteDesglosePartes rdp JOIN ReportesInspeccion ri ON rdp.IdReporte = ri.IdReporte {$whereClause} GROUP BY ri.FechaInspeccion, rdp.NumeroParte ORDER BY ri.FechaInspeccion ASC";
-        $stmt_diario_parts = $conex->prepare($query_diario_parts);
-        $stmt_diario_parts->bind_param($types, ...$params);
-        $stmt_diario_parts->execute();
-        $result_diario_parts = $stmt_diario_parts->get_result();
-        while ($row = $result_diario_parts->fetch_assoc()) {
-            if (isset($desgloseDiario[$row['FechaInspeccion']])) {
-                $desgloseDiario[$row['FechaInspeccion']]['partes'][] = [ 'numeroParte' => $row['NumeroParte'], 'cantidad' => (int)$row['Cantidad'] ];
-            }
+    $partes_por_reporte = [];
+    if ($isVariosPartes && count($reporte_ids) > 0) {
+        $ids_string = implode(',', $reporte_ids);
+        $query_partes_detalle = "SELECT IdReporte, NumeroParte, Cantidad FROM ReporteDesglosePartes WHERE IdReporte IN ({$ids_string})";
+        $result_partes_detalle = $conex->query($query_partes_detalle);
+        while ($row = $result_partes_detalle->fetch_assoc()) {
+            if (!isset($partes_por_reporte[$row['IdReporte']])) { $partes_por_reporte[$row['IdReporte']] = []; }
+            $partes_por_reporte[$row['IdReporte']][] = ['numeroParte' => $row['NumeroParte'], 'cantidad' => $row['Cantidad']];
         }
     }
-    $desgloseDiario = array_values($desgloseDiario);
+
+    foreach ($entradas_por_dia as $fecha => $entradas) {
+        $entradas_con_partes = [];
+        foreach ($entradas as $entrada) {
+            if ($isVariosPartes) {
+                $entrada['partes'] = $partes_por_reporte[$entrada['IdReporte']] ?? [];
+            }
+            $entradas_con_partes[] = $entrada;
+        }
+        $desgloseDiario[] = ['fecha' => $fecha, 'entradas' => $entradas_con_partes];
+    }
 
     // 5. Construir la respuesta final
     $response['status'] = 'success';
