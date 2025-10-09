@@ -1,7 +1,17 @@
 <?php
 // Incluye el script que verifica si hay una sesión activa
-// include_once("dao/verificar_sesion.php");
-// if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
+include_once("dao/verificar_sesion.php");
+if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
+
+// --- NUEVO: Cargar solicitudes activas para el selector ---
+include_once("dao/conexionArca.php");
+$con = new LocalConector();
+$conex = $con->conectar();
+// Buscamos solicitudes "En Proceso" (IdEstatus = 3) o las que ya están "Cerradas" (IdEstatus = 4)
+$solicitudes_activas_query = $conex->query("SELECT IdSolicitud, NumeroParte FROM Solicitudes WHERE IdEstatus IN (3, 4) ORDER BY IdSolicitud DESC");
+$conex->close();
+// --- FIN ---
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -121,7 +131,7 @@
 <header class="header">
     <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
     <div class="user-info">
-        <span>Bienvenido, <?php /* echo htmlspecialchars($_SESSION['user_nombre']); */ ?> Usuario</span>
+        <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
         <button class="logout-btn" onclick="window.location.href='dao/logout.php'">Cerrar Sesión <i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
 </header>
@@ -130,6 +140,22 @@
     <div class="page-header">
         <h1><i class="fa-solid fa-chart-pie"></i> Dashboard de Reportes</h1>
     </div>
+
+    <!-- --- NUEVO: Selector de Solicitud --- -->
+    <div class="form-container" style="margin-bottom: 30px;">
+        <div class="form-group">
+            <label for="solicitud-selector"><i class="fa-solid fa-folder-open"></i> Seleccionar Solicitud de Contención</label>
+            <select id="solicitud-selector">
+                <option value="">-- Elige una solicitud --</option>
+                <?php while($solicitud = $solicitudes_activas_query->fetch_assoc()): ?>
+                    <option value="<?php echo $solicitud['IdSolicitud']; ?>">
+                        S-<?php echo str_pad($solicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?> (<?php echo htmlspecialchars($solicitud['NumeroParte']); ?>)
+                    </option>
+                <?php endwhile; ?>
+            </select>
+        </div>
+    </div>
+    <!-- --- FIN DEL SELECTOR --- -->
 
     <div class="dashboard-grid">
 
@@ -183,91 +209,91 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
+        const solicitudSelector = document.getElementById('solicitud-selector');
         const btnGenerarParcial = document.getElementById('btn-generar-parcial');
         const btnVerFinal = document.getElementById('btn-ver-final');
         const btnDescargarPdf = document.getElementById('btn-descargar-pdf');
         const reporteContainer = document.getElementById('reporte-generado-container');
         const contenidoReporteDiv = document.getElementById('contenido-reporte');
 
-        // Evento para generar el reporte parcial
+        const fetchReportData = (url) => {
+            Swal.fire({
+                title: 'Generando Reporte',
+                text: 'Consultando la información...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    Swal.close();
+                    if (data.status === 'success') {
+                        renderizarReporte(data.reporte);
+                    } else {
+                        Swal.fire('Error', data.message || 'No se pudo generar el reporte.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error');
+                });
+        };
+
         btnGenerarParcial.addEventListener('click', () => {
+            const idSolicitud = solicitudSelector.value;
             const fechaInicio = document.getElementById('fecha-inicio').value;
             const fechaFin = document.getElementById('fecha-fin').value;
 
+            if (!idSolicitud) {
+                Swal.fire('Falta Información', 'Por favor, selecciona una solicitud.', 'warning');
+                return;
+            }
             if (!fechaInicio || !fechaFin) {
                 Swal.fire('Campos incompletos', 'Por favor, selecciona una fecha de inicio y una fecha de fin.', 'warning');
                 return;
             }
 
-            // --- SIMULACIÓN DE LLAMADA AL SERVIDOR (AJAX/Fetch) ---
-            // En una aplicación real, aquí harías una llamada fetch a un script PHP
-            // que te devuelva los datos de la base de datos en formato JSON.
-            // fetch(`dao/api_generar_reporte.php?inicio=${fechaInicio}&fin=${fechaFin}`)
-            //   .then(response => response.json())
-            //   .then(data => { ... });
-
-            console.log(`Generando reporte de ${fechaInicio} a ${fechaFin}`);
-            const mockData = getMockDataParcial(); // Usamos datos de ejemplo
-            renderizarReporte(mockData);
-            // --- FIN DE LA SIMULACIÓN ---
+            const url = `dao/api_generar_reporte.php?tipo=parcial&idSolicitud=${idSolicitud}&inicio=${fechaInicio}&fin=${fechaFin}`;
+            fetchReportData(url);
         });
 
-        // Evento para generar el reporte final
         btnVerFinal.addEventListener('click', () => {
-            // --- SIMULACIÓN DE LLAMADA AL SERVIDOR ---
-            console.log('Generando reporte final');
-            const mockData = getMockDataFinal();
-            renderizarReporte(mockData);
-            // --- FIN DE LA SIMULACIÓN ---
+            const idSolicitud = solicitudSelector.value;
+            if (!idSolicitud) {
+                Swal.fire('Falta Información', 'Por favor, selecciona una solicitud.', 'warning');
+                return;
+            }
+
+            const url = `dao/api_generar_reporte.php?tipo=final&idSolicitud=${idSolicitud}`;
+            fetchReportData(url);
         });
 
-        // Evento para descargar el PDF
         btnDescargarPdf.addEventListener('click', () => {
             Swal.fire({
                 title: 'Generando PDF',
                 text: 'Por favor, espera un momento...',
                 allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                didOpen: () => { Swal.showLoading(); }
             });
 
             const elementoReporte = document.getElementById('contenido-reporte');
 
-            html2canvas(elementoReporte, {
-                scale: 2, // Mejora la calidad de la imagen
-                useCORS: true
-            }).then(canvas => {
+            html2canvas(elementoReporte, { scale: 2, useCORS: true }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const { jsPDF } = window.jspdf;
-
-                // A4: 210mm x 297mm
-                const pdf = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
                 const canvasWidth = canvas.width;
                 const canvasHeight = canvas.height;
                 const ratio = canvasHeight / canvasWidth;
-
-                const imgWidth = pdfWidth - 20; // Ancho con márgenes
+                const imgWidth = pdfWidth - 20;
                 const imgHeight = imgWidth * ratio;
-
                 pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-                pdf.save('reporte-de-contencion.pdf');
+                pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
                 Swal.close();
             });
         });
 
-
-        /**
-         * Toma los datos (reales o simulados) y construye el HTML del reporte.
-         * @param {object} data - Los datos del reporte.
-         */
         function renderizarReporte(data) {
             let html = `
             <div class="report-title">${data.titulo}</div>
@@ -301,17 +327,20 @@
                         <th>No. de Lote(s)</th>
                     </tr>
                 </thead>
-                <tbody>
-        `;
-            data.defectos.forEach(defecto => {
-                html += `
-                <tr>
-                    <td>${defecto.nombre}</td>
-                    <td>${defecto.cantidad}</td>
-                    <td>${defecto.lotes.join(', ')}</td>
-                </tr>
-            `;
-            });
+                <tbody>`;
+            if (data.defectos && data.defectos.length > 0) {
+                data.defectos.forEach(defecto => {
+                    html += `
+                    <tr>
+                        <td>${defecto.nombre}</td>
+                        <td>${defecto.cantidad}</td>
+                        <td>${defecto.lotes.join(', ')}</td>
+                    </tr>
+                `;
+                });
+            } else {
+                html += `<tr><td colspan="3" style="text-align:center;">No se encontraron defectos en este periodo.</td></tr>`;
+            }
             html += `
                 </tbody>
             </table>
@@ -319,57 +348,10 @@
 
             contenidoReporteDiv.innerHTML = html;
             reporteContainer.style.display = 'block';
-            // Hacer scroll suave hacia el reporte
             reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        // --- FUNCIONES DE DATOS SIMULADOS ---
-        function getMockDataParcial() {
-            return {
-                titulo: 'Reporte Parcial de Contención',
-                folio: 123,
-                info: {
-                    numeroParte: 'NP-45B-881',
-                    responsable: 'Juan Pérez',
-                    cantidadTotal: 5000
-                },
-                resumen: {
-                    inspeccionadas: 1250,
-                    aceptadas: 1200,
-                    rechazadas: 50,
-                    retrabajadas: 15,
-                    tiempoTotal: '15 horas'
-                },
-                defectos: [
-                    { nombre: 'Rayadura en superficie', cantidad: 35, lotes: ['LOTE-A1', 'LOTE-A2'] },
-                    { nombre: 'Componente mal ensamblado', cantidad: 15, lotes: ['LOTE-A2'] }
-                ]
-            };
-        }
-
-        function getMockDataFinal() {
-            return {
-                titulo: 'Reporte Final de Contención',
-                folio: 123,
-                info: {
-                    numeroParte: 'NP-45B-881',
-                    responsable: 'Juan Pérez',
-                    cantidadTotal: 5000
-                },
-                resumen: {
-                    inspeccionadas: 5000,
-                    aceptadas: 4920,
-                    rechazadas: 80,
-                    retrabajadas: 45,
-                    tiempoTotal: '62 horas'
-                },
-                defectos: [
-                    { nombre: 'Rayadura en superficie', cantidad: 55, lotes: ['LOTE-A1', 'LOTE-A2', 'LOTE-B1'] },
-                    { nombre: 'Componente mal ensamblado', cantidad: 25, lotes: ['LOTE-A2', 'LOTE-C1'] }
-                ]
-            };
         }
     });
 </script>
 </body>
 </html>
+
