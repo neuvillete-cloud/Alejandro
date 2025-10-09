@@ -207,13 +207,7 @@ $conex->close();
         const contenidoReporteDiv = document.getElementById('contenido-reporte');
 
         const fetchReportData = (url) => {
-            Swal.fire({
-                title: 'Generando Reporte',
-                text: 'Consultando la información...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-
+            Swal.fire({ title: 'Generando Reporte', text: 'Consultando la información...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -255,9 +249,9 @@ $conex->close();
                 const imgProps = pdf.getImageProperties(imgData);
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
-                const ratio = imgProps.height / imgProps.width;
-                const imgWidth = pdfWidth - 20;
-                const imgHeight = imgWidth * ratio;
+                let ratio = imgProps.height / imgProps.width;
+                let imgWidth = pdfWidth - 20;
+                let imgHeight = imgWidth * ratio;
                 let heightLeft = imgHeight;
                 let position = 10;
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
@@ -293,7 +287,7 @@ $conex->close();
             `;
             }
 
-            // --- NUEVO: SECCIÓN DE DESGLOSE DIARIO ---
+            // --- SECCIÓN DE DESGLOSE DIARIO ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 desgloseHtml = `<h4><i class="fa-solid fa-calendar-day"></i> Desglose Diario de Inspección</h4>`;
@@ -303,19 +297,50 @@ $conex->close();
                         desgloseHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
                         desgloseHtml += `<p>Totales del día: <strong>${dia.inspeccionadas}</strong> Inspeccionadas, <strong>${dia.aceptadas}</strong> Aceptadas, <strong>${dia.inspeccionadas - dia.aceptadas}</strong> Rechazadas.</p>`;
                         desgloseHtml += `<table><thead><tr><th>Número de Parte</th><th>Cantidad Inspeccionada</th></tr></thead><tbody>`;
-                        dia.partes.forEach(parte => {
-                            desgloseHtml += `<tr><td>${parte.numeroParte}</td><td>${parte.cantidad}</td></tr>`;
-                        });
+                        if(dia.partes && dia.partes.length > 0) {
+                            dia.partes.forEach(parte => {
+                                desgloseHtml += `<tr><td>${parte.numeroParte}</td><td>${parte.cantidad}</td></tr>`;
+                            });
+                        } else {
+                            desgloseHtml += `<tr><td colspan="2" style="text-align:center;">No hay desglose de partes para este día.</td></tr>`;
+                        }
                         desgloseHtml += `</tbody></table>`;
                     });
                 } else {
                     desgloseHtml += `<table><thead><tr><th>Fecha</th><th>Inspeccionadas</th><th>Aceptadas</th><th>Rechazadas</th><th>Retrabajadas</th></tr></thead><tbody>`;
                     data.desgloseDiario.forEach(dia => {
                         const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX');
-                        desgloseHtml += `<tr><td>${fechaFormateada}</td><td>${dia.inspeccionadas}</td><td>${dia.aceptadas}</td><td>${dia.inspeccionadas - dia.aceptadas}</td><td>${dia.retrabajadas}</td></tr>`;
+                        desgloseHtml += `<tr><td>${fechaFormateada}</td><td>${dia.inspeccionadas}</td><td>${dia.aceptadas}</td><td>${parseInt(dia.inspeccionadas) - parseInt(dia.aceptadas)}</td><td>${dia.retrabajadas}</td></tr>`;
                     });
                     desgloseHtml += `</tbody></table>`;
                 }
+            }
+
+            // --- SECCIÓN DE DETALLE DE DEFECTOS (RE-INTEGRADA) ---
+            let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Detalle de Defectos Encontrados</h4>`;
+            if (isVarios) {
+                if (data.defectosPorParte && data.defectosPorParte.length > 0) {
+                    data.defectosPorParte.forEach(grupo => {
+                        defectosHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">Detalle para: <strong>${grupo.numeroParte}</strong></h5>`;
+                        defectosHtml += `<table><thead><tr><th>Defecto</th><th>Cantidad</th><th>No. de Lote(s)</th></tr></thead><tbody>`;
+                        grupo.defectos.forEach(defecto => {
+                            defectosHtml += `<tr><td>${defecto.nombre}</td><td>${defecto.cantidad}</td><td>${defecto.lotes.join(', ') || 'N/A'}</td></tr>`;
+                        });
+                        defectosHtml += `</tbody></table>`;
+                    });
+                } else {
+                    defectosHtml += `<p style="text-align:center;">No se encontraron defectos para los números de parte en este periodo.</p>`;
+                }
+            } else {
+                defectosHtml += `<table><thead><tr><th>Defecto</th><th>Cantidad</th><th>No. de Lote(s)</th></tr></thead><tbody>`;
+                if (data.defectos && data.defectos.length > 0) {
+                    data.defectos.forEach(defecto => {
+                        defectosHtml += `<tr><td>${defecto.nombre}</td><td>${defecto.cantidad}</td><td>${defecto.lotes.join(', ') || 'N/A'}</td></tr>`;
+                    });
+                } else {
+                    defectosHtml += `<tr><td colspan="3" style="text-align:center;">No se encontraron defectos en este periodo.</td></tr>`;
+                }
+                defectosHtml += `</tbody></table>`;
             }
 
             // --- CONSTRUCCIÓN DEL HTML FINAL ---
@@ -335,6 +360,7 @@ $conex->close();
                 </tbody>
             </table>
             ${desgloseHtml}
+            ${defectosHtml}
         `;
 
             contenidoReporteDiv.innerHTML = html;
