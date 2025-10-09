@@ -26,7 +26,8 @@ $conex->close();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Librerías para generar PDF -->
+    <!-- Librerías para Gráficas y PDF -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -67,6 +68,32 @@ $conex->close();
             font-family: 'Arial', sans-serif; /* Usamos una fuente más estándar para el reporte */
             color: #333;
         }
+
+        /* Contenedor para las gráficas */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-borde);
+        }
+        .chart-box h5 {
+            text-align: center;
+            font-family: 'Montserrat';
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
 
         /* Estilos para el contenido del PDF */
         #contenido-reporte .report-title {
@@ -214,6 +241,8 @@ $conex->close();
         const btnDescargarPdf = document.getElementById('btn-descargar-pdf');
         const reporteContainer = document.getElementById('reporte-generado-container');
         const contenidoReporteDiv = document.getElementById('contenido-reporte');
+        let pieChartInstance = null;
+        let barChartInstance = null;
 
         const fetchReportData = (url) => {
             Swal.fire({ title: 'Generando Reporte', text: 'Consultando la información...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
@@ -252,7 +281,9 @@ $conex->close();
 
         btnDescargarPdf.addEventListener('click', () => {
             Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-            html2canvas(document.getElementById('contenido-reporte'), { scale: 2, useCORS: true }).then(canvas => {
+            const elementoReporte = document.getElementById('contenido-reporte');
+
+            html2canvas(elementoReporte, { scale: 2, useCORS: true }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 const imgData = canvas.toDataURL('image/png');
@@ -331,7 +362,7 @@ $conex->close();
                 });
             }
 
-            // --- SECCIÓN DE DETALLE DE DEFECTOS (RESTAURADA) ---
+            // --- SECCIÓN DE DETALLE DE DEFECTOS ---
             let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Resumen de Defectos del Periodo</h4>`;
             if (isVarios) {
                 if (data.defectosPorParte && data.defectosPorParte.length > 0) {
@@ -354,6 +385,21 @@ $conex->close();
                 defectosHtml += `</tbody></table>`;
             }
 
+            // --- NUEVO: SECCIÓN DE GRÁFICAS ---
+            let chartsHtml = `
+            <h4><i class="fa-solid fa-chart-line"></i> Dashboards Visuales</h4>
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h5>Distribución de Defectos</h5>
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h5>Progreso Diario de Inspección</h5>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        `;
+
             // --- CONSTRUCCIÓN DEL HTML FINAL ---
             let html = `
             <div class="report-title">${data.titulo}</div>
@@ -372,11 +418,85 @@ $conex->close();
             </table>
             ${desgloseHtml}
             ${defectosHtml}
+            ${chartsHtml}
         `;
 
             contenidoReporteDiv.innerHTML = html;
             reporteContainer.style.display = 'block';
+
+            // --- Renderizar las gráficas después de que el HTML esté en el DOM ---
+            renderizarGraficas(data);
+
             reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderizarGraficas(data) {
+            // Destruir instancias previas para evitar errores
+            if (pieChartInstance) pieChartInstance.destroy();
+            if (barChartInstance) barChartInstance.destroy();
+
+            // --- GRÁFICA DE PASTEL (DEFECTOS) ---
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            const isVarios = strtolower(data.info.numeroParte) === 'varios';
+            let defectosData = { labels: [], values: [] };
+
+            const allDefects = {};
+            if (isVarios) {
+                (data.defectosPorParte || []).forEach(grupo => {
+                    (grupo.defectos || []).forEach(defecto => {
+                        allDefects[defecto.nombre] = (allDefects[defecto.nombre] || 0) + defecto.cantidad;
+                    });
+                });
+            } else {
+                (data.defectos || []).forEach(defecto => {
+                    allDefects[defecto.nombre] = (allDefects[defecto.nombre] || 0) + defecto.cantidad;
+                });
+            }
+            defectosData.labels = Object.keys(allDefects);
+            defectosData.values = Object.values(allDefects);
+
+            pieChartInstance = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: defectosData.labels,
+                    datasets: [{
+                        label: 'Cantidad de Defectos',
+                        data: defectosData.values,
+                        backgroundColor: ['#4a6984', '#5c85ad', '#8ab4d7', '#adcbe3', '#e7eff6', '#63ace5'],
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // --- GRÁFICA DE BARRAS (PROGRESO DIARIO) ---
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
+
+            (data.desgloseDiario || []).forEach(dia => {
+                dailyData.labels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX', {month: 'short', day: 'numeric'}));
+                dailyData.inspected.push(dia.totales.inspeccionadas);
+                dailyData.accepted.push(dia.totales.aceptadas);
+                dailyData.rejected.push(dia.totales.inspeccionadas - dia.totales.aceptadas);
+            });
+
+            barChartInstance = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: dailyData.labels,
+                    datasets: [
+                        { label: 'Inspeccionadas', data: dailyData.inspected, backgroundColor: '#8ab4d7' },
+                        { label: 'Aceptadas', data: dailyData.accepted, backgroundColor: '#28a745' },
+                        { label: 'Rechazadas', data: dailyData.rejected, backgroundColor: '#a83232' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
         }
 
         // Helper para evitar errores si la función no existe
