@@ -64,7 +64,7 @@ try {
     // 1. Obtener datos del formulario principal (ReportesInspeccion)
     $idSolicitud = intval($_POST['idSolicitud']);
 
-    // --- NUEVO: Determinar si la solicitud es de "Varios" números de parte desde la BD ---
+    // --- Determinar si la solicitud es de "Varios" números de parte desde la BD ---
     $stmt_solicitud_info = $conex->prepare("SELECT NumeroParte FROM Solicitudes WHERE IdSolicitud = ?");
     $stmt_solicitud_info->bind_param("i", $idSolicitud);
     $stmt_solicitud_info->execute();
@@ -94,40 +94,45 @@ try {
         throw new Exception("Las piezas retrabajadas no pueden exceder las piezas rechazadas (" . $piezasRechazadasBrutas . ").");
     }
 
-    // 2. Insertar/Actualizar en ReportesInspeccion
-    $stmt_reporte = null;
-    if ($idReporte) {
-        throw new Exception("La funcionalidad de edición de reportes no está implementada en este script.");
-    } else {
-        $stmt_reporte = $conex->prepare("INSERT INTO ReportesInspeccion (
-                                            IdSolicitud, NombreInspector, FechaInspeccion, RangoHora, IdRangoHora,
-                                            PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas,
-                                            TiempoInspeccion, Comentarios, IdTiempoMuerto
-                                        ) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?)");
-        $stmt_reporte->bind_param("isssiiiiss",
-            $idSolicitud, $nombreInspector, $fechaInspeccion, $rangoHora,
-            $piezasInspeccionadas, $piezasAceptadas, $piezasRetrabajadas,
-            $tiempoInspeccion, $comentarios, $idTiempoMuerto);
-    }
+    // 2. Insertar en ReportesInspeccion
+    $stmt_reporte = $conex->prepare("INSERT INTO ReportesInspeccion (
+                                        IdSolicitud, NombreInspector, FechaInspeccion, RangoHora,
+                                        PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas,
+                                        TiempoInspeccion, Comentarios, IdTiempoMuerto
+                                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt_reporte->bind_param("isssiiissi",
+        $idSolicitud, $nombreInspector, $fechaInspeccion, $rangoHora,
+        $piezasInspeccionadas, $piezasAceptadas, $piezasRetrabajadas,
+        $tiempoInspeccion, $comentarios, $idTiempoMuerto);
 
     if (!$stmt_reporte->execute()) {
         throw new Exception("Error al guardar el reporte de inspección: " . $stmt_reporte->error);
     }
-    $lastIdReporte = $idReporte ? $idReporte : $stmt_reporte->insert_id;
+    $lastIdReporte = $stmt_reporte->insert_id;
     $stmt_reporte->close();
 
-    // --- NUEVO: 2.5. Procesar desglose de partes si aplica ---
+    // --- NUEVO: Actualizar el estatus de la solicitud a "En Proceso" (3) ---
+    // Se verifica si es el primer reporte para esta solicitud.
+    $check_stmt = $conex->prepare("SELECT COUNT(IdReporte) FROM ReportesInspeccion WHERE IdSolicitud = ?");
+    $check_stmt->bind_param("i", $idSolicitud);
+    $check_stmt->execute();
+    $report_count = $check_stmt->get_result()->fetch_row()[0];
+    $check_stmt->close();
+
+    // Si el conteo es 1, significa que el que acabamos de insertar es el primero.
+    if ($report_count == 1) {
+        $update_status_stmt = $conex->prepare("UPDATE Solicitudes SET IdEstatus = 3 WHERE IdSolicitud = ?");
+        $update_status_stmt->bind_param("i", $idSolicitud);
+        if (!$update_status_stmt->execute()) {
+            // Opcional: lanzar una excepción si falla la actualización del estatus
+            // throw new Exception("Error al actualizar el estatus de la solicitud.");
+        }
+        $update_status_stmt->close();
+    }
+    // --- FIN DEL NUEVO BLOQUE ---
+
+    // 2.5. Procesar desglose de partes si aplica
     if ($isVariosPartes && isset($_POST['partes_inspeccionadas']) && is_array($_POST['partes_inspeccionadas'])) {
-        /*
-        -- SQL Sugerido para la nueva tabla:
-        CREATE TABLE ReporteDesglosePartes (
-            IdDesglose INT AUTO_INCREMENT PRIMARY KEY,
-            IdReporte INT,
-            NumeroParte VARCHAR(255) NOT NULL,
-            Cantidad INT NOT NULL,
-            FOREIGN KEY (IdReporte) REFERENCES ReportesInspeccion(IdReporte) ON DELETE CASCADE
-        );
-        */
         foreach ($_POST['partes_inspeccionadas'] as $parteData) {
             $numeroParte = isset($parteData['parte']) ? trim($parteData['parte']) : null;
             $cantidad = isset($parteData['cantidad']) ? intval($parteData['cantidad']) : 0;
@@ -149,13 +154,9 @@ try {
             if (isset($defectData['entries']) && is_array($defectData['entries'])) {
                 foreach ($defectData['entries'] as $entry) {
                     $cantidad = intval($entry['cantidad']);
-                    $lote = isset($entry['lote']) ? trim($entry['lote']) : null;
-                    // --- MODIFICADO: Capturar el número de parte si existe ---
-                    $parte = ($isVariosPartes && isset($entry['parte'])) ? trim($entry['parte']) : null;
-
                     if ($cantidad > 0) {
-                        // --- MODIFICADO: Se añade NumeroParte al INSERT. Asegúrate que la columna exista en la tabla ReporteDefectosOriginales. ---
-                        // ALTER TABLE ReporteDefectosOriginales ADD COLUMN NumeroParte VARCHAR(255) NULL;
+                        $lote = isset($entry['lote']) ? trim($entry['lote']) : null;
+                        $parte = ($isVariosPartes && isset($entry['parte'])) ? trim($entry['parte']) : null;
                         $stmt_defecto_original = $conex->prepare("INSERT INTO ReporteDefectosOriginales (IdReporte, IdDefecto, CantidadEncontrada, Lote, NumeroParte) VALUES (?, ?, ?, ?, ?)");
                         $stmt_defecto_original->bind_param("iiiss", $lastIdReporte, $idDefectoOriginal, $cantidad, $lote, $parte);
                         if (!$stmt_defecto_original->execute()) {
@@ -171,12 +172,11 @@ try {
     // 4. Procesar Nuevos Defectos Encontrados
     if (isset($_POST['nuevos_defectos']) && is_array($_POST['nuevos_defectos'])) {
         foreach ($_POST['nuevos_defectos'] as $tempId => $defectoData) {
-            $idDefectoCatalogo = intval($defectoData['id']);
             $cantidad = intval($defectoData['cantidad']);
-            // --- MODIFICADO: Capturar el número de parte si existe ---
-            $parte = ($isVariosPartes && isset($defectoData['parte'])) ? trim($defectoData['parte']) : null;
-
             if ($cantidad > 0) {
+                $idDefectoCatalogo = intval($defectoData['id']);
+                $parte = ($isVariosPartes && isset($defectoData['parte'])) ? trim($defectoData['parte']) : null;
+
                 $foto_para_procesar = [
                     'name' => $_FILES['nuevos_defectos']['name'][$tempId]['foto'],
                     'type' => $_FILES['nuevos_defectos']['type'][$tempId]['foto'],
@@ -187,8 +187,6 @@ try {
 
                 $rutaFotoEvidencia = procesarArchivoSubido($foto_para_procesar, 'imagenes/imagenesDefectos/', "nuevo_defecto_reporte_{$lastIdReporte}_");
 
-                // --- MODIFICADO: Se añade NumeroParte al INSERT. Asegúrate que la columna exista en la tabla DefectosEncontrados. ---
-                // ALTER TABLE DefectosEncontrados ADD COLUMN NumeroParte VARCHAR(255) NULL;
                 $stmt_nuevo_defecto = $conex->prepare("INSERT INTO DefectosEncontrados (IdReporte, IdDefectoCatalogo, Cantidad, RutaFotoEvidencia, NumeroParte) VALUES (?, ?, ?, ?, ?)");
                 $stmt_nuevo_defecto->bind_param("iiiss", $lastIdReporte, $idDefectoCatalogo, $cantidad, $rutaFotoEvidencia, $parte);
 
@@ -214,3 +212,4 @@ try {
 
 $conex->close();
 ?>
+
