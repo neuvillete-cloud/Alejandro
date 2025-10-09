@@ -37,6 +37,7 @@ try {
     if (!$infoSolicitud) {
         throw new Exception("Solicitud no encontrada.");
     }
+    $isVariosPartes = (strtolower($infoSolicitud['NumeroParte']) === 'varios');
 
     $whereClause = "WHERE ri.IdSolicitud = ?";
     $params = [$idSolicitud];
@@ -53,7 +54,7 @@ try {
         $types .= "ss";
     }
 
-    // 2. Obtener resumen de inspección
+    // 2. Obtener resumen de inspección (igual para ambos casos)
     $query_resumen = "SELECT 
                         SUM(ri.PiezasInspeccionadas) AS inspeccionadas,
                         SUM(ri.PiezasAceptadas) AS aceptadas,
@@ -69,48 +70,80 @@ try {
         ? $infoSolicitud['TiempoTotalInspeccion']
         : ($resumen['total_horas'] ?? 0) . ' hora(s)';
 
-    // 3. Obtener detalle de defectos (combinando originales y nuevos)
-    $query_defectos = "SELECT cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes
-                       FROM ReporteDefectosOriginales rdo
-                       JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
-                       JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo
-                       JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte
-                       {$whereClause}
-                       GROUP BY cd.NombreDefecto
-                       
-                       UNION ALL
-                       
-                       SELECT cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes
-                       FROM DefectosEncontrados de
-                       JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
-                       JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte
-                       {$whereClause}
-                       GROUP BY cd.NombreDefecto";
+    // 3. Obtener detalle de defectos (lógica condicional)
+    $defectos_finales = [];
+    $numeros_parte_lista = [];
 
-    $stmt_defectos = $conex->prepare($query_defectos);
-    // Para UNION, los parámetros deben pasarse dos veces
-    $union_params = array_merge($params, $params);
-    $union_types = $types . $types;
-    $stmt_defectos->bind_param($union_types, ...$union_params);
-    $stmt_defectos->execute();
-    $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
+    if ($isVariosPartes) {
+        // Obtener lista de números de parte únicos del periodo
+        $query_partes = "SELECT DISTINCT rdp.NumeroParte FROM ReporteDesglosePartes rdp JOIN ReportesInspeccion ri ON rdp.IdReporte = ri.IdReporte {$whereClause}";
+        $stmt_partes = $conex->prepare($query_partes);
+        $stmt_partes->bind_param($types, ...$params);
+        $stmt_partes->execute();
+        $partes_result = $stmt_partes->get_result();
+        while($row = $partes_result->fetch_assoc()) {
+            $numeros_parte_lista[] = $row['NumeroParte'];
+        }
 
-    // Consolidar defectos si tienen el mismo nombre
-    $defectos_consolidados = [];
-    foreach ($defectos_result as $def) {
-        if (!isset($defectos_consolidados[$def['NombreDefecto']])) {
-            $defectos_consolidados[$def['NombreDefecto']] = ['nombre' => $def['NombreDefecto'], 'cantidad' => 0, 'lotes' => []];
+        // Obtener defectos agrupados por número de parte
+        $query_defectos_varios = "
+            (SELECT rdo.NumeroParte, cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes
+            FROM ReporteDefectosOriginales rdo
+            JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
+            JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo
+            JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte
+            {$whereClause} AND rdo.NumeroParte IS NOT NULL
+            GROUP BY rdo.NumeroParte, cd.NombreDefecto)
+            UNION ALL
+            (SELECT de.NumeroParte, cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes
+            FROM DefectosEncontrados de
+            JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
+            JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte
+            {$whereClause} AND de.NumeroParte IS NOT NULL
+            GROUP BY de.NumeroParte, cd.NombreDefecto)";
+
+        $stmt_defectos = $conex->prepare($query_defectos_varios);
+        $union_params = array_merge($params, $params);
+        $union_types = $types . $types;
+        $stmt_defectos->bind_param($union_types, ...$union_params);
+        $stmt_defectos->execute();
+        $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $defectos_por_parte = [];
+        foreach($defectos_result as $def) {
+            if (!isset($defectos_por_parte[$def['NumeroParte']])) {
+                $defectos_por_parte[$def['NumeroParte']] = ['numeroParte' => $def['NumeroParte'], 'defectos' => []];
+            }
+            $defectos_por_parte[$def['NumeroParte']]['defectos'][] = ['nombre' => $def['NombreDefecto'], 'cantidad' => (int)$def['Cantidad'], 'lotes' => ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) ? explode(', ', $def['Lotes']) : []];
         }
-        $defectos_consolidados[$def['NombreDefecto']]['cantidad'] += $def['Cantidad'];
-        if ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) {
-            $lotes_arr = explode(', ', $def['Lotes']);
-            $defectos_consolidados[$def['NombreDefecto']]['lotes'] = array_unique(array_merge($defectos_consolidados[$def['NombreDefecto']]['lotes'], $lotes_arr));
+        $defectos_finales = array_values($defectos_por_parte);
+
+    } else { // Lógica para un solo número de parte
+        $query_defectos_single = "(SELECT cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes FROM ReporteDefectosOriginales rdo JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte {$whereClause} GROUP BY cd.NombreDefecto) UNION ALL (SELECT cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes FROM DefectosEncontrados de JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte {$whereClause} GROUP BY cd.NombreDefecto)";
+        $stmt_defectos = $conex->prepare($query_defectos_single);
+        $union_params = array_merge($params, $params);
+        $union_types = $types . $types;
+        $stmt_defectos->bind_param($union_types, ...$union_params);
+        $stmt_defectos->execute();
+        $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $defectos_consolidados = [];
+        foreach ($defectos_result as $def) {
+            if (!isset($defectos_consolidados[$def['NombreDefecto']])) {
+                $defectos_consolidados[$def['NombreDefecto']] = ['nombre' => $def['NombreDefecto'], 'cantidad' => 0, 'lotes' => []];
+            }
+            $defectos_consolidados[$def['NombreDefecto']]['cantidad'] += $def['Cantidad'];
+            if ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) {
+                $lotes_arr = explode(', ', $def['Lotes']);
+                $defectos_consolidados[$def['NombreDefecto']]['lotes'] = array_unique(array_merge($defectos_consolidados[$def['NombreDefecto']]['lotes'], $lotes_arr));
+            }
         }
+        $defectos_finales = array_values($defectos_consolidados);
     }
 
     // 4. Construir la respuesta final
     $response['status'] = 'success';
-    $response['reporte'] = [
+    $final_report_data = [
         'titulo' => $tipoReporte === 'parcial' ? 'Reporte Parcial de Contención' : 'Reporte Final de Contención',
         'folio' => $idSolicitud,
         'info' => [
@@ -119,14 +152,22 @@ try {
             'cantidadTotal' => $infoSolicitud['Cantidad']
         ],
         'resumen' => [
-            'inspeccionadas' => $resumen['inspeccionadas'] ?? 0,
-            'aceptadas' => $resumen['aceptadas'] ?? 0,
-            'rechazadas' => $resumen['rechazadas'] ?? 0,
-            'retrabajadas' => $resumen['retrabajadas'] ?? 0,
+            'inspeccionadas' => (int)($resumen['inspeccionadas'] ?? 0),
+            'aceptadas' => (int)($resumen['aceptadas'] ?? 0),
+            'rechazadas' => (int)($resumen['rechazadas'] ?? 0),
+            'retrabajadas' => (int)($resumen['retrabajadas'] ?? 0),
             'tiempoTotal' => $tiempoTotal
-        ],
-        'defectos' => array_values($defectos_consolidados)
+        ]
     ];
+
+    if ($isVariosPartes) {
+        $final_report_data['info']['numerosParteLista'] = $numeros_parte_lista;
+        $final_report_data['defectosPorParte'] = $defectos_finales;
+    } else {
+        $final_report_data['defectos'] = $defectos_finales;
+    }
+
+    $response['reporte'] = $final_report_data;
 
 } catch (Exception $e) {
     $response['message'] = $e->getMessage();

@@ -295,18 +295,58 @@ $conex->close();
         });
 
         function renderizarReporte(data) {
-            let html = `
-            <div class="report-title">${data.titulo}</div>
-            <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
+            const isVarios = data.info.numerosParteLista && data.info.numerosParteLista.length > 0;
 
-            <h4><i class="fa-solid fa-circle-info"></i> Información General</h4>
-            <div class="info-section">
-                <p><strong>No. de Parte:</strong> ${data.info.numeroParte}</p>
+            let infoHtml = `
+            <p><strong>No. de Parte:</strong> ${data.info.numeroParte}</p>
+            <p><strong>Responsable:</strong> ${data.info.responsable}</p>
+            <p><strong>Cantidad Total Solicitada:</strong> ${data.info.cantidadTotal}</p>
+            <p><strong>Fecha de Emisión:</strong> ${new Date().toLocaleDateString('es-MX')}</p>
+        `;
+            if (isVarios) {
+                infoHtml = `
+                <p><strong>Proyecto:</strong> ${data.info.numeroParte}</p>
                 <p><strong>Responsable:</strong> ${data.info.responsable}</p>
                 <p><strong>Cantidad Total Solicitada:</strong> ${data.info.cantidadTotal}</p>
                 <p><strong>Fecha de Emisión:</strong> ${new Date().toLocaleDateString('es-MX')}</p>
-            </div>
+                <p style="grid-column: 1 / -1;"><strong>Partes Involucradas:</strong> ${data.info.numerosParteLista.join(', ')}</p>
+            `;
+            }
 
+            let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Detalle de Defectos Encontrados</h4>`;
+            if (isVarios) {
+                if (data.defectosPorParte && data.defectosPorParte.length > 0) {
+                    data.defectosPorParte.forEach(grupo => {
+                        defectosHtml += `
+                        <h5 style="font-size: 16px; margin-top: 20px; color: #555;">Detalle para: <strong>${grupo.numeroParte}</strong></h5>
+                        <table><thead><tr><th>Defecto</th><th>Cantidad</th><th>No. de Lote(s)</th></tr></thead><tbody>`;
+                        grupo.defectos.forEach(defecto => {
+                            defectosHtml += `<tr><td>${defecto.nombre}</td><td>${defecto.cantidad}</td><td>${defecto.lotes.join(', ') || 'N/A'}</td></tr>`;
+                        });
+                        defectosHtml += `</tbody></table>`;
+                    });
+                } else {
+                    defectosHtml += `<p style="text-align:center;">No se encontraron defectos para los números de parte en este periodo.</p>`;
+                }
+            } else {
+                defectosHtml += `<table><thead><tr><th>Defecto</th><th>Cantidad</th><th>No. de Lote(s)</th></tr></thead><tbody>`;
+                if (data.defectos && data.defectos.length > 0) {
+                    data.defectos.forEach(defecto => {
+                        defectosHtml += `<tr><td>${defecto.nombre}</td><td>${defecto.cantidad}</td><td>${defecto.lotes.join(', ') || 'N/A'}</td></tr>`;
+                    });
+                } else {
+                    defectosHtml += `<tr><td colspan="3" style="text-align:center;">No se encontraron defectos en este periodo.</td></tr>`;
+                }
+                defectosHtml += `</tbody></table>`;
+            }
+
+            let html = `
+            <div class="report-title">${data.titulo}</div>
+            <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
+            <h4><i class="fa-solid fa-circle-info"></i> Información General</h4>
+            <div class="info-section">
+                ${infoHtml}
+            </div>
             <h4><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</h4>
             <table class="summary-table">
                 <tbody>
@@ -317,33 +357,7 @@ $conex->close();
                     <tr><td><strong>Tiempo Total de Inspección:</strong></td><td><strong>${data.resumen.tiempoTotal}</strong></td></tr>
                 </tbody>
             </table>
-
-            <h4><i class="fa-solid fa-magnifying-glass"></i> Detalle de Defectos Encontrados</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Defecto</th>
-                        <th>Cantidad</th>
-                        <th>No. de Lote(s)</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            if (data.defectos && data.defectos.length > 0) {
-                data.defectos.forEach(defecto => {
-                    html += `
-                    <tr>
-                        <td>${defecto.nombre}</td>
-                        <td>${defecto.cantidad}</td>
-                        <td>${defecto.lotes.join(', ')}</td>
-                    </tr>
-                `;
-                });
-            } else {
-                html += `<tr><td colspan="3" style="text-align:center;">No se encontraron defectos en este periodo.</td></tr>`;
-            }
-            html += `
-                </tbody>
-            </table>
+            ${defectosHtml}
         `;
 
             contenidoReporteDiv.innerHTML = html;
