@@ -309,7 +309,8 @@ $conex->close();
                 } else {
                     desgloseHtml += `<table><thead><tr><th>Fecha</th><th>Inspeccionadas</th><th>Aceptadas</th><th>Rechazadas</th><th>Retrabajadas</th></tr></thead><tbody>`;
                     data.desgloseDiario.forEach(dia => {
-                        const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX');
+                        // --- CORRECCIÓN AQUÍ ---
+                        const fechaFormateada = new Date(dia.FechaInspeccion + 'T00:00:00').toLocaleDateString('es-MX');
                         desgloseHtml += `<tr><td>${fechaFormateada}</td><td>${dia.inspeccionadas}</td><td>${dia.aceptadas}</td><td>${parseInt(dia.inspeccionadas) - parseInt(dia.aceptadas)}</td><td>${dia.retrabajadas}</td></tr>`;
                     });
                     desgloseHtml += `</tbody></table>`;
