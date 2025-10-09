@@ -141,7 +141,6 @@ $conex->close();
         <h1><i class="fa-solid fa-chart-pie"></i> Dashboard de Reportes</h1>
     </div>
 
-    <!-- --- NUEVO: Selector de Solicitud --- -->
     <div class="form-container" style="margin-bottom: 30px;">
         <div class="form-group">
             <label for="solicitud-selector"><i class="fa-solid fa-folder-open"></i> Seleccionar Solicitud de Contención</label>
@@ -155,11 +154,8 @@ $conex->close();
             </select>
         </div>
     </div>
-    <!-- --- FIN DEL SELECTOR --- -->
 
     <div class="dashboard-grid">
-
-        <!-- Panel para Reportes Parciales -->
         <div class="form-container">
             <fieldset>
                 <legend><i class="fa-solid fa-calendar-week"></i> Reportes Parciales</legend>
@@ -179,8 +175,6 @@ $conex->close();
                 </div>
             </fieldset>
         </div>
-
-        <!-- Panel para Reporte Final -->
         <div class="form-container">
             <fieldset>
                 <legend><i class="fa-solid fa-flag-checkered"></i> Reporte Final de Contención</legend>
@@ -190,18 +184,14 @@ $conex->close();
                 </div>
             </fieldset>
         </div>
-
     </div>
 
-    <!-- Contenedor donde se mostrará el reporte generado -->
     <div id="reporte-generado-container">
         <div class="reporte-header">
             <h3><i class="fa-solid fa-eye"></i> Vista Previa del Reporte</h3>
             <button id="btn-descargar-pdf" class="btn-secondary"><i class="fa-solid fa-download"></i> Descargar PDF</button>
         </div>
-        <div id="contenido-reporte">
-            <!-- El contenido del reporte se inyectará aquí con JavaScript -->
-        </div>
+        <div id="contenido-reporte"></div>
     </div>
 
 </main>
@@ -243,67 +233,57 @@ $conex->close();
             const idSolicitud = solicitudSelector.value;
             const fechaInicio = document.getElementById('fecha-inicio').value;
             const fechaFin = document.getElementById('fecha-fin').value;
-
-            if (!idSolicitud) {
-                Swal.fire('Falta Información', 'Por favor, selecciona una solicitud.', 'warning');
-                return;
-            }
-            if (!fechaInicio || !fechaFin) {
-                Swal.fire('Campos incompletos', 'Por favor, selecciona una fecha de inicio y una fecha de fin.', 'warning');
-                return;
-            }
-
+            if (!idSolicitud) { Swal.fire('Falta Información', 'Por favor, selecciona una solicitud.', 'warning'); return; }
+            if (!fechaInicio || !fechaFin) { Swal.fire('Campos incompletos', 'Por favor, selecciona una fecha de inicio y una fecha de fin.', 'warning'); return; }
             const url = `dao/api_generar_reporte.php?tipo=parcial&idSolicitud=${idSolicitud}&inicio=${fechaInicio}&fin=${fechaFin}`;
             fetchReportData(url);
         });
 
         btnVerFinal.addEventListener('click', () => {
             const idSolicitud = solicitudSelector.value;
-            if (!idSolicitud) {
-                Swal.fire('Falta Información', 'Por favor, selecciona una solicitud.', 'warning');
-                return;
-            }
-
+            if (!idSolicitud) { Swal.fire('Falta Información', 'Por favor, selecciona una solicitud.', 'warning'); return; }
             const url = `dao/api_generar_reporte.php?tipo=final&idSolicitud=${idSolicitud}`;
             fetchReportData(url);
         });
 
         btnDescargarPdf.addEventListener('click', () => {
-            Swal.fire({
-                title: 'Generando PDF',
-                text: 'Por favor, espera un momento...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-
-            const elementoReporte = document.getElementById('contenido-reporte');
-
-            html2canvas(elementoReporte, { scale: 2, useCORS: true }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
+            Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+            html2canvas(document.getElementById('contenido-reporte'), { scale: 2, useCORS: true }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = pdf.getImageProperties(imgData);
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const canvasWidth = canvas.width;
-                const canvasHeight = canvas.height;
-                const ratio = canvasHeight / canvasWidth;
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const ratio = imgProps.height / imgProps.width;
                 const imgWidth = pdfWidth - 20;
                 const imgHeight = imgWidth * ratio;
-                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                let heightLeft = imgHeight;
+                let position = 10;
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= (pdfHeight - 20);
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight + 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= (pdfHeight - 20);
+                }
                 pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
                 Swal.close();
             });
         });
 
         function renderizarReporte(data) {
-            const isVarios = data.info.numerosParteLista && data.info.numerosParteLista.length > 0;
+            const isVarios = strtolower(data.info.numeroParte) === 'varios';
 
+            // --- SECCIÓN DE INFORMACIÓN GENERAL ---
             let infoHtml = `
             <p><strong>No. de Parte:</strong> ${data.info.numeroParte}</p>
             <p><strong>Responsable:</strong> ${data.info.responsable}</p>
             <p><strong>Cantidad Total Solicitada:</strong> ${data.info.cantidadTotal}</p>
             <p><strong>Fecha de Emisión:</strong> ${new Date().toLocaleDateString('es-MX')}</p>
         `;
-            if (isVarios) {
+            if (isVarios && data.info.numerosParteLista && data.info.numerosParteLista.length > 0) {
                 infoHtml = `
                 <p><strong>Proyecto:</strong> ${data.info.numeroParte}</p>
                 <p><strong>Responsable:</strong> ${data.info.responsable}</p>
@@ -313,41 +293,38 @@ $conex->close();
             `;
             }
 
-            let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Detalle de Defectos Encontrados</h4>`;
-            if (isVarios) {
-                if (data.defectosPorParte && data.defectosPorParte.length > 0) {
-                    data.defectosPorParte.forEach(grupo => {
-                        defectosHtml += `
-                        <h5 style="font-size: 16px; margin-top: 20px; color: #555;">Detalle para: <strong>${grupo.numeroParte}</strong></h5>
-                        <table><thead><tr><th>Defecto</th><th>Cantidad</th><th>No. de Lote(s)</th></tr></thead><tbody>`;
-                        grupo.defectos.forEach(defecto => {
-                            defectosHtml += `<tr><td>${defecto.nombre}</td><td>${defecto.cantidad}</td><td>${defecto.lotes.join(', ') || 'N/A'}</td></tr>`;
+            // --- NUEVO: SECCIÓN DE DESGLOSE DIARIO ---
+            let desgloseHtml = '';
+            if (data.desgloseDiario && data.desgloseDiario.length > 0) {
+                desgloseHtml = `<h4><i class="fa-solid fa-calendar-day"></i> Desglose Diario de Inspección</h4>`;
+                if (isVarios) {
+                    data.desgloseDiario.forEach(dia => {
+                        const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                        desgloseHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
+                        desgloseHtml += `<p>Totales del día: <strong>${dia.inspeccionadas}</strong> Inspeccionadas, <strong>${dia.aceptadas}</strong> Aceptadas, <strong>${dia.inspeccionadas - dia.aceptadas}</strong> Rechazadas.</p>`;
+                        desgloseHtml += `<table><thead><tr><th>Número de Parte</th><th>Cantidad Inspeccionada</th></tr></thead><tbody>`;
+                        dia.partes.forEach(parte => {
+                            desgloseHtml += `<tr><td>${parte.numeroParte}</td><td>${parte.cantidad}</td></tr>`;
                         });
-                        defectosHtml += `</tbody></table>`;
+                        desgloseHtml += `</tbody></table>`;
                     });
                 } else {
-                    defectosHtml += `<p style="text-align:center;">No se encontraron defectos para los números de parte en este periodo.</p>`;
-                }
-            } else {
-                defectosHtml += `<table><thead><tr><th>Defecto</th><th>Cantidad</th><th>No. de Lote(s)</th></tr></thead><tbody>`;
-                if (data.defectos && data.defectos.length > 0) {
-                    data.defectos.forEach(defecto => {
-                        defectosHtml += `<tr><td>${defecto.nombre}</td><td>${defecto.cantidad}</td><td>${defecto.lotes.join(', ') || 'N/A'}</td></tr>`;
+                    desgloseHtml += `<table><thead><tr><th>Fecha</th><th>Inspeccionadas</th><th>Aceptadas</th><th>Rechazadas</th><th>Retrabajadas</th></tr></thead><tbody>`;
+                    data.desgloseDiario.forEach(dia => {
+                        const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX');
+                        desgloseHtml += `<tr><td>${fechaFormateada}</td><td>${dia.inspeccionadas}</td><td>${dia.aceptadas}</td><td>${dia.inspeccionadas - dia.aceptadas}</td><td>${dia.retrabajadas}</td></tr>`;
                     });
-                } else {
-                    defectosHtml += `<tr><td colspan="3" style="text-align:center;">No se encontraron defectos en este periodo.</td></tr>`;
+                    desgloseHtml += `</tbody></table>`;
                 }
-                defectosHtml += `</tbody></table>`;
             }
 
+            // --- CONSTRUCCIÓN DEL HTML FINAL ---
             let html = `
             <div class="report-title">${data.titulo}</div>
             <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
             <h4><i class="fa-solid fa-circle-info"></i> Información General</h4>
-            <div class="info-section">
-                ${infoHtml}
-            </div>
-            <h4><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</h4>
+            <div class="info-section">${infoHtml}</div>
+            <h4><i class="fa-solid fa-chart-simple"></i> Resumen General del Periodo</h4>
             <table class="summary-table">
                 <tbody>
                     <tr><td>Piezas Inspeccionadas</td><td>${data.resumen.inspeccionadas}</td></tr>
@@ -357,13 +334,16 @@ $conex->close();
                     <tr><td><strong>Tiempo Total de Inspección:</strong></td><td><strong>${data.resumen.tiempoTotal}</strong></td></tr>
                 </tbody>
             </table>
-            ${defectosHtml}
+            ${desgloseHtml}
         `;
 
             contenidoReporteDiv.innerHTML = html;
             reporteContainer.style.display = 'block';
             reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // Helper para evitar errores si la función no existe
+        const strtolower = (str) => String(str).toLowerCase();
     });
 </script>
 </body>

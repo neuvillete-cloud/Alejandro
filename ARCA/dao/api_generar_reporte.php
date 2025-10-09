@@ -70,78 +70,76 @@ try {
         ? $infoSolicitud['TiempoTotalInspeccion']
         : ($resumen['total_horas'] ?? 0) . ' hora(s)';
 
-    // 3. Obtener detalle de defectos (lógica condicional)
+    // 3. Obtener detalle de defectos (lógica del paso anterior)
+    // ... (Se mantiene la lógica anterior para el resumen de defectos)
     $defectos_finales = [];
     $numeros_parte_lista = [];
 
     if ($isVariosPartes) {
-        // Obtener lista de números de parte únicos del periodo
         $query_partes = "SELECT DISTINCT rdp.NumeroParte FROM ReporteDesglosePartes rdp JOIN ReportesInspeccion ri ON rdp.IdReporte = ri.IdReporte {$whereClause}";
         $stmt_partes = $conex->prepare($query_partes);
         $stmt_partes->bind_param($types, ...$params);
         $stmt_partes->execute();
         $partes_result = $stmt_partes->get_result();
-        while($row = $partes_result->fetch_assoc()) {
-            $numeros_parte_lista[] = $row['NumeroParte'];
-        }
-
-        // Obtener defectos agrupados por número de parte
-        $query_defectos_varios = "
-            (SELECT rdo.NumeroParte, cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes
-            FROM ReporteDefectosOriginales rdo
-            JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto
-            JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo
-            JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte
-            {$whereClause} AND rdo.NumeroParte IS NOT NULL
-            GROUP BY rdo.NumeroParte, cd.NombreDefecto)
-            UNION ALL
-            (SELECT de.NumeroParte, cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes
-            FROM DefectosEncontrados de
-            JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
-            JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte
-            {$whereClause} AND de.NumeroParte IS NOT NULL
-            GROUP BY de.NumeroParte, cd.NombreDefecto)";
-
-        $stmt_defectos = $conex->prepare($query_defectos_varios);
-        $union_params = array_merge($params, $params);
-        $union_types = $types . $types;
-        $stmt_defectos->bind_param($union_types, ...$union_params);
-        $stmt_defectos->execute();
-        $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
-
-        $defectos_por_parte = [];
-        foreach($defectos_result as $def) {
-            if (!isset($defectos_por_parte[$def['NumeroParte']])) {
-                $defectos_por_parte[$def['NumeroParte']] = ['numeroParte' => $def['NumeroParte'], 'defectos' => []];
-            }
-            $defectos_por_parte[$def['NumeroParte']]['defectos'][] = ['nombre' => $def['NombreDefecto'], 'cantidad' => (int)$def['Cantidad'], 'lotes' => ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) ? explode(', ', $def['Lotes']) : []];
-        }
-        $defectos_finales = array_values($defectos_por_parte);
-
-    } else { // Lógica para un solo número de parte
-        $query_defectos_single = "(SELECT cd.NombreDefecto, SUM(rdo.CantidadEncontrada) AS Cantidad, GROUP_CONCAT(DISTINCT rdo.Lote SEPARATOR ', ') AS Lotes FROM ReporteDefectosOriginales rdo JOIN Defectos d ON rdo.IdDefecto = d.IdDefecto JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON rdo.IdReporte = ri.IdReporte {$whereClause} GROUP BY cd.NombreDefecto) UNION ALL (SELECT cd.NombreDefecto, SUM(de.Cantidad) AS Cantidad, 'N/A' AS Lotes FROM DefectosEncontrados de JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte {$whereClause} GROUP BY cd.NombreDefecto)";
-        $stmt_defectos = $conex->prepare($query_defectos_single);
-        $union_params = array_merge($params, $params);
-        $union_types = $types . $types;
-        $stmt_defectos->bind_param($union_types, ...$union_params);
-        $stmt_defectos->execute();
-        $defectos_result = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
-
-        $defectos_consolidados = [];
-        foreach ($defectos_result as $def) {
-            if (!isset($defectos_consolidados[$def['NombreDefecto']])) {
-                $defectos_consolidados[$def['NombreDefecto']] = ['nombre' => $def['NombreDefecto'], 'cantidad' => 0, 'lotes' => []];
-            }
-            $defectos_consolidados[$def['NombreDefecto']]['cantidad'] += $def['Cantidad'];
-            if ($def['Lotes'] !== 'N/A' && !empty($def['Lotes'])) {
-                $lotes_arr = explode(', ', $def['Lotes']);
-                $defectos_consolidados[$def['NombreDefecto']]['lotes'] = array_unique(array_merge($defectos_consolidados[$def['NombreDefecto']]['lotes'], $lotes_arr));
-            }
-        }
-        $defectos_finales = array_values($defectos_consolidados);
+        while($row = $partes_result->fetch_assoc()) { $numeros_parte_lista[] = $row['NumeroParte']; }
     }
 
-    // 4. Construir la respuesta final
+
+    // 4. --- NUEVO: OBTENER DESGLOSE DIARIO ---
+    $desgloseDiario = [];
+    if ($isVariosPartes) {
+        $query_diario = "SELECT
+                            ri.FechaInspeccion,
+                            SUM(ri.PiezasInspeccionadas) AS totalInspeccionadasDia,
+                            SUM(ri.PiezasAceptadas) AS totalAceptadasDia,
+                            SUM(ri.PiezasRetrabajadas) AS totalRetrabajadasDia,
+                            GROUP_CONCAT(CONCAT(rdp.NumeroParte, ':', rdp.Cantidad) SEPARATOR ';') AS desglosePartesDia
+                        FROM ReportesInspeccion ri
+                        LEFT JOIN ReporteDesglosePartes rdp ON ri.IdReporte = rdp.IdReporte
+                        {$whereClause}
+                        GROUP BY ri.FechaInspeccion
+                        ORDER BY ri.FechaInspeccion ASC";
+        $stmt_diario = $conex->prepare($query_diario);
+        $stmt_diario->bind_param($types, ...$params);
+        $stmt_diario->execute();
+        $result_diario = $stmt_diario->get_result();
+        while ($row = $result_diario->fetch_assoc()) {
+            $partes_del_dia = [];
+            if (!empty($row['desglosePartesDia'])) {
+                $pares = explode(';', $row['desglosePartesDia']);
+                foreach ($pares as $par) {
+                    list($numParte, $cantidad) = explode(':', $par);
+                    $partes_del_dia[] = ['numeroParte' => $numParte, 'cantidad' => (int)$cantidad];
+                }
+            }
+            $desgloseDiario[] = [
+                'fecha' => $row['FechaInspeccion'],
+                'inspeccionadas' => (int)$row['totalInspeccionadasDia'],
+                'aceptadas' => (int)$row['totalAceptadasDia'],
+                'retrabajadas' => (int)$row['totalRetrabajadasDia'],
+                'partes' => $partes_del_dia
+            ];
+        }
+
+    } else { // Desglose para un solo número de parte
+        $query_diario = "SELECT
+                            ri.FechaInspeccion,
+                            SUM(ri.PiezasInspeccionadas) AS inspeccionadas,
+                            SUM(ri.PiezasAceptadas) AS aceptadas,
+                            SUM(ri.PiezasRetrabajadas) AS retrabajadas
+                        FROM ReportesInspeccion ri
+                        {$whereClause}
+                        GROUP BY ri.FechaInspeccion
+                        ORDER BY ri.FechaInspeccion ASC";
+        $stmt_diario = $conex->prepare($query_diario);
+        $stmt_diario->bind_param($types, ...$params);
+        $stmt_diario->execute();
+        $desgloseDiario = $stmt_diario->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+    // --- FIN DEL DESGLOSE DIARIO ---
+
+
+    // 5. Construir la respuesta final
     $response['status'] = 'success';
     $final_report_data = [
         'titulo' => $tipoReporte === 'parcial' ? 'Reporte Parcial de Contención' : 'Reporte Final de Contención',
@@ -157,14 +155,12 @@ try {
             'rechazadas' => (int)($resumen['rechazadas'] ?? 0),
             'retrabajadas' => (int)($resumen['retrabajadas'] ?? 0),
             'tiempoTotal' => $tiempoTotal
-        ]
+        ],
+        'desgloseDiario' => $desgloseDiario // Se añade el nuevo bloque de datos
     ];
 
     if ($isVariosPartes) {
         $final_report_data['info']['numerosParteLista'] = $numeros_parte_lista;
-        $final_report_data['defectosPorParte'] = $defectos_finales;
-    } else {
-        $final_report_data['defectos'] = $defectos_finales;
     }
 
     $response['reporte'] = $final_report_data;
