@@ -280,9 +280,7 @@ $conex->close();
 
         btnDescargarPdf.addEventListener('click', () => {
             Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-            const elementoReporte = document.getElementById('contenido-reporte');
-
-            html2canvas(elementoReporte, { scale: 2, useCORS: true }).then(canvas => {
+            html2canvas(document.getElementById('contenido-reporte'), { scale: 2, useCORS: true }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                 const imgData = canvas.toDataURL('image/png');
@@ -310,6 +308,7 @@ $conex->close();
         function renderizarReporte(data) {
             const isVarios = strtolower(data.info.numeroParte) === 'varios';
 
+            // --- SECCIÓN DE INFORMACIÓN GENERAL ---
             let infoHtml = `
             <p><strong>No. de Parte:</strong> ${data.info.numeroParte}</p>
             <p><strong>Responsable:</strong> ${data.info.responsable}</p>
@@ -326,6 +325,7 @@ $conex->close();
             `;
             }
 
+            // --- SECCIÓN DE DESGLOSE DIARIO Y HORA X HORA ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 desgloseHtml = `<h4><i class="fa-solid fa-calendar-day"></i> Desglose Hora por Hora</h4>`;
@@ -359,6 +359,7 @@ $conex->close();
                 });
             }
 
+            // --- SECCIÓN DE DETALLE DE DEFECTOS ---
             let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Resumen de Defectos del Periodo</h4>`;
             if (isVarios) {
                 if (data.defectosPorParte && data.defectosPorParte.length > 0) {
@@ -381,6 +382,7 @@ $conex->close();
                 defectosHtml += `</tbody></table>`;
             }
 
+            // --- NUEVO: SECCIÓN DE GRÁFICAS ---
             let dashboardHtml = `
             <h4><i class="fa-solid fa-chart-line"></i> Dashboards Visuales</h4>
             <div class="charts-container">
@@ -393,7 +395,7 @@ $conex->close();
                     <canvas id="weeklyRejectsChart"></canvas>
                 </div>
                 <div class="chart-box">
-                    <h5>% Piezas Rechazadas</h5>
+                    <h5>Aceptadas vs. Rechazadas</h5>
                     <canvas id="rejectionRateChart"></canvas>
                 </div>
                 <div class="chart-box">
@@ -403,6 +405,7 @@ $conex->close();
             </div>
         `;
 
+            // --- CONSTRUCCIÓN DEL HTML FINAL ---
             let html = `
             <div class="report-title">${data.titulo}</div>
             <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
@@ -471,16 +474,26 @@ $conex->close();
                 });
             }
 
-            // --- REJECTION RATE DOUGHNUT CHART ---
+            // --- REJECTION RATE BAR CHART (HORIZONTAL) ---
             const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
             if (resumen && resumen.inspeccionadas > 0) {
                 const rechazoTotal = resumen.rechazadas;
                 const aceptadoTotal = resumen.inspeccionadas - rechazoTotal;
-                const porcentajeRechazo = ((rechazoTotal / resumen.inspeccionadas) * 100).toFixed(1);
                 rejectionRateChartInstance = new Chart(rejectionCtx, {
-                    type: 'doughnut',
-                    data: { labels: ['Rechazadas', 'Aceptadas'], datasets: [{ data: [rechazoTotal, aceptadoTotal], backgroundColor: ['#a83232', '#28a745'] }] },
-                    options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: `${porcentajeRechazo}% Rechazadas` } } }
+                    type: 'bar',
+                    data: {
+                        labels: [''],
+                        datasets: [
+                            { label: 'Rechazadas', data: [rechazoTotal], backgroundColor: '#a83232' },
+                            { label: 'Aceptadas', data: [aceptadoTotal], backgroundColor: '#28a745' }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        scales: { x: { stacked: true }, y: { stacked: true } },
+                        plugins: { legend: { position: 'top' } }
+                    }
                 });
             }
 
