@@ -161,6 +161,11 @@ $conex->close();
         #contenido-reporte .part-breakdown li {
             font-size: 12px;
         }
+
+        /* Sugerencia para evitar cortes en el PDF */
+        .chart-box, .info-section, .summary-table, h4, h5, table {
+            page-break-inside: avoid;
+        }
     </style>
 </head>
 <body>
@@ -280,26 +285,40 @@ $conex->close();
 
         btnDescargarPdf.addEventListener('click', () => {
             Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-            html2canvas(document.getElementById('contenido-reporte'), { scale: 2, useCORS: true }).then(canvas => {
+            const elementoReporte = document.getElementById('contenido-reporte');
+
+            html2canvas(elementoReporte, { scale: 2, useCORS: true }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
                 const imgData = canvas.toDataURL('image/png');
                 const imgProps = pdf.getImageProperties(imgData);
+
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
-                let ratio = imgProps.height / imgProps.width;
-                let imgWidth = pdfWidth - 20;
-                let imgHeight = imgWidth * ratio;
-                let heightLeft = imgHeight;
-                let position = 10;
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= (pdfHeight - 20);
+
+                const margin = 10;
+                const contentWidth = pdfWidth - (margin * 2);
+                const pageContentHeight = pdfHeight - (margin * 2);
+
+                // La altura total de la imagen en el PDF, manteniendo la proporción
+                const totalImgHeight = (imgProps.height * contentWidth) / imgProps.width;
+
+                let heightLeft = totalImgHeight;
+                let position = 0;
+
+                // Añade la primera página
+                pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, totalImgHeight);
+                heightLeft -= pageContentHeight;
+
+                // Añade páginas subsecuentes si es necesario
                 while (heightLeft > 0) {
-                    position = heightLeft - imgHeight + 10;
+                    position -= pageContentHeight; // Mueve la imagen "hacia arriba" en cada nueva página
                     pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= (pdfHeight - 20);
+                    pdf.addImage(imgData, 'PNG', margin, position + margin, contentWidth, totalImgHeight);
+                    heightLeft -= pageContentHeight;
                 }
+
                 pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
                 Swal.close();
             });
