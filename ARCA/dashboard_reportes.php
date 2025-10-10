@@ -283,49 +283,41 @@ $conex->close();
             fetchReportData(url);
         });
 
-        btnDescargarPdf.addEventListener('click', () => {
+        btnDescargarPdf.addEventListener('click', async () => {
             Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const elementoReporte = document.getElementById('contenido-reporte');
 
             // --- INICIO DE LA LÓGICA CORREGIDA ---
-            html2canvas(elementoReporte, {
-                scale: 2,
-                useCORS: true,
-            }).then(canvas => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const sections = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const margin = 10;
+            const contentWidth = pdfWidth - (margin * 2);
+            const pageContentHeight = pdfHeight - (margin * 2);
+            let yPosition = margin;
+
+            for (const section of sections) {
+                const canvas = await html2canvas(section, { scale: 2, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
                 const imgProps = pdf.getImageProperties(imgData);
+                const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                const margin = 10;
-
-                const contentWidth = pdfWidth - (margin * 2);
-                const pageContentHeight = pdfHeight - (margin * 2);
-
-                const totalImgHeightInPDF = (imgProps.height * contentWidth) / imgProps.width;
-
-                let heightLeft = totalImgHeightInPDF;
-                let position = 0;
-
-                // Añadir la primera página
-                pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, totalImgHeightInPDF);
-                heightLeft -= pageContentHeight;
-
-                // Añadir páginas subsecuentes si es necesario
-                while (heightLeft > 0) {
-                    position -= pageContentHeight;
+                if (yPosition + imgHeight > pdfHeight - margin) {
                     pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', margin, position + margin, contentWidth, totalImgHeightInPDF);
-                    heightLeft -= pageContentHeight;
+                    yPosition = margin;
                 }
 
-                pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
-                Swal.close();
-            });
+                pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
+                yPosition += imgHeight + 2; // Espacio pequeño entre secciones
+            }
             // --- FIN DE LA LÓGICA CORREGIDA ---
+
+            pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
+            Swal.close();
         });
 
         function renderizarReporte(data) {
@@ -351,7 +343,7 @@ $conex->close();
             // --- SECCIÓN DE DESGLOSE DIARIO Y HORA X HORA ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
-                desgloseHtml = `<h4><i class="fa-solid fa-calendar-day"></i> Desglose Hora por Hora</h4>`;
+                desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> Desglose Hora por Hora</h4>`;
                 data.desgloseDiario.forEach(dia => {
                     const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                     desgloseHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
@@ -380,10 +372,11 @@ $conex->close();
                         desgloseHtml += `</tbody></table>`;
                     }
                 });
+                desgloseHtml += `</div>`;
             }
 
             // --- SECCIÓN DE DETALLE DE DEFECTOS ---
-            let defectosHtml = `<h4><i class="fa-solid fa-magnifying-glass"></i> Resumen de Defectos del Periodo</h4>`;
+            let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> Resumen de Defectos del Periodo</h4>`;
             if (isVarios) {
                 if (data.defectosPorParte && data.defectosPorParte.length > 0) {
                     data.defectosPorParte.forEach(grupo => {
@@ -404,26 +397,29 @@ $conex->close();
                 } else { defectosHtml += `<tr><td colspan="3" style="text-align:center;">No se encontraron defectos en este periodo.</td></tr>`; }
                 defectosHtml += `</tbody></table>`;
             }
+            defectosHtml += `</div>`;
 
             // --- NUEVO: SECCIÓN DE GRÁFICAS ---
             let dashboardHtml = `
-            <h4><i class="fa-solid fa-chart-line"></i> Dashboards Visuales</h4>
-            <div class="charts-container">
-                <div class="chart-box">
-                    <h5>Pareto de Defectos (Top 5)</h5>
-                    <canvas id="paretoChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h5>Rechazadas por Semana</h5>
-                    <canvas id="weeklyRejectsChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h5>Aceptadas vs. Rechazadas</h5>
-                    <canvas id="rejectionRateChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h5>Progreso Diario de Inspección</h5>
-                    <canvas id="dailyProgressChart"></canvas>
+            <div class="pdf-section">
+                <h4><i class="fa-solid fa-chart-line"></i> Dashboards Visuales</h4>
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h5>Pareto de Defectos (Top 5)</h5>
+                        <canvas id="paretoChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h5>Rechazadas por Semana</h5>
+                        <canvas id="weeklyRejectsChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h5>Aceptadas vs. Rechazadas</h5>
+                        <canvas id="rejectionRateChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h5>Progreso Diario de Inspección</h5>
+                        <canvas id="dailyProgressChart"></canvas>
+                    </div>
                 </div>
             </div>
         `;
@@ -432,18 +428,22 @@ $conex->close();
             let html = `
             <div class="report-title">${data.titulo}</div>
             <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
-            <h4><i class="fa-solid fa-circle-info"></i> Información General</h4>
-            <div class="info-section">${infoHtml}</div>
-            <h4><i class="fa-solid fa-chart-simple"></i> Resumen General del Periodo</h4>
-            <table class="summary-table">
-                <tbody>
-                    <tr><td>Piezas Inspeccionadas</td><td>${data.resumen.inspeccionadas}</td></tr>
-                    <tr><td>Piezas Aceptadas</td><td>${data.resumen.aceptadas}</td></tr>
-                    <tr><td>Piezas Rechazadas</td><td>${data.resumen.rechazadas}</td></tr>
-                    <tr><td>Piezas Retrabajadas</td><td>${data.resumen.retrabajadas}</td></tr>
-                    <tr><td><strong>Tiempo Total de Inspección:</strong></td><td><strong>${data.resumen.tiempoTotal}</strong></td></tr>
-                </tbody>
-            </table>
+            <div class="pdf-section">
+                <h4><i class="fa-solid fa-circle-info"></i> Información General</h4>
+                <div class="info-section">${infoHtml}</div>
+            </div>
+            <div class="pdf-section">
+                <h4><i class="fa-solid fa-chart-simple"></i> Resumen General del Periodo</h4>
+                <table class="summary-table">
+                    <tbody>
+                        <tr><td>Piezas Inspeccionadas</td><td>${data.resumen.inspeccionadas}</td></tr>
+                        <tr><td>Piezas Aceptadas</td><td>${data.resumen.aceptadas}</td></tr>
+                        <tr><td>Piezas Rechazadas</td><td>${data.resumen.rechazadas}</td></tr>
+                        <tr><td>Piezas Retrabajadas</td><td>${data.resumen.retrabajadas}</td></tr>
+                        <tr><td><strong>Tiempo Total de Inspección:</strong></td><td><strong>${data.resumen.tiempoTotal}</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
             ${desgloseHtml}
             ${defectosHtml}
             ${dashboardHtml}
