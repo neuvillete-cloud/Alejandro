@@ -302,12 +302,9 @@ $conex->close();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
                 const margin = 10;
 
-                // Ancho del contenido en el PDF (ancho de página menos márgenes)
                 const contentWidth = pdfWidth - (margin * 2);
-                // Altura de la página usable (alto de página menos márgenes)
                 const pageContentHeight = pdfHeight - (margin * 2);
 
-                // Altura total de la imagen escalada para que quepa en el ancho del contenido
                 const totalImgHeightInPDF = (imgProps.height * contentWidth) / imgProps.width;
 
                 let heightLeft = totalImgHeightInPDF;
@@ -319,9 +316,8 @@ $conex->close();
 
                 // Añadir páginas subsecuentes si es necesario
                 while (heightLeft > 0) {
-                    position -= pageContentHeight; // Mueve la "ventana de visión" de la imagen hacia abajo
+                    position -= pageContentHeight;
                     pdf.addPage();
-                    // Dibuja la misma imagen grande, pero la desplaza hacia arriba (posición negativa)
                     pdf.addImage(imgData, 'PNG', margin, position + margin, contentWidth, totalImgHeightInPDF);
                     heightLeft -= pageContentHeight;
                 }
