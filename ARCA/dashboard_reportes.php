@@ -287,11 +287,10 @@ $conex->close();
             Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
             const elementoReporte = document.getElementById('contenido-reporte');
 
+            // --- INICIO DE LA LÓGICA CORREGIDA ---
             html2canvas(elementoReporte, {
                 scale: 2,
                 useCORS: true,
-                windowWidth: elementoReporte.scrollWidth,
-                windowHeight: elementoReporte.scrollHeight
             }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -301,15 +300,14 @@ $conex->close();
 
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
-
-                // Usar márgenes para el contenido
                 const margin = 10;
+
+                // Ancho del contenido en el PDF (ancho de página menos márgenes)
                 const contentWidth = pdfWidth - (margin * 2);
-                const contentHeight = pdfHeight - (margin * 2);
+                // Altura de la página usable (alto de página menos márgenes)
+                const pageContentHeight = pdfHeight - (margin * 2);
 
-                const imgRatio = imgProps.width / imgProps.height;
-                const pageRatio = contentWidth / contentHeight;
-
+                // Altura total de la imagen escalada para que quepa en el ancho del contenido
                 const totalImgHeightInPDF = (imgProps.height * contentWidth) / imgProps.width;
 
                 let heightLeft = totalImgHeightInPDF;
@@ -317,19 +315,21 @@ $conex->close();
 
                 // Añadir la primera página
                 pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, totalImgHeightInPDF);
-                heightLeft -= contentHeight;
+                heightLeft -= pageContentHeight;
 
                 // Añadir páginas subsecuentes si es necesario
                 while (heightLeft > 0) {
-                    position -= contentHeight;
+                    position -= pageContentHeight; // Mueve la "ventana de visión" de la imagen hacia abajo
                     pdf.addPage();
+                    // Dibuja la misma imagen grande, pero la desplaza hacia arriba (posición negativa)
                     pdf.addImage(imgData, 'PNG', margin, position + margin, contentWidth, totalImgHeightInPDF);
-                    heightLeft -= contentHeight;
+                    heightLeft -= pageContentHeight;
                 }
 
                 pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
                 Swal.close();
             });
+            // --- FIN DE LA LÓGICA CORREGIDA ---
         });
 
         function renderizarReporte(data) {
