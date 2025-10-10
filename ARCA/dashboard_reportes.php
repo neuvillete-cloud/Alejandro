@@ -287,7 +287,7 @@ $conex->close();
             Swal.fire({ title: 'Generando PDF', text: 'Por favor, espera un momento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
             const elementoReporte = document.getElementById('contenido-reporte');
 
-            html2canvas(elementoReporte, { scale: 2, useCORS: true }).then(canvas => {
+            html2canvas(elementoReporte, { scale: 2, useCORS: true, windowWidth: elementoReporte.scrollWidth, windowHeight: elementoReporte.scrollHeight }).then(canvas => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
