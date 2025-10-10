@@ -552,13 +552,15 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 }
             });
 
+            // --- INICIO DE CAMBIO: Refactorización de la función de validación ---
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
+
                 const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
                 const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
                 const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-                // --- INICIO DE CAMBIO: Lógica de validación acumulativa ---
+                // --- Lógica de validación de cantidad total ---
                 let totalAcumulado;
                 if (editandoReporte) {
                     totalAcumulado = (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) + inspeccionadas;
@@ -566,62 +568,65 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     totalAcumulado = totalPiezasInspeccionadasAnteriormente + inspeccionadas;
                 }
 
-                if (totalAcumulado > cantidadTotalSolicitada) {
-                    let piezasRestantes = cantidadTotalSolicitada - (totalAcumulado - inspeccionadas);
-                    piezasRestantes = Math.max(0, piezasRestantes);
-                    piezasInspeccionadasInput.setCustomValidity(`El total acumulado (${totalAcumulado}) superaría el solicitado (${cantidadTotalSolicitada}). Máximo a inspeccionar en este reporte: ${piezasRestantes}`);
+                // La validación falla solo si el total acumulado es estrictamente mayor que el solicitado
+                const esCantidadInvalida = totalAcumulado > cantidadTotalSolicitada;
+
+                if (esCantidadInvalida) {
+                    const piezasDeOtrosReportes = editandoReporte ? (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) : totalPiezasInspeccionadasAnteriormente;
+                    const maximoPermitido = cantidadTotalSolicitada - piezasDeOtrosReportes;
+
+                    piezasInspeccionadasInput.setCustomValidity(`El total acumulado (${totalAcumulado}) supera el solicitado (${cantidadTotalSolicitada}). El máximo para este reporte es ${Math.max(0, maximoPermitido)}.`);
                     piezasInspeccionadasInput.reportValidity();
                 } else {
                     piezasInspeccionadasInput.setCustomValidity('');
                 }
-                // --- FIN DE CAMBIO ---
 
-
+                // --- Lógica de cálculo de piezas rechazadas y clasificación de defectos ---
                 const rechazadasBrutas = inspeccionadas - aceptadas;
                 piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
-                const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
 
                 if (retrabajadas > rechazadasBrutas) {
                     piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
                     piezasRetrabajadasInput.reportValidity();
-                    btnGuardarReporte.disabled = true;
-                    btnGuardarReporte.title = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
-                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
-                    piezasRechazadasRestantesSpan.textContent = Math.max(0, rechazadasDisponibles);
-                    return;
                 } else {
                     piezasRetrabajadasInput.setCustomValidity('');
                 }
 
+                const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
                 let sumDefectosClasificados = 0;
-                const defectoCantidadInputs = defectosOriginalesContainer.querySelectorAll('.defecto-cantidad');
-                defectoCantidadInputs.forEach(input => {
-                    sumDefectosClasificados += parseInt(input.value) || 0;
-                });
-                nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => {
-                    sumDefectosClasificados += parseInt(input.value) || 0;
-                });
+                defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
+                nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
 
                 const restantes = rechazadasDisponibles - sumDefectosClasificados;
                 piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
-                if (totalAcumulado > cantidadTotalSolicitada) {
-                    btnGuardarReporte.disabled = true;
-                    btnGuardarReporte.title = 'La cantidad inspeccionada excede el total solicitado acumulado.';
+                // --- Lógica para habilitar/deshabilitar el botón de guardar ---
+                let deshabilitar = false;
+                let titulo = '';
+
+                if (esCantidadInvalida) {
+                    deshabilitar = true;
+                    titulo = 'La cantidad inspeccionada excede el total solicitado acumulado.';
+                } else if (retrabajadas > rechazadasBrutas) {
+                    deshabilitar = true;
+                    titulo = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
                 } else if (restantes < 0) {
                     piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
-                    btnGuardarReporte.disabled = true;
-                    btnGuardarReporte.title = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
+                    deshabilitar = true;
+                    titulo = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
                 } else if (restantes > 0) {
                     piezasRechazadasRestantesSpan.style.color = 'orange';
-                    btnGuardarReporte.disabled = true;
-                    btnGuardarReporte.title = 'Aún faltan piezas por clasificar.';
+                    deshabilitar = true;
+                    titulo = 'Aún faltan piezas por clasificar.';
                 } else {
                     piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
-                    btnGuardarReporte.disabled = false;
-                    btnGuardarReporte.title = '';
                 }
+
+                btnGuardarReporte.disabled = deshabilitar;
+                btnGuardarReporte.title = titulo;
             }
+            // --- FIN DE CAMBIO ---
+
 
             if (piezasInspeccionadasInput) {
                 piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
