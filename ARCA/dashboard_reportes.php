@@ -292,31 +292,27 @@ $conex->close();
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
                 const imgData = canvas.toDataURL('image/png');
-                const imgProps = pdf.getImageProperties(imgData);
-
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
 
-                const margin = 10;
-                const contentWidth = pdfWidth - (margin * 2);
-                const pageContentHeight = pdfHeight - (margin * 2);
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                const ratio = canvasHeight / canvasWidth;
 
-                // La altura total de la imagen en el PDF, manteniendo la proporción
-                const totalImgHeight = (imgProps.height * contentWidth) / imgProps.width;
+                const imgWidth = pdfWidth;
+                const imgHeight = pdfWidth * ratio;
 
-                let heightLeft = totalImgHeight;
+                let heightLeft = imgHeight;
                 let position = 0;
 
-                // Añade la primera página
-                pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, totalImgHeight);
-                heightLeft -= pageContentHeight;
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
 
-                // Añade páginas subsecuentes si es necesario
                 while (heightLeft > 0) {
-                    position -= pageContentHeight; // Mueve la imagen "hacia arriba" en cada nueva página
+                    position -= pdfHeight;
                     pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', margin, position + margin, contentWidth, totalImgHeight);
-                    heightLeft -= pageContentHeight;
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
                 }
 
                 pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
