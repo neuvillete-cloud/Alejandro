@@ -302,17 +302,20 @@ $conex->close();
                 const imgWidth = pdfWidth;
                 const imgHeight = pdfWidth * ratio;
 
+                const bottomMargin = 10;
+                const pageUsableHeight = pdfHeight - bottomMargin;
+
                 let heightLeft = imgHeight;
                 let position = 0;
 
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
+                heightLeft -= pageUsableHeight;
 
                 while (heightLeft > 0) {
                     position -= pdfHeight;
                     pdf.addPage();
                     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pdfHeight;
+                    heightLeft -= pageUsableHeight;
                 }
 
                 pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
