@@ -262,127 +262,128 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         <?php if ($mostrarFormularioPrincipal): ?>
 
             <?php
-            // --- INICIO DE CAMBIO: Lógica para mostrar el formulario o el mensaje de completado ---
-            if ($totalPiezasInspeccionadasYa >= $cantidadSolicitada && $cantidadSolicitada > 0):
-                ?>
-                <div class='notification-box info' style='margin-top: 20px;'>
-                    <i class='fa-solid fa-circle-check'></i>
-                    <strong>Inspección Completada:</strong> Ya se ha registrado la cantidad total de piezas a inspeccionar (<?php echo $totalPiezasInspeccionadasYa; ?> / <?php echo $cantidadSolicitada; ?>).
-                    <br>Ya no se pueden crear nuevos reportes de sección. Por favor, proceda a finalizar la contención.
-                </div>
-            <?php else: ?>
-                <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                    <input type="hidden" name="idReporte" id="idReporte" value="">
-                    <fieldset>
-                        <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
+            // --- INICIO DE CAMBIO: Lógica para mostrar/ocultar el formulario pero permitir edición ---
+            $formStyle = '';
+            if ($totalPiezasInspeccionadasYa >= $cantidadSolicitada && $cantidadSolicitada > 0) {
+                $formStyle = 'style="display: none;"';
+                echo "<div id='mensajeInspeccionCompletada' class='notification-box info' style='margin-top: 20px;'>
+                        <i class='fa-solid fa-circle-check'></i>
+                        <strong>Inspección Completada:</strong> Ya se ha registrado la cantidad total de piezas a inspeccionar ({$totalPiezasInspeccionadasYa} / {$cantidadSolicitada}).
+                        <br>No se pueden crear nuevos reportes, pero puede <strong>editar o eliminar</strong> registros existentes si es necesario.
+                      </div>";
+            }
+            ?>
+            <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data" <?php echo $formStyle; ?>>
+                <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
+                <input type="hidden" name="idReporte" id="idReporte" value="">
+                <fieldset>
+                    <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
 
-                        <?php if ($isVariosPartes): ?>
-                            <div id="desglose-partes-container">
-                                <label>Desglose de Piezas por No. de Parte</label>
-                                <div id="partes-inspeccionadas-container">
-                                    <!-- Las filas se añadirán aquí dinámicamente -->
-                                </div>
-                                <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> Añadir No. de Parte</button>
+                    <?php if ($isVariosPartes): ?>
+                        <div id="desglose-partes-container">
+                            <label>Desglose de Piezas por No. de Parte</label>
+                            <div id="partes-inspeccionadas-container">
+                                <!-- Las filas se añadirán aquí dinámicamente -->
                             </div>
-                        <?php endif; ?>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Total de Piezas Inspeccionadas</label>
-                                <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required <?php if($isVariosPartes) echo 'readonly style="background-color: #e9ecef;"'; ?>>
-                            </div>
-                            <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
-                            <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
-                            <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
+                            <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> Añadir No. de Parte</button>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Nombre del Inspector</label><input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required></div>
-                            <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
-                        </div>
+                    <?php endif; ?>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Hora de Inicio</label>
-                                <input type="time" name="horaInicio" id="horaInicio" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Hora de Fin (1 hora)</label>
-                                <input type="time" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
-                            </div>
-                        </div>
-                        <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
-
-                    </fieldset>
-
-                    <fieldset><legend><i class="fa-solid fa-clipboard-check"></i> Clasificación de Defectos Originales</legend>
-                        <div class="original-defect-list">
-                            <p class="piezas-rechazadas-info">Piezas rechazadas disponibles para clasificar: <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
-                            <?php if ($defectos_originales_formulario->num_rows > 0): ?>
-                                <?php mysqli_data_seek($defectos_originales_formulario, 0); while($defecto = $defectos_originales_formulario->fetch_assoc()): ?>
-                                    <div class="form-group" data-id-defecto-original="<?php echo $defecto['IdDefecto']; ?>">
-                                        <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
-                                        <div class="defect-entries-container">
-                                            <div class="form-row defect-entry-row">
-                                                <div class="form-group">
-                                                    <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
-                                                </div>
-                                                <?php if ($isVariosPartes): ?>
-                                                    <div class="form-group">
-                                                        <input type="text" class="defecto-parte" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][parte]" placeholder="No. de Parte..." required>
-                                                    </div>
-                                                <?php endif; ?>
-                                                <div class="form-group">
-                                                    <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
-                                                </div>
-                                                <!-- Placeholder for alignment -->
-                                                <div style="width: 42px; flex-shrink: 0;"></div>
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> Añadir Lote</button>
-                                    </div>
-                                <?php endwhile; ?>
-                            <?php else: ?>
-                                <p>No hay defectos originales registrados en esta solicitud.</p>
-                            <?php endif; ?>
-                        </div>
-                    </fieldset>
-
-                    <fieldset><legend><i class="fa-solid fa-magnifying-glass-plus"></i> Nuevos Defectos Encontrados (Opcional)</legend>
-                        <div id="nuevos-defectos-container"></div>
-                        <button type="button" id="btn-add-nuevo-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Nuevo Defecto</button>
-                    </fieldset>
-
-                    <fieldset><legend><i class="fa-solid fa-stopwatch"></i> Tiempos y Comentarios de la Sesión</legend>
-                        <!-- CAMPO AUTOMÁTICO -->
-                        <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="1 hora" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
-
+                    <div class="form-row">
                         <div class="form-group">
-                            <label>¿Hubo Tiempo Muerto?</label>
-                            <button type="button" id="toggleTiempoMuertoBtn" class="btn-secondary" style="width: auto; padding: 10px 15px;">No <i class="fa-solid fa-toggle-off"></i></button>
+                            <label>Total de Piezas Inspeccionadas</label>
+                            <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required <?php if($isVariosPartes) echo 'readonly style="background-color: #e9ecef;"'; ?>>
                         </div>
+                        <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
+                        <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
+                        <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Nombre del Inspector</label><input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required></div>
+                        <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
+                    </div>
 
-                        <div id="tiempoMuertoSection" class="hidden-section">
-                            <div class="form-group">
-                                <label>Razón de Tiempo Muerto</label>
-                                <div class="select-with-button">
-                                    <select name="idTiempoMuerto" id="idTiempoMuerto">
-                                        <option value="">Seleccione una razón</option>
-                                        <?php mysqli_data_seek($razones_tiempo_muerto, 0); while($razon = $razones_tiempo_muerto->fetch_assoc()): ?>
-                                            <option value="<?php echo $razon['IdTiempoMuerto']; ?>"><?php echo htmlspecialchars($razon['Razon']); ?></option>
-                                        <?php endwhile; ?>
-                                    </select>
-                                    <?php if ($esSuperUsuario): ?><button type="button" class="btn-add" data-tipo="tiempomuerto" title="Añadir Razón">+</button><?php endif; ?>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hora de Inicio</label>
+                            <input type="time" name="horaInicio" id="horaInicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora de Fin (1 hora)</label>
+                            <input type="time" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                        </div>
+                    </div>
+                    <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
+
+                </fieldset>
+
+                <fieldset><legend><i class="fa-solid fa-clipboard-check"></i> Clasificación de Defectos Originales</legend>
+                    <div class="original-defect-list">
+                        <p class="piezas-rechazadas-info">Piezas rechazadas disponibles para clasificar: <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
+                        <?php if ($defectos_originales_formulario->num_rows > 0): ?>
+                            <?php mysqli_data_seek($defectos_originales_formulario, 0); while($defecto = $defectos_originales_formulario->fetch_assoc()): ?>
+                                <div class="form-group" data-id-defecto-original="<?php echo $defecto['IdDefecto']; ?>">
+                                    <label><?php echo htmlspecialchars($defecto['NombreDefecto']); ?></label>
+                                    <div class="defect-entries-container">
+                                        <div class="form-row defect-entry-row">
+                                            <div class="form-group">
+                                                <input type="number" class="defecto-cantidad" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
+                                            </div>
+                                            <?php if ($isVariosPartes): ?>
+                                                <div class="form-group">
+                                                    <input type="text" class="defecto-parte" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][parte]" placeholder="No. de Parte..." required>
+                                                </div>
+                                            <?php endif; ?>
+                                            <div class="form-group">
+                                                <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
+                                            </div>
+                                            <!-- Placeholder for alignment -->
+                                            <div style="width: 42px; flex-shrink: 0;"></div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> Añadir Lote</button>
                                 </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <p>No hay defectos originales registrados en esta solicitud.</p>
+                        <?php endif; ?>
+                    </div>
+                </fieldset>
+
+                <fieldset><legend><i class="fa-solid fa-magnifying-glass-plus"></i> Nuevos Defectos Encontrados (Opcional)</legend>
+                    <div id="nuevos-defectos-container"></div>
+                    <button type="button" id="btn-add-nuevo-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Nuevo Defecto</button>
+                </fieldset>
+
+                <fieldset><legend><i class="fa-solid fa-stopwatch"></i> Tiempos y Comentarios de la Sesión</legend>
+                    <!-- CAMPO AUTOMÁTICO -->
+                    <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="1 hora" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
+
+                    <div class="form-group">
+                        <label>¿Hubo Tiempo Muerto?</label>
+                        <button type="button" id="toggleTiempoMuertoBtn" class="btn-secondary" style="width: auto; padding: 10px 15px;">No <i class="fa-solid fa-toggle-off"></i></button>
+                    </div>
+
+                    <div id="tiempoMuertoSection" class="hidden-section">
+                        <div class="form-group">
+                            <label>Razón de Tiempo Muerto</label>
+                            <div class="select-with-button">
+                                <select name="idTiempoMuerto" id="idTiempoMuerto">
+                                    <option value="">Seleccione una razón</option>
+                                    <?php mysqli_data_seek($razones_tiempo_muerto, 0); while($razon = $razones_tiempo_muerto->fetch_assoc()): ?>
+                                        <option value="<?php echo $razon['IdTiempoMuerto']; ?>"><?php echo htmlspecialchars($razon['Razon']); ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                                <?php if ($esSuperUsuario): ?><button type="button" class="btn-add" data-tipo="tiempomuerto" title="Añadir Razón">+</button><?php endif; ?>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="form-group"><label>Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
-                    </fieldset>
+                    <div class="form-group"><label>Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
+                </fieldset>
 
-                    <div class="form-actions"><button type="submit" class="btn-primary" id="btnGuardarReporte">Guardar Reporte de Sesión</button></div>
-                </form>
-            <?php endif; // --- FIN DE CAMBIO: Fin del if/else para el formulario --- ?>
+                <div class="form-actions"><button type="submit" class="btn-primary" id="btnGuardarReporte">Guardar Reporte de Sesión</button></div>
+            </form>
 
 
             <?php if (empty($solicitud['TiempoTotalInspeccion'])): ?>
@@ -840,6 +841,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
 
             async function cargarReporteParaEdicion(idReporte) {
+                // --- INICIO DE CAMBIO: Mostrar formulario y ocultar mensaje ---
+                const reporteForm = document.getElementById('reporteForm');
+                const mensajeCompletado = document.getElementById('mensajeInspeccionCompletada');
+                if (reporteForm) reporteForm.style.display = 'block';
+                if (mensajeCompletado) mensajeCompletado.style.display = 'none';
+                // --- FIN DE CAMBIO ---
+
                 Swal.fire({ title: 'Cargando Reporte...', text: 'Obteniendo datos para edición.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                 try {
                     const response = await fetch(`dao/obtener_reporte_para_edicion.php?idReporte=${idReporte}`);
@@ -856,7 +864,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         // --- FIN DE CAMBIO ---
 
 
-                        // --- RELLENAR CAMPOS PRINCIPALES ---
+                        // --- RELLENAR CAMPOS PRINCIPAIS ---
                         idReporteInput.value = reporte.IdReporte;
                         piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
                         piezasAceptadasInput.value = reporte.PiezasAceptadas;
@@ -970,8 +978,24 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         // --- FINALIZAR ---
                         actualizarContadores();
                         editandoReporte = true;
+                        const btnGuardarReporte = document.getElementById('btnGuardarReporte');
                         btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
                         reporteForm.action = 'dao/actualizar_reporte.php';
+
+                        // --- INICIO DE CAMBIO: Añadir botón de cancelar ---
+                        const formActions = btnGuardarReporte.parentElement;
+                        let cancelButton = formActions.querySelector('.btn-cancel-edit');
+                        if (!cancelButton) {
+                            cancelButton = document.createElement('button');
+                            cancelButton.type = 'button';
+                            cancelButton.className = 'btn-secondary btn-cancel-edit';
+                            cancelButton.textContent = 'Cancelar Edición';
+                            cancelButton.style.marginLeft = '10px';
+                            cancelButton.onclick = () => window.location.reload();
+                            formActions.appendChild(cancelButton);
+                        }
+                        // --- FIN DE CAMBIO ---
+
                         Swal.close();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
 
