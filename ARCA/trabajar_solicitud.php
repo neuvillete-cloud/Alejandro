@@ -262,15 +262,18 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         <?php if ($mostrarFormularioPrincipal): ?>
 
             <?php
-            // --- INICIO DE CAMBIO: Lógica para mostrar/ocultar el formulario pero permitir edición ---
             $formStyle = '';
             if ($totalPiezasInspeccionadasYa >= $cantidadSolicitada && $cantidadSolicitada > 0) {
                 $formStyle = 'style="display: none;"';
-                echo "<div id='mensajeInspeccionCompletada' class='notification-box info' style='margin-top: 20px;'>
-                        <i class='fa-solid fa-circle-check'></i>
-                        <strong>Inspección Completada:</strong> Ya se ha registrado la cantidad total de piezas a inspeccionar ({$totalPiezasInspeccionadasYa} / {$cantidadSolicitada}).
-                        <br>No se pueden crear nuevos reportes, pero puede <strong>editar o eliminar</strong> registros existentes si es necesario.
+                // --- INICIO DE CAMBIO: Se ha añadido display:flex y otros estilos para alinear el contenido ---
+                echo "<div id='mensajeInspeccionCompletada' class='notification-box info' style='margin-top: 20px; display: flex; align-items: flex-start; gap: 12px;'>
+                        <i class='fa-solid fa-circle-check' style='font-size: 1.2em; margin-top: 2px;'></i>
+                        <div>
+                            <strong>Inspección Completada:</strong> Ya se ha registrado la cantidad total de piezas a inspeccionar ({$totalPiezasInspeccionadasYa} / {$cantidadSolicitada}).
+                            <br>No se pueden crear nuevos reportes, pero puede <strong>editar o eliminar</strong> registros existentes si es necesario.
+                        </div>
                       </div>";
+                // --- FIN DE CAMBIO ---
             }
             ?>
             <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data" <?php echo $formStyle; ?>>
