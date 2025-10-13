@@ -390,8 +390,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
 
             <?php if (empty($solicitud['TiempoTotalInspeccion'])): ?>
-                <!-- FORMULARIO DE FINALIZACIÓN AUTOMÁTICO -->
-                <form id="tiempoTotalForm" action="dao/guardar_tiempo_total.php" method="POST" style="margin-top: 40px;">
+                <!-- --- INICIO DE CAMBIO: Se cambió el action del formulario --- -->
+                <form id="tiempoTotalForm" action="dao/finalizar_reporte.php" method="POST" style="margin-top: 40px;">
+                    <!-- --- FIN DE CAMBIO --- -->
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset><legend><i class="fa-solid fa-hourglass-end"></i> Finalizar Contención (Tiempo Total)</legend>
                         <p class="info-text">El tiempo total de las sesiones ya registradas es de <strong><?php echo $totalHorasRegistradas; ?> hora(s)</strong>. Al finalizar, este será el valor guardado.</p>
@@ -549,19 +550,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 }
             });
 
-            // --- INICIO DE CAMBIO: Lógica de validación corregida y reestructurada ---
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
 
-                // 1. Obtener todos los valores numéricos del formulario
                 const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
                 const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
                 const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-                // 2. Validar la cantidad total inspeccionada
-                // Calcula la suma de piezas de todos los reportes EXCEPTO el que se está editando.
                 const piezasDeOtrosReportes = editandoReporte ? (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) : totalPiezasInspeccionadasAnteriormente;
-                // El máximo que se puede poner en este campo es el total solicitado menos lo que ya hay en otros reportes.
                 const maximoPermitidoParaEsteReporte = cantidadTotalSolicitada - piezasDeOtrosReportes;
                 const esCantidadInvalida = inspeccionadas > maximoPermitidoParaEsteReporte;
 
@@ -572,7 +568,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     piezasInspeccionadasInput.setCustomValidity('');
                 }
 
-                // 3. Validar piezas retrabajadas
                 const rechazadasBrutas = inspeccionadas - aceptadas;
                 piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
                 const esRetrabajoInvalido = retrabajadas > rechazadasBrutas;
@@ -584,7 +579,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     piezasRetrabajadasInput.setCustomValidity('');
                 }
 
-                // 4. Validar clasificación de defectos
                 const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
                 let sumDefectosClasificados = 0;
                 defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
@@ -601,7 +595,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
                 }
 
-                // 5. Determinar estado del botón de guardar combinando todas las validaciones
                 let deshabilitar = false;
                 let titulo = '';
 
@@ -619,7 +612,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 btnGuardarReporte.disabled = deshabilitar;
                 btnGuardarReporte.title = titulo;
             }
-            // --- FIN DE CAMBIO ---
 
 
             if (piezasInspeccionadasInput) {
@@ -795,14 +787,41 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
             });
 
+            // --- INICIO DE CAMBIO: Lógica para manejar la finalización ---
             document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const form = this;
-                const formData = new FormData(form);
+                const tiempoTotalForm = this;
+                const reporteForm = document.getElementById('reporteForm');
+                const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
+                let finalFormData;
 
-                Swal.fire({ title: 'Guardando Tiempo Total...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                // Si el campo de piezas inspeccionadas tiene un valor y el formulario es visible,
+                // significa que se está guardando y finalizando al mismo tiempo.
+                if (piezasInspeccionadasInput && piezasInspeccionadasInput.value && reporteForm.style.display !== 'none') {
+                    // Validar el formulario de reporte antes de enviarlo
+                    if (btnGuardarReporte.disabled) {
+                        Swal.fire('Error de Validación', 'El formulario de reporte de sesión tiene errores. Por favor, corríjalos antes de finalizar. Motivo: ' + btnGuardarReporte.title, 'error');
+                        return;
+                    }
+                    finalFormData = new FormData(reporteForm);
+                } else {
+                    finalFormData = new FormData(tiempoTotalForm);
+                }
 
-                fetch(form.action, { method: 'POST', body: formData })
+                // Asegurarse de que el tiempo total se envíe en ambos casos
+                const tiempoTotalInput = tiempoTotalForm.querySelector('[name="tiempoTotalInspeccion"]');
+                if (!finalFormData.has('tiempoTotalInspeccion')) {
+                    finalFormData.append('tiempoTotalInspeccion', tiempoTotalInput.value);
+                }
+                // Asegurarse de que el idSolicitud se envíe en ambos casos
+                if (!finalFormData.has('idSolicitud')) {
+                    const idSolicitudInput = tiempoTotalForm.querySelector('[name="idSolicitud"]');
+                    finalFormData.append('idSolicitud', idSolicitudInput.value);
+                }
+
+                Swal.fire({ title: 'Finalizando Contención...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+                fetch(tiempoTotalForm.action, { method: 'POST', body: finalFormData })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
@@ -811,16 +830,16 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             Swal.fire('Error', data.message, 'error');
                         }
                     })
-                    .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
+                    .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor para finalizar.', 'error'));
             });
+            // --- FIN DE CAMBIO ---
+
 
             async function cargarReporteParaEdicion(idReporte) {
-                // --- INICIO DE CAMBIO: Mostrar formulario y ocultar mensaje ---
                 const reporteForm = document.getElementById('reporteForm');
                 const mensajeCompletado = document.getElementById('mensajeInspeccionCompletada');
                 if (reporteForm) reporteForm.style.display = 'block';
                 if (mensajeCompletado) mensajeCompletado.style.display = 'none';
-                // --- FIN DE CAMBIO ---
 
                 Swal.fire({ title: 'Cargando Reporte...', text: 'Obteniendo datos para edición.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                 try {
