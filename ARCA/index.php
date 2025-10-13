@@ -1,3 +1,8 @@
+<?php
+// Incluye el script que verifica si hay una sesión activa
+include_once("dao/verificar_sesion.php");
+if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -82,6 +87,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            gap: 8px;
         }
         .hero {
             background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
@@ -105,6 +111,7 @@
         }
         .hero-buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 15px;
         }
         .cta-button {
@@ -119,6 +126,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
         .cta-button i { margin-right: 10px; }
         .cta-button:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
@@ -159,8 +168,8 @@
         </nav>
     </div>
     <div class="user-info">
-        <span>Bienvenido, [Nombre de Usuario]</span>
-        <button class="logout-btn">
+        <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
+        <button class="logout-btn" onclick="window.location.href='dao/logout.php'">
             Cerrar Sesión
             <i class="fa-solid fa-right-from-bracket"></i>
         </button>
@@ -180,6 +189,12 @@
                 <i class="fa-solid fa-list-check"></i>
                 Ver mis Solicitudes
             </a>
+            <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1): ?>
+                <a href="aprobar_metodos.php" class="cta-button secondary">
+                    <i class="fa-solid fa-check-double"></i>
+                    Aprobar Métodos
+                </a>
+            <?php endif; ?>
         </div>
     </section>
 
