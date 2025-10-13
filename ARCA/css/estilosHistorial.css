@@ -90,7 +90,7 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .status { padding: 5px 12px; border-radius: 15px; font-weight: 700; font-size: 12px; }
 .status.open { background-color: #fff3e0; color: #ff9800; }
 .status.review { background-color: #e3f2fd; color: #2196f3; }
-.status.closed { background-color: #e8f5e9; color: #4caf50; }
+
 
 /* --- 5. Componente: Modal de Detalles --- */
 .modal-overlay { position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
@@ -196,13 +196,13 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 }
 
 /* Estilo para "Cerrado" y "Finalizado" (verde) */
-.status.status-cerrada,
+.status.status-cerrado,
 .status.status-finalizado {
     color: #1b5e20;
     background-color: #e8f5e9;
     border-color: #c8e6c9;
 }
-.status.status-cerrada::before,
+.status.status-cerrado::before,
 .status.status-finalizado::before {
     background-color: #4caf50;
 }
