@@ -183,8 +183,31 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
 .status.status-en-revision { color: #0d47a1; background-color: #e3f2fd; border-color: #bbdefb; }
 .status.status-en-revision::before { background-color: #2196f3; }
 
-.status.status-cerrada { color: #1b5e20; background-color: #e8f5e9; border-color: #c8e6c9; }
-.status.status-cerrada::before { background-color: #4caf50; }
+/* --- INICIO DE CAMBIOS --- */
+
+/* Estilo para "En Proceso" (anaranjado para indicar actividad) */
+.status.status-en-proceso {
+    color: #c7790a;
+    background-color: #fff8e1;
+    border-color: #ffecb3;
+}
+.status.status-en-proceso::before {
+    background-color: #ffb300;
+}
+
+/* Estilo para "Cerrado" y "Finalizado" (verde) */
+.status.status-cerrada,
+.status.status-finalizado {
+    color: #1b5e20;
+    background-color: #e8f5e9;
+    border-color: #c8e6c9;
+}
+.status.status-cerrada::before,
+.status.status-finalizado::before {
+    background-color: #4caf50;
+}
+
+/* --- FIN DE CAMBIOS --- */
 
 /* Estilos para el estado vacío (cuando no hay resultados) */
 .no-results-cell {
