@@ -496,15 +496,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
     const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
     const cantidadTotalSolicitada = <?php echo intval($cantidadSolicitada); ?>;
-    // --- INICIO DE CAMBIO: Pasar el total ya inspeccionado a JS ---
     const totalPiezasInspeccionadasAnteriormente = <?php echo $totalPiezasInspeccionadasYa; ?>;
-    // --- FIN DE CAMBIO ---
     const isVariosPartes = <?php echo json_encode($isVariosPartes); ?>;
     let nuevoDefectoCounter = 0;
     let editandoReporte = false;
-    // --- INICIO DE CAMBIO: Variable para guardar valor original al editar ---
     let valorOriginalInspeccionadoAlEditar = 0;
-    // --- FIN DE CAMBIO ---
 
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -532,16 +528,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
             const comentariosTextarea = document.getElementById('comentarios');
 
-            // Contenedor para desglose de partes (caso "Varios")
             const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
 
-            // --- LÓGICA PARA EL SELECTOR DE HORA NATIVO ---
             horaInicioInput.addEventListener('change', function() {
                 if (this.value) {
                     const [hours, minutes] = this.value.split(':');
                     const startTime = new Date();
                     startTime.setHours(parseInt(hours), parseInt(minutes), 0);
-                    startTime.setHours(startTime.getHours() + 1); // Añadir una hora
+                    startTime.setHours(startTime.getHours() + 1);
 
                     const endHours = String(startTime.getHours()).padStart(2, '0');
                     const endMinutes = String(startTime.getMinutes()).padStart(2, '0');
@@ -552,74 +546,71 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 }
             });
 
-            // --- INICIO DE CAMBIO: Refactorización de la función de validación ---
+            // --- INICIO DE CAMBIO: Lógica de validación corregida y reestructurada ---
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
 
+                // 1. Obtener todos los valores numéricos del formulario
                 const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
                 const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
                 const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-                // --- Lógica de validación de cantidad total ---
-                let totalAcumulado;
-                if (editandoReporte) {
-                    totalAcumulado = (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) + inspeccionadas;
-                } else {
-                    totalAcumulado = totalPiezasInspeccionadasAnteriormente + inspeccionadas;
-                }
-
-                // La validación falla solo si el total acumulado es estrictamente mayor que el solicitado
-                const esCantidadInvalida = totalAcumulado > cantidadTotalSolicitada;
+                // 2. Validar la cantidad total inspeccionada
+                // Calcula la suma de piezas de todos los reportes EXCEPTO el que se está editando.
+                const piezasDeOtrosReportes = editandoReporte ? (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) : totalPiezasInspeccionadasAnteriormente;
+                // El máximo que se puede poner en este campo es el total solicitado menos lo que ya hay en otros reportes.
+                const maximoPermitidoParaEsteReporte = cantidadTotalSolicitada - piezasDeOtrosReportes;
+                const esCantidadInvalida = inspeccionadas > maximoPermitidoParaEsteReporte;
 
                 if (esCantidadInvalida) {
-                    const piezasDeOtrosReportes = editandoReporte ? (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) : totalPiezasInspeccionadasAnteriormente;
-                    const maximoPermitido = cantidadTotalSolicitada - piezasDeOtrosReportes;
-
-                    piezasInspeccionadasInput.setCustomValidity(`El total acumulado (${totalAcumulado}) supera el solicitado (${cantidadTotalSolicitada}). El máximo para este reporte es ${Math.max(0, maximoPermitido)}.`);
+                    piezasInspeccionadasInput.setCustomValidity(`La cantidad máxima para este reporte es ${Math.max(0, maximoPermitidoParaEsteReporte)} para no exceder el total de ${cantidadTotalSolicitada}.`);
                     piezasInspeccionadasInput.reportValidity();
                 } else {
                     piezasInspeccionadasInput.setCustomValidity('');
                 }
 
-                // --- Lógica de cálculo de piezas rechazadas y clasificación de defectos ---
+                // 3. Validar piezas retrabajadas
                 const rechazadasBrutas = inspeccionadas - aceptadas;
                 piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
+                const esRetrabajoInvalido = retrabajadas > rechazadasBrutas;
 
-                if (retrabajadas > rechazadasBrutas) {
+                if (esRetrabajoInvalido) {
                     piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
                     piezasRetrabajadasInput.reportValidity();
                 } else {
                     piezasRetrabajadasInput.setCustomValidity('');
                 }
 
+                // 4. Validar clasificación de defectos
                 const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
                 let sumDefectosClasificados = 0;
                 defectosOriginalesContainer.querySelectorAll('.defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
                 nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
-
                 const restantes = rechazadasDisponibles - sumDefectosClasificados;
                 piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
-                // --- Lógica para habilitar/deshabilitar el botón de guardar ---
+                const sonDefectosInvalidos = restantes !== 0;
+                if (restantes < 0) {
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+                } else if (restantes > 0) {
+                    piezasRechazadasRestantesSpan.style.color = 'orange';
+                } else {
+                    piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
+                }
+
+                // 5. Determinar estado del botón de guardar combinando todas las validaciones
                 let deshabilitar = false;
                 let titulo = '';
 
                 if (esCantidadInvalida) {
                     deshabilitar = true;
                     titulo = 'La cantidad inspeccionada excede el total solicitado acumulado.';
-                } else if (retrabajadas > rechazadasBrutas) {
+                } else if (esRetrabajoInvalido) {
                     deshabilitar = true;
                     titulo = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
-                } else if (restantes < 0) {
-                    piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
+                } else if (sonDefectosInvalidos) {
                     deshabilitar = true;
-                    titulo = 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
-                } else if (restantes > 0) {
-                    piezasRechazadasRestantesSpan.style.color = 'orange';
-                    deshabilitar = true;
-                    titulo = 'Aún faltan piezas por clasificar.';
-                } else {
-                    piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
+                    titulo = restantes > 0 ? 'Aún faltan piezas por clasificar.' : 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
                 }
 
                 btnGuardarReporte.disabled = deshabilitar;
@@ -787,31 +778,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 const form = this;
                 const formData = new FormData(form);
 
-                const inspeccionadas = parseInt(piezasInspeccionadasInput.value) || 0;
-                const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
-                const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
-                const rechazadasBrutas = inspeccionadas - aceptadas;
-
-                if (retrabajadas > rechazadasBrutas) {
-                    Swal.fire('Error de Validación', 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.', 'error');
-                    return;
-                }
-
-                // --- INICIO DE CAMBIO: Validación acumulativa en el envío del formulario ---
-                let totalAcumulado;
-                if (editandoReporte) {
-                    totalAcumulado = (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) + inspeccionadas;
-                } else {
-                    totalAcumulado = totalPiezasInspeccionadasAnteriormente + inspeccionadas;
-                }
-
-                if (totalAcumulado > cantidadTotalSolicitada) {
-                    Swal.fire('Error de Validación', `El total acumulado (${totalAcumulado}) superaría el solicitado (${cantidadTotalSolicitada}). Por favor, ajuste la cantidad inspeccionada.`, 'error');
-                    return;
-                }
-                // --- FIN DE CAMBIO ---
-
-
                 Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
                 fetch(form.action, { method: 'POST', body: formData })
@@ -864,12 +830,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         const nuevosDefectos = data.nuevosDefectos;
                         const desglosePartes = data.desglosePartes;
 
-                        // --- INICIO DE CAMBIO: Capturar valor original para cálculos ---
                         valorOriginalInspeccionadoAlEditar = parseInt(reporte.PiezasInspeccionadas, 10) || 0;
-                        // --- FIN DE CAMBIO ---
 
-
-                        // --- RELLENAR CAMPOS PRINCIPAIS ---
                         idReporteInput.value = reporte.IdReporte;
                         piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
                         piezasAceptadasInput.value = reporte.PiezasAceptadas;
@@ -877,12 +839,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         fechaInspeccionInput.value = reporte.FechaInspeccion;
                         comentariosTextarea.value = reporte.Comentarios || '';
 
-                        // --- RELLENAR HORAS ---
                         if (reporte.RangoHora) {
                             const convertTo24Hour = (timeStr) => {
                                 if (!timeStr) return '';
                                 let [time, modifier] = timeStr.trim().split(' ');
-                                if (!modifier) return timeStr; // Ya está en formato 24h
+                                if (!modifier) return timeStr;
                                 let [hours, minutes] = time.split(':');
                                 if (hours === '12') hours = '00';
                                 if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
@@ -896,7 +857,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             horaFinInput.value = '';
                         }
 
-                        // --- RELLENAR TIEMPO MUERTO ---
                         if (reporte.IdTiempoMuerto) {
                             toggleTiempoMuertoSection(true);
                             idTiempoMuertoSelect.value = reporte.IdTiempoMuerto;
@@ -904,24 +864,21 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             toggleTiempoMuertoSection(false);
                         }
 
-                        // --- RELLENAR DESGLOSE DE PARTES (SI APLICA) ---
                         if (isVariosPartes && desgloseContainer) {
-                            desgloseContainer.innerHTML = ''; // Limpiar
-                            parteCounter = 0; // Resetear contador global de filas de parte
+                            desgloseContainer.innerHTML = '';
+                            parteCounter = 0;
                             if (desglosePartes && desglosePartes.length > 0) {
                                 desglosePartes.forEach(parte => {
                                     addParteRow(parte.NumeroParte, parte.Cantidad);
                                 });
                             } else {
-                                addParteRow(); // Añadir una fila vacía si no hay datos
+                                addParteRow();
                             }
                         }
 
-                        // --- RELLENAR DEFECTOS ORIGINALES (LÓGICA CORREGIDA) ---
-                        // 1. Limpiar el formulario de defectos
                         defectosOriginalesContainer.querySelectorAll('.defect-entries-container').forEach(container => {
                             const rows = container.querySelectorAll('.defect-entry-row');
-                            for (let i = 1; i < rows.length; i++) rows[i].remove(); // Eliminar filas extra
+                            for (let i = 1; i < rows.length; i++) rows[i].remove();
                             const firstRow = rows[0];
                             if (firstRow) {
                                 firstRow.querySelectorAll('input').forEach(input => input.value = '');
@@ -929,7 +886,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             }
                         });
 
-                        // 2. Agrupar y rellenar los datos
                         if (defectosOriginales && defectosOriginales.length > 0) {
                             const defectosAgrupados = defectosOriginales.reduce((acc, def) => {
                                 acc[def.IdDefecto] = acc[def.IdDefecto] || [];
@@ -961,7 +917,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             }
                         }
 
-                        // --- RELLENAR NUEVOS DEFECTOS ---
                         nuevosDefectosContainer.innerHTML = '';
                         nuevoDefectoCounter = 0;
                         if (nuevosDefectos && nuevosDefectos.length > 0) {
@@ -980,14 +935,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             });
                         }
 
-                        // --- FINALIZAR ---
-                        actualizarContadores();
                         editandoReporte = true;
+                        actualizarContadores();
+
                         const btnGuardarReporte = document.getElementById('btnGuardarReporte');
                         btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
                         reporteForm.action = 'dao/actualizar_reporte.php';
 
-                        // --- INICIO DE CAMBIO: Añadir botón de cancelar ---
                         const formActions = btnGuardarReporte.parentElement;
                         let cancelButton = formActions.querySelector('.btn-cancel-edit');
                         if (!cancelButton) {
@@ -999,7 +953,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             cancelButton.onclick = () => window.location.reload();
                             formActions.appendChild(cancelButton);
                         }
-                        // --- FIN DE CAMBIO ---
 
                         Swal.close();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1092,7 +1045,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
             <?php endif; ?>
 
-            // --- LÓGICA PARA "VARIOS" NÚMEROS DE PARTE (CON FUNCIONES MEJORADAS PARA EDICIÓN) ---
             const addParteBtn = document.getElementById('btn-add-parte-inspeccionada');
 
             if(isVariosPartes && desgloseContainer && addParteBtn) {
@@ -1120,33 +1072,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         total += parseInt(input.value) || 0;
                     });
 
-                    // --- INICIO DE CAMBIO: Validación visual en el desglose de partes ---
-                    let totalAcumulado;
-                    if (editandoReporte) {
-                        totalAcumulado = (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditar) + total;
-                    } else {
-                        totalAcumulado = totalPiezasInspeccionadasAnteriormente + total;
-                    }
-
-                    if (totalAcumulado > cantidadTotalSolicitada) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'warning',
-                            title: 'Cantidad Acumulada Excedida',
-                            text: `El total de piezas (${totalAcumulado}) supera la cantidad solicitada (${cantidadTotalSolicitada}).`,
-                            showConfirmButton: false,
-                            timer: 4000,
-                            timerProgressBar: true
-                        });
-                    }
-                    // --- FIN DE CAMBIO ---
-
                     piezasInspeccionadasInput.value = total;
                     piezasInspeccionadasInput.dispatchEvent(new Event('input'));
                 }
 
-                addParteBtn.addEventListener('click', () => addParteRow()); // Sin argumentos para crear fila vacía
+                addParteBtn.addEventListener('click', () => addParteRow());
 
                 desgloseContainer.addEventListener('input', function(e) {
                     if (e.target.classList.contains('cantidad-parte-inspeccionada')) {
@@ -1162,7 +1092,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     }
                 });
 
-                addParteRow(); // Añadir la primera fila por defecto al cargar
+                addParteRow();
             }
         }
 
@@ -1230,7 +1160,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             input.addEventListener('change', updateFileNameLabel);
         });
 
-        // --- LÓGICA PARA MOSTRAR/OCULTAR VISOR DE PDF ---
         const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
         const pdfWrapper = document.getElementById('pdfViewerWrapper');
 
@@ -1251,18 +1180,16 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
         }
 
-        // --- LÓGICA PARA AÑADIR/QUITAR LOTES DE DEFECTOS ---
         const originalDefectList = document.querySelector('.original-defect-list');
 
         if (originalDefectList) {
             let batchCounters = {};
 
             originalDefectList.addEventListener('click', function(e) {
-                // Handle adding a batch
                 const addBtn = e.target.closest('.btn-add-batch');
                 if (addBtn) {
                     const defectoId = addBtn.dataset.defectoId;
-                    const container = addBtn.previousElementSibling; // .defect-entries-container
+                    const container = addBtn.previousElementSibling;
 
                     if (batchCounters[defectoId] === undefined) {
                         batchCounters[defectoId] = container.querySelectorAll('.form-row').length;
@@ -1291,10 +1218,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     container.insertAdjacentHTML('beforeend', newRowHtml);
                 }
 
-                // Handle removing a batch
                 const removeBtn = e.target.closest('.btn-remove-batch');
                 if (removeBtn) {
-                    removeBtn.parentElement.remove(); // Remove the entire .form-row
+                    removeBtn.parentElement.remove();
                     actualizarContadores();
                 }
             });
