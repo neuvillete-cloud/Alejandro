@@ -43,7 +43,6 @@ $nombresDefectosStr = implode(", ", $nombreDefectosOriginales);
 // --- Catálogos para los formularios ---
 $catalogo_defectos_query = $conex->query("SELECT IdDefectoCatalogo, NombreDefecto FROM CatalogoDefectos ORDER BY NombreDefecto ASC");
 $defectos_options_html = "";
-// Necesitamos un mysqli_data_seek(0) si vamos a iterar el mismo resultado varias veces
 $catalogo_defectos_result = $catalogo_defectos_query->fetch_all(MYSQLI_ASSOC);
 foreach($catalogo_defectos_result as $row) {
     $defectos_options_html .= "<option value='{$row['IdDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
@@ -54,19 +53,49 @@ $razones_tiempo_muerto = $conex->query("SELECT IdTiempoMuerto, Razon FROM Catalo
 
 $defectos_originales_formulario = $conex->query("SELECT d.IdDefecto, cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = $idSolicitud");
 $defectos_originales_para_js = [];
-mysqli_data_seek($defectos_originales_formulario, 0); // Resetear el puntero para JS
+mysqli_data_seek($defectos_originales_formulario, 0);
 while ($def = $defectos_originales_formulario->fetch_assoc()) {
     $defectos_originales_para_js[$def['IdDefecto']] = htmlspecialchars($def['NombreDefecto']);
 }
 
-// --- Carga de reportes existentes para la tabla (CORRECCIÓN APLICADA AQUÍ) ---
+// --- INICIO DE CAMBIO: Modificación de la consulta y cálculo de tiempo total ---
+function parsearTiempoAMinutos($tiempoStr) {
+    if (empty($tiempoStr)) return 0;
+    $totalMinutos = 0;
+    if (preg_match('/(\d+)\s*hora(s)?/', $tiempoStr, $matches)) {
+        $totalMinutos += intval($matches[1]) * 60;
+    }
+    if (preg_match('/(\d+)\s*minuto(s)?/', $tiempoStr, $matches)) {
+        $totalMinutos += intval($matches[1]);
+    }
+    if ($totalMinutos === 0 && str_contains(strtolower($tiempoStr), 'hora')) {
+        $totalMinutos = intval(filter_var($tiempoStr, FILTER_SANITIZE_NUMBER_INT)) * 60;
+    }
+    return $totalMinutos;
+}
+
+function formatarMinutosATiempo($totalMinutos) {
+    if ($totalMinutos <= 0) return "0 minutos";
+    $horas = floor($totalMinutos / 60);
+    $minutos = $totalMinutos % 60;
+    $partes = [];
+    if ($horas > 0) {
+        $partes[] = $horas . " hora(s)";
+    }
+    if ($minutos > 0) {
+        $partes[] = $minutos . " minuto(s)";
+    }
+    return empty($partes) ? "0 minutos" : implode(" ", $partes);
+}
+
 $reportes_anteriores_query = $conex->prepare("
     SELECT 
         ri.IdReporte, ri.FechaInspeccion, ri.NombreInspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
         (ri.PiezasInspeccionadas - ri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
         ri.PiezasRetrabajadas, 
         COALESCE(ri.RangoHora, crh.RangoHora) AS RangoHora, 
-        ri.Comentarios
+        ri.Comentarios,
+        ri.TiempoInspeccion
     FROM ReportesInspeccion ri
     LEFT JOIN CatalogoRangosHoras crh ON ri.IdRangoHora = crh.IdRangoHora
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
@@ -76,13 +105,12 @@ $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
 
 $reportes_procesados = [];
-// --- NUEVA LÓGICA: Calcular el tiempo total ---
-$totalHorasRegistradas = count($reportes_raw);
+$totalMinutosRegistrados = 0;
 
 foreach ($reportes_raw as $reporte) {
     $reporte_id = $reporte['IdReporte'];
+    $totalMinutosRegistrados += parsearTiempoAMinutos($reporte['TiempoInspeccion']);
 
-    // --- MODIFICACIÓN: OBTENER NÚMEROS DE PARTE ESPECÍFICOS SI ES 'VARIOS' ---
     if ($isVariosPartes) {
         $desglose_query = $conex->prepare("SELECT NumeroParte FROM ReporteDesglosePartes WHERE IdReporte = ?");
         $desglose_query->bind_param("i", $reporte_id);
@@ -92,15 +120,12 @@ foreach ($reportes_raw as $reporte) {
         while ($fila = $desglose_result->fetch_assoc()) {
             $partes_desglosadas[] = htmlspecialchars($fila['NumeroParte']);
         }
-        // Usamos array_unique para no repetir números de parte si aparecen varias veces
         $reporte['NumeroParteParaMostrar'] = empty($partes_desglosadas) ? 'Varios (Sin Desglose)' : implode("<br>", array_unique($partes_desglosadas));
         $desglose_query->close();
     } else {
         $reporte['NumeroParteParaMostrar'] = $numeroParte;
     }
-    // --- FIN DE LA MODIFICACIÓN ---
 
-    // Obtener defectos y lotes asociados a este reporte (VERSIÓN CORREGIDA)
     $defectos_reporte_query = $conex->prepare("
         SELECT 
             rdo.CantidadEncontrada, rdo.Lote, cd.NombreDefecto 
@@ -123,8 +148,6 @@ foreach ($reportes_raw as $reporte) {
     $reporte['DefectosConCantidades'] = implode("<br>", $defectos_con_cantidades);
     $reporte['LotesEncontrados'] = empty($lotes_encontrados) ? 'N/A' : implode(", ", array_unique($lotes_encontrados));
 
-
-    // Calcular Turno del Shift Leader
     $turno_shift_leader = 'N/A';
     if (isset($reporte['RangoHora'])) {
         $rangoHoraStr = $reporte['RangoHora'];
@@ -151,23 +174,20 @@ foreach ($reportes_raw as $reporte) {
 
     $reportes_procesados[] = $reporte;
 }
+$tiempoTotalFormateado = formatarMinutosATiempo($totalMinutosRegistrados);
+// --- FIN DE CAMBIO ---
 
 $conex->close();
 
-// --- INICIO DE CAMBIO: Calcular el total de piezas ya inspeccionadas ---
 $totalPiezasInspeccionadasYa = 0;
 foreach ($reportes_raw as $reporte) {
     $totalPiezasInspeccionadasYa += (int)$reporte['PiezasInspeccionadas'];
 }
-// --- FIN DE CAMBIO ---
 
-
-// --- INICIO DE NUEVA LÓGICA: Variable para controlar el visor de PDF ---
 $mostrarVisorPDF = false;
 if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] === 'Aprobado' && !empty($solicitud['RutaMetodo'])) {
     $mostrarVisorPDF = true;
 }
-// --- FIN DE NUEVA LÓGICA ---
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -192,16 +212,16 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .form-row.defect-entry-row, .form-row.parte-inspeccionada-row {
             display: flex;
             gap: 10px;
-            align-items: flex-end; /* Alinea los elementos en la parte inferior */
+            align-items: flex-end;
             margin-bottom: 10px;
         }
         .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group {
-            flex: 1 1 0; /* Permite que los inputs crezcan y se encojan */
-            min-width: 0; /* Permite que los inputs se encojan más allá de su tamaño de contenido */
+            flex: 1 1 0;
+            min-width: 0;
             margin-bottom: 0;
         }
         .btn-remove-batch, .btn-remove-parte {
-            flex-shrink: 0; /* Evita que el botón de eliminar se encoja */
+            flex-shrink: 0;
         }
         #partes-inspeccionadas-container {
             margin-top: 15px;
@@ -265,7 +285,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             $formStyle = '';
             if ($totalPiezasInspeccionadasYa >= $cantidadSolicitada && $cantidadSolicitada > 0) {
                 $formStyle = 'style="display: none;"';
-                // --- INICIO DE CAMBIO: Se ha añadido display:flex y otros estilos para alinear el contenido ---
                 echo "<div id='mensajeInspeccionCompletada' class='notification-box info' style='margin-top: 20px; display: flex; align-items: flex-start; gap: 12px;'>
                         <i class='fa-solid fa-circle-check' style='font-size: 1.2em; margin-top: 2px;'></i>
                         <div>
@@ -273,7 +292,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             <br>No se pueden crear nuevos reportes, pero puede <strong>editar o eliminar</strong> registros existentes si es necesario.
                         </div>
                       </div>";
-                // --- FIN DE CAMBIO ---
             }
             ?>
             <form id="reporteForm" action="dao/guardar_reporte.php" method="POST" enctype="multipart/form-data" <?php echo $formStyle; ?>>
@@ -285,9 +303,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <?php if ($isVariosPartes): ?>
                         <div id="desglose-partes-container">
                             <label>Desglose de Piezas por No. de Parte</label>
-                            <div id="partes-inspeccionadas-container">
-                                <!-- Las filas se añadirán aquí dinámicamente -->
-                            </div>
+                            <div id="partes-inspeccionadas-container"></div>
                             <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> Añadir No. de Parte</button>
                         </div>
                     <?php endif; ?>
@@ -306,17 +322,19 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
                     </div>
 
+                    <!-- --- INICIO DE CAMBIOS EN HTML --- -->
                     <div class="form-row">
                         <div class="form-group">
                             <label>Hora de Inicio</label>
                             <input type="time" name="horaInicio" id="horaInicio" required>
                         </div>
                         <div class="form-group">
-                            <label>Hora de Fin (1 hora)</label>
-                            <input type="time" name="horaFin" id="horaFin" required readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                            <label>Hora de Fin</label>
+                            <input type="time" name="horaFin" id="horaFin" required>
                         </div>
                     </div>
                     <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
+                    <!-- --- FIN DE CAMBIOS EN HTML --- -->
 
                 </fieldset>
 
@@ -340,7 +358,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                             <div class="form-group">
                                                 <input type="text" class="defecto-lote" name="defectos_originales[<?php echo $defecto['IdDefecto']; ?>][entries][0][lote]" placeholder="Bach/Lote...">
                                             </div>
-                                            <!-- Placeholder for alignment -->
                                             <div style="width: 42px; flex-shrink: 0;"></div>
                                         </div>
                                     </div>
@@ -359,8 +376,12 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </fieldset>
 
                 <fieldset><legend><i class="fa-solid fa-stopwatch"></i> Tiempos y Comentarios de la Sesión</legend>
-                    <!-- CAMPO AUTOMÁTICO -->
-                    <div class="form-group"><label>Tiempo de Inspección (Esta Sesión)</label><input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="1 hora" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
+                    <!-- --- INICIO DE CAMBIO EN HTML --- -->
+                    <div class="form-group">
+                        <label>Tiempo de Inspección (Esta Sesión)</label>
+                        <input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                    </div>
+                    <!-- --- FIN DE CAMBIO EN HTML --- -->
 
                     <div class="form-group">
                         <label>¿Hubo Tiempo Muerto?</label>
@@ -390,13 +411,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
 
             <?php if (empty($solicitud['TiempoTotalInspeccion'])): ?>
-                <!-- --- INICIO DE CAMBIO: Se cambió el action del formulario --- -->
                 <form id="tiempoTotalForm" action="dao/finalizar_reporte.php" method="POST" style="margin-top: 40px;">
-                    <!-- --- FIN DE CAMBIO --- -->
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset><legend><i class="fa-solid fa-hourglass-end"></i> Finalizar Contención (Tiempo Total)</legend>
-                        <p class="info-text">El tiempo total de las sesiones ya registradas es de <strong><?php echo $totalHorasRegistradas; ?> hora(s)</strong>. Al finalizar, este será el valor guardado.</p>
-                        <input type="hidden" name="tiempoTotalInspeccion" value="<?php echo $totalHorasRegistradas . ' hora(s)'; ?>">
+                        <!-- --- INICIO DE CAMBIO EN HTML --- -->
+                        <p class="info-text">El tiempo total de las sesiones ya registradas es de <strong><?php echo $tiempoTotalFormateado; ?></strong>. Al finalizar, este será el valor guardado.</p>
+                        <input type="hidden" name="tiempoTotalInspeccion" value="<?php echo $tiempoTotalFormateado; ?>">
+                        <!-- --- FIN DE CAMBIO EN HTML --- -->
                     </fieldset>
                     <div class="form-actions"><button type="submit" class="btn-primary">Finalizar Contención y Guardar Tiempo Total</button></div>
                 </form>
@@ -498,7 +519,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
-    const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>; // Para JS
+    const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>;
     const cantidadTotalSolicitada = <?php echo intval($cantidadSolicitada); ?>;
     const totalPiezasInspeccionadasAnteriormente = <?php echo $totalPiezasInspeccionadasYa; ?>;
     const isVariosPartes = <?php echo json_encode($isVariosPartes); ?>;
@@ -521,34 +542,57 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const nuevosDefectosContainer = document.getElementById('nuevos-defectos-container');
             const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto');
             const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
-
             const horaInicioInput = document.getElementById('horaInicio');
             const horaFinInput = document.getElementById('horaFin');
             const rangoHoraCompletoInput = document.getElementById('rangoHoraCompleto');
-
             const tiempoInspeccionInput = document.getElementById('tiempoInspeccion');
             const toggleTiempoMuertoBtn = document.getElementById('toggleTiempoMuertoBtn');
             const tiempoMuertoSection = document.getElementById('tiempoMuertoSection');
             const idTiempoMuertoSelect = document.getElementById('idTiempoMuerto');
             const comentariosTextarea = document.getElementById('comentarios');
-
             const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
 
-            horaInicioInput.addEventListener('change', function() {
-                if (this.value) {
-                    const [hours, minutes] = this.value.split(':');
-                    const startTime = new Date();
-                    startTime.setHours(parseInt(hours), parseInt(minutes), 0);
-                    startTime.setHours(startTime.getHours() + 1);
+            // --- INICIO DE CAMBIOS EN JAVASCRIPT ---
+            function calcularYActualizarTiempo() {
+                const horaInicio = horaInicioInput.value;
+                const horaFin = horaFinInput.value;
 
-                    const endHours = String(startTime.getHours()).padStart(2, '0');
-                    const endMinutes = String(startTime.getMinutes()).padStart(2, '0');
+                if (horaInicio && horaFin) {
+                    const fechaInicio = new Date(`1970-01-01T${horaInicio}`);
+                    const fechaFin = new Date(`1970-01-01T${horaFin}`);
 
-                    horaFinInput.value = `${endHours}:${endMinutes}`;
+                    if (fechaFin < fechaInicio) {
+                        tiempoInspeccionInput.value = 'Error: Hora de fin inválida';
+                        horaFinInput.setCustomValidity("La hora de fin no puede ser anterior a la hora de inicio.");
+                        horaFinInput.reportValidity();
+                        return;
+                    } else {
+                        horaFinInput.setCustomValidity("");
+                    }
+
+                    const diffMs = fechaFin - fechaInicio;
+                    const totalMinutos = Math.round(diffMs / 60000);
+                    const horas = Math.floor(totalMinutos / 60);
+                    const minutos = totalMinutos % 60;
+
+                    let tiempoStr = '';
+                    if (horas > 0) {
+                        tiempoStr += `${horas} hora(s) `;
+                    }
+                    if (minutos > 0 || horas === 0) {
+                        tiempoStr += `${minutos} minuto(s)`;
+                    }
+
+                    tiempoInspeccionInput.value = tiempoStr.trim();
+
                 } else {
-                    horaFinInput.value = '';
+                    tiempoInspeccionInput.value = '';
                 }
-            });
+            }
+
+            horaInicioInput.addEventListener('change', calcularYActualizarTiempo);
+            horaFinInput.addEventListener('change', calcularYActualizarTiempo);
+            // --- FIN DE CAMBIOS EN JAVASCRIPT ---
 
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
@@ -760,7 +804,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         let h = parseInt(hours);
                         const ampm = h >= 12 ? 'pm' : 'am';
                         h = h % 12;
-                        h = h ? h : 12; // la hora '0' debe ser '12'
+                        h = h ? h : 12;
                         const finalHours = String(h).padStart(2, '0');
                         return `${finalHours}:${minutes} ${ampm}`;
                     };
@@ -787,7 +831,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'));
             });
 
-            // --- INICIO DE CAMBIO: Lógica para manejar la finalización ---
             document.getElementById('tiempoTotalForm')?.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const tiempoTotalForm = this;
@@ -795,10 +838,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
                 let finalFormData;
 
-                // Si el campo de piezas inspeccionadas tiene un valor y el formulario es visible,
-                // significa que se está guardando y finalizando al mismo tiempo.
                 if (piezasInspeccionadasInput && piezasInspeccionadasInput.value && reporteForm.style.display !== 'none') {
-                    // Validar el formulario de reporte antes de enviarlo
                     if (btnGuardarReporte.disabled) {
                         Swal.fire('Error de Validación', 'El formulario de reporte de sesión tiene errores. Por favor, corríjalos antes de finalizar. Motivo: ' + btnGuardarReporte.title, 'error');
                         return;
@@ -808,12 +848,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     finalFormData = new FormData(tiempoTotalForm);
                 }
 
-                // Asegurarse de que el tiempo total se envíe en ambos casos
                 const tiempoTotalInput = tiempoTotalForm.querySelector('[name="tiempoTotalInspeccion"]');
                 if (!finalFormData.has('tiempoTotalInspeccion')) {
                     finalFormData.append('tiempoTotalInspeccion', tiempoTotalInput.value);
                 }
-                // Asegurarse de que el idSolicitud se envíe en ambos casos
                 if (!finalFormData.has('idSolicitud')) {
                     const idSolicitudInput = tiempoTotalForm.querySelector('[name="idSolicitud"]');
                     finalFormData.append('idSolicitud', idSolicitudInput.value);
@@ -832,7 +870,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     })
                     .catch(error => Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor para finalizar.', 'error'));
             });
-            // --- FIN DE CAMBIO ---
 
 
             async function cargarReporteParaEdicion(idReporte) {
@@ -878,6 +915,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             horaInicioInput.value = '';
                             horaFinInput.value = '';
                         }
+
+                        // --- INICIO DE CAMBIO EN JAVASCRIPT ---
+                        calcularYActualizarTiempo();
+                        // --- FIN DE CAMBIO EN JAVASCRIPT ---
 
                         if (reporte.IdTiempoMuerto) {
                             toggleTiempoMuertoSection(true);
