@@ -248,6 +248,23 @@ $conex->close();
         const contenidoReporteDiv = document.getElementById('contenido-reporte');
         let paretoChartInstance, weeklyRejectsChartInstance, rejectionRateChartInstance, dailyProgressChartInstance = null;
 
+        // --- INICIO DE NUEVO CAMBIO: Función para convertir tiempo a minutos ---
+        function parsearTiempoAMinutosJS(tiempoStr) {
+            if (!tiempoStr) return 0;
+            let totalMinutos = 0;
+            const horasMatch = tiempoStr.match(/(\d+)\s*hora(s)?/);
+            const minutosMatch = tiempoStr.match(/(\d+)\s*minuto(s)?/);
+
+            if (horasMatch) {
+                totalMinutos += parseInt(horasMatch[1], 10) * 60;
+            }
+            if (minutosMatch) {
+                totalMinutos += parseInt(minutosMatch[1], 10);
+            }
+            return totalMinutos;
+        }
+        // --- FIN DE NUEVO CAMBIO ---
+
         const fetchReportData = (url) => {
             Swal.fire({ title: 'Generando Reporte', text: 'Consultando la información...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
             fetch(url)
@@ -290,14 +307,12 @@ $conex->close();
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const elementoReporte = document.getElementById('contenido-reporte');
 
-            // --- INICIO DE LA LÓGICA CORREGIDA ---
             const sections = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
             const margin = 10;
             const contentWidth = pdfWidth - (margin * 2);
-            const pageContentHeight = pdfHeight - (margin * 2);
             let yPosition = margin;
 
             for (const section of sections) {
@@ -312,9 +327,8 @@ $conex->close();
                 }
 
                 pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
-                yPosition += imgHeight + 2; // Espacio pequeño entre secciones
+                yPosition += imgHeight + 2;
             }
-            // --- FIN DE LA LÓGICA CORREGIDA ---
 
             pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
             Swal.close();
@@ -323,7 +337,6 @@ $conex->close();
         function renderizarReporte(data) {
             const isVarios = strtolower(data.info.numeroParte) === 'varios';
 
-            // --- SECCIÓN DE INFORMACIÓN GENERAL ---
             let infoHtml = `
             <p><strong>No. de Parte:</strong> ${data.info.numeroParte}</p>
             <p><strong>Responsable:</strong> ${data.info.responsable}</p>
@@ -340,7 +353,6 @@ $conex->close();
             `;
             }
 
-            // --- SECCIÓN DE DESGLOSE DIARIO Y HORA X HORA ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> Desglose Hora por Hora</h4>`;
@@ -375,7 +387,6 @@ $conex->close();
                 desgloseHtml += `</div>`;
             }
 
-            // --- SECCIÓN DE DETALLE DE DEFECTOS ---
             let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> Resumen de Defectos del Periodo</h4>`;
             if (isVarios) {
                 if (data.defectosPorParte && data.defectosPorParte.length > 0) {
@@ -399,7 +410,6 @@ $conex->close();
             }
             defectosHtml += `</div>`;
 
-            // --- NUEVO: SECCIÓN DE GRÁFICAS ---
             let dashboardHtml = `
             <div class="pdf-section">
                 <h4><i class="fa-solid fa-chart-line"></i> Dashboards Visuales</h4>
@@ -424,7 +434,15 @@ $conex->close();
             </div>
         `;
 
-            // --- CONSTRUCCIÓN DEL HTML FINAL ---
+            // --- INICIO DE NUEVO CAMBIO: Cálculo del rate de piezas por hora ---
+            const totalMinutos = parsearTiempoAMinutosJS(data.resumen.tiempoTotal);
+            let piezasPorHora = '0.00';
+            if (totalMinutos > 0) {
+                const totalHoras = totalMinutos / 60;
+                piezasPorHora = (data.resumen.inspeccionadas / totalHoras).toFixed(2);
+            }
+            // --- FIN DE NUEVO CAMBIO ---
+
             let html = `
             <div class="report-title">${data.titulo}</div>
             <div class="report-subtitle">Folio de Solicitud: S-${data.folio.toString().padStart(4, '0')}</div>
@@ -441,6 +459,9 @@ $conex->close();
                         <tr><td>Piezas Rechazadas</td><td>${data.resumen.rechazadas}</td></tr>
                         <tr><td>Piezas Retrabajadas</td><td>${data.resumen.retrabajadas}</td></tr>
                         <tr><td><strong>Tiempo Total de Inspección:</strong></td><td><strong>${data.resumen.tiempoTotal}</strong></td></tr>
+                        <!-- INICIO DE NUEVO CAMBIO: Fila para el rate -->
+                        <tr><td><strong>Rate (Piezas / Hora):</strong></td><td><strong>${piezasPorHora}</strong></td></tr>
+                        <!-- FIN DE NUEVO CAMBIO -->
                     </tbody>
                 </table>
             </div>
@@ -466,7 +487,6 @@ $conex->close();
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
 
-            // --- PARETO CHART ---
             const paretoCtx = document.getElementById('paretoChart').getContext('2d');
             if (dashboardData.pareto && dashboardData.pareto.length > 0) {
                 const paretoLabels = dashboardData.pareto.map(item => item.defecto);
@@ -485,7 +505,6 @@ $conex->close();
                 });
             }
 
-            // --- WEEKLY REJECTS CHART ---
             const weeklyCtx = document.getElementById('weeklyRejectsChart').getContext('2d');
             if (dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
                 const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `Semana ${String(item.semana).substring(4)}`);
@@ -497,7 +516,6 @@ $conex->close();
                 });
             }
 
-            // --- REJECTION RATE BAR CHART (HORIZONTAL) ---
             const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
             if (resumen && resumen.inspeccionadas > 0) {
                 const rechazoTotal = resumen.rechazadas;
@@ -520,7 +538,6 @@ $conex->close();
                 });
             }
 
-            // --- DAILY PROGRESS CHART ---
             const dailyCtx = document.getElementById('dailyProgressChart').getContext('2d');
             const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
             (data.desgloseDiario || []).forEach(dia => {
@@ -541,5 +558,3 @@ $conex->close();
 </script>
 </body>
 </html>
-
-
