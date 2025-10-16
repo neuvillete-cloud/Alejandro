@@ -334,36 +334,56 @@ $conex->close();
             for (const element of allElements) {
                 // Si es la sección de dashboards, tratar cada chart individualmente
                 if (element.querySelector('.charts-container')) {
-                    // Renderizar el título de la sección de dashboards
                     const titleElement = element.querySelector('h4');
                     if (titleElement) {
-                        const titleCanvas = await html2canvas(titleElement, { scale: 2, useCORS: true });
-                        const titleImgData = titleCanvas.toDataURL('image/png');
-                        const titleImgProps = pdf.getImageProperties(titleImgData);
-                        const titleImgHeight = (titleImgProps.height * contentWidth) / titleImgProps.width;
-                        if (yPosition + titleImgHeight > pdfHeight - margin) {
+                        const canvas = await html2canvas(titleElement, { scale: 2, useCORS: true });
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgProps = pdf.getImageProperties(imgData);
+                        const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
+                        if (yPosition + imgHeight > pdfHeight - margin) {
                             pdf.addPage();
                             yPosition = margin;
                         }
-                        pdf.addImage(titleImgData, 'PNG', margin, yPosition, contentWidth, titleImgHeight);
-                        yPosition += titleImgHeight + 2;
+                        pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
+                        yPosition += imgHeight + 2;
                     }
 
-                    // Renderizar cada chart-box como un bloque indivisible
                     const chartBoxes = element.querySelectorAll('.chart-box');
-                    for (const chartBox of chartBoxes) {
-                        const chartCanvas = await html2canvas(chartBox, { scale: 2, useCORS: true });
-                        const chartImgData = chartCanvas.toDataURL('image/png');
-                        const chartImgProps = pdf.getImageProperties(chartImgData);
-                        const chartImgHeight = (chartImgProps.height * contentWidth) / chartImgProps.width;
+                    const chartPdfWidth = (contentWidth / 2) - 2; // Ancho para cada gráfica (50% - gap)
+                    const gap = 4;
 
-                        if (yPosition + chartImgHeight > pdfHeight - margin) {
+                    for (let i = 0; i < chartBoxes.length; i += 2) {
+                        const chartBox1 = chartBoxes[i];
+                        const chartBox2 = chartBoxes[i + 1];
+
+                        const canvas1 = await html2canvas(chartBox1, { scale: 2, useCORS: true });
+                        const imgData1 = canvas1.toDataURL('image/png');
+                        const imgProps1 = pdf.getImageProperties(imgData1);
+                        const imgHeight1 = (imgProps1.height * chartPdfWidth) / imgProps1.width;
+
+                        let imgData2, imgHeight2;
+                        if (chartBox2) {
+                            const canvas2 = await html2canvas(chartBox2, { scale: 2, useCORS: true });
+                            imgData2 = canvas2.toDataURL('image/png');
+                            const imgProps2 = pdf.getImageProperties(imgData2);
+                            imgHeight2 = (imgProps2.height * chartPdfWidth) / imgProps2.width;
+                        }
+
+                        const rowHeight = chartBox2 ? Math.max(imgHeight1, imgHeight2) : imgHeight1;
+
+                        if (yPosition + rowHeight > pdfHeight - margin) {
                             pdf.addPage();
                             yPosition = margin;
                         }
-                        pdf.addImage(chartImgData, 'PNG', margin, yPosition, contentWidth, chartImgHeight);
-                        yPosition += chartImgHeight + 5;
+
+                        pdf.addImage(imgData1, 'PNG', margin, yPosition, chartPdfWidth, imgHeight1);
+                        if (chartBox2) {
+                            pdf.addImage(imgData2, 'PNG', margin + chartPdfWidth + gap, yPosition, chartPdfWidth, imgHeight2);
+                        }
+
+                        yPosition += rowHeight + 5;
                     }
+
                 } else {
                     // Para todas las demás secciones, usar la lógica de "rebanado"
                     const canvas = await html2canvas(element, { scale: 2, useCORS: true });
