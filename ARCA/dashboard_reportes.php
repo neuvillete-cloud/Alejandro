@@ -315,14 +315,13 @@ $conex->close();
             fetchReportData(url);
         });
 
-        // --- INICIO DE CAMBIO: Lógica de generación de PDF corregida ---
+        // --- INICIO DE CAMBIO: Lógica de generación de PDF Híbrida ---
         btnDescargarPdf.addEventListener('click', async () => {
             Swal.fire({ title: translate('generating_pdf'), text: translate('please_wait'), allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const elementoReporte = document.getElementById('contenido-reporte');
-            const sections = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -330,39 +329,75 @@ $conex->close();
             const contentWidth = pdfWidth - (margin * 2);
             let yPosition = margin;
 
-            for (const section of sections) {
-                const canvas = await html2canvas(section, { scale: 2, useCORS: true });
-                const canvasWidth = canvas.width;
-                const canvasHeight = canvas.height;
+            const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
-                let remainingCanvasHeight = canvasHeight;
-                let canvasY = 0; // Posición Y dentro del canvas de origen
-
-                while (remainingCanvasHeight > 0) {
-                    const availablePageHeight = pdfHeight - yPosition - margin;
-
-                    if (availablePageHeight <= 0) {
-                        pdf.addPage();
-                        yPosition = margin;
-                        continue;
+            for (const element of allElements) {
+                // Si es la sección de dashboards, tratar cada chart individualmente
+                if (element.querySelector('.charts-container')) {
+                    // Renderizar el título de la sección de dashboards
+                    const titleElement = element.querySelector('h4');
+                    if (titleElement) {
+                        const titleCanvas = await html2canvas(titleElement, { scale: 2, useCORS: true });
+                        const titleImgData = titleCanvas.toDataURL('image/png');
+                        const titleImgProps = pdf.getImageProperties(titleImgData);
+                        const titleImgHeight = (titleImgProps.height * contentWidth) / titleImgProps.width;
+                        if (yPosition + titleImgHeight > pdfHeight - margin) {
+                            pdf.addPage();
+                            yPosition = margin;
+                        }
+                        pdf.addImage(titleImgData, 'PNG', margin, yPosition, contentWidth, titleImgHeight);
+                        yPosition += titleImgHeight + 2;
                     }
 
-                    const pageHeightInPixels = (availablePageHeight * canvasWidth) / contentWidth;
-                    const sliceHeight = Math.min(remainingCanvasHeight, pageHeightInPixels);
-                    const sliceHeightMM = (sliceHeight * contentWidth) / canvasWidth;
+                    // Renderizar cada chart-box como un bloque indivisible
+                    const chartBoxes = element.querySelectorAll('.chart-box');
+                    for (const chartBox of chartBoxes) {
+                        const chartCanvas = await html2canvas(chartBox, { scale: 2, useCORS: true });
+                        const chartImgData = chartCanvas.toDataURL('image/png');
+                        const chartImgProps = pdf.getImageProperties(chartImgData);
+                        const chartImgHeight = (chartImgProps.height * contentWidth) / chartImgProps.width;
 
-                    const sliceCanvas = document.createElement('canvas');
-                    sliceCanvas.width = canvasWidth;
-                    sliceCanvas.height = sliceHeight;
-                    sliceCanvas.getContext('2d').drawImage(canvas, 0, canvasY, canvasWidth, sliceHeight, 0, 0, canvasWidth, sliceHeight);
+                        if (yPosition + chartImgHeight > pdfHeight - margin) {
+                            pdf.addPage();
+                            yPosition = margin;
+                        }
+                        pdf.addImage(chartImgData, 'PNG', margin, yPosition, contentWidth, chartImgHeight);
+                        yPosition += chartImgHeight + 5;
+                    }
+                } else {
+                    // Para todas las demás secciones, usar la lógica de "rebanado"
+                    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    let remainingCanvasHeight = canvasHeight;
+                    let canvasY = 0;
 
-                    pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', margin, yPosition, contentWidth, sliceHeightMM);
+                    while (remainingCanvasHeight > 0) {
+                        let availablePageHeight = pdfHeight - yPosition - margin;
 
-                    canvasY += sliceHeight;
-                    remainingCanvasHeight -= sliceHeight;
-                    yPosition += sliceHeightMM;
+                        if (availablePageHeight <= 0) {
+                            pdf.addPage();
+                            yPosition = margin;
+                            availablePageHeight = pdfHeight - yPosition - margin;
+                        }
+
+                        const pageHeightInPixels = (availablePageHeight * canvasWidth) / contentWidth;
+                        const sliceHeight = Math.min(remainingCanvasHeight, pageHeightInPixels);
+                        const sliceHeightMM = (sliceHeight * contentWidth) / canvasWidth;
+
+                        const sliceCanvas = document.createElement('canvas');
+                        sliceCanvas.width = canvasWidth;
+                        sliceCanvas.height = sliceHeight;
+                        sliceCanvas.getContext('2d').drawImage(canvas, 0, canvasY, canvasWidth, sliceHeight, 0, 0, canvasWidth, sliceHeight);
+
+                        pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', margin, yPosition, contentWidth, sliceHeightMM);
+
+                        canvasY += sliceHeight;
+                        remainingCanvasHeight -= sliceHeight;
+                        yPosition += sliceHeightMM;
+                    }
+                    yPosition += 2; // Espacio pequeño después de cada sección
                 }
-                yPosition += 5; // Añadir un espacio entre secciones
             }
 
             pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
@@ -600,3 +635,4 @@ $conex->close();
 </script>
 </body>
 </html>
+
