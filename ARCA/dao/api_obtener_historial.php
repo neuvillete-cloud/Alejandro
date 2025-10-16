@@ -59,13 +59,11 @@ foreach ($reportes_raw as $reporte) {
         $desglose_query = $conex->prepare("SELECT NumeroParte FROM ReporteDesglosePartes WHERE IdReporte = ?");
         $desglose_query->bind_param("i", $reporte_id);
         $desglose_query->execute();
-        // --- INICIO DE CORRECCIÓN: Obtener el resultado fuera del bucle ---
         $desglose_result = $desglose_query->get_result();
         $partes_desglosadas = [];
         while ($fila = $desglose_result->fetch_assoc()) {
             $partes_desglosadas[] = htmlspecialchars($fila['NumeroParte']);
         }
-        // --- FIN DE CORRECCIÓN ---
         $reporte['NumeroParteParaMostrar'] = empty($partes_desglosadas) ? 'Varios (Sin Desglose)' : implode("<br>", array_unique($partes_desglosadas));
         $desglose_query->close();
     } else {
@@ -81,7 +79,6 @@ foreach ($reportes_raw as $reporte) {
     ");
     $defectos_reporte_query->bind_param("i", $reporte_id);
     $defectos_reporte_query->execute();
-    // --- INICIO DE CORRECCIÓN: Obtener el resultado fuera del bucle ---
     $defectos_result = $defectos_reporte_query->get_result();
     $defectos_con_cantidades = [];
     $lotes_encontrados = [];
@@ -91,7 +88,6 @@ foreach ($reportes_raw as $reporte) {
             $lotes_encontrados[] = htmlspecialchars($dr['Lote']);
         }
     }
-    // --- FIN DE CORRECCIÓN ---
     $reporte['DefectosConCantidades'] = implode("<br>", $defectos_con_cantidades);
     $reporte['LotesEncontrados'] = empty($lotes_encontrados) ? 'N/A' : implode(", ", array_unique($lotes_encontrados));
     $defectos_reporte_query->close();
@@ -119,7 +115,7 @@ $conex->close();
 ?>
 
 <div class="table-responsive">
-    <table class="data-table" id="tabla-historial-exportar">
+    <table class="results-table" id="tabla-historial-exportar">
         <thead>
         <tr>
             <th>ID Reporte</th>
