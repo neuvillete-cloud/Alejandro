@@ -31,9 +31,10 @@ $numeroPartePrincipal = $solicitud_info['NumeroParte'];
 $isVariosPartes = (strtolower($numeroPartePrincipal) === 'varios');
 $stmt_sol->close();
 
+// --- INICIO DE CORRECCIÓN: Se cambió NombreInspector a Nombreinspector ---
 $reportes_anteriores_query = $conex->prepare("
     SELECT 
-        ri.IdReporte, ri.FechaInspeccion, ri.NombreInspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
+        ri.IdReporte, ri.FechaInspeccion, ri.Nombreinspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
         (ri.PiezasInspeccionadas - ri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
         ri.PiezasRetrabajadas, 
         ri.RangoHora, 
@@ -41,6 +42,7 @@ $reportes_anteriores_query = $conex->prepare("
     FROM ReportesInspeccion ri
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
+// --- FIN DE CORRECCIÓN ---
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
 $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -139,7 +141,7 @@ $conex->close();
                 <td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
                 <td><?php echo htmlspecialchars($reporte['RangoHora']); ?></td>
                 <td><?php echo htmlspecialchars($reporte['TurnoShiftLeader']); ?></td>
-                <td><?php echo htmlspecialchars($reporte['NombreInspector']); ?></td>
+                <td><?php echo htmlspecialchars($reporte['Nombreinspector']); ?></td>
                 <td><?php echo htmlspecialchars($reporte['PiezasInspeccionadas']); ?></td>
                 <td><?php echo htmlspecialchars($reporte['PiezasAceptadas']); ?></td>
                 <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
