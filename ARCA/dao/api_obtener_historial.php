@@ -31,7 +31,6 @@ $numeroPartePrincipal = $solicitud_info['NumeroParte'];
 $isVariosPartes = (strtolower($numeroPartePrincipal) === 'varios');
 $stmt_sol->close();
 
-// --- INICIO DE CORRECCIÓN: Se cambió NombreInspector a Nombreinspector ---
 $reportes_anteriores_query = $conex->prepare("
     SELECT 
         ri.IdReporte, ri.FechaInspeccion, ri.Nombreinspector, ri.PiezasInspeccionadas, ri.PiezasAceptadas,
@@ -42,7 +41,6 @@ $reportes_anteriores_query = $conex->prepare("
     FROM ReportesInspeccion ri
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
-// --- FIN DE CORRECCIÓN ---
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
 $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -61,10 +59,13 @@ foreach ($reportes_raw as $reporte) {
         $desglose_query = $conex->prepare("SELECT NumeroParte FROM ReporteDesglosePartes WHERE IdReporte = ?");
         $desglose_query->bind_param("i", $reporte_id);
         $desglose_query->execute();
+        // --- INICIO DE CORRECCIÓN: Obtener el resultado fuera del bucle ---
+        $desglose_result = $desglose_query->get_result();
         $partes_desglosadas = [];
-        while ($fila = $desglose_query->get_result()->fetch_assoc()) {
+        while ($fila = $desglose_result->fetch_assoc()) {
             $partes_desglosadas[] = htmlspecialchars($fila['NumeroParte']);
         }
+        // --- FIN DE CORRECCIÓN ---
         $reporte['NumeroParteParaMostrar'] = empty($partes_desglosadas) ? 'Varios (Sin Desglose)' : implode("<br>", array_unique($partes_desglosadas));
         $desglose_query->close();
     } else {
@@ -80,14 +81,17 @@ foreach ($reportes_raw as $reporte) {
     ");
     $defectos_reporte_query->bind_param("i", $reporte_id);
     $defectos_reporte_query->execute();
+    // --- INICIO DE CORRECCIÓN: Obtener el resultado fuera del bucle ---
+    $defectos_result = $defectos_reporte_query->get_result();
     $defectos_con_cantidades = [];
     $lotes_encontrados = [];
-    while ($dr = $defectos_reporte_query->get_result()->fetch_assoc()) {
+    while ($dr = $defectos_result->fetch_assoc()) {
         $defectos_con_cantidades[] = htmlspecialchars($dr['NombreDefecto']) . " (" . htmlspecialchars($dr['CantidadEncontrada']) . ")";
         if (!empty($dr['Lote'])) {
             $lotes_encontrados[] = htmlspecialchars($dr['Lote']);
         }
     }
+    // --- FIN DE CORRECCIÓN ---
     $reporte['DefectosConCantidades'] = implode("<br>", $defectos_con_cantidades);
     $reporte['LotesEncontrados'] = empty($lotes_encontrados) ? 'N/A' : implode(", ", array_unique($lotes_encontrados));
     $defectos_reporte_query->close();
