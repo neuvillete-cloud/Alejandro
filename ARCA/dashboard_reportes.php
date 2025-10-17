@@ -332,57 +332,20 @@ $conex->close();
             const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             for (const element of allElements) {
-                // Si es la sección de dashboards, tratar cada chart individualmente
+                // Si es la sección de dashboards, tratarla de forma especial
                 if (element.querySelector('.charts-container')) {
-                    const titleElement = element.querySelector('h4');
-                    if (titleElement) {
-                        const canvas = await html2canvas(titleElement, { scale: 2, useCORS: true });
-                        const imgData = canvas.toDataURL('image/png');
-                        const imgProps = pdf.getImageProperties(imgData);
-                        const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
-                        if (yPosition + imgHeight > pdfHeight - margin) {
-                            pdf.addPage();
-                            yPosition = margin;
-                        }
-                        pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
-                        yPosition += imgHeight + 2;
+                    const dashboardSectionCanvas = await html2canvas(element, { scale: 2, useCORS: true });
+                    const imgData = dashboardSectionCanvas.toDataURL('image/png');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
+
+                    if (yPosition + imgHeight > pdfHeight - margin) {
+                        pdf.addPage();
+                        yPosition = margin;
                     }
 
-                    const chartBoxes = element.querySelectorAll('.chart-box');
-                    const chartPdfWidth = (contentWidth / 2) - 2; // Ancho para cada gráfica (50% - gap)
-                    const gap = 4;
-
-                    for (let i = 0; i < chartBoxes.length; i += 2) {
-                        const chartBox1 = chartBoxes[i];
-                        const chartBox2 = chartBoxes[i + 1];
-
-                        const canvas1 = await html2canvas(chartBox1, { scale: 2, useCORS: true });
-                        const imgData1 = canvas1.toDataURL('image/png');
-                        const imgProps1 = pdf.getImageProperties(imgData1);
-                        const imgHeight1 = (imgProps1.height * chartPdfWidth) / imgProps1.width;
-
-                        let imgData2, imgHeight2;
-                        if (chartBox2) {
-                            const canvas2 = await html2canvas(chartBox2, { scale: 2, useCORS: true });
-                            imgData2 = canvas2.toDataURL('image/png');
-                            const imgProps2 = pdf.getImageProperties(imgData2);
-                            imgHeight2 = (imgProps2.height * chartPdfWidth) / imgProps2.width;
-                        }
-
-                        const rowHeight = chartBox2 ? Math.max(imgHeight1, imgHeight2) : imgHeight1;
-
-                        if (yPosition + rowHeight > pdfHeight - margin) {
-                            pdf.addPage();
-                            yPosition = margin;
-                        }
-
-                        pdf.addImage(imgData1, 'PNG', margin, yPosition, chartPdfWidth, imgHeight1);
-                        if (chartBox2) {
-                            pdf.addImage(imgData2, 'PNG', margin + chartPdfWidth + gap, yPosition, chartPdfWidth, imgHeight2);
-                        }
-
-                        yPosition += rowHeight + 5;
-                    }
+                    pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
+                    yPosition += imgHeight + 5;
 
                 } else {
                     // Para todas las demás secciones, usar la lógica de "rebanado"
@@ -416,7 +379,7 @@ $conex->close();
                         remainingCanvasHeight -= sliceHeight;
                         yPosition += sliceHeightMM;
                     }
-                    yPosition += 2; // Espacio pequeño después de cada sección
+                    yPosition += 2;
                 }
             }
 
