@@ -331,53 +331,18 @@ $conex->close();
             const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             for (const element of allElements) {
-                if (element.querySelector('.charts-container')) {
-                    const dashboardSectionCanvas = await html2canvas(element, { scale: 2, useCORS: true });
-                    const imgData = dashboardSectionCanvas.toDataURL('image/png');
-                    const imgProps = pdf.getImageProperties(imgData);
-                    const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
+                const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = pdf.getImageProperties(imgData);
+                const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
 
-                    if (yPosition + imgHeight > pdfHeight - margin) {
-                        pdf.addPage();
-                        yPosition = margin;
-                    }
-
-                    pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
-                    yPosition += imgHeight + 5;
-
-                } else {
-                    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-                    const canvasWidth = canvas.width;
-                    const canvasHeight = canvas.height;
-                    let remainingCanvasHeight = canvasHeight;
-                    let canvasY = 0;
-
-                    while (remainingCanvasHeight > 0) {
-                        let availablePageHeight = pdfHeight - yPosition - margin;
-
-                        if (availablePageHeight <= 0) {
-                            pdf.addPage();
-                            yPosition = margin;
-                            availablePageHeight = pdfHeight - yPosition - margin;
-                        }
-
-                        const pageHeightInPixels = (availablePageHeight * canvasWidth) / contentWidth;
-                        const sliceHeight = Math.min(remainingCanvasHeight, pageHeightInPixels);
-                        const sliceHeightMM = (sliceHeight * contentWidth) / canvasWidth;
-
-                        const sliceCanvas = document.createElement('canvas');
-                        sliceCanvas.width = canvasWidth;
-                        sliceCanvas.height = sliceHeight;
-                        sliceCanvas.getContext('2d').drawImage(canvas, 0, canvasY, canvasWidth, sliceHeight, 0, 0, canvasWidth, sliceHeight);
-
-                        pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', margin, yPosition, contentWidth, sliceHeightMM);
-
-                        canvasY += sliceHeight;
-                        remainingCanvasHeight -= sliceHeight;
-                        yPosition += sliceHeightMM;
-                    }
-                    yPosition += 2;
+                if (yPosition + imgHeight > pdfHeight - margin) {
+                    pdf.addPage();
+                    yPosition = margin;
                 }
+
+                pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
+                yPosition += imgHeight + 5;
             }
 
             pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
@@ -405,7 +370,6 @@ $conex->close();
             `;
             }
 
-            // --- INICIO DE CAMBIO: Lógica de desglose modular ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4></div>`;
@@ -443,7 +407,6 @@ $conex->close();
                     desgloseHtml += diaHtml;
                 });
             }
-            // --- FIN DE CAMBIO ---
 
             let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> ${translate('defects_summary')}</h4>`;
             if (isVarios) {
