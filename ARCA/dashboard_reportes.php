@@ -315,7 +315,6 @@ $conex->close();
             fetchReportData(url);
         });
 
-        // --- INICIO DE CAMBIO: Lógica de generación de PDF Híbrida ---
         btnDescargarPdf.addEventListener('click', async () => {
             Swal.fire({ title: translate('generating_pdf'), text: translate('please_wait'), allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
@@ -332,7 +331,6 @@ $conex->close();
             const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             for (const element of allElements) {
-                // Si es la sección de dashboards, tratarla de forma especial
                 if (element.querySelector('.charts-container')) {
                     const dashboardSectionCanvas = await html2canvas(element, { scale: 2, useCORS: true });
                     const imgData = dashboardSectionCanvas.toDataURL('image/png');
@@ -348,7 +346,6 @@ $conex->close();
                     yPosition += imgHeight + 5;
 
                 } else {
-                    // Para todas las demás secciones, usar la lógica de "rebanado"
                     const canvas = await html2canvas(element, { scale: 2, useCORS: true });
                     const canvasWidth = canvas.width;
                     const canvasHeight = canvas.height;
@@ -386,7 +383,6 @@ $conex->close();
             pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
             Swal.close();
         });
-        // --- FIN DE CAMBIO ---
 
 
         function renderizarReporte(data) {
@@ -409,40 +405,45 @@ $conex->close();
             `;
             }
 
+            // --- INICIO DE CAMBIO: Lógica de desglose modular ---
             let desgloseHtml = '';
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
-                desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4>`;
+                desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4></div>`;
                 data.desgloseDiario.forEach(dia => {
                     const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
                     const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                    desgloseHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
+
+                    let diaHtml = `<div class="pdf-section">`;
+                    diaHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
 
                     if (dia.totales) {
                         const rechazadasDia = dia.totales.inspeccionadas - dia.totales.aceptadas;
-                        desgloseHtml += `<p>${translate('day_totals')}: <strong>${dia.totales.inspeccionadas}</strong> ${translate('inspected')}, <strong>${dia.totales.aceptadas}</strong> ${translate('accepted')}, <strong>${rechazadasDia}</strong> ${translate('rejected')}.</p>`;
+                        diaHtml += `<p>${translate('day_totals')}: <strong>${dia.totales.inspeccionadas}</strong> ${translate('inspected')}, <strong>${dia.totales.aceptadas}</strong> ${translate('accepted')}, <strong>${rechazadasDia}</strong> ${translate('rejected')}.</p>`;
                     }
 
                     if (isVarios) {
-                        desgloseHtml += `<table><thead><tr><th>${translate('hour_by_hour')}</th><th>${translate('shift')}</th><th>${translate('inspected')}</th><th>${translate('part_breakdown')}</th><th>${translate('comments')}</th></tr></thead><tbody>`;
+                        diaHtml += `<table><thead><tr><th>${translate('hour_by_hour')}</th><th>${translate('shift')}</th><th>${translate('inspected')}</th><th>${translate('part_breakdown')}</th><th>${translate('comments')}</th></tr></thead><tbody>`;
                         dia.entradas.forEach(entrada => {
                             let partesHtml = '<ul class="part-breakdown">';
                             if(entrada.partes && entrada.partes.length > 0) {
                                 entrada.partes.forEach(p => { partesHtml += `<li><strong>${p.numeroParte}:</strong> ${p.cantidad} pzs</li>`; });
                             } else { partesHtml += `<li>N/A</li>`; }
                             partesHtml += '</ul>';
-                            desgloseHtml += `<tr><td>${entrada.RangoHora || 'N/A'}</td><td>${entrada.turno || 'N/A'}</td><td>${entrada.PiezasInspeccionadas}</td><td>${partesHtml}</td><td>${entrada.Comentarios || ''}</td></tr>`;
+                            diaHtml += `<tr><td>${entrada.RangoHora || 'N/A'}</td><td>${entrada.turno || 'N/A'}</td><td>${entrada.PiezasInspeccionadas}</td><td>${partesHtml}</td><td>${entrada.Comentarios || ''}</td></tr>`;
                         });
-                        desgloseHtml += `</tbody></table>`;
+                        diaHtml += `</tbody></table>`;
                     } else {
-                        desgloseHtml += `<table><thead><tr><th>${translate('hour_by_hour')}</th><th>${translate('shift')}</th><th>${translate('inspected')}</th><th>${translate('accepted')}</th><th>${translate('rejected')}</th><th>${translate('comments')}</th></tr></thead><tbody>`;
+                        diaHtml += `<table><thead><tr><th>${translate('hour_by_hour')}</th><th>${translate('shift')}</th><th>${translate('inspected')}</th><th>${translate('accepted')}</th><th>${translate('rejected')}</th><th>${translate('comments')}</th></tr></thead><tbody>`;
                         dia.entradas.forEach(entrada => {
-                            desgloseHtml += `<tr><td>${entrada.RangoHora || 'N/A'}</td><td>${entrada.turno || 'N/A'}</td><td>${entrada.PiezasInspeccionadas}</td><td>${entrada.PiezasAceptadas}</td><td>${parseInt(entrada.PiezasInspeccionadas) - parseInt(entrada.PiezasAceptadas)}</td><td>${entrada.Comentarios || ''}</td></tr>`;
+                            diaHtml += `<tr><td>${entrada.RangoHora || 'N/A'}</td><td>${entrada.turno || 'N/A'}</td><td>${entrada.PiezasInspeccionadas}</td><td>${entrada.PiezasAceptadas}</td><td>${parseInt(entrada.PiezasInspeccionadas) - parseInt(entrada.PiezasAceptadas)}</td><td>${entrada.Comentarios || ''}</td></tr>`;
                         });
-                        desgloseHtml += `</tbody></table>`;
+                        diaHtml += `</tbody></table>`;
                     }
+                    diaHtml += `</div>`;
+                    desgloseHtml += diaHtml;
                 });
-                desgloseHtml += `</div>`;
             }
+            // --- FIN DE CAMBIO ---
 
             let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> ${translate('defects_summary')}</h4>`;
             if (isVarios) {
