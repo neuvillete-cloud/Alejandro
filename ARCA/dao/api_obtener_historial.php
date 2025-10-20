@@ -37,8 +37,10 @@ $reportes_anteriores_query = $conex->prepare("
         (ri.PiezasInspeccionadas - ri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
         ri.PiezasRetrabajadas, 
         ri.RangoHora, 
-        ri.Comentarios
+        ri.Comentarios,
+        ctm.Razon AS RazonTiempoMuerto
     FROM ReportesInspeccion ri
+    LEFT JOIN CatalogoTiempoMuerto ctm ON ri.IdTiempoMuerto = ctm.IdTiempoMuerto
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
@@ -88,9 +90,27 @@ foreach ($reportes_raw as $reporte) {
             $lotes_encontrados[] = htmlspecialchars($dr['Lote']);
         }
     }
-    $reporte['DefectosConCantidades'] = implode("<br>", $defectos_con_cantidades);
+    $reporte['DefectosConCantidades'] = empty($defectos_con_cantidades) ? 'N/A' : implode("<br>", $defectos_con_cantidades);
     $reporte['LotesEncontrados'] = empty($lotes_encontrados) ? 'N/A' : implode(", ", array_unique($lotes_encontrados));
     $defectos_reporte_query->close();
+
+    // --- OBTENER NUEVOS DEFECTOS ---
+    $nuevos_defectos_query = $conex->prepare("
+        SELECT de.Cantidad, cd.NombreDefecto
+        FROM DefectosEncontrados de
+        JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
+        WHERE de.IdReporte = ?
+    ");
+    $nuevos_defectos_query->bind_param("i", $reporte_id);
+    $nuevos_defectos_query->execute();
+    $nuevos_defectos_result = $nuevos_defectos_query->get_result();
+    $nuevos_defectos_encontrados = [];
+    while ($nd = $nuevos_defectos_result->fetch_assoc()) {
+        $nuevos_defectos_encontrados[] = htmlspecialchars($nd['NombreDefecto']) . " (" . htmlspecialchars($nd['Cantidad']) . ")";
+    }
+    $reporte['NuevosDefectosEncontrados'] = empty($nuevos_defectos_encontrados) ? 'N/A' : implode("<br>", $nuevos_defectos_encontrados);
+    $nuevos_defectos_query->close();
+
 
     $turno_shift_leader = 'N/A';
     if (isset($reporte['RangoHora'])) {
@@ -129,7 +149,9 @@ $conex->close();
             <th>Rechazadas</th>
             <th>Retrabajadas</th>
             <th>Defectos (Cant.)</th>
+            <th>Nuevos Defectos (Cant.)</th>
             <th>No. de Lote</th>
+            <th>Tiempo Muerto</th>
             <th>Comentarios</th>
         </tr>
         </thead>
@@ -147,11 +169,12 @@ $conex->close();
                 <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
                 <td><?php echo htmlspecialchars($reporte['PiezasRetrabajadas']); ?></td>
                 <td><?php echo $reporte['DefectosConCantidades']; ?></td>
+                <td><?php echo $reporte['NuevosDefectosEncontrados']; ?></td>
                 <td><?php echo $reporte['LotesEncontrados']; ?></td>
+                <td><?php echo htmlspecialchars($reporte['RazonTiempoMuerto'] ?? 'No'); ?></td>
                 <td><?php echo htmlspecialchars($reporte['Comentarios']); ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
 </div>
-

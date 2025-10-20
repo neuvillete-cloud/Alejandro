@@ -263,5 +263,3 @@ $conex->close();
 
 </body>
 </html>
-
-
