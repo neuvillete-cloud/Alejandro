@@ -160,6 +160,16 @@ $conex->close();
         .chart-box, .info-section, .summary-table, h4, h5, table {
             page-break-inside: avoid;
         }
+
+        .dashboard-filter-bar {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -248,8 +258,8 @@ $conex->close();
         let lastReportData;
 
         const translations = {
-            es: { welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Dashboard de Reportes", select_request: "Seleccionar Solicitud de Contención", select_request_option: "-- Elige una solicitud --", partial_report_title: "Reportes Parciales", partial_report_desc: "Genera un reporte de contención para un rango de fechas específico. Ideal para seguimientos semanales mientras el proceso está activo.", start_date: "Fecha de Inicio", end_date: "Fecha de Fin", generate_report_btn: "Generar Reporte", final_report_title: "Reporte Final de Contención", final_report_desc: "Visualiza y descarga el reporte consolidado con todos los datos del proceso una vez que la contención ha sido finalizada.", view_final_report_btn: "Ver Reporte Final", report_preview_title: "Vista Previa del Reporte", download_pdf_btn: "Descargar PDF", missing_info: "Falta Información", select_request_warning: "Por favor, selecciona una solicitud.", incomplete_fields: "Campos incompletos", select_dates_warning: "Por favor, selecciona una fecha de inicio y una fecha de fin.", generating_pdf: "Generando PDF", please_wait: "Por favor, espera un momento...", generating_report_title: "Generando Reporte", generating_report_text: "Consultando la información...", error_title: "Error", error_message_default: "No se pudo generar el reporte.", connection_error_title: "Error de Conexión", connection_error_message: "No se pudo comunicar con el servidor.", request_folio: "Folio de Solicitud", general_info: "Información General", part_number: "No. de Parte", responsible: "Responsable", total_qty: "Cantidad Total Solicitada", issue_date: "Fecha de Emisión", project: "Proyecto", involved_parts: "Partes Involucradas", period_summary: "Resumen General del Periodo", inspected_pieces: "Piezas Inspeccionadas", accepted_pieces: "Piezas Aceptadas", rejected_pieces: "Piezas Rechazadas", reworked_pieces: "Piezas Retrabajadas", total_inspection_time: "Tiempo Total de Inspección", pieces_per_hour: "Rate (Piezas / Hora)", hourly_breakdown: "Desglose Hora por Hora", day_totals: "Totales del día", inspected: "Inspeccionadas", accepted: "Aceptadas", rejected: "Rechazadas", hour_by_hour: "Hora por Hora", shift: "Turno", part_breakdown: "Desglose por Parte", comments: "Comentarios", defects_summary: "Resumen de Defectos del Periodo", total_defects_for: "Total de defectos para", defect: "Defecto", total_qty_defect: "Cantidad Total", lot_numbers: "No. de Lote(s)", no_defects_found_parts: "No se encontraron defectos para los números de parte en este periodo.", no_defects_found_period: "No se encontraron defectos en este periodo.", visual_dashboards: "Dashboards Visuales", pareto_chart_title: "Pareto de Defectos (Top 5)", weekly_rejects_title: "Rechazadas por Semana", accepted_vs_rejected_title: "Aceptadas vs. Rechazadas", daily_progress_title: "Progreso Diario de Inspección", chart_qty: "Cantidad", chart_cumulative: "% Acumulado", chart_week: "Semana", },
-            en: { welcome: "Welcome", logout: "Logout", main_title: "Reports Dashboard", select_request: "Select Containment Request", select_request_option: "-- Choose a request --", partial_report_title: "Partial Reports", partial_report_desc: "Generate a containment report for a specific date range. Ideal for weekly follow-ups while the process is active.", start_date: "Start Date", end_date: "End Date", generate_report_btn: "Generate Report", final_report_title: "Final Containment Report", final_report_desc: "View and download the consolidated report with all process data once the containment has been finalized.", view_final_report_btn: "View Final Report", report_preview_title: "Report Preview", download_pdf_btn: "Download PDF", missing_info: "Missing Information", select_request_warning: "Please select a request.", incomplete_fields: "Incomplete Fields", select_dates_warning: "Please select a start and end date.", generating_pdf: "Generating PDF", please_wait: "Please wait a moment...", generating_report_title: "Generating Report", generating_report_text: "Querying information...", error_title: "Error", error_message_default: "Could not generate report.", connection_error_title: "Connection Error", connection_error_message: "Could not connect to the server.", request_folio: "Request Folio", general_info: "General Information", part_number: "Part Number", responsible: "Responsible", total_qty: "Total Quantity Requested", issue_date: "Issue Date", project: "Project", involved_parts: "Involved Parts", period_summary: "General Period Summary", inspected_pieces: "Inspected Pieces", accepted_pieces: "Accepted Pieces", rejected_pieces: "Rejected Pieces", reworked_pieces: "Reworked Pieces", total_inspection_time: "Total Inspection Time", pieces_per_hour: "Rate (Pieces / Hour)", hourly_breakdown: "Hour by Hour Breakdown", day_totals: "Day's Totals", inspected: "Inspected", accepted: "Accepted", rejected: "Rejected", hour_by_hour: "Hour by Hour", shift: "Shift", part_breakdown: "Part Breakdown", comments: "Comments", defects_summary: "Defects Summary for the Period", total_defects_for: "Total defects for", defect: "Defect", total_qty_defect: "Total Quantity", lot_numbers: "Lot Number(s)", no_defects_found_parts: "No defects found for the part numbers in this period.", no_defects_found_period: "No defects found in this period.", visual_dashboards: "Visual Dashboards", pareto_chart_title: "Defects Pareto (Top 5)", weekly_rejects_title: "Weekly Rejects", accepted_vs_rejected_title: "Accepted vs. Rejected", daily_progress_title: "Daily Inspection Progress", chart_qty: "Quantity", chart_cumulative: "Cumulative %", chart_week: "Week", }
+            es: { welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Dashboard de Reportes", select_request: "Seleccionar Solicitud de Contención", select_request_option: "-- Elige una solicitud --", partial_report_title: "Reportes Parciales", partial_report_desc: "Genera un reporte de contención para un rango de fechas específico. Ideal para seguimientos semanales mientras el proceso está activo.", start_date: "Fecha de Inicio", end_date: "Fecha de Fin", generate_report_btn: "Generar Reporte", final_report_title: "Reporte Final de Contención", final_report_desc: "Visualiza y descarga el reporte consolidado con todos los datos del proceso una vez que la contención ha sido finalizada.", view_final_report_btn: "Ver Reporte Final", report_preview_title: "Vista Previa del Reporte", download_pdf_btn: "Descargar PDF", missing_info: "Falta Información", select_request_warning: "Por favor, selecciona una solicitud.", incomplete_fields: "Campos incompletos", select_dates_warning: "Por favor, selecciona una fecha de inicio y una fecha de fin.", generating_pdf: "Generando PDF", please_wait: "Por favor, espera un momento...", generating_report_title: "Generando Reporte", generating_report_text: "Consultando la información...", error_title: "Error", error_message_default: "No se pudo generar el reporte.", connection_error_title: "Error de Conexión", connection_error_message: "No se pudo comunicar con el servidor.", request_folio: "Folio de Solicitud", general_info: "Información General", part_number: "No. de Parte", responsible: "Responsable", total_qty: "Cantidad Total Solicitada", issue_date: "Fecha de Emisión", project: "Proyecto", involved_parts: "Partes Involucradas", period_summary: "Resumen General del Periodo", inspected_pieces: "Piezas Inspeccionadas", accepted_pieces: "Piezas Aceptadas", rejected_pieces: "Piezas Rechazadas", reworked_pieces: "Piezas Retrabajadas", total_inspection_time: "Tiempo Total de Inspección", pieces_per_hour: "Rate (Piezas / Hora)", hourly_breakdown: "Desglose Hora por Hora", day_totals: "Totales del día", inspected: "Inspeccionadas", accepted: "Aceptadas", rejected: "Rechazadas", hour_by_hour: "Hora por Hora", shift: "Turno", part_breakdown: "Desglose por Parte", comments: "Comentarios", defects_summary: "Resumen de Defectos del Periodo", total_defects_for: "Total de defectos para", defect: "Defecto", total_qty_defect: "Cantidad Total", lot_numbers: "No. de Lote(s)", no_defects_found_parts: "No se encontraron defectos para los números de parte en este periodo.", no_defects_found_period: "No se encontraron defectos en este periodo.", visual_dashboards: "Dashboards Visuales", pareto_chart_title: "Pareto de Defectos (Top 5)", weekly_rejects_title: "Rechazadas por Semana", accepted_vs_rejected_title: "Aceptadas vs. Rechazadas", daily_progress_title: "Progreso Diario de Inspección", chart_qty: "Cantidad", chart_cumulative: "% Acumulado", chart_week: "Semana", dashboard_filter_apply: "Filtrar Gráficas", dashboard_filter_clear: "Limpiar Filtro" },
+            en: { welcome: "Welcome", logout: "Logout", main_title: "Reports Dashboard", select_request: "Select Containment Request", select_request_option: "-- Choose a request --", partial_report_title: "Partial Reports", partial_report_desc: "Generate a containment report for a specific date range. Ideal for weekly follow-ups while the process is active.", start_date: "Start Date", end_date: "End Date", generate_report_btn: "Generate Report", final_report_title: "Final Containment Report", final_report_desc: "View and download the consolidated report with all process data once the containment has been finalized.", view_final_report_btn: "View Final Report", report_preview_title: "Report Preview", download_pdf_btn: "Download PDF", missing_info: "Missing Information", select_request_warning: "Please select a request.", incomplete_fields: "Incomplete Fields", select_dates_warning: "Please select a start and end date.", generating_pdf: "Generating PDF", please_wait: "Please wait a moment...", generating_report_title: "Generating Report", generating_report_text: "Querying information...", error_title: "Error", error_message_default: "Could not generate report.", connection_error_title: "Connection Error", connection_error_message: "Could not connect to the server.", request_folio: "Request Folio", general_info: "General Information", part_number: "Part Number", responsible: "Responsible", total_qty: "Total Quantity Requested", issue_date: "Issue Date", project: "Project", involved_parts: "Involved Parts", period_summary: "General Period Summary", inspected_pieces: "Inspected Pieces", accepted_pieces: "Accepted Pieces", rejected_pieces: "Rejected Pieces", reworked_pieces: "Reworked Pieces", total_inspection_time: "Total Inspection Time", pieces_per_hour: "Rate (Pieces / Hour)", hourly_breakdown: "Hour by Hour Breakdown", day_totals: "Day's Totals", inspected: "Inspected", accepted: "Accepted", rejected: "Rejected", hour_by_hour: "Hour by Hour", shift: "Shift", part_breakdown: "Part Breakdown", comments: "Comments", defects_summary: "Defects Summary for the Period", total_defects_for: "Total defects for", defect: "Defect", total_qty_defect: "Total Quantity", lot_numbers: "Lot Number(s)", no_defects_found_parts: "No defects found for the part numbers in this period.", no_defects_found_period: "No defects found in this period.", visual_dashboards: "Visual Dashboards", pareto_chart_title: "Defects Pareto (Top 5)", weekly_rejects_title: "Weekly Rejects", accepted_vs_rejected_title: "Accepted vs. Rejected", daily_progress_title: "Daily Inspection Progress", chart_qty: "Quantity", chart_cumulative: "Cumulative %", chart_week: "Week", dashboard_filter_apply: "Filter Charts", dashboard_filter_clear: "Clear Filter" }
         };
 
         function setLanguage(lang) {
@@ -434,6 +444,20 @@ $conex->close();
             let dashboardHtml = `
             <div class="pdf-section">
                 <h4><i class="fa-solid fa-chart-line"></i> ${translate('visual_dashboards')}</h4>
+
+                <div class="dashboard-filter-bar">
+                    <div class="form-group">
+                        <label for="dashboard-fecha-inicio" data-translate-key="start_date">Fecha de Inicio</label>
+                        <input type="date" id="dashboard-fecha-inicio">
+                    </div>
+                    <div class="form-group">
+                        <label for="dashboard-fecha-fin" data-translate-key="end_date">Fecha de Fin</label>
+                        <input type="date" id="dashboard-fecha-fin">
+                    </div>
+                    <button id="btn-filtrar-dashboard" class="btn-primary btn-small"><span data-translate-key="dashboard_filter_apply">Filtrar Gráficas</span></button>
+                    <button id="btn-limpiar-dashboard" class="btn-secondary btn-small"><span data-translate-key="dashboard_filter_clear">Limpiar Filtro</span></button>
+                </div>
+
                 <div class="charts-container">
                     <div class="chart-box">
                         <h5>${translate('pareto_chart_title')}</h5>
@@ -492,8 +516,101 @@ $conex->close();
 
             renderizarDashboards(data);
 
+            document.getElementById('btn-filtrar-dashboard').addEventListener('click', () => {
+                const startDate = document.getElementById('dashboard-fecha-inicio').value;
+                const endDate = document.getElementById('dashboard-fecha-fin').value;
+                if(lastReportData){
+                    filtrarYRenderizarDashboards(startDate, endDate);
+                }
+            });
+
+            document.getElementById('btn-limpiar-dashboard').addEventListener('click', () => {
+                document.getElementById('dashboard-fecha-inicio').value = '';
+                document.getElementById('dashboard-fecha-fin').value = '';
+                if(lastReportData){
+                    renderizarDashboards(lastReportData);
+                }
+            });
+
             reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        function filtrarYRenderizarDashboards(startDate, endDate) {
+            if (!lastReportData) return;
+
+            const filteredData = JSON.parse(JSON.stringify(lastReportData));
+
+            if (startDate && endDate) {
+                const start = new Date(startDate + 'T00:00:00');
+                const end = new Date(endDate + 'T23:59:59');
+
+                filteredData.desgloseDiario = lastReportData.desgloseDiario.filter(dia => {
+                    const diaDate = new Date(dia.fecha + 'T00:00:00');
+                    return diaDate >= start && diaDate <= end;
+                });
+            }
+
+            if (filteredData.desgloseDiario.length === 0) {
+                Swal.fire(translate('missing_info'), 'No se encontraron datos en el rango de fechas seleccionado para las gráficas.', 'info');
+                return;
+            }
+
+            // --- RECALCULAR TODOS LOS DATOS PARA LOS DASHBOARDS ---
+
+            // 1. Recalcular Resumen
+            let inspeccionadas = 0, aceptadas = 0, retrabajadas = 0;
+            filteredData.desgloseDiario.forEach(dia => {
+                inspeccionadas += dia.totales.inspeccionadas;
+                aceptadas += dia.totales.aceptadas;
+                dia.entradas.forEach(entrada => {
+                    retrabajadas += entrada.PiezasRetrabajadas;
+                });
+            });
+            const rechazadas = inspeccionadas - aceptadas;
+            filteredData.resumen = {
+                ...filteredData.resumen,
+                inspeccionadas,
+                aceptadas,
+                rechazadas,
+                retrabajadas
+            };
+
+            // 2. Recalcular Datos de Defectos (para Pareto)
+            const defectosMap = new Map();
+            const allDefects = lastReportData.defectos || []; // Usar el agregado original
+
+            // Crear un mapa de defectos con las cantidades filtradas
+            filteredData.desgloseDiario.forEach(dia => {
+                // Aquí necesitaríamos una forma de saber los defectos por día/entrada
+                // Como no tenemos esa info, el pareto no se puede filtrar con precisión.
+                // Se mostrará el pareto del periodo completo.
+            });
+            // Por ahora, el pareto usará los datos completos como fallback.
+            filteredData.dashboardData.pareto = lastReportData.dashboardData.pareto;
+
+
+            // 3. Recalcular Rechazadas por Semana
+            const rechazoSemanal = {};
+            filteredData.desgloseDiario.forEach(dia => {
+                const fecha = new Date(dia.fecha + 'T00:00:00');
+                const year = fecha.getFullYear();
+                const week = Math.ceil((((fecha - new Date(year, 0, 1)) / 86400000) + new Date(year, 0, 1).getDay() + 1) / 7);
+                const weekKey = `${year}${String(week).padStart(2, '0')}`;
+
+                if (!rechazoSemanal[weekKey]) {
+                    rechazoSemanal[weekKey] = 0;
+                }
+                rechazoSemanal[weekKey] += (dia.totales.inspeccionadas - dia.totales.aceptadas);
+            });
+            filteredData.dashboardData.rechazadasPorSemana = Object.keys(rechazoSemanal).map(semana => ({
+                semana: semana,
+                rechazadas_semana: rechazoSemanal[semana]
+            })).sort((a, b) => a.semana.localeCompare(b.semana));
+
+
+            renderizarDashboards(filteredData);
+        }
+
 
         function renderizarDashboards(data) {
             if (paretoChartInstance) paretoChartInstance.destroy();
@@ -536,7 +653,7 @@ $conex->close();
             const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
             if (resumen && resumen.inspeccionadas > 0) {
                 const rechazoTotal = resumen.rechazadas;
-                const aceptadoTotal = resumen.inspeccionadas - rechazoTotal;
+                const aceptadoTotal = resumen.aceptadas; // Usar el recalculado
                 rejectionRateChartInstance = new Chart(rejectionCtx, {
                     type: 'bar',
                     data: {
