@@ -611,7 +611,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 select_defect_option: "Seleccione un defecto",
                 qty_label: "Cantidad de Piezas",
                 qty_placeholder: "Cantidad con este defecto...",
-                evidence_photo_label: "Foto de Evidencia",
+                evidence_photo_label: "Foto de Evidencia (Opcional)",
                 current_file_info: "Archivo actual:",
                 view_photo: "Ver foto",
             },
@@ -697,7 +697,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 select_defect_option: "Select a defect",
                 qty_label: "Quantity of Pieces",
                 qty_placeholder: "Quantity with this defect...",
-                evidence_photo_label: "Evidence Photo",
+                evidence_photo_label: "Evidence Photo (Optional)",
                 current_file_info: "Current file:",
                 view_photo: "View photo",
             }
@@ -910,11 +910,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         </div>
                     </div>
                     <div class="form-group">
-                        <label data-translate-key="evidence_photo_label">Foto de Evidencia</label>
+                        <label data-translate-key="evidence_photo_label">Foto de Evidencia (Opcional)</label>
                         <label class="file-upload-label" for="nuevoDefectoFoto-${currentCounter}">
                             <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="${translate('select_file')}" data-translate-key="select_file">${translate('select_file')}</span>
                         </label>
-                        <input type="file" id="nuevoDefectoFoto-${currentCounter}" name="nuevos_defectos[${currentCounter}][foto]" accept="image/*" ${rutaFoto ? '' : 'required'}>
+                        <input type="file" id="nuevoDefectoFoto-${currentCounter}" name="nuevos_defectos[${currentCounter}][foto]" accept="image/*">
                         ${rutaFoto ? `<p class="current-file-info"><span data-translate-key="current_file_info">Archivo actual:</span> <a href="${rutaFoto}" target="_blank" data-translate-key="view_photo">Ver foto</a> (Se reemplazará si subes uno nuevo)</p>
                                        <input type="hidden" name="nuevos_defectos[${currentCounter}][foto_existente]" value="${rutaFoto}">
                                        <input type="hidden" name="nuevos_defectos[${currentCounter}][idDefectoEncontrado]" value="${id}">` : ''}
@@ -1187,17 +1187,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         nuevoDefectoCounter = 0;
                         if (nuevosDefectos && nuevosDefectos.length > 0) {
                             nuevosDefectos.forEach(defecto => {
-                                const newBlock = addNuevoDefectoBlock(
+                                addNuevoDefectoBlock(
                                     defecto.IdDefectoEncontrado,
                                     defecto.IdDefectoCatalogo,
                                     defecto.Cantidad,
                                     defecto.RutaFotoEvidencia,
                                     defecto.NumeroParte
                                 );
-                                const fileInput = newBlock.querySelector(`input[type="file"]`);
-                                if (defecto.RutaFotoEvidencia) {
-                                    fileInput.removeAttribute('required');
-                                }
                             });
                         }
 

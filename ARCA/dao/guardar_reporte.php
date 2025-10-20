@@ -27,6 +27,7 @@ function sanitizarNombreArchivo($nombre) {
 function procesarArchivoSubido($archivo, $subdirectorio, $prefijo) {
     global $baseUrl;
 
+    // Esta validación ahora se hace antes de llamar a la función si el archivo es opcional
     if (!isset($archivo) || $archivo['error'] === UPLOAD_ERR_NO_FILE) {
         throw new Exception("No se ha seleccionado ningún archivo para el defecto.");
     }
@@ -169,7 +170,7 @@ try {
         }
     }
 
-    // 4. Procesar Nuevos Defectos Encontrados
+    // 4. Procesar Nuevos Defectos Encontrados (con subida de archivo opcional)
     if (isset($_POST['nuevos_defectos']) && is_array($_POST['nuevos_defectos'])) {
         foreach ($_POST['nuevos_defectos'] as $tempId => $defectoData) {
             $cantidad = intval($defectoData['cantidad']);
@@ -177,23 +178,32 @@ try {
                 $idDefectoCatalogo = intval($defectoData['id']);
                 $parte = ($isVariosPartes && isset($defectoData['parte'])) ? trim($defectoData['parte']) : null;
 
-                $foto_para_procesar = [
-                    'name' => $_FILES['nuevos_defectos']['name'][$tempId]['foto'],
-                    'type' => $_FILES['nuevos_defectos']['type'][$tempId]['foto'],
-                    'tmp_name' => $_FILES['nuevos_defectos']['tmp_name'][$tempId]['foto'],
-                    'error' => $_FILES['nuevos_defectos']['error'][$tempId]['foto'],
-                    'size' => $_FILES['nuevos_defectos']['size'][$tempId]['foto']
-                ];
+                $rutaFotoEvidencia = null; // Inicializar como nulo
 
-                $rutaFotoEvidencia = procesarArchivoSubido($foto_para_procesar, 'imagenes/imagenesDefectos/', "nuevo_defecto_reporte_{$lastIdReporte}_");
+                // Verificar si se subió un archivo para este defecto
+                if (isset($_FILES['nuevos_defectos']['name'][$tempId]['foto']) && $_FILES['nuevos_defectos']['error'][$tempId]['foto'] === UPLOAD_ERR_OK) {
+                    $foto_para_procesar = [
+                        'name' => $_FILES['nuevos_defectos']['name'][$tempId]['foto'],
+                        'type' => $_FILES['nuevos_defectos']['type'][$tempId]['foto'],
+                        'tmp_name' => $_FILES['nuevos_defectos']['tmp_name'][$tempId]['foto'],
+                        'error' => $_FILES['nuevos_defectos']['error'][$tempId]['foto'],
+                        'size' => $_FILES['nuevos_defectos']['size'][$tempId]['foto']
+                    ];
+                    // Si hay archivo, se procesa
+                    $rutaFotoEvidencia = procesarArchivoSubido($foto_para_procesar, 'imagenes/imagenesDefectos/', "nuevo_defecto_reporte_{$lastIdReporte}_");
+                }
 
+                // Insertar en la base de datos (rutaFotoEvidencia puede ser null)
                 $stmt_nuevo_defecto = $conex->prepare("INSERT INTO DefectosEncontrados (IdReporte, IdDefectoCatalogo, Cantidad, RutaFotoEvidencia, NumeroParte) VALUES (?, ?, ?, ?, ?)");
                 $stmt_nuevo_defecto->bind_param("iiiss", $lastIdReporte, $idDefectoCatalogo, $cantidad, $rutaFotoEvidencia, $parte);
 
                 if (!$stmt_nuevo_defecto->execute()) {
-                    $rutaFisicaToDelete = str_replace($baseUrl, rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/AleTest/ARCA/', $rutaFotoEvidencia);
-                    if (file_exists($rutaFisicaToDelete)) {
-                        unlink($rutaFisicaToDelete);
+                    // Si la inserción falla y se había subido un archivo, se intenta eliminarlo
+                    if ($rutaFotoEvidencia) {
+                        $rutaFisicaToDelete = str_replace($baseUrl, rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/AleTest/ARCA/', $rutaFotoEvidencia);
+                        if (file_exists($rutaFisicaToDelete)) {
+                            unlink($rutaFisicaToDelete);
+                        }
                     }
                     throw new Exception("Error al guardar el nuevo defecto #{$tempId} en la base de datos: " . $stmt_nuevo_defecto->error);
                 }
@@ -201,6 +211,7 @@ try {
             }
         }
     }
+
 
     $conex->commit();
     echo json_encode(['status' => 'success', 'message' => 'Reporte de inspección guardado exitosamente.']);
@@ -212,4 +223,3 @@ try {
 
 $conex->close();
 ?>
-
