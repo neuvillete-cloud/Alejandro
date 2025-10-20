@@ -95,9 +95,11 @@ $reportes_anteriores_query = $conex->prepare("
         ri.PiezasRetrabajadas, 
         COALESCE(ri.RangoHora, crh.RangoHora) AS RangoHora, 
         ri.Comentarios,
-        ri.TiempoInspeccion
+        ri.TiempoInspeccion,
+        ctm.Razon AS RazonTiempoMuerto
     FROM ReportesInspeccion ri
     LEFT JOIN CatalogoRangosHoras crh ON ri.IdRangoHora = crh.IdRangoHora
+    LEFT JOIN CatalogoTiempoMuerto ctm ON ri.IdTiempoMuerto = ctm.IdTiempoMuerto
     WHERE ri.IdSolicitud = ? ORDER BY ri.FechaRegistro DESC
 ");
 $reportes_anteriores_query->bind_param("i", $idSolicitud);
@@ -145,8 +147,26 @@ foreach ($reportes_raw as $reporte) {
             $lotes_encontrados[] = htmlspecialchars($dr['Lote']);
         }
     }
-    $reporte['DefectosConCantidades'] = implode("<br>", $defectos_con_cantidades);
+    $reporte['DefectosConCantidades'] = empty($defectos_con_cantidades) ? 'N/A' : implode("<br>", $defectos_con_cantidades);
     $reporte['LotesEncontrados'] = empty($lotes_encontrados) ? 'N/A' : implode(", ", array_unique($lotes_encontrados));
+    $defectos_reporte_query->close();
+
+    // --- NUEVO: OBTENER NUEVOS DEFECTOS ---
+    $nuevos_defectos_query = $conex->prepare("
+        SELECT de.Cantidad, cd.NombreDefecto
+        FROM DefectosEncontrados de
+        JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
+        WHERE de.IdReporte = ?
+    ");
+    $nuevos_defectos_query->bind_param("i", $reporte_id);
+    $nuevos_defectos_query->execute();
+    $nuevos_defectos_result = $nuevos_defectos_query->get_result();
+    $nuevos_defectos_encontrados = [];
+    while ($nd = $nuevos_defectos_result->fetch_assoc()) {
+        $nuevos_defectos_encontrados[] = htmlspecialchars($nd['NombreDefecto']) . " (" . htmlspecialchars($nd['Cantidad']) . ")";
+    }
+    $reporte['NuevosDefectosEncontrados'] = empty($nuevos_defectos_encontrados) ? 'N/A' : implode("<br>", $nuevos_defectos_encontrados);
+    $nuevos_defectos_query->close();
 
     $turno_shift_leader = 'N/A';
     if (isset($reporte['RangoHora'])) {
@@ -478,7 +498,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         <th data-translate-key="th_rejected">Rechazadas</th>
                         <th data-translate-key="th_reworked">Retrabajadas</th>
                         <th data-translate-key="th_defects_qty">Defectos (Cant.)</th>
+                        <th data-translate-key="th_new_defects_qty">Nuevos Defectos (Cant.)</th>
                         <th data-translate-key="th_lot_number">No. de Lote</th>
+                        <th data-translate-key="th_downtime">Tiempo Muerto</th>
                         <th data-translate-key="th_comments">Comentarios</th>
                         <th data-translate-key="th_actions">Acciones</th>
                     </tr>
@@ -497,7 +519,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRetrabajadas']); ?></td>
                             <td><?php echo $reporte['DefectosConCantidades']; ?></td>
+                            <td><?php echo $reporte['NuevosDefectosEncontrados']; ?></td>
                             <td><?php echo $reporte['LotesEncontrados']; ?></td>
+                            <td><?php echo htmlspecialchars($reporte['RazonTiempoMuerto'] ?? 'No'); ?></td>
                             <td><?php echo htmlspecialchars($reporte['Comentarios']); ?></td>
                             <td>
                                 <button class="btn-edit-reporte btn-primary btn-small" data-id="<?php echo $reporte['IdReporte']; ?>"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -599,7 +623,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 th_rejected: "Rechazadas",
                 th_reworked: "Retrabajadas",
                 th_defects_qty: "Defectos (Cant.)",
+                th_new_defects_qty: "Nuevos Defectos (Cant.)",
                 th_lot_number: "No. de Lote",
+                th_downtime: "Tiempo Muerto",
                 th_comments: "Comentarios",
                 th_actions: "Acciones",
                 no_history_records: "Aún no hay registros de inspección para esta solicitud.",
@@ -685,7 +711,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 th_rejected: "Rejected",
                 th_reworked: "Reworked",
                 th_defects_qty: "Defects (Qty.)",
+                th_new_defects_qty: "New Defects (Qty.)",
                 th_lot_number: "Lot No.",
+                th_downtime: "Downtime",
                 th_comments: "Comments",
                 th_actions: "Actions",
                 no_history_records: "There are no inspection records for this request yet.",
