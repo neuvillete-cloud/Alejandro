@@ -161,7 +161,6 @@ $conex->close();
             page-break-inside: avoid;
         }
 
-        /* --- INICIO DE CAMBIOS: Estilos para los filtros del dashboard --- */
         .dashboard-filter-bar {
             display: flex;
             flex-wrap: wrap;
@@ -193,7 +192,6 @@ $conex->close();
             background-color: #e9ecef;
             border-color: #ced4da;
         }
-        /* --- FIN DE CAMBIOS --- */
     </style>
 </head>
 <body>
@@ -655,7 +653,7 @@ $conex->close();
                     data: {
                         labels: paretoLabels,
                         datasets: [
-                            { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#5c85ad', yAxisID: 'y' },
+                            { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70', yAxisID: 'y' },
                             { label: translate('chart_cumulative'), data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' }
                         ]
                     },
@@ -669,7 +667,7 @@ $conex->close();
                 const weeklyCounts = dashboardData.rechazadasPorSemana.map(item => item.rechazadas_semana);
                 weeklyRejectsChartInstance = new Chart(weeklyCtx, {
                     type: 'line',
-                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#4a6984', backgroundColor: 'rgba(74, 105, 132, 0.2)', fill: true, tension: 0.1 }] },
+                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
                     options: { responsive: true, scales: { y: { beginAtZero: true } } }
                 });
             }
@@ -677,14 +675,14 @@ $conex->close();
             const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
             if (resumen && resumen.inspeccionadas > 0) {
                 const rechazoTotal = resumen.rechazadas;
-                const aceptadoTotal = resumen.aceptadas; // Usar el recalculado
+                const aceptadoTotal = resumen.aceptadas;
                 rejectionRateChartInstance = new Chart(rejectionCtx, {
                     type: 'bar',
                     data: {
                         labels: [''],
                         datasets: [
                             { label: translate('rejected'), data: [rechazoTotal], backgroundColor: '#a83232' },
-                            { label: translate('accepted'), data: [aceptadoTotal], backgroundColor: '#28a745' }
+                            { label: translate('accepted'), data: [aceptadoTotal], backgroundColor: '#69A032' }
                         ]
                     },
                     options: { indexAxis: 'y', responsive: true, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { legend: { position: 'top' } } }
@@ -702,7 +700,7 @@ $conex->close();
             });
             dailyProgressChartInstance = new Chart(dailyCtx, {
                 type: 'bar',
-                data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#8ab4d7' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#28a745' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
+                data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
                 options: { responsive: true, scales: { y: { beginAtZero: true } } }
             });
         }
