@@ -161,8 +161,10 @@ $conex->close();
             page-break-inside: avoid;
         }
 
+        /* --- INICIO DE CAMBIOS: Estilos para los filtros del dashboard --- */
         .dashboard-filter-bar {
             display: flex;
+            flex-wrap: wrap;
             gap: 15px;
             align-items: flex-end;
             margin-bottom: 20px;
@@ -170,6 +172,28 @@ $conex->close();
             background-color: #f8f9fa;
             border-radius: 8px;
         }
+        .dashboard-filter-bar .form-group {
+            margin-bottom: 0;
+        }
+        .dashboard-filter-bar .btn-primary,
+        .dashboard-filter-bar .btn-secondary {
+            padding: 8px 15px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: auto;
+        }
+        #btn-limpiar-dashboard {
+            background-color: transparent;
+            border: 1px solid var(--color-borde);
+            color: #555;
+        }
+        #btn-limpiar-dashboard:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* --- FIN DE CAMBIOS --- */
     </style>
 </head>
 <body>
@@ -454,8 +478,8 @@ $conex->close();
                         <label for="dashboard-fecha-fin" data-translate-key="end_date">Fecha de Fin</label>
                         <input type="date" id="dashboard-fecha-fin">
                     </div>
-                    <button id="btn-filtrar-dashboard" class="btn-primary btn-small"><span data-translate-key="dashboard_filter_apply">Filtrar Gráficas</span></button>
-                    <button id="btn-limpiar-dashboard" class="btn-secondary btn-small"><span data-translate-key="dashboard_filter_clear">Limpiar Filtro</span></button>
+                    <button id="btn-filtrar-dashboard" class="btn-primary"><i class="fa-solid fa-filter"></i> <span data-translate-key="dashboard_filter_apply">Filtrar Gráficas</span></button>
+                    <button id="btn-limpiar-dashboard" class="btn-secondary"><i class="fa-solid fa-times"></i> <span data-translate-key="dashboard_filter_clear">Limpiar Filtro</span></button>
                 </div>
 
                 <div class="charts-container">
