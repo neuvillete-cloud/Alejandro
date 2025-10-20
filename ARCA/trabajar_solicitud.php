@@ -233,27 +233,31 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 <header class="header">
     <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
     <div class="user-info">
-        <span>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
-        <button class="logout-btn" onclick="window.location.href='dao/logout.php'">Cerrar Sesión <i class="fa-solid fa-right-from-bracket"></i></button>
+        <div class="language-selector">
+            <button type="button" class="lang-btn" data-lang="es">ES</button>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <span><span data-translate-key="welcome">Bienvenido</span>, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
+        <button class="logout-btn" onclick="window.location.href='dao/logout.php'"><span data-translate-key="logout">Cerrar Sesión</span> <i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
 </header>
 
 <main class="container">
     <div class="form-container">
-        <h1><i class="fa-solid fa-hammer"></i> Reporte de Inspección - Folio S-<?php echo str_pad($solicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></h1>
+        <h1><i class="fa-solid fa-hammer"></i> <span data-translate-key="main_title">Reporte de Inspección</span> - <span data-translate-key="folio">Folio</span> S-<?php echo str_pad($solicitud['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></h1>
 
         <div class="info-row">
-            <p><strong>No. de Parte:</strong> <span><?php echo $numeroParte; ?></span></p>
-            <p><strong>Responsable:</strong> <span><?php echo $nombreResponsable; ?></span></p>
-            <p><strong>Cantidad Total:</strong> <span id="cantidadTotalSolicitada"><?php echo $cantidadSolicitada; ?></span></p>
-            <p><strong>Defectos:</strong> <span><?php echo $nombresDefectosStr; ?></span></p>
+            <p><strong data-translate-key="part_number">No. de Parte:</strong> <span><?php echo $numeroParte; ?></span></p>
+            <p><strong data-translate-key="responsible">Responsable:</strong> <span><?php echo $nombreResponsable; ?></span></p>
+            <p><strong data-translate-key="total_qty">Cantidad Total:</strong> <span id="cantidadTotalSolicitada"><?php echo $cantidadSolicitada; ?></span></p>
+            <p><strong data-translate-key="defects">Defectos:</strong> <span><?php echo $nombresDefectosStr; ?></span></p>
         </div>
 
         <?php if ($mostrarVisorPDF): ?>
             <fieldset>
-                <legend><i class="fa-solid fa-file-shield"></i> Método de Trabajo Aprobado</legend>
+                <legend><i class="fa-solid fa-file-shield"></i> <span data-translate-key="approved_method_title">Método de Trabajo Aprobado</span></legend>
                 <div class="form-actions" style="margin-bottom: 15px;">
-                    <button type="button" id="togglePdfViewerBtn" class="btn-secondary"><i class="fa-solid fa-eye"></i> Ver Método de Trabajo</button>
+                    <button type="button" id="togglePdfViewerBtn" class="btn-secondary"><i class="fa-solid fa-eye"></i> <span data-translate-key="view_method_btn">Ver Método de Trabajo</span></button>
                 </div>
                 <div id="pdfViewerWrapper" style="display: none;">
                     <div class="pdf-viewer-container">
@@ -266,12 +270,12 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         <?php
         $mostrarFormularioPrincipal = false;
         if ($solicitud['IdMetodo'] === NULL) {
-            echo "<div class='notification-box warning'><i class='fa-solid fa-triangle-exclamation'></i> <strong>Acción Requerida:</strong> Para continuar, por favor, sube el método de trabajo para esta solicitud.</div>";
+            echo "<div class='notification-box warning'><i class='fa-solid fa-triangle-exclamation'></i> <strong data-translate-key='action_required'>Acción Requerida:</strong> <span data-translate-key='upload_method_prompt'>Para continuar, por favor, sube el método de trabajo para esta solicitud.</span></div>";
         } elseif ($solicitud['EstatusAprobacion'] === 'Rechazado') {
-            echo "<div class='notification-box error'><i class='fa-solid fa-circle-xmark'></i> <strong>Método Rechazado:</strong> El método de trabajo anterior fue rechazado. Por favor, sube una versión corregida.</div>";
+            echo "<div class='notification-box error'><i class='fa-solid fa-circle-xmark'></i> <strong data-translate-key='method_rejected'>Método Rechazado:</strong> <span data-translate-key='upload_corrected_version'>El método de trabajo anterior fue rechazado. Por favor, sube una versión corregida.</span></div>";
         } else {
             if ($solicitud['IdMetodo'] !== NULL && $solicitud['EstatusAprobacion'] === 'Pendiente') {
-                echo "<div class='notification-box info'><i class='fa-solid fa-clock'></i> <strong>Aviso:</strong> El método de trabajo está pendiente de aprobación. Puedes continuar con el registro.</div>";
+                echo "<div class='notification-box info'><i class='fa-solid fa-clock'></i> <strong data-translate-key='notice'>Aviso:</strong> <span data-translate-key='method_pending_approval'>El método de trabajo está pendiente de aprobación. Puedes continuar con el registro.</span></div>";
             }
             if ($solicitud['EstatusAprobacion'] === 'Aprobado' || $solicitud['EstatusAprobacion'] === 'Pendiente') {
                 $mostrarFormularioPrincipal = true;
@@ -288,8 +292,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 echo "<div id='mensajeInspeccionCompletada' class='notification-box info' style='margin-top: 20px; display: flex; align-items: flex-start; gap: 12px;'>
                         <i class='fa-solid fa-circle-check' style='font-size: 1.2em; margin-top: 2px;'></i>
                         <div>
-                            <strong>Inspección Completada:</strong> Ya se ha registrado la cantidad total de piezas a inspeccionar ({$totalPiezasInspeccionadasYa} / {$cantidadSolicitada}).
-                            <br>No se pueden crear nuevos reportes, pero puede <strong>editar o eliminar</strong> registros existentes si es necesario.
+                            <strong data-translate-key='inspection_complete_title'>Inspección Completada:</strong> <span data-translate-key='inspection_complete_desc'>Ya se ha registrado la cantidad total de piezas a inspeccionar ({$totalPiezasInspeccionadasYa} / {$cantidadSolicitada}).
+                            <br>No se pueden crear nuevos reportes, pero puede <strong>editar o eliminar</strong> registros existentes si es necesario.</span>
                         </div>
                       </div>";
             }
@@ -298,49 +302,47 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                 <input type="hidden" name="idReporte" id="idReporte" value="">
                 <fieldset>
-                    <legend><i class="fa-solid fa-chart-simple"></i> Resumen de Inspección</legend>
+                    <legend><i class="fa-solid fa-chart-simple"></i> <span data-translate-key="summary_title">Resumen de Inspección</span></legend>
 
                     <?php if ($isVariosPartes): ?>
                         <div id="desglose-partes-container">
-                            <label>Desglose de Piezas por No. de Parte</label>
+                            <label data-translate-key="part_breakdown_label">Desglose de Piezas por No. de Parte</label>
                             <div id="partes-inspeccionadas-container"></div>
-                            <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> Añadir No. de Parte</button>
+                            <button type="button" id="btn-add-parte-inspeccionada" class="btn-secondary btn-small"><i class="fa-solid fa-plus"></i> <span data-translate-key="add_part_number_btn">Añadir No. de Parte</span></button>
                         </div>
                     <?php endif; ?>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Total de Piezas Inspeccionadas</label>
+                            <label data-translate-key="total_inspected">Total de Piezas Inspeccionadas</label>
                             <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required <?php if($isVariosPartes) echo 'readonly style="background-color: #e9ecef;"'; ?>>
                         </div>
-                        <div class="form-group"><label>Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
-                        <div class="form-group"><label>Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
-                        <div class="form-group"><label>Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
+                        <div class="form-group"><label data-translate-key="accepted_pieces">Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
+                        <div class="form-group"><label data-translate-key="reworked_pieces">Piezas Retrabajadas</label><input type="number" name="piezasRetrabajadas" id="piezasRetrabajadas" min="0" value="0" required></div>
+                        <div class="form-group"><label data-translate-key="rejected_pieces_calc">Piezas Rechazadas (Cálculo)</label><input type="text" id="piezasRechazadasCalculadas" value="0" readonly style="background-color: #e9ecef; cursor: not-allowed;"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Nombre del Inspector</label><input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required></div>
-                        <div class="form-group"><label>Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
+                        <div class="form-group"><label data-translate-key="inspector_name">Nombre del Inspector</label><input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required></div>
+                        <div class="form-group"><label data-translate-key="inspection_date">Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
                     </div>
 
-                    <!-- --- INICIO DE CAMBIOS EN HTML --- -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Hora de Inicio</label>
+                            <label data-translate-key="start_time">Hora de Inicio</label>
                             <input type="time" name="horaInicio" id="horaInicio" required>
                         </div>
                         <div class="form-group">
-                            <label>Hora de Fin</label>
+                            <label data-translate-key="end_time">Hora de Fin</label>
                             <input type="time" name="horaFin" id="horaFin" required>
                         </div>
                     </div>
                     <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
-                    <!-- --- FIN DE CAMBIOS EN HTML --- -->
 
                 </fieldset>
 
-                <fieldset><legend><i class="fa-solid fa-clipboard-check"></i> Clasificación de Defectos Originales</legend>
+                <fieldset><legend><i class="fa-solid fa-clipboard-check"></i> <span data-translate-key="original_defects_title">Clasificación de Defectos Originales</span></legend>
                     <div class="original-defect-list">
-                        <p class="piezas-rechazadas-info">Piezas rechazadas disponibles para clasificar: <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
+                        <p class="piezas-rechazadas-info"><span data-translate-key="available_to_classify">Piezas rechazadas disponibles para clasificar:</span> <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
                         <?php if ($defectos_originales_formulario->num_rows > 0): ?>
                             <?php mysqli_data_seek($defectos_originales_formulario, 0); while($defecto = $defectos_originales_formulario->fetch_assoc()): ?>
                                 <div class="form-group" data-id-defecto-original="<?php echo $defecto['IdDefecto']; ?>">
@@ -361,39 +363,37 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                                             <div style="width: 42px; flex-shrink: 0;"></div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> Añadir Lote</button>
+                                    <button type="button" class="btn-add-batch btn-secondary btn-small" data-defecto-id="<?php echo $defecto['IdDefecto']; ?>"><i class="fa-solid fa-plus"></i> <span data-translate-key="add_lot_btn">Añadir Lote</span></button>
                                 </div>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <p>No hay defectos originales registrados en esta solicitud.</p>
+                            <p data-translate-key="no_original_defects">No hay defectos originales registrados en esta solicitud.</p>
                         <?php endif; ?>
                     </div>
                 </fieldset>
 
-                <fieldset><legend><i class="fa-solid fa-magnifying-glass-plus"></i> Nuevos Defectos Encontrados (Opcional)</legend>
+                <fieldset><legend><i class="fa-solid fa-magnifying-glass-plus"></i> <span data-translate-key="new_defects_title">Nuevos Defectos Encontrados (Opcional)</span></legend>
                     <div id="nuevos-defectos-container"></div>
-                    <button type="button" id="btn-add-nuevo-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> Añadir Nuevo Defecto</button>
+                    <button type="button" id="btn-add-nuevo-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> <span data-translate-key="add_new_defect_btn">Añadir Nuevo Defecto</span></button>
                 </fieldset>
 
-                <fieldset><legend><i class="fa-solid fa-stopwatch"></i> Tiempos y Comentarios de la Sesión</legend>
-                    <!-- --- INICIO DE CAMBIO EN HTML --- -->
+                <fieldset><legend><i class="fa-solid fa-stopwatch"></i> <span data-translate-key="session_time_comments_title">Tiempos y Comentarios de la Sesión</span></legend>
                     <div class="form-group">
-                        <label>Tiempo de Inspección (Esta Sesión)</label>
+                        <label data-translate-key="inspection_time_session">Tiempo de Inspección (Esta Sesión)</label>
                         <input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="" readonly style="background-color: #e9ecef; cursor: not-allowed;">
                     </div>
-                    <!-- --- FIN DE CAMBIO EN HTML --- -->
 
                     <div class="form-group">
-                        <label>¿Hubo Tiempo Muerto?</label>
-                        <button type="button" id="toggleTiempoMuertoBtn" class="btn-secondary" style="width: auto; padding: 10px 15px;">No <i class="fa-solid fa-toggle-off"></i></button>
+                        <label data-translate-key="downtime_question">¿Hubo Tiempo Muerto?</label>
+                        <button type="button" id="toggleTiempoMuertoBtn" class="btn-secondary" style="width: auto; padding: 10px 15px;"><span data-translate-key="no">No</span> <i class="fa-solid fa-toggle-off"></i></button>
                     </div>
 
                     <div id="tiempoMuertoSection" class="hidden-section">
                         <div class="form-group">
-                            <label>Razón de Tiempo Muerto</label>
+                            <label data-translate-key="downtime_reason">Razón de Tiempo Muerto</label>
                             <div class="select-with-button">
                                 <select name="idTiempoMuerto" id="idTiempoMuerto">
-                                    <option value="">Seleccione una razón</option>
+                                    <option value="" data-translate-key="select_reason">Seleccione una razón</option>
                                     <?php mysqli_data_seek($razones_tiempo_muerto, 0); while($razon = $razones_tiempo_muerto->fetch_assoc()): ?>
                                         <option value="<?php echo $razon['IdTiempoMuerto']; ?>"><?php echo htmlspecialchars($razon['Razon']); ?></option>
                                     <?php endwhile; ?>
@@ -403,26 +403,24 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         </div>
                     </div>
 
-                    <div class="form-group"><label>Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
+                    <div class="form-group"><label data-translate-key="additional_comments">Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
                 </fieldset>
 
-                <div class="form-actions"><button type="submit" class="btn-primary" id="btnGuardarReporte">Guardar Reporte de Sesión</button></div>
+                <div class="form-actions"><button type="submit" class="btn-primary" id="btnGuardarReporte"><span data-translate-key="save_session_report_btn">Guardar Reporte de Sesión</span></button></div>
             </form>
 
 
             <?php if (empty($solicitud['TiempoTotalInspeccion'])): ?>
                 <form id="tiempoTotalForm" action="dao/finalizar_reporte.php" method="POST" style="margin-top: 40px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
-                    <fieldset><legend><i class="fa-solid fa-hourglass-end"></i> Finalizar Contención (Tiempo Total)</legend>
-                        <!-- --- INICIO DE CAMBIO EN HTML --- -->
-                        <p class="info-text">El tiempo total de las sesiones ya registradas es de <strong><?php echo $tiempoTotalFormateado; ?></strong>. Al finalizar, este será el valor guardado.</p>
+                    <fieldset><legend><i class="fa-solid fa-hourglass-end"></i> <span data-translate-key="finalize_containment_title">Finalizar Contención (Tiempo Total)</span></legend>
+                        <p class="info-text"><span data-translate-key="total_time_registered_desc">El tiempo total de las sesiones ya registradas es de</span> <strong><?php echo $tiempoTotalFormateado; ?></strong>. <span data-translate-key="total_time_finalize_desc">Al finalizar, este será el valor guardado.</span></p>
                         <input type="hidden" name="tiempoTotalInspeccion" value="<?php echo $tiempoTotalFormateado; ?>">
-                        <!-- --- FIN DE CAMBIO EN HTML --- -->
                     </fieldset>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Finalizar Contención y Guardar Tiempo Total</button></div>
+                    <div class="form-actions"><button type="submit" class="btn-primary"><span data-translate-key="finalize_containment_btn">Finalizar Contención y Guardar Tiempo Total</span></button></div>
                 </form>
             <?php else: ?>
-                <div class='notification-box info' style='margin-top: 40px;'><i class='fa-solid fa-circle-check'></i> <strong>Contención Finalizada:</strong> El tiempo total de inspección ya fue registrado (<?php echo htmlspecialchars($solicitud['TiempoTotalInspeccion']); ?>).</div>
+                <div class='notification-box info' style='margin-top: 40px;'><i class='fa-solid fa-circle-check'></i> <strong data-translate-key="containment_finalized_title">Contención Finalizada:</strong> <span data-translate-key="containment_finalized_desc">El tiempo total de inspección ya fue registrado (<?php echo htmlspecialchars($solicitud['TiempoTotalInspeccion']); ?>).</span></div>
             <?php endif; ?>
 
         <?php endif; ?>
@@ -432,57 +430,57 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 <form id="metodoForm" action="https://grammermx.com/Mailer/upload_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
-                        <legend><i class="fa-solid fa-paperclip"></i> Subir Método de Trabajo</legend>
+                        <legend><i class="fa-solid fa-paperclip"></i> <span data-translate-key="upload_method_title">Subir Método de Trabajo</span></legend>
                         <div class="form-group">
-                            <label>Nombre del Método</label>
+                            <label data-translate-key="method_name">Nombre del Método</label>
                             <input type="text" name="tituloMetodo" required>
                         </div>
                         <div class="form-group">
-                            <label>Archivo PDF</label>
-                            <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span></label>
+                            <label data-translate-key="pdf_file">Archivo PDF</label>
+                            <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="select_file">Seleccionar archivo...</span></label>
                             <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
                         </div>
                     </fieldset>
-                    <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
+                    <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary"><span data-translate-key="upload_and_notify_btn">Subir y Notificar</span></button></div>
                 </form>
             <?php else: ?>
                 <form id="metodoForm" action="https://grammermx.com/Mailer/resubir_metodo.php" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                     <input type="hidden" name="idSolicitud" value="<?php echo $idSolicitud; ?>">
                     <fieldset>
-                        <legend><i class="fa-solid fa-paperclip"></i> Corregir Método de Trabajo</legend>
+                        <legend><i class="fa-solid fa-paperclip"></i> <span data-translate-key="correct_method_title">Corregir Método de Trabajo</span></legend>
                         <div class="form-group">
-                            <label>Archivo PDF</label>
-                            <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo...">Seleccionar archivo...</span></label>
+                            <label data-translate-key="pdf_file">Archivo PDF</label>
+                            <label class="file-upload-label" for="metodoFile"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="select_file">Seleccionar archivo...</span></label>
                             <input type="file" id="metodoFile" name="metodoFile" accept=".pdf" required>
                         </div>
                     </fieldset>
-                    <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary">Subir y Notificar</button></div>
+                    <div class="form-actions"><button type="button" id="btnSubirMetodo" class="btn-primary"><span data-translate-key="upload_and_notify_btn">Subir y Notificar</span></button></div>
                 </form>
             <?php endif; ?>
         <?php endif; ?>
 
         <hr style="margin-top: 40px; margin-bottom: 30px; border-color: var(--color-borde);">
 
-        <h2 style="margin-top: 40px;"><i class="fa-solid fa-list-check"></i> Historial de Registros de Inspección</h2>
+        <h2 style="margin-top: 40px;"><i class="fa-solid fa-list-check"></i> <span data-translate-key="history_title">Historial de Registros de Inspección</span></h2>
         <?php if (count($reportes_procesados) > 0): ?>
             <div class="table-responsive">
                 <table class="data-table">
                     <thead>
                     <tr>
-                        <th>ID Reporte</th>
-                        <th>No. de Parte</th>
-                        <th>Fecha Inspección</th>
-                        <th>Rango Hora</th>
-                        <th>Turno Shift Leader</th>
-                        <th>Inspector</th>
-                        <th>Inspeccionadas</th>
-                        <th>Aceptadas</th>
-                        <th>Rechazadas</th>
-                        <th>Retrabajadas</th>
-                        <th>Defectos (Cant.)</th>
-                        <th>No. de Lote</th>
-                        <th>Comentarios</th>
-                        <th>Acciones</th>
+                        <th data-translate-key="th_report_id">ID Reporte</th>
+                        <th data-translate-key="th_part_number">No. de Parte</th>
+                        <th data-translate-key="th_inspection_date">Fecha Inspección</th>
+                        <th data-translate-key="th_time_range">Rango Hora</th>
+                        <th data-translate-key="th_shift_leader">Turno Shift Leader</th>
+                        <th data-translate-key="th_inspector">Inspector</th>
+                        <th data-translate-key="th_inspected">Inspeccionadas</th>
+                        <th data-translate-key="th_accepted">Aceptadas</th>
+                        <th data-translate-key="th_rejected">Rechazadas</th>
+                        <th data-translate-key="th_reworked">Retrabajadas</th>
+                        <th data-translate-key="th_defects_qty">Defectos (Cant.)</th>
+                        <th data-translate-key="th_lot_number">No. de Lote</th>
+                        <th data-translate-key="th_comments">Comentarios</th>
+                        <th data-translate-key="th_actions">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -511,7 +509,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </table>
             </div>
         <?php else: ?>
-            <p>Aún no hay registros de inspección para esta solicitud.</p>
+            <p data-translate-key="no_history_records">Aún no hay registros de inspección para esta solicitud.</p>
         <?php endif; ?>
 
     </div>
@@ -529,6 +527,214 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
 
     document.addEventListener('DOMContentLoaded', function() {
+        // --- INICIO: LÓGICA DE TRADUCCIÓN ---
+        const translations = {
+            es: {
+                welcome: "Bienvenido",
+                logout: "Cerrar Sesión",
+                main_title: "Reporte de Inspección",
+                folio: "Folio",
+                part_number: "No. de Parte",
+                responsible: "Responsable",
+                total_qty: "Cantidad Total",
+                defects: "Defectos",
+                approved_method_title: "Método de Trabajo Aprobado",
+                view_method_btn: "Ver Método de Trabajo",
+                hide_method_btn: "Ocultar Método de Trabajo",
+                action_required: "Acción Requerida:",
+                upload_method_prompt: "Para continuar, por favor, sube el método de trabajo para esta solicitud.",
+                method_rejected: "Método Rechazado:",
+                upload_corrected_version: "El método de trabajo anterior fue rechazado. Por favor, sube una versión corregida.",
+                notice: "Aviso:",
+                method_pending_approval: "El método de trabajo está pendiente de aprobación. Puedes continuar con el registro.",
+                inspection_complete_title: "Inspección Completada:",
+                inspection_complete_desc: "Ya se ha registrado la cantidad total de piezas a inspeccionar. No se pueden crear nuevos reportes, pero puede editar o eliminar registros existentes si es necesario.",
+                summary_title: "Resumen de Inspección",
+                part_breakdown_label: "Desglose de Piezas por No. de Parte",
+                add_part_number_btn: "Añadir No. de Parte",
+                total_inspected: "Total de Piezas Inspeccionadas",
+                accepted_pieces: "Piezas Aceptadas",
+                reworked_pieces: "Piezas Retrabajadas",
+                rejected_pieces_calc: "Piezas Rechazadas (Cálculo)",
+                inspector_name: "Nombre del Inspector",
+                inspection_date: "Fecha de Inspección",
+                start_time: "Hora de Inicio",
+                end_time: "Hora de Fin",
+                original_defects_title: "Clasificación de Defectos Originales",
+                available_to_classify: "Piezas rechazadas disponibles para clasificar:",
+                add_lot_btn: "Añadir Lote",
+                no_original_defects: "No hay defectos originales registrados en esta solicitud.",
+                new_defects_title: "Nuevos Defectos Encontrados (Opcional)",
+                add_new_defect_btn: "Añadir Nuevo Defecto",
+                session_time_comments_title: "Tiempos y Comentarios de la Sesión",
+                inspection_time_session: "Tiempo de Inspección (Esta Sesión)",
+                downtime_question: "¿Hubo Tiempo Muerto?",
+                downtime_reason: "Razón de Tiempo Muerto",
+                select_reason: "Seleccione una razón",
+                additional_comments: "Comentarios Adicionales de la Sesión",
+                save_session_report_btn: "Guardar Reporte de Sesión",
+                update_session_report_btn: "Actualizar Reporte de Sesión",
+                cancel_edit_btn: "Cancelar Edición",
+                finalize_containment_title: "Finalizar Contención (Tiempo Total)",
+                total_time_registered_desc: "El tiempo total de las sesiones ya registradas es de",
+                total_time_finalize_desc: "Al finalizar, este será el valor guardado.",
+                finalize_containment_btn: "Finalizar Contención y Guardar Tiempo Total",
+                containment_finalized_title: "Contención Finalizada:",
+                containment_finalized_desc: "El tiempo total de inspección ya fue registrado.",
+                upload_method_title: "Subir Método de Trabajo",
+                method_name: "Nombre del Método",
+                pdf_file: "Archivo PDF",
+                select_file: "Seleccionar archivo...",
+                upload_and_notify_btn: "Subir y Notificar",
+                correct_method_title: "Corregir Método de Trabajo",
+                history_title: "Historial de Registros de Inspección",
+                th_report_id: "ID Reporte",
+                th_part_number: "No. de Parte",
+                th_inspection_date: "Fecha Inspección",
+                th_time_range: "Rango Hora",
+                th_shift_leader: "Turno Shift Leader",
+                th_inspector: "Inspector",
+                th_inspected: "Inspeccionadas",
+                th_accepted: "Aceptadas",
+                th_rejected: "Rechazadas",
+                th_reworked: "Retrabajadas",
+                th_defects_qty: "Defectos (Cant.)",
+                th_lot_number: "No. de Lote",
+                th_comments: "Comentarios",
+                th_actions: "Acciones",
+                no_history_records: "Aún no hay registros de inspección para esta solicitud.",
+                yes: "Sí",
+                no: "No",
+                new_defect_header: "Nuevo Defecto",
+                part_number_placeholder: "No. de Parte...",
+                defect_type_label: "Tipo de Defecto",
+                select_defect_option: "Seleccione un defecto",
+                qty_label: "Cantidad de Piezas",
+                qty_placeholder: "Cantidad con este defecto...",
+                evidence_photo_label: "Foto de Evidencia",
+                current_file_info: "Archivo actual:",
+                view_photo: "Ver foto",
+            },
+            en: {
+                welcome: "Welcome",
+                logout: "Logout",
+                main_title: "Inspection Report",
+                folio: "Folio",
+                part_number: "Part No.",
+                responsible: "Responsible",
+                total_qty: "Total Quantity",
+                defects: "Defects",
+                approved_method_title: "Approved Work Method",
+                view_method_btn: "View Work Method",
+                hide_method_btn: "Hide Work Method",
+                action_required: "Action Required:",
+                upload_method_prompt: "To continue, please upload the work method for this request.",
+                method_rejected: "Method Rejected:",
+                upload_corrected_version: "The previous work method was rejected. Please upload a corrected version.",
+                notice: "Notice:",
+                method_pending_approval: "The work method is pending approval. You can continue with the registration.",
+                inspection_complete_title: "Inspection Completed:",
+                inspection_complete_desc: "The total quantity of pieces to be inspected has already been registered. New reports cannot be created, but you can edit or delete existing records if necessary.",
+                summary_title: "Inspection Summary",
+                part_breakdown_label: "Piece Breakdown by Part No.",
+                add_part_number_btn: "Add Part No.",
+                total_inspected: "Total Inspected Pieces",
+                accepted_pieces: "Accepted Pieces",
+                reworked_pieces: "Reworked Pieces",
+                rejected_pieces_calc: "Rejected Pieces (Calculated)",
+                inspector_name: "Inspector's Name",
+                inspection_date: "Inspection Date",
+                start_time: "Start Time",
+                end_time: "End Time",
+                original_defects_title: "Original Defects Classification",
+                available_to_classify: "Rejected pieces available for classification:",
+                add_lot_btn: "Add Lot",
+                no_original_defects: "There are no original defects registered for this request.",
+                new_defects_title: "New Defects Found (Optional)",
+                add_new_defect_btn: "Add New Defect",
+                session_time_comments_title: "Session Times and Comments",
+                inspection_time_session: "Inspection Time (This Session)",
+                downtime_question: "Was there downtime?",
+                downtime_reason: "Downtime Reason",
+                select_reason: "Select a reason",
+                additional_comments: "Additional Session Comments",
+                save_session_report_btn: "Save Session Report",
+                update_session_report_btn: "Update Session Report",
+                cancel_edit_btn: "Cancel Edit",
+                finalize_containment_title: "Finalize Containment (Total Time)",
+                total_time_registered_desc: "The total time for the already registered sessions is",
+                total_time_finalize_desc: "Upon finalization, this will be the saved value.",
+                finalize_containment_btn: "Finalize Containment and Save Total Time",
+                containment_finalized_title: "Containment Finalized:",
+                containment_finalized_desc: "The total inspection time has already been recorded.",
+                upload_method_title: "Upload Work Method",
+                method_name: "Method Name",
+                pdf_file: "PDF File",
+                select_file: "Select file...",
+                upload_and_notify_btn: "Upload and Notify",
+                correct_method_title: "Correct Work Method",
+                history_title: "Inspection Records History",
+                th_report_id: "Report ID",
+                th_part_number: "Part No.",
+                th_inspection_date: "Inspection Date",
+                th_time_range: "Time Range",
+                th_shift_leader: "Shift Leader",
+                th_inspector: "Inspector",
+                th_inspected: "Inspected",
+                th_accepted: "Accepted",
+                th_rejected: "Rejected",
+                th_reworked: "Reworked",
+                th_defects_qty: "Defects (Qty.)",
+                th_lot_number: "Lot No.",
+                th_comments: "Comments",
+                th_actions: "Actions",
+                no_history_records: "There are no inspection records for this request yet.",
+                yes: "Yes",
+                no: "No",
+                new_defect_header: "New Defect",
+                part_number_placeholder: "Part No....",
+                defect_type_label: "Defect Type",
+                select_defect_option: "Select a defect",
+                qty_label: "Quantity of Pieces",
+                qty_placeholder: "Quantity with this defect...",
+                evidence_photo_label: "Evidence Photo",
+                current_file_info: "Current file:",
+                view_photo: "View photo",
+            }
+        };
+
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.getAttribute('data-translate-key');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+
+            // Update dynamic text if needed
+            const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
+            const pdfWrapper = document.getElementById('pdfViewerWrapper');
+            if(togglePdfBtn && pdfWrapper){
+                const isHidden = pdfWrapper.style.display === 'none';
+                togglePdfBtn.querySelector('span').innerText = isHidden ? translate('view_method_btn') : translate('hide_method_btn');
+            }
+        }
+
+        function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
+        function translate(key) { const lang = getCurrentLanguage(); return translations[lang][key] || key; }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
+
+        // --- FIN: LÓGICA DE TRADUCCIÓN ---
+
+
         const reporteForm = document.getElementById('reporteForm');
         if (reporteForm) {
             const idReporteInput = document.getElementById('idReporte');
@@ -552,7 +758,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             const comentariosTextarea = document.getElementById('comentarios');
             const desgloseContainer = document.getElementById('partes-inspeccionadas-container');
 
-            // --- INICIO DE CAMBIOS EN JAVASCRIPT ---
             function calcularYActualizarTiempo() {
                 const horaInicio = horaInicioInput.value;
                 const horaFin = horaFinInput.value;
@@ -592,7 +797,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
             horaInicioInput.addEventListener('change', calcularYActualizarTiempo);
             horaFinInput.addEventListener('change', calcularYActualizarTiempo);
-            // --- FIN DE CAMBIOS EN JAVASCRIPT ---
 
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
@@ -681,37 +885,37 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
                 const parteInputHtml = isVariosPartes ? `
                     <div class="form-group">
-                        <label>Número de Parte</label>
-                        <input type="text" name="nuevos_defectos[${currentCounter}][parte]" placeholder="No. de Parte..." required>
+                        <label data-translate-key="th_part_number">Número de Parte</label>
+                        <input type="text" name="nuevos_defectos[${currentCounter}][parte]" placeholder="${translate('part_number_placeholder')}" required>
                     </div>` : '';
 
                 const defectoHTML = `
                 <div class="defecto-item" id="nuevo-defecto-${currentCounter}">
                     <div class="defecto-header">
-                        <h4>Nuevo Defecto #${currentCounter}</h4>
+                        <h4><span data-translate-key="new_defect_header">Nuevo Defecto</span> #${currentCounter}</h4>
                         <button type="button" class="btn-remove-defecto" data-defecto-id="${currentCounter}">&times;</button>
                     </div>
                     ${parteInputHtml}
                     <div class="form-row">
                         <div class="form-group w-50">
-                            <label>Tipo de Defecto</label>
+                            <label data-translate-key="defect_type_label">Tipo de Defecto</label>
                             <select name="nuevos_defectos[${currentCounter}][id]" required>
-                                <option value="" disabled selected>Seleccione un defecto</option>
+                                <option value="" disabled selected>${translate('select_defect_option')}</option>
                                 ${opcionesDefectos}
                             </select>
                         </div>
                         <div class="form-group w-50">
-                            <label>Cantidad de Piezas</label>
-                            <input type="number" class="nuevo-defecto-cantidad" name="nuevos_defectos[${currentCounter}][cantidad]" placeholder="Cantidad con este defecto..." min="0" required>
+                            <label data-translate-key="qty_label">Cantidad de Piezas</label>
+                            <input type="number" class="nuevo-defecto-cantidad" name="nuevos_defectos[${currentCounter}][cantidad]" placeholder="${translate('qty_placeholder')}" min="0" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Foto de Evidencia</label>
+                        <label data-translate-key="evidence_photo_label">Foto de Evidencia</label>
                         <label class="file-upload-label" for="nuevoDefectoFoto-${currentCounter}">
-                            <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar imagen...">Seleccionar imagen...</span>
+                            <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="${translate('select_file')}" data-translate-key="select_file">${translate('select_file')}</span>
                         </label>
                         <input type="file" id="nuevoDefectoFoto-${currentCounter}" name="nuevos_defectos[${currentCounter}][foto]" accept="image/*" ${rutaFoto ? '' : 'required'}>
-                        ${rutaFoto ? `<p class="current-file-info">Archivo actual: <a href="${rutaFoto}" target="_blank">Ver foto</a> (Se reemplazará si subes uno nuevo)</p>
+                        ${rutaFoto ? `<p class="current-file-info"><span data-translate-key="current_file_info">Archivo actual:</span> <a href="${rutaFoto}" target="_blank" data-translate-key="view_photo">Ver foto</a> (Se reemplazará si subes uno nuevo)</p>
                                        <input type="hidden" name="nuevos_defectos[${currentCounter}][foto_existente]" value="${rutaFoto}">
                                        <input type="hidden" name="nuevos_defectos[${currentCounter}][idDefectoEncontrado]" value="${id}">` : ''}
                     </div>
@@ -732,6 +936,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     }
                 }
                 document.getElementById(`nuevoDefectoFoto-${currentCounter}`).addEventListener('change', updateFileNameLabel);
+                setLanguage(getCurrentLanguage());
                 return newBlock;
             }
 
@@ -780,11 +985,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 tiempoMuertoActivo = activate;
                 if (tiempoMuertoActivo) {
                     tiempoMuertoSection.style.display = 'block';
-                    toggleTiempoMuertoBtn.innerHTML = `Sí <i class="fa-solid fa-toggle-on"></i>`;
+                    toggleTiempoMuertoBtn.innerHTML = `<span data-translate-key="yes">Sí</span> <i class="fa-solid fa-toggle-on"></i>`;
                     toggleTiempoMuertoBtn.className = 'btn-primary';
                 } else {
                     tiempoMuertoSection.style.display = 'none';
-                    toggleTiempoMuertoBtn.innerHTML = `No <i class="fa-solid fa-toggle-off"></i>`;
+                    toggleTiempoMuertoBtn.innerHTML = `<span data-translate-key="no">No</span> <i class="fa-solid fa-toggle-off"></i>`;
                     toggleTiempoMuertoBtn.className = 'btn-secondary';
                     idTiempoMuertoSelect.value = '';
                 }
@@ -916,9 +1121,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             horaFinInput.value = '';
                         }
 
-                        // --- INICIO DE CAMBIO EN JAVASCRIPT ---
                         calcularYActualizarTiempo();
-                        // --- FIN DE CAMBIO EN JAVASCRIPT ---
 
                         if (reporte.IdTiempoMuerto) {
                             toggleTiempoMuertoSection(true);
@@ -1002,7 +1205,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                         actualizarContadores();
 
                         const btnGuardarReporte = document.getElementById('btnGuardarReporte');
-                        btnGuardarReporte.textContent = 'Actualizar Reporte de Sesión';
+                        btnGuardarReporte.querySelector('span').innerText = translate('update_session_report_btn');
                         reporteForm.action = 'dao/actualizar_reporte.php';
 
                         const formActions = btnGuardarReporte.parentElement;
@@ -1011,7 +1214,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                             cancelButton = document.createElement('button');
                             cancelButton.type = 'button';
                             cancelButton.className = 'btn-secondary btn-cancel-edit';
-                            cancelButton.textContent = 'Cancelar Edición';
+                            cancelButton.innerHTML = `<span data-translate-key="cancel_edit_btn">${translate('cancel_edit_btn')}</span>`;
                             cancelButton.style.marginLeft = '10px';
                             cancelButton.onclick = () => window.location.reload();
                             formActions.appendChild(cancelButton);
@@ -1118,7 +1321,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     const newRowHtml = `
                         <div class="form-row parte-inspeccionada-row">
                             <div class="form-group">
-                                <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="No. de Parte..." required value="${parte}">
+                                <input type="text" name="partes_inspeccionadas[${newIndex}][parte]" placeholder="${translate('part_number_placeholder')}" required value="${parte}">
                             </div>
                             <div class="form-group">
                                 <input type="number" name="partes_inspeccionadas[${newIndex}][cantidad]" class="cantidad-parte-inspeccionada" placeholder="Cantidad..." min="0" required value="${cantidad}">
@@ -1212,7 +1415,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         function updateFileNameLabel(e) {
             const labelSpan = e.target.previousElementSibling.querySelector('span');
-            const defaultText = labelSpan.dataset.defaultText || 'Seleccionar archivo...';
+            const defaultText = labelSpan.dataset.defaultText || translate('select_file');
             if (e.target.files.length > 0) {
                 labelSpan.textContent = e.target.files[0].name;
             } else {
@@ -1231,12 +1434,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 const isHidden = pdfWrapper.style.display === 'none';
                 if (isHidden) {
                     pdfWrapper.style.display = 'block';
-                    this.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Método de Trabajo';
+                    this.querySelector('span').innerText = translate('hide_method_btn');
+                    this.querySelector('i').className = 'fa-solid fa-eye-slash';
                     this.classList.remove('btn-secondary');
                     this.classList.add('btn-primary');
                 } else {
                     pdfWrapper.style.display = 'none';
-                    this.innerHTML = '<i class="fa-solid fa-eye"></i> Ver Método de Trabajo';
+                    this.querySelector('span').innerText = translate('view_method_btn');
+                    this.querySelector('i').className = 'fa-solid fa-eye';
                     this.classList.remove('btn-primary');
                     this.classList.add('btn-secondary');
                 }
@@ -1263,7 +1468,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
                     const parteInputHtml = isVariosPartes ? `
                         <div class="form-group">
-                            <input type="text" class="defecto-parte" name="defectos_originales[${defectoId}][entries][${newIndex}][parte]" placeholder="No. de Parte..." required>
+                            <input type="text" class="defecto-parte" name="defectos_originales[${defectoId}][entries][${newIndex}][parte]" placeholder="${translate('part_number_placeholder')}" required>
                         </div>` : '';
 
                     const newRowHtml = `
@@ -1288,6 +1493,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 }
             });
         }
+
+        // Carga inicial del idioma
+        setLanguage(getCurrentLanguage());
     });
 </script>
 </body>
