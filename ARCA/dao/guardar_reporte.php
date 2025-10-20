@@ -27,9 +27,9 @@ function sanitizarNombreArchivo($nombre) {
 function procesarArchivoSubido($archivo, $subdirectorio, $prefijo) {
     global $baseUrl;
 
-    // Esta validación ahora se hace antes de llamar a la función si el archivo es opcional
     if (!isset($archivo) || $archivo['error'] === UPLOAD_ERR_NO_FILE) {
-        throw new Exception("No se ha seleccionado ningún archivo para el defecto.");
+        // This case is handled before calling the function now, but it's good practice to keep it.
+        return null;
     }
     if ($archivo['error'] !== UPLOAD_ERR_OK) {
         throw new Exception("Error en la subida del archivo (código: {$archivo['error']}).");
@@ -178,7 +178,7 @@ try {
                 $idDefectoCatalogo = intval($defectoData['id']);
                 $parte = ($isVariosPartes && isset($defectoData['parte'])) ? trim($defectoData['parte']) : null;
 
-                $rutaFotoEvidencia = null; // Inicializar como nulo
+                $rutaFotoEvidencia = ''; // FIX: Inicializar como string vacío en lugar de null
 
                 // Verificar si se subió un archivo para este defecto
                 if (isset($_FILES['nuevos_defectos']['name'][$tempId]['foto']) && $_FILES['nuevos_defectos']['error'][$tempId]['foto'] === UPLOAD_ERR_OK) {
@@ -193,7 +193,7 @@ try {
                     $rutaFotoEvidencia = procesarArchivoSubido($foto_para_procesar, 'imagenes/imagenesDefectos/', "nuevo_defecto_reporte_{$lastIdReporte}_");
                 }
 
-                // Insertar en la base de datos (rutaFotoEvidencia puede ser null)
+                // Insertar en la base de datos (rutaFotoEvidencia puede ser un string vacío)
                 $stmt_nuevo_defecto = $conex->prepare("INSERT INTO DefectosEncontrados (IdReporte, IdDefectoCatalogo, Cantidad, RutaFotoEvidencia, NumeroParte) VALUES (?, ?, ?, ?, ?)");
                 $stmt_nuevo_defecto->bind_param("iiiss", $lastIdReporte, $idDefectoCatalogo, $cantidad, $rutaFotoEvidencia, $parte);
 
