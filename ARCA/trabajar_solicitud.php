@@ -262,8 +262,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap; /* CORRECCIÓN: Permite que los elementos pasen a la siguiente línea */
-            gap: 15px;       /* CORRECCIÓN: Añade espacio entre el logo y la info de usuario si se envuelven */
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
@@ -278,13 +278,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .user-info {
             display: flex;
             align-items: center;
-            flex-wrap: wrap; /* CORRECCIÓN: Permite que los elementos internos se envuelvan */
-            justify-content: flex-end; /* CORRECCIÓN: Alinea a la derecha */
-            gap: 15px; /* CORRECCIÓN: Espacio consistente entre elementos */
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 15px;
         }
 
         .user-info span {
-            margin-right: 0; /* CORRECCIÓN: Eliminado para usar 'gap' */
+            margin-right: 0;
             font-weight: 700;
         }
 
@@ -303,7 +303,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         /* --- 3. Estilos para el Formulario --- */
         .form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
-        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; } /* CORRECCIÓN: Se añade flex-wrap */
+        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
         fieldset:last-of-type { border-bottom: none; }
         legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: var(--color-primario, #4a6984); margin-bottom: 20px; }
@@ -312,8 +312,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .form-group { flex: 1; display: flex; flex-direction: column; margin-bottom: 15px; min-width: 200px; }
         .form-group label { margin-bottom: 8px; font-weight: 600; font-size: 14px; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; font-family: 'Lato', sans-serif; box-sizing: border-box; }
-        .form-group-checkbox { display: flex; align-items: center; gap: 10px; }
-        .hidden-section { display: none; }
+        .hidden-section { display: none; margin-top: 15px; }
         .select-with-button { display: flex; align-items: flex-end; gap: 10px; }
         .select-with-button select { flex-grow: 1; }
         .form-actions { text-align: right; margin-top: 20px; }
@@ -330,22 +329,36 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .notification-box.error { background-color: #fdecea; border-color: #f5c2c7; color: var(--color-error); }
         .notification-box.info { background-color: #e3f2fd; border-color: #bbdefb; color: #0d47a1; }
         .info-text { font-size: 14px; color: #666; margin-top: -10px; margin-bottom: 20px; font-style: italic; }
-        .defecto-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background-color: #fafafa; }
-        .defecto-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .defecto-header h4 { margin: 0; font-family: 'Montserrat', sans-serif; }
+
         .original-defect-list .form-group { border-bottom: 1px solid var(--color-borde); padding-bottom: 15px; margin-bottom: 15px; }
         .original-defect-list .form-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .original-defect-list .form-group label { font-weight: 700; color: var(--color-primario); }
         .piezas-rechazadas-info { font-size: 15px; margin-bottom: 20px; padding: 10px 15px; background-color: #eaf2f8; border-left: 5px solid var(--color-secundario); border-radius: 4px; }
         #tiempoMuertoSection { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--color-borde); }
-        .pdf-viewer-container { border: 1px solid var(--color-borde); border-radius: 8px; overflow: hidden; margin-top: 15px; }
+
+        /* CORRECCIÓN PARA IFRAME RESPONSIVO */
+        .pdf-viewer-container {
+            border: 1px solid var(--color-borde);
+            border-radius: 8px;
+            overflow-x: auto; /* Permite scroll horizontal */
+            -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+            margin-top: 15px;
+            background: #525659; /* Fondo oscuro para el visor */
+        }
+        #pdfViewerWrapper iframe {
+            min-width: 650px; /* Ancho mínimo para que el PDF sea legible */
+            width: 100%;
+            height: 75vh; /* Altura basada en el viewport */
+            border: none;
+        }
+        /* FIN DE CORRECCIÓN PARA IFRAME */
+
         .form-row.defect-entry-row, .form-row.parte-inspeccionada-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
         .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
-        .btn-remove-batch, .btn-remove-parte { flex-shrink: 0; }
         #partes-inspeccionadas-container { margin-top: 15px; margin-bottom: 15px; }
 
         /* --- 5. Selector de Idioma --- */
-        .language-selector { display: flex; align-items: center; gap: 5px; background-color: var(--color-fondo); padding: 4px; border-radius: 20px; margin-right: 0; /* CORRECCIÓN: Eliminado para usar 'gap' */ border: 1px solid var(--color-borde); }
+        .language-selector { display: flex; align-items: center; gap: 5px; background-color: var(--color-fondo); padding: 4px; border-radius: 20px; margin-right: 0; border: 1px solid var(--color-borde); }
         .lang-btn { border: none; background-color: transparent; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 15px; cursor: pointer; color: #888; transition: all 0.3s ease; }
         .lang-btn:not(.active):hover { background-color: #e9eef2; color: var(--color-primario); }
         .lang-btn.active { background-color: var(--color-secundario); color: var(--color-blanco); cursor: default; }
@@ -357,13 +370,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .btn-secondary { background-color: #e0e0e0; color: #333; }
         .btn-secondary:hover { background-color: #bdbdbd; }
         .btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
-        .btn-remove-defecto { background: none; border: none; color: var(--color-error); font-size: 24px; font-weight: bold; cursor: pointer; }
-        .btn-small { padding: 6px 12px; font-size: 14px; border-radius: 4px; cursor: pointer; border: none; transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        .btn-small { padding: 6px 12px; font-size: 14px; border-radius: 4px; }
         .btn-danger { background-color: var(--color-error); color: var(--color-blanco); }
-        .btn-danger:hover { background-color: #8c2a2a; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
-        .btn-danger:active { background-color: #7a2525; transform: translateY(0); box-shadow: none; }
-        .btn-primary.disabled, .btn-secondary.disabled, button:disabled { opacity: 0.6; cursor: not-allowed; }
-        button:focus { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* --- 7. Subida de Archivos --- */
         .file-upload-label { border: 2px dashed var(--color-borde); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: all 0.3s ease; text-align: center; color: #777; background-color: #fdfdfd; }
@@ -384,12 +393,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         /* --- 9. Estilos Responsivos --- */
         @media (max-width: 992px) {
             .info-row p {
-                flex-basis: calc(100% - 10px); /* Una columna en pantallas más pequeñas */
+                flex-basis: 100%;
             }
         }
 
         @media (max-width: 768px) {
-            /* CORRECCIÓN: Estilos responsivos para el Header */
             .header {
                 flex-direction: column;
                 align-items: center;
@@ -399,33 +407,17 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 justify-content: center;
                 width: 100%;
             }
-            /* --- Fin de la corrección --- */
-
-            .container {
-                padding: 15px;
-            }
-            .form-container {
-                padding: 20px 25px;
-            }
-            .form-container h1 {
-                font-size: 20px;
-                line-height: 1.4;
-            }
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
+            .container { padding: 15px; }
+            .form-container { padding: 20px 25px; }
+            .form-container h1 { font-size: 20px; line-height: 1.4; }
+            .form-row { flex-direction: column; gap: 0; }
             .form-row .form-group.w-50,
             .form-row .form-group.w-25 {
                 flex-basis: 100%;
             }
-            .data-table {
-                font-size: 12px;
-            }
+            .data-table { font-size: 12px; }
             .data-table th,
-            .data-table td {
-                padding: 8px 10px;
-            }
+            .data-table td { padding: 8px 10px; }
         }
     </style>
 </head>
@@ -461,7 +453,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </div>
                 <div id="pdfViewerWrapper" style="display: none;">
                     <div class="pdf-viewer-container">
-                        <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>" width="100%" height="600px" frameborder="0"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>" frameborder="0"></iframe>
                     </div>
                 </div>
             </fieldset>
@@ -922,7 +914,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
 
-            // Update dynamic text if needed
+            // CORRECCIÓN: Actualizar texto dinámico del botón del visor PDF
             const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
             const pdfWrapper = document.getElementById('pdfViewerWrapper');
             if(togglePdfBtn && pdfWrapper){
@@ -1017,7 +1009,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 const maximoPermitidoParaEsteReporte = cantidadTotalSolicitada - piezasDeOtrosReportes;
                 const esCantidadInvalida = inspeccionadas > maximoPermitidoParaEsteReporte;
 
-                if (esCantidadInvalida) {
+                if (esCantidadInvalida && cantidadTotalSolicitada > 0) {
                     piezasInspeccionadasInput.setCustomValidity(`La cantidad máxima para este reporte es ${Math.max(0, maximoPermitidoParaEsteReporte)} para no exceder el total de ${cantidadTotalSolicitada}.`);
                     piezasInspeccionadasInput.reportValidity();
                 } else {
@@ -1054,7 +1046,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 let deshabilitar = false;
                 let titulo = '';
 
-                if (esCantidadInvalida) {
+                if (esCantidadInvalida && cantidadTotalSolicitada > 0) {
                     deshabilitar = true;
                     titulo = 'La cantidad inspeccionada excede el total solicitado acumulado.';
                 } else if (esRetrabajoInvalido) {
@@ -1630,6 +1622,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             input.addEventListener('change', updateFileNameLabel);
         });
 
+        // CORRECCIÓN: Lógica para el botón de mostrar/ocultar PDF
         const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
         const pdfWrapper = document.getElementById('pdfViewerWrapper');
 
