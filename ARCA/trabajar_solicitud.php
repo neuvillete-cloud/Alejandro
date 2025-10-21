@@ -336,22 +336,17 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .piezas-rechazadas-info { font-size: 15px; margin-bottom: 20px; padding: 10px 15px; background-color: #eaf2f8; border-left: 5px solid var(--color-secundario); border-radius: 4px; }
         #tiempoMuertoSection { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--color-borde); }
 
-        /* CORRECCIÓN PARA IFRAME RESPONSIVO */
         .pdf-viewer-container {
             border: 1px solid var(--color-borde);
             border-radius: 8px;
-            overflow-x: auto; /* Permite scroll horizontal */
-            -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+            overflow: hidden;
             margin-top: 15px;
-            background: #525659; /* Fondo oscuro para el visor */
         }
         #pdfViewerWrapper iframe {
-            min-width: 650px; /* Ancho mínimo para que el PDF sea legible */
             width: 100%;
-            height: 75vh; /* Altura basada en el viewport */
+            height: 75vh;
             border: none;
         }
-        /* FIN DE CORRECCIÓN PARA IFRAME */
 
         .form-row.defect-entry-row, .form-row.parte-inspeccionada-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
         .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
@@ -453,7 +448,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 </div>
                 <div id="pdfViewerWrapper" style="display: none;">
                     <div class="pdf-viewer-container">
-                        <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>" frameborder="0"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>#view=FitH" frameborder="0"></iframe>
                     </div>
                 </div>
             </fieldset>
