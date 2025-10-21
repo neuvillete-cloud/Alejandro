@@ -303,7 +303,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 
         /* --- 3. Estilos para el Formulario --- */
         .form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
-        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; }
+        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; } /* CORRECCIÓN: Se añade flex-wrap */
         fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
         fieldset:last-of-type { border-bottom: none; }
         legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: var(--color-primario, #4a6984); margin-bottom: 20px; }
@@ -406,6 +406,10 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             }
             .form-container {
                 padding: 20px 25px;
+            }
+            .form-container h1 {
+                font-size: 20px;
+                line-height: 1.4;
             }
             .form-row {
                 flex-direction: column;
