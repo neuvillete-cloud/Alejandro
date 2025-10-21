@@ -215,7 +215,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Inspección - ARCA</title>
-    <link rel="stylesheet" href="css/estilosT.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
@@ -223,29 +222,206 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        .pdf-viewer-container {
-            border: 1px solid var(--color-borde);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-top: 15px;
+        /* =================================================================
+           HOJA DE ESTILOS PRINCIPAL PARA EL PROYECTO ARCA
+           ================================================================= */
+
+        /* --- 1. Variables Globales y Estilos Base --- */
+        :root {
+            --color-primario: #4a6984;
+            --color-secundario: #5c85ad;
+            --color-acento: #8ab4d7;
+            --color-fondo: #f4f6f9;
+            --color-blanco: #ffffff;
+            --color-texto: #333333;
+            --color-borde: #dbe1e8;
+            --color-exito: #28a745;
+            --color-error: #a83232;
+            --sombra-suave: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .form-row.defect-entry-row, .form-row.parte-inspeccionada-row {
+
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- 2. Estilos del Layout Principal (Header) --- */
+        .header {
+            background-color: var(--color-blanco);
+            box-shadow: var(--sombra-suave);
+            padding: 15px 30px;
             display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            margin-bottom: 10px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* CORRECCIÓN: Permite que los elementos pasen a la siguiente línea */
+            gap: 15px;       /* CORRECCIÓN: Añade espacio entre el logo y la info de usuario si se envuelven */
         }
-        .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group {
-            flex: 1 1 0;
-            min-width: 0;
-            margin-bottom: 0;
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-primario);
         }
-        .btn-remove-batch, .btn-remove-parte {
-            flex-shrink: 0;
+
+        .logo i { margin-right: 10px; }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap; /* CORRECCIÓN: Permite que los elementos internos se envuelvan */
+            justify-content: flex-end; /* CORRECCIÓN: Alinea a la derecha */
+            gap: 15px; /* CORRECCIÓN: Espacio consistente entre elementos */
         }
-        #partes-inspeccionadas-container {
-            margin-top: 15px;
-            margin-bottom: 15px;
+
+        .user-info span {
+            margin-right: 0; /* CORRECCIÓN: Eliminado para usar 'gap' */
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--color-secundario);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn:hover { color: var(--color-primario); }
+        .logout-btn i { margin-left: 8px; }
+
+        /* --- 3. Estilos para el Formulario --- */
+        .form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
+        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; }
+        fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
+        fieldset:last-of-type { border-bottom: none; }
+        legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: var(--color-primario, #4a6984); margin-bottom: 20px; }
+        legend i { margin-right: 10px; color: var(--color-acento); }
+        .form-row { display: flex; flex-wrap: wrap; gap: 20px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; margin-bottom: 15px; min-width: 200px; }
+        .form-group label { margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; font-family: 'Lato', sans-serif; box-sizing: border-box; }
+        .form-group-checkbox { display: flex; align-items: center; gap: 10px; }
+        .hidden-section { display: none; }
+        .select-with-button { display: flex; align-items: flex-end; gap: 10px; }
+        .select-with-button select { flex-grow: 1; }
+        .form-actions { text-align: right; margin-top: 20px; }
+        .form-row .form-group.w-50 { flex-basis: calc(50% - 10px); }
+        .form-row .form-group.w-25 { flex-basis: calc(25% - 15px); }
+
+        /* --- 4. Componentes y Secciones Específicas --- */
+        .info-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px; padding: 15px 0; border-bottom: 1px solid var(--color-borde); font-size: 15px; }
+        .info-row p { margin: 0; flex-basis: calc(50% - 10px); color: var(--color-texto); }
+        .info-row p strong { color: var(--color-primario); margin-right: 5px; }
+        .notification-box { padding: 15px 20px; margin-bottom: 25px; border-radius: 8px; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 15px; border: 1px solid; }
+        .notification-box i { font-size: 20px; }
+        .notification-box.warning { background-color: #fff3e0; border-color: #ffe0b2; color: #b75c09; }
+        .notification-box.error { background-color: #fdecea; border-color: #f5c2c7; color: var(--color-error); }
+        .notification-box.info { background-color: #e3f2fd; border-color: #bbdefb; color: #0d47a1; }
+        .info-text { font-size: 14px; color: #666; margin-top: -10px; margin-bottom: 20px; font-style: italic; }
+        .defecto-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background-color: #fafafa; }
+        .defecto-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .defecto-header h4 { margin: 0; font-family: 'Montserrat', sans-serif; }
+        .original-defect-list .form-group { border-bottom: 1px solid var(--color-borde); padding-bottom: 15px; margin-bottom: 15px; }
+        .original-defect-list .form-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .original-defect-list .form-group label { font-weight: 700; color: var(--color-primario); }
+        .piezas-rechazadas-info { font-size: 15px; margin-bottom: 20px; padding: 10px 15px; background-color: #eaf2f8; border-left: 5px solid var(--color-secundario); border-radius: 4px; }
+        #tiempoMuertoSection { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--color-borde); }
+        .pdf-viewer-container { border: 1px solid var(--color-borde); border-radius: 8px; overflow: hidden; margin-top: 15px; }
+        .form-row.defect-entry-row, .form-row.parte-inspeccionada-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
+        .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+        .btn-remove-batch, .btn-remove-parte { flex-shrink: 0; }
+        #partes-inspeccionadas-container { margin-top: 15px; margin-bottom: 15px; }
+
+        /* --- 5. Selector de Idioma --- */
+        .language-selector { display: flex; align-items: center; gap: 5px; background-color: var(--color-fondo); padding: 4px; border-radius: 20px; margin-right: 0; /* CORRECCIÓN: Eliminado para usar 'gap' */ border: 1px solid var(--color-borde); }
+        .lang-btn { border: none; background-color: transparent; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 15px; cursor: pointer; color: #888; transition: all 0.3s ease; }
+        .lang-btn:not(.active):hover { background-color: #e9eef2; color: var(--color-primario); }
+        .lang-btn.active { background-color: var(--color-secundario); color: var(--color-blanco); cursor: default; }
+
+        /* --- 6. Botones y Utilerías --- */
+        .btn-primary, .btn-secondary { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        .btn-primary { background-color: var(--color-secundario); color: white; }
+        .btn-primary:hover { background-color: var(--color-primario); }
+        .btn-secondary { background-color: #e0e0e0; color: #333; }
+        .btn-secondary:hover { background-color: #bdbdbd; }
+        .btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
+        .btn-remove-defecto { background: none; border: none; color: var(--color-error); font-size: 24px; font-weight: bold; cursor: pointer; }
+        .btn-small { padding: 6px 12px; font-size: 14px; border-radius: 4px; cursor: pointer; border: none; transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        .btn-danger { background-color: var(--color-error); color: var(--color-blanco); }
+        .btn-danger:hover { background-color: #8c2a2a; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+        .btn-danger:active { background-color: #7a2525; transform: translateY(0); box-shadow: none; }
+        .btn-primary.disabled, .btn-secondary.disabled, button:disabled { opacity: 0.6; cursor: not-allowed; }
+        button:focus { outline: 2px solid var(--color-acento); outline-offset: 2px; }
+
+        /* --- 7. Subida de Archivos --- */
+        .file-upload-label { border: 2px dashed var(--color-borde); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: all 0.3s ease; text-align: center; color: #777; background-color: #fdfdfd; }
+        .file-upload-label:hover { border-color: var(--color-secundario); background-color: #f7f9fc; color: var(--color-secundario); }
+        .file-upload-label i { font-size: 28px; margin-bottom: 10px; }
+        .file-upload-label span { font-weight: 600; font-size: 14px; }
+        input[type="file"] { display: none; }
+
+        /* --- 8. Tabla de Historial --- */
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 20px; margin-bottom: 40px; border: 1px solid var(--color-borde); border-radius: 8px; box-shadow: var(--sombra-suave); }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 800px; }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        .data-table th { background-color: var(--color-primario); color: var(--color-blanco); font-weight: 600; text-transform: uppercase; }
+        .data-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+        .data-table tbody tr:hover { background-color: #f0f4f8; }
+        .data-table td .btn-small { margin: 0 2px; }
+
+        /* --- 9. Estilos Responsivos --- */
+        @media (max-width: 992px) {
+            .info-row p {
+                flex-basis: calc(100% - 10px); /* Una columna en pantallas más pequeñas */
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* CORRECCIÓN: Estilos responsivos para el Header */
+            .header {
+                flex-direction: column;
+                align-items: center;
+            }
+            .user-info {
+                flex-direction: column;
+                justify-content: center;
+                width: 100%;
+            }
+            /* --- Fin de la corrección --- */
+
+            .container {
+                padding: 15px;
+            }
+            .form-container {
+                padding: 20px 25px;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .form-row .form-group.w-50,
+            .form-row .form-group.w-25 {
+                flex-basis: 100%;
+            }
+            .data-table {
+                font-size: 12px;
+            }
+            .data-table th,
+            .data-table td {
+                padding: 8px 10px;
+            }
         }
     </style>
 </head>
@@ -1524,3 +1700,4 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
 </script>
 </body>
 </html>
+
