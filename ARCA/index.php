@@ -194,6 +194,10 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                     <i class="fa-solid fa-check-double"></i>
                     Aprobar Métodos
                 </a>
+                <a href="seguimiento_contenidos.php" class="cta-button secondary">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Seguimiento Contenidos
+                </a>
             <?php endif; ?>
         </div>
     </section>
