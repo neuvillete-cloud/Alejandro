@@ -336,16 +336,44 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .piezas-rechazadas-info { font-size: 15px; margin-bottom: 20px; padding: 10px 15px; background-color: #eaf2f8; border-left: 5px solid var(--color-secundario); border-radius: 4px; }
         #tiempoMuertoSection { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--color-borde); }
 
-        .pdf-viewer-container {
+        .pdf-viewer-custom {
             border: 1px solid var(--color-borde);
             border-radius: 8px;
             overflow: hidden;
             margin-top: 15px;
+            background-color: #f0f4f8;
         }
-        #pdfViewerWrapper iframe {
-            width: 100%;
-            height: 75vh;
-            border: none;
+
+        .pdf-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--color-blanco);
+            border-bottom: 1px solid var(--color-borde);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .pdf-controls .page-info {
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0 10px;
+        }
+        .pdf-controls button {
+            min-width: 50px;
+        }
+
+        .pdf-canvas-container {
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            height: 70vh;
+            background: #525659;
+            text-align: center;
+        }
+
+        #pdf-canvas {
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            margin: 10px auto;
         }
 
         .form-row.defect-entry-row, .form-row.parte-inspeccionada-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
@@ -447,8 +475,19 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     <button type="button" id="togglePdfViewerBtn" class="btn-secondary"><i class="fa-solid fa-eye"></i> <span data-translate-key="view_method_btn">Ver Método de Trabajo</span></button>
                 </div>
                 <div id="pdfViewerWrapper" style="display: none;">
-                    <div class="pdf-viewer-container">
-                        <iframe src="<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>#view=FitH" frameborder="0"></iframe>
+                    <div class="pdf-viewer-custom">
+                        <div class="pdf-controls">
+                            <button id="prev-page" class="btn-secondary btn-small"><i class="fa-solid fa-arrow-left"></i> <span data-translate-key="pdf_prev">Anterior</span></button>
+                            <div class="page-info">
+                                <span data-translate-key="pdf_page">Página</span> <span id="page-num"></span> de <span id="page-count"></span>
+                            </div>
+                            <button id="next-page" class="btn-secondary btn-small"><span data-translate-key="pdf_next">Siguiente</span> <i class="fa-solid fa-arrow-right"></i></button>
+                            <button id="zoom-out" class="btn-secondary btn-small"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                            <button id="zoom-in" class="btn-secondary btn-small"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                        </div>
+                        <div class="pdf-canvas-container">
+                            <canvas id="pdf-canvas"></canvas>
+                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -706,6 +745,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
     </div>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
 <script>
     const opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
     const defectosOriginalesMapa = <?php echo json_encode($defectos_originales_para_js); ?>;
@@ -807,6 +847,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 evidence_photo_label: "Foto de Evidencia (Opcional)",
                 current_file_info: "Archivo actual:",
                 view_photo: "Ver foto",
+                pdf_prev: "Anterior",
+                pdf_next: "Siguiente",
+                pdf_page: "Página",
             },
             en: {
                 welcome: "Welcome",
@@ -895,6 +938,9 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 evidence_photo_label: "Evidence Photo (Optional)",
                 current_file_info: "Current file:",
                 view_photo: "View photo",
+                pdf_prev: "Previous",
+                pdf_next: "Next",
+                pdf_page: "Page",
             }
         };
 
@@ -1617,9 +1663,106 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             input.addEventListener('change', updateFileNameLabel);
         });
 
-        // CORRECCIÓN: Lógica para el botón de mostrar/ocultar PDF
         const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
         const pdfWrapper = document.getElementById('pdfViewerWrapper');
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
+        let pdfCanvas = null;
+        let pdfCtx = null;
+        let pdfInitialized = false;
+
+        const pdfUrl = '<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>';
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js`;
+
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({ scale: scale });
+                pdfCanvas.height = viewport.height;
+                pdfCanvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: pdfCtx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        function onZoomOut() {
+            if (scale <= 0.5) return;
+            scale -= 0.2;
+            renderPage(pageNum);
+        }
+
+        function onZoomIn() {
+            if (scale >= 3.0) return;
+            scale += 0.2;
+            renderPage(pageNum);
+        }
+
+        function initializePdfViewer() {
+            if (pdfInitialized) return;
+
+            pdfCanvas = document.getElementById('pdf-canvas');
+            pdfCtx = pdfCanvas.getContext('2d');
+
+            document.getElementById('prev-page').addEventListener('click', onPrevPage);
+            document.getElementById('next-page').addEventListener('click', onNextPage);
+            document.getElementById('zoom-in').addEventListener('click', onZoomIn);
+            document.getElementById('zoom-out').addEventListener('click', onZoomOut);
+
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                pdfInitialized = true;
+                renderPage(pageNum);
+            }).catch(err => {
+                console.error("Error al cargar el PDF: " + err);
+                const canvasContainer = document.querySelector('.pdf-canvas-container');
+                if(canvasContainer) {
+                    canvasContainer.innerHTML = `<p style="color: white; padding: 20px;">Error al cargar el documento PDF. Es posible que haya un problema de CORS o el archivo no esté disponible.</p>`;
+                }
+            });
+        }
 
         if (togglePdfBtn && pdfWrapper) {
             togglePdfBtn.addEventListener('click', function() {
@@ -1630,6 +1773,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                     this.querySelector('i').className = 'fa-solid fa-eye-slash';
                     this.classList.remove('btn-secondary');
                     this.classList.add('btn-primary');
+                    initializePdfViewer();
                 } else {
                     pdfWrapper.style.display = 'none';
                     this.querySelector('span').innerText = translate('view_method_btn');
