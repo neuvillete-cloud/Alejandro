@@ -124,7 +124,7 @@ try {
         $totales_por_dia[$row['FechaInspeccion']] = [ 'inspeccionadas' => (int)$row['totalInspeccionadasDia'], 'aceptadas' => (int)$row['totalAceptadasDia'], 'retrabajadas' => (int)$row['totalRetrabajadasDia'] ];
     }
 
-    $query_entradas = "SELECT ri.IdReporte, ri.FechaInspeccion, ri.RangoHora, ri.Comentarios, ri.PiezasInspeccionadas, ri.PiezasAceptadas, ri.PiezasRetrabajadas FROM ReportesInspeccion ri {$whereClause} ORDER BY ri.FechaInspeccion ASC, ri.RangoHora ASC";
+    $query_entradas = "SELECT ri.IdReporte, ri.FechaInspeccion, ri.RangoHora, ri.Comentarios, ri.PiezasInspeccionadas, ri.PiezasAceptadas, ri.PiezasRetrabajadas, ri.NombreInspector, ctm.Razon AS RazonTiempoMuerto FROM ReportesInspeccion ri LEFT JOIN CatalogoTiempoMuerto ctm ON ri.IdTiempoMuerto = ctm.IdTiempoMuerto {$whereClause} ORDER BY ri.FechaInspeccion ASC, ri.RangoHora ASC";
     $stmt_entradas = $conex->prepare($query_entradas);
     $stmt_entradas->bind_param($types, ...$params);
     $stmt_entradas->execute();
@@ -223,4 +223,3 @@ try {
     echo json_encode($response);
 }
 ?>
-
