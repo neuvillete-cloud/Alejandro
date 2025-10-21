@@ -339,12 +339,13 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
         .pdf-viewer-container {
             border: 1px solid var(--color-borde);
             border-radius: 8px;
-            overflow: hidden;
+            overflow: hidden; /* Oculta el desbordamiento en PC */
             margin-top: 15px;
+            height: 75vh;
         }
         #pdfViewerWrapper iframe {
             width: 100%;
-            height: 75vh;
+            height: 100%;
             border: none;
         }
 
@@ -413,6 +414,14 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             .data-table { font-size: 12px; }
             .data-table th,
             .data-table td { padding: 8px 10px; }
+
+            .pdf-viewer-container {
+                overflow-x: auto; /* Permite scroll horizontal en móvil */
+                -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+            }
+            #pdfViewerWrapper iframe {
+                min-width: 650px; /* Ancho mínimo para que el PDF no se comprima */
+            }
         }
     </style>
 </head>
