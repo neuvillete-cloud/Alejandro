@@ -14,7 +14,9 @@ $idUsuario = $_SESSION['user_id'];
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// La consulta de la solicitud principal no cambia
+// --- INICIO DE LA MODIFICACIÓN DE LA CONSULTA ---
+// Se modifica la consulta para permitir ver la solicitud si el usuario es el creador
+// O si la solicitud ha sido compartida (existe en SolicitudesCompartidas).
 $sql_solicitud = "SELECT s.*, u.Nombre AS NombreUsuario, p.NombreProvedor, t.NombreTerciaria, l.NombreLugar, e.NombreEstatus, m.RutaArchivo 
                   FROM Solicitudes s
                   LEFT JOIN Usuarios u ON s.IdUsuario = u.IdUsuario
@@ -23,17 +25,25 @@ $sql_solicitud = "SELECT s.*, u.Nombre AS NombreUsuario, p.NombreProvedor, t.Nom
                   LEFT JOIN Lugares l ON s.IdLugar = l.IdLugar
                   LEFT JOIN Estatus e ON s.IdEstatus = e.IdEstatus
                   LEFT JOIN Metodos m ON s.IdMetodo = m.IdMetodo
-                  WHERE s.IdSolicitud = ? AND s.IdUsuario = ?";
+                  WHERE s.IdSolicitud = ? 
+                  AND (
+                      s.IdUsuario = ? 
+                      OR EXISTS (
+                          SELECT 1 FROM SolicitudesCompartidas sc WHERE sc.IdSolicitud = s.IdSolicitud
+                      )
+                  )";
 
 $stmt = $conex->prepare($sql_solicitud);
 $stmt->bind_param("ii", $idSolicitud, $idUsuario);
+// --- FIN DE LA MODIFICACIÓN DE LA CONSULTA ---
+
 $stmt->execute();
 $resultado_solicitud = $stmt->get_result();
 
 if ($resultado_solicitud->num_rows === 1) {
     $solicitud = $resultado_solicitud->fetch_assoc();
 
-    // --- CAMBIO AQUÍ: Se actualiza la consulta de defectos ---
+    // La consulta de defectos no cambia
     $stmt_defectos = $conex->prepare(
         "SELECT d.*, cd.NombreDefecto 
          FROM Defectos d 
