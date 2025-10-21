@@ -247,37 +247,6 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             margin-top: 15px;
             margin-bottom: 15px;
         }
-
-        /* --- Arreglo para Header Responsivo --- */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea en pantallas pequeñas */
-            gap: 15px; /* Añade espacio entre el logo y la info de usuario si se envuelven */
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap; /* Permite que los elementos dentro de la info de usuario se envuelvan */
-            justify-content: flex-end; /* Alinea los elementos a la derecha */
-            gap: 15px; /* Añade espacio entre el selector de idioma, el texto de bienvenida y el botón de cerrar sesión */
-        }
-
-        /* Media query para mejorar el diseño en pantallas más pequeñas */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column; /* Apila el logo y la info de usuario verticalmente */
-                align-items: center; /* Centra los elementos */
-            }
-
-            .user-info {
-                flex-direction: column; /* Apila los elementos de info de usuario verticalmente */
-                justify-content: center; /* Centra los elementos */
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
