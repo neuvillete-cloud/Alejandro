@@ -198,6 +198,11 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                     <i class="fa-solid fa-chart-line"></i>
                     Seguimiento Contenidos
                 </a>
+                <!-- BOTÓN AÑADIDO -->
+                <a href="dashboard_reportes.php" class="cta-button secondary">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    Reportes
+                </a>
             <?php endif; ?>
         </div>
     </section>
