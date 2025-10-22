@@ -310,3 +310,133 @@ legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18p
     color: #0f5132; /* Verde oscuro para el ícono */
     cursor: not-allowed; /* Muestra que no se puede hacer clic */
 }
+
+/* =================================================================
+   --- 9. ESTILOS RESPONSIVOS MEJORADOS PARA MÓVILES ---
+   (Reemplaza tu @media (max-width: 768px) existente con esto)
+   ================================================================= */
+@media (max-width: 768px) {
+
+    /* --- 9.1 Layout Principal y Header --- */
+    .container {
+        padding: 10px; /* Reducimos padding general */
+    }
+
+    .header {
+        flex-direction: column; /* Apila el logo y la info de usuario */
+        align-items: flex-start; /* Alinea todo a la izquierda */
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .main-nav {
+        display: flex;
+        flex-direction: column; /* Apila los links de navegación */
+        gap: 10px;
+        width: 100%;
+        border-top: 1px solid var(--color-borde);
+        padding-top: 15px;
+    }
+
+    .main-nav a {
+        padding: 8px;
+        border-bottom: none; /* Quitamos bordes en móvil */
+    }
+    .main-nav a.active, .main-nav a:hover {
+        background-color: var(--color-fondo);
+        border-radius: 6px;
+        color: var(--color-primario);
+    }
+
+    .user-info {
+        flex-direction: column;
+        align-items: flex-start; /* Lo alineamos a la izquierda, no a la derecha */
+        gap: 15px;
+        width: 100%;
+        border-top: 1px solid var(--color-borde);
+        padding-top: 15px;
+    }
+
+    .language-selector {
+        margin-right: 0;
+    }
+
+    /* --- 9.2 Cabecera de Página (Título y Botón) --- */
+    .page-header {
+        flex-direction: column; /* Apila el título y el botón */
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    .page-header h1 {
+        font-size: 22px; /* Título un poco más pequeño */
+    }
+    .page-header .btn-primary {
+        width: 100%; /* Botón "Crear Nueva" de ancho completo */
+        text-align: center;
+        box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+    }
+
+    /* --- 9.3 Barra de Filtros --- */
+    .filter-bar {
+        padding: 15px;
+    }
+    .filter-form {
+        flex-direction: column; /* Apila los filtros */
+        align-items: stretch; /* Estira los elementos */
+        gap: 15px; /* Añade espacio entre filtros */
+    }
+    .filter-form .form-group {
+        margin-bottom: 0; /* El gap ya se encarga del espacio */
+    }
+    .filter-form button, .filter-form a.btn-tertiary {
+        width: 100%; /* Botones de filtro de ancho completo */
+        box-sizing: border-box;
+    }
+    .form-row {
+        /* Si .form-row se usa en otro lado */
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* --- 9.4 Tabla con Scroll (Tu solicitud principal) --- */
+    .results-container {
+        /* Aquí habilitamos el scroll horizontal SÓLO para la tabla */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+
+        /* Ajustamos bordes para que se vea bien */
+        box-shadow: none;
+        border-radius: 8px;
+        border: 1px solid var(--color-borde);
+    }
+
+    .results-table {
+        /* Forzamos un ancho mínimo para que la tabla no se comprima */
+        /* y así aparezca el scroll horizontal */
+        min-width: 700px; /* Ajusta esto si necesitas más o menos espacio */
+    }
+
+    .results-table th, .results-table td {
+        /* Evita que el texto se parta en varias líneas */
+        white-space: nowrap;
+        padding: 14px 16px;
+    }
+
+    /* --- 9.5 Modal --- */
+    .modal-content {
+        width: 95%;
+        max-width: 95%; /* Ocupa casi toda la pantalla */
+        max-height: 90vh;
+    }
+    .modal-header { padding: 15px; }
+    .modal-body { padding: 15px; }
+    .modal-header h2 { font-size: 18px; }
+}
