@@ -418,9 +418,11 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             .pdf-viewer-container {
                 overflow-x: auto; /* Permite scroll horizontal en móvil */
                 -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+                height: 600px; /* Altura fija para móvil */
             }
             #pdfViewerWrapper iframe {
-                min-width: 650px; /* Ancho mínimo para que el PDF no se comprima */
+                min-width: 600px; /* Ancho mínimo para legibilidad */
+                height: 100%;
             }
         }
     </style>
@@ -741,6 +743,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 approved_method_title: "Método de Trabajo Aprobado",
                 view_method_btn: "Ver Método de Trabajo",
                 hide_method_btn: "Ocultar Método de Trabajo",
+                download_method_btn: "Descargar Método", // Nuevo texto
                 action_required: "Acción Requerida:",
                 upload_method_prompt: "Para continuar, por favor, sube el método de trabajo para esta solicitud.",
                 method_rejected: "Método Rechazado:",
@@ -829,6 +832,7 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
                 approved_method_title: "Approved Work Method",
                 view_method_btn: "View Work Method",
                 hide_method_btn: "Hide Work Method",
+                download_method_btn: "Download Method", // Nuevo texto
                 action_required: "Action Required:",
                 upload_method_prompt: "To continue, please upload the work method for this request.",
                 method_rejected: "Method Rejected:",
@@ -918,13 +922,8 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             });
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
 
-            // CORRECCIÓN: Actualizar texto dinámico del botón del visor PDF
-            const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
-            const pdfWrapper = document.getElementById('pdfViewerWrapper');
-            if(togglePdfBtn && pdfWrapper){
-                const isHidden = pdfWrapper.style.display === 'none';
-                togglePdfBtn.querySelector('span').innerText = isHidden ? translate('view_method_btn') : translate('hide_method_btn');
-            }
+            // Ajustar texto del botón PDF según el dispositivo
+            adjustPdfButtonText();
         }
 
         function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
@@ -1626,28 +1625,78 @@ if (isset($solicitud['EstatusAprobacion']) && $solicitud['EstatusAprobacion'] ==
             input.addEventListener('change', updateFileNameLabel);
         });
 
-        // CORRECCIÓN: Lógica para el botón de mostrar/ocultar PDF
         const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
         const pdfWrapper = document.getElementById('pdfViewerWrapper');
+        const pdfUrl = '<?php echo htmlspecialchars($solicitud['RutaMetodo']); ?>';
 
-        if (togglePdfBtn && pdfWrapper) {
-            togglePdfBtn.addEventListener('click', function() {
-                const isHidden = pdfWrapper.style.display === 'none';
-                if (isHidden) {
-                    pdfWrapper.style.display = 'block';
-                    this.querySelector('span').innerText = translate('hide_method_btn');
-                    this.querySelector('i').className = 'fa-solid fa-eye-slash';
-                    this.classList.remove('btn-secondary');
-                    this.classList.add('btn-primary');
-                } else {
+        // Función para ajustar el texto del botón según el dispositivo
+        function adjustPdfButtonText() {
+            if (!togglePdfBtn) return;
+            const isMobile = window.innerWidth <= 768;
+            const span = togglePdfBtn.querySelector('span');
+            const icon = togglePdfBtn.querySelector('i');
+
+            if (isMobile) {
+                span.innerText = translate('download_method_btn');
+                icon.className = 'fa-solid fa-download';
+                // Ocultar el visor si está visible al cambiar a móvil
+                if (pdfWrapper && pdfWrapper.style.display !== 'none') {
                     pdfWrapper.style.display = 'none';
-                    this.querySelector('span').innerText = translate('view_method_btn');
-                    this.querySelector('i').className = 'fa-solid fa-eye';
-                    this.classList.remove('btn-primary');
-                    this.classList.add('btn-secondary');
+                    togglePdfBtn.classList.remove('btn-primary');
+                    togglePdfBtn.classList.add('btn-secondary');
+                }
+            } else {
+                // Restaurar estado original del botón para PC
+                const isHidden = pdfWrapper ? pdfWrapper.style.display === 'none' : true;
+                span.innerText = isHidden ? translate('view_method_btn') : translate('hide_method_btn');
+                icon.className = isHidden ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+                if (isHidden) {
+                    togglePdfBtn.classList.remove('btn-primary');
+                    togglePdfBtn.classList.add('btn-secondary');
+                } else {
+                    togglePdfBtn.classList.remove('btn-secondary');
+                    togglePdfBtn.classList.add('btn-primary');
+                }
+            }
+        }
+
+
+        if (togglePdfBtn) {
+            togglePdfBtn.addEventListener('click', function() {
+                const isMobile = window.innerWidth <= 768;
+
+                if (isMobile) {
+                    // Acción para móvil: Descargar
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.download = pdfUrl.substring(pdfUrl.lastIndexOf('/') + 1); // Extrae el nombre del archivo
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    // Acción para PC: Mostrar/Ocultar
+                    const isHidden = pdfWrapper.style.display === 'none';
+                    if (isHidden) {
+                        pdfWrapper.style.display = 'block';
+                        this.querySelector('span').innerText = translate('hide_method_btn');
+                        this.querySelector('i').className = 'fa-solid fa-eye-slash';
+                        this.classList.remove('btn-secondary');
+                        this.classList.add('btn-primary');
+                    } else {
+                        pdfWrapper.style.display = 'none';
+                        this.querySelector('span').innerText = translate('view_method_btn');
+                        this.querySelector('i').className = 'fa-solid fa-eye';
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-secondary');
+                    }
                 }
             });
+
+            // Ajustar el texto del botón al cargar y al redimensionar
+            adjustPdfButtonText();
+            window.addEventListener('resize', adjustPdfButtonText);
         }
+
 
         const originalDefectList = document.querySelector('.original-defect-list');
 
