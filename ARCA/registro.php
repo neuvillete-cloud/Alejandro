@@ -13,7 +13,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Usando los estilos que me proporcionaste -->
+    <!-- Enlazando a la hoja de estilos CSS corregida -->
     <link rel="stylesheet" href="css/estilosRegistro.css">
 
 </head>

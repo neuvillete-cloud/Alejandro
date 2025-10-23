@@ -18,7 +18,7 @@ body {
 
 .login-wrapper {
     display: flex;
-    height: 100vh;
+    min-height: 100vh; /* Cambiado a min-height para mejor compatibilidad móvil */
     width: 100%;
 }
 
@@ -66,12 +66,14 @@ body {
     align-items: center;
     background-color: var(--color-blanco);
     position: relative;
+    padding: 20px 0; /* Añadido padding vertical para móviles */
 }
 
 .login-form-container {
     width: 100%;
     max-width: 400px;
     padding: 40px;
+    box-sizing: border-box; /* Asegura que el padding esté incluido en el ancho */
 }
 
 .login-form-container h2 {
@@ -180,8 +182,16 @@ body {
 }
 
 @media (max-width: 992px) {
-    .branding-panel { display: none; }
-    .login-panel { flex-basis: 100%; }
+    .login-wrapper {
+        flex-direction: column; /* Apila en lugar de lado a lado */
+    }
+    .branding-panel {
+        display: none; /* Oculta el panel de marca en tablet y móvil */
+    }
+    .login-panel {
+        flex-basis: 100%;
+        width: 100%;
+    }
     .version-info {
         left: 50%;
         transform: translateX(-50%);
@@ -244,9 +254,14 @@ body {
     font-weight: 600;
 }
 
+/* --- INICIO DE LA CORRECCIÓN MÓVIL --- */
 #username-suggestions {
     margin-top: 5px;
+    display: flex;      /* 1. Convierte el contenedor en flexbox */
+    flex-wrap: wrap;    /* 2. ¡LA CLAVE! Permite que los items bajen a la siguiente línea */
+    width: 100%;        /* 3. Asegura que el contenedor no se desborde */
 }
+/* --- FIN DE LA CORRECCIÓN MÓVIL --- */
 
 .suggestion-item {
     display: inline-block;
@@ -264,4 +279,27 @@ body {
 
 .suggestion-item:hover {
     background-color: #bbdefb; /* Un poco más oscuro al pasar el mouse */
+}
+
+/* --- NUEVO MEDIA QUERY PARA MÓVILES PEQUEÑOS --- */
+@media (max-width: 480px) {
+    .login-form-container {
+        padding: 25px; /* Reduce el padding en pantallas muy pequeñas */
+    }
+
+    .login-form-container h2 {
+        font-size: 24px; /* Título un poco más pequeño */
+    }
+
+    .login-form-container .subtitle {
+        margin-bottom: 30px; /* Menos espacio */
+    }
+
+    .input-field {
+        font-size: 15px; /* Texto de input ligeramente más pequeño */
+    }
+
+    .version-info {
+        display: none; /* Oculta la versión en pantallas muy pequeñas */
+    }
 }
