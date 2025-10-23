@@ -24,6 +24,15 @@
         <p>Una herramienta interna para asegurar la integridad de los procesos y materiales de la compañía.</p>
     </div>
     <div class="login-panel">
+
+        <!-- === INICIO: NUEVO ENCABEZADO PARA MÓVILES === -->
+        <!-- Este bloque solo será visible en pantallas pequeñas -->
+        <div class="mobile-branding">
+            <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
+            <p>Sistema de Gestión de Contenciones y Calidad</p>
+        </div>
+        <!-- === FIN: NUEVO ENCABEZADO PARA MÓVILES === -->
+
         <div class="login-form-container">
             <h2>Bienvenido de Vuelta</h2>
             <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>

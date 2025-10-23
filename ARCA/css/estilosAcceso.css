@@ -62,16 +62,54 @@ body {
 .login-panel {
     flex-basis: 50%;
     display: flex;
+    flex-direction: column; /* Cambiado para apilar el logo móvil y el form */
     justify-content: center;
     align-items: center;
     background-color: var(--color-blanco);
     position: relative;
+    padding: 20px; /* Añadido padding general */
+    box-sizing: border-box; /* Añadido para que el padding no afecte el tamaño */
 }
+
+/* === INICIO: ESTILOS DEL ENCABEZADO MÓVIL === */
+.mobile-branding {
+    display: none; /* Oculto por defecto en escritorio */
+    text-align: center;
+    color: var(--color-primario);
+    width: 100%;
+    max-width: 400px; /* Igual que el formulario */
+    box-sizing: border-box;
+    margin-bottom: 30px; /* Espacio antes del formulario */
+}
+
+.mobile-branding .logo {
+    font-size: 36px; /* Ligeramente más pequeño */
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-primario);
+}
+
+.mobile-branding .logo i {
+    margin-right: 10px;
+}
+
+.mobile-branding p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+}
+/* === FIN: ESTILOS DEL ENCABEZADO MÓVIL === */
+
 
 .login-form-container {
     width: 100%;
     max-width: 400px;
     padding: 40px;
+    box-sizing: border-box; /* Añadido para que el padding no afecte el tamaño */
 }
 
 .login-form-container h2 {
@@ -80,12 +118,14 @@ body {
     color: var(--color-primario);
     margin-top: 0;
     margin-bottom: 10px;
+    text-align: center; /* Centrado para móvil */
 }
 
 .login-form-container .subtitle {
     font-size: 16px;
     color: #666;
     margin-bottom: 40px;
+    text-align: center; /* Centrado para móvil */
 }
 
 .input-group {
@@ -181,10 +221,38 @@ body {
 
 @media (max-width: 992px) {
     .branding-panel { display: none; }
-    .login-panel { flex-basis: 100%; }
+
+    .login-panel {
+        flex-basis: 100%;
+        justify-content: flex-start; /* Alinea al inicio */
+        padding-top: 60px; /* Da espacio arriba */
+        height: auto; /* Permite que el contenido crezca */
+        min-height: 100vh; /* Ocupa al menos toda la pantalla */
+        overflow-y: auto; /* Permite scroll si es necesario */
+    }
+
+    /* === MOSTRAR ENCABEZADO MÓVIL === */
+    .mobile-branding {
+        display: block; /* Lo hacemos visible */
+        padding: 0 20px; /* Añadimos padding lateral */
+    }
+
+    .login-form-container {
+        padding: 20px; /* Reducimos padding en móvil */
+        padding-top: 0; /* Quitamos padding superior, ya lo da el mobile-branding */
+    }
+
+    .login-form-container h2,
+    .login-form-container .subtitle {
+        text-align: center;
+    }
+
     .version-info {
-        left: 50%;
-        transform: translateX(-50%);
-        right: auto;
+        /* Lo separamos de la esquina para que no se superponga */
+        position: static; /* Deja de ser absoluto */
+        margin-top: 30px; /* Espacio después del form */
+        padding-bottom: 30px; /* Espacio al final */
+        text-align: center;
+        width: 100%;
     }
 }
