@@ -10,7 +10,22 @@ $idioma_actual = 'es';
 if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
     $idioma_actual = 'en';
 }
-// No se necesita conexión a BD en esta página ya que no hay catálogos
+
+// --- CONEXIÓN A BD AÑADIDA ---
+include_once("dao/conexionArca.php");
+$con = new LocalConector();
+$conex = $con->conectar();
+
+// ADICIÓN: Cargar el Catálogo de Defectos
+$catalogo_defectos = $conex->query("SELECT IdDefectoCatalogo, NombreDefecto FROM CatalogoDefectos ORDER BY NombreDefecto ASC");
+// Preparamos las opciones en una variable para inyectarla en JavaScript
+$defectos_options_html = "";
+if ($catalogo_defectos) {
+    while($row = $catalogo_defectos->fetch_assoc()) {
+        $defectos_options_html .= "<option value='{$row['IdDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
+    }
+}
+$conex->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -81,6 +96,11 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                 </div>
                 <div class="form-row">
                     <button type="button" id="btn-add-sl-defecto" class="btn-secondary"><i class="fa-solid fa-plus"></i> <span data-translate-key="btn_addSLDefect">Añadir Defecto</span></button>
+
+                    <!-- Botón opcional para añadir al catálogo (si es SuperUsuario) -->
+                    <?php if ($esSuperUsuario): ?>
+                        <button type="button" class="btn-add" data-tipo="defectocatalogo" data-translate-key-title="title_addDefect" title="Añadir Defecto al Catálogo">+</button>
+                    <?php endif; ?>
                 </div>
             </fieldset>
 
@@ -141,6 +161,9 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
 </main>
 
 <script>
+    // ADICIÓN: Inyectamos las opciones de defectos desde PHP a una variable de JavaScript
+    let opcionesDefectos = `<?php echo addslashes($defectos_options_html); ?>`;
+
     document.addEventListener('DOMContentLoaded', function() {
 
         let currentLang = '<?php echo $idioma_actual; ?>';
@@ -152,7 +175,10 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                 'section_generalData': 'Datos Generales', 'label_personInCharge': 'Nombre del Responsable',
                 'label_projectName': 'Nombre del Proyecto', 'label_client': 'Cliente',
                 'section_defects': 'Registro de Defectos', 'btn_addSLDefect': 'Añadir Defecto',
-                'defecto': 'Defecto', 'label_defectDescription': 'Descripción del defecto...',
+                'defecto': 'Defecto',
+                'select_defect': 'Seleccione un defecto del catálogo', // <-- NUEVA TRADUCCIÓN
+                'title_addDefect': 'Añadir Defecto al Catálogo', // <-- NUEVA TRADUCCIÓN
+                'label_defectDescription': 'Descripción del defecto...', // (Se mantiene por si acaso, pero no se usa)
                 'section_documentation': 'Documentación',
                 'label_attachWorkInstruction': 'Adjuntar Work Instrucción (Opcional)',
                 'label_attachInspection': 'Adjuntar Instrucción de Inspección (Opcional)',
@@ -165,7 +191,11 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                 'swal_connectionErrorText': 'No se pudo comunicar con el servidor.',
                 'tooltip_projectName': 'Nombre clave o identificador del proyecto.',
                 'tooltip_client': 'Cliente final para el cual es este proyecto.',
-                'tooltip_docName': 'Asigna un nombre descriptivo al documento (ej: WI-SL-001 o INSP-SL-001).'
+                'tooltip_docName': 'Asigna un nombre descriptivo al documento (ej: WI-SL-001 o INSP-SL-001).',
+                // Traducciones para el pop-up de añadir catálogo (copiadas del original)
+                'swal_inputLabel': 'Nombre del nuevo', 'swal_placeholder': 'Ingrese el nombre...',
+                'swal_btnSave': 'Guardar', 'swal_btnCancel': 'Cancelar', 'swal_validationEmpty': 'El nombre no puede estar vacío',
+                'swal_requestFail': 'La solicitud falló:', 'swal_saved': '¡Guardado!', 'swal_error': 'Error'
             },
             'en': {
                 'pageTitle': 'New Safe Launch - ARCA', 'welcome': 'Welcome', 'logout': 'Log Out',
@@ -173,7 +203,10 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                 'section_generalData': 'General Data', 'label_personInCharge': 'Person in Charge',
                 'label_projectName': 'Project Name', 'label_client': 'Client',
                 'section_defects': 'Defects Log', 'btn_addSLDefect': 'Add Defect',
-                'defecto': 'Defect', 'label_defectDescription': 'Defect description...',
+                'defecto': 'Defect',
+                'select_defect': 'Select a defect from the catalog', // <-- NEW TRANSLATION
+                'title_addDefect': 'Add Defect to Catalog', // <-- NEW TRANSLATION
+                'label_defectDescription': 'Defect description...',
                 'section_documentation': 'Documentation',
                 'label_attachWorkInstruction': 'Attach Work Instruction (Optional)',
                 'label_attachInspection': 'Attach Inspection Instruction (Optional)',
@@ -186,7 +219,11 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                 'swal_connectionErrorText': 'Could not communicate with the server.',
                 'tooltip_projectName': 'Key name or identifier for the project.',
                 'tooltip_client': 'End customer for this project.',
-                'tooltip_docName': 'Assign a descriptive name to the document (e.g., WI-SL-001 or INSP-SL-001).'
+                'tooltip_docName': 'Assign a descriptive name to the document (e.g., WI-SL-001 or INSP-SL-001).',
+                // Translations for the add catalog popup (copied from original)
+                'swal_inputLabel': 'Name of the new', 'swal_placeholder': 'Enter the name...',
+                'swal_btnSave': 'Save', 'swal_btnCancel': 'Cancel', 'swal_validationEmpty': 'The name cannot be empty',
+                'swal_requestFail': 'The request failed:', 'swal_saved': 'Saved!', 'swal_error': 'Error'
             }
         };
 
@@ -204,6 +241,7 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                     }
                 }
             });
+            // TRADUCIR TÍTULOS (para el botón "+")
             document.querySelectorAll('[data-translate-key-title]').forEach(el => {
                 const key = el.dataset.translateKeyTitle;
                 if(translations[lang] && translations[lang][key]) {
@@ -248,7 +286,7 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
         });
 
 
-        // Lógica para añadir defectos (campos de texto) dinámicamente
+        // --- CAMBIO AQUÍ: Lógica para añadir defectos (ahora con <select>) ---
         const btnAddDefecto = document.getElementById('btn-add-sl-defecto');
         const defectosContainer = document.getElementById('defectos-sl-container');
         let defectoCounter = 0;
@@ -259,14 +297,18 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
             <div class="defecto-item-sl" id="defecto-sl-${defectoCounter}">
                 <div class="form-row">
                     <div class="form-group" style="flex-grow: 1;">
-                        <label for="defectoDesc-${defectoCounter}">${translations[currentLang].defecto} #${defectoCounter}</label>
-                        <input type="text" id="defectoDesc-${defectoCounter}" name="defectos[${defectoCounter}][descripcion]" placeholder="${translations[currentLang].label_defectDescription}" data-translate-key-placeholder="label_defectDescription" required>
+                        <label for="defectoSelect-${defectoCounter}">${translations[currentLang].defecto} #${defectoCounter}</label>
+                        <select id="defectoSelect-${defectoCounter}" name="defectos[${defectoCounter}][id]" required>
+                            <option value="" disabled selected>${translations[currentLang].select_defect}</option>
+                            ${opcionesDefectos}
+                        </select>
                     </div>
                     <button type="button" class="btn-remove-defecto" data-defecto-id="${defectoCounter}" style="align-self: flex-end; margin-bottom: 15px; background: none; border: none; color: var(--color-error); font-size: 24px; cursor: pointer; padding: 0 10px;">&times;</button>
                 </div>
             </div>`;
             defectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
         });
+        // --- FIN DEL CAMBIO ---
 
         // Lógica para eliminar un defecto
         defectosContainer.addEventListener('click', function(e) {
@@ -291,6 +333,65 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
                 }
             }
         });
+
+        // --- LÓGICA AÑADIDA PARA EL BOTÓN "+" (Añadir al Catálogo) ---
+        <?php if ($esSuperUsuario): ?>
+        document.querySelectorAll('.btn-add').forEach(button => {
+            button.addEventListener('click', function() {
+                const tipo = this.dataset.tipo; // "defectocatalogo"
+                const titulos = {
+                    defectocatalogo: translations[currentLang].title_addDefect
+                };
+
+                Swal.fire({
+                    title: titulos[tipo],
+                    input: 'text',
+                    inputLabel: `${translations[currentLang].swal_inputLabel} defecto`,
+                    inputPlaceholder: translations[currentLang].swal_placeholder,
+                    showCancelButton: true,
+                    confirmButtonText: translations[currentLang].swal_btnSave,
+                    cancelButtonText: translations[currentLang].swal_btnCancel,
+                    preConfirm: (nombre) => {
+                        if (!nombre) {
+                            Swal.showValidationMessage(translations[currentLang].swal_validationEmpty);
+                            return false;
+                        }
+                        const formData = new FormData();
+                        formData.append('nombre', nombre);
+
+                        return fetch(`dao/add_${tipo}.php`, { // Llama a dao/add_defectocatalogo.php
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => {
+                                if (!response.ok) { throw new Error(response.statusText); }
+                                return response.json();
+                            })
+                            .catch(error => {
+                                Swal.showValidationMessage(`${translations[currentLang].swal_requestFail} ${error}`);
+                            });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && result.value.status === 'success') {
+                        Swal.fire(translations[currentLang].swal_saved, result.value.message, 'success');
+
+                        // Actualizar la variable JS y todos los <select> existentes
+                        const newOptionHTML = `<option value="${result.value.data.id}">${result.value.data.nombre}</option>`;
+                        opcionesDefectos += newOptionHTML;
+
+                        document.querySelectorAll('select[name^="defectos"]').forEach(select => {
+                            select.insertAdjacentHTML('beforeend', newOptionHTML);
+                        });
+
+                    } else if (result.value) {
+                        Swal.fire(translations[currentLang].swal_error, result.value.message, 'error');
+                    }
+                });
+            });
+        });
+        <?php endif; ?>
+        // --- FIN DE LÓGICA AÑADIDA ---
+
 
         // Lógica para Enviar el Formulario Completo
         const safeLaunchForm = document.getElementById('safeLaunchForm');
