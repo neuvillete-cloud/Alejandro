@@ -72,6 +72,7 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
 
 } else {
     // --- MODO USUARIO LOGUEADO (VISTA NORMAL) ---
+    // --- CORRECCIÓN: Se usa una subconsulta para evitar el GROUP BY, que causaba el error 500. ---
     $sql_base = "SELECT 
                     sl.IdSafeLaunch, 
                     sl.NombreProyecto, 
@@ -81,10 +82,12 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
                     u.Nombre as NombreResponsable,
                     sl.RutaInstruccion,
                     sl.EstatusInstruccion,
-                    MAX(slsc.IdSLCompartido) as IdCompartido
+                    (SELECT slsc.IdSLCompartido 
+                     FROM SafeLaunchSolicitudesCompartidas slsc 
+                     WHERE slsc.IdSafeLaunch = sl.IdSafeLaunch 
+                     LIMIT 1) as IdCompartido
                  FROM SafeLaunchSolicitudes sl
-                 JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario
-                 LEFT JOIN SafeLaunchSolicitudesCompartidas slsc ON sl.IdSafeLaunch = slsc.IdSafeLaunch";
+                 JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario";
 
     $where_clauses = [];
 
@@ -114,9 +117,8 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
     }
 
     // --- CORRECCIÓN AQUÍ ---
-    // Se añaden todas las columnas no agregadas (sl.*, u.Nombre) al GROUP BY
-    // para que la consulta sea compatible con todos los modos de SQL.
-    $sql_base .= " GROUP BY sl.IdSafeLaunch, sl.NombreProyecto, sl.Cliente, sl.FechaRegistro, sl.Estatus, u.Nombre, sl.RutaInstruccion, sl.EstatusInstruccion";
+    // Se elimina el GROUP BY, ya no es necesario gracias a la subconsulta.
+    // $sql_base .= " GROUP BY sl.IdSafeLaunch, sl.NombreProyecto, sl.Cliente, sl.FechaRegistro, sl.Estatus, u.Nombre, sl.RutaInstruccion, sl.EstatusInstruccion";
 }
 
 $sql_base .= " ORDER BY sl.IdSafeLaunch DESC";
@@ -490,6 +492,7 @@ $conex->close();
 
 </body>
 </html>
+
 
 
 
