@@ -108,48 +108,26 @@ $conex->close();
 
             <fieldset><legend><i class="fa-solid fa-paperclip"></i> <span data-translate-key="section_documentation">Documentación</span></legend>
 
-                <!-- Work Instrucción -->
+                <!-- INICIO: Campo unificado para Instrucción -->
                 <div class="form-group-checkbox">
-                    <input type="checkbox" id="toggleWorkInstruccion">
-                    <label for="toggleWorkInstruccion" data-translate-key="label_attachWorkInstruction">Adjuntar Work Instrucción (Opcional)</label>
+                    <input type="checkbox" id="toggleInstruccion">
+                    <label for="toggleInstruccion" data-translate-key="label_attachInstruction">Adjuntar Instrucción de Trabajo / Inspección (Opcional)</label>
                 </div>
-                <div id="work-instruccion-container" class="hidden-section" style="margin-left: 20px; border-left: 3px solid var(--color-borde); padding-left: 20px;">
+                <div id="instruccion-container" class="hidden-section" style="margin-left: 20px; border-left: 3px solid var(--color-borde); padding-left: 20px;">
                     <div class="form-group">
                         <div class="label-with-tooltip">
-                            <label for="tituloWorkInstruccion" data-translate-key="label_docName">Nombre del Documento</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_docName">Asigna un nombre descriptivo al documento (ej: WI-SL-001).</span></div>
+                            <label for="tituloInstruccion" data-translate-key="label_docName">Nombre del Documento</label>
+                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_instructionName">Asigna un nombre descriptivo al documento (ej: WI-INSP-001).</span></div>
                         </div>
-                        <input type="text" id="tituloWorkInstruccion" name="tituloWorkInstruccion">
+                        <input type="text" id="tituloInstruccion" name="tituloInstruccion">
                     </div>
                     <div class="form-group">
-                        <label for="fileWorkInstruccion" data-translate-key="label_uploadPDF">Subir archivo PDF</label>
-                        <label class="file-upload-label" for="fileWorkInstruccion"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="span_selectFile">Seleccionar archivo...</span></label>
-                        <input type="file" id="fileWorkInstruccion" name="fileWorkInstruccion" accept=".pdf">
+                        <label for="fileInstruccion" data-translate-key="label_uploadPDF">Subir archivo PDF</label>
+                        <label class="file-upload-label" for="fileInstruccion"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="span_selectFile">Seleccionar archivo...</span></label>
+                        <input type="file" id="fileInstruccion" name="fileInstruccion" accept=".pdf">
                     </div>
                 </div>
-
-                <!-- Separador visual -->
-                <hr style="border:0; border-top: 1px solid var(--color-borde); margin: 25px 0;">
-
-                <!-- Instrucción de Inspección -->
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="toggleInspeccion">
-                    <label for="toggleInspeccion" data-translate-key="label_attachInspection">Adjuntar Instrucción de Inspección (Opcional)</label>
-                </div>
-                <div id="inspeccion-container" class="hidden-section" style="margin-left: 20px; border-left: 3px solid var(--color-borde); padding-left: 20px;">
-                    <div class="form-group">
-                        <div class="label-with-tooltip">
-                            <label for="tituloInspeccion" data-translate-key="label_docName">Nombre del Documento</label>
-                            <div class="tooltip-icon"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text" data-translate-key="tooltip_docName">Asigna un nombre descriptivo al documento (ej: INSP-SL-001).</span></div>
-                        </div>
-                        <input type="text" id="tituloInspeccion" name="tituloInspeccion">
-                    </div>
-                    <div class="form-group">
-                        <label for="fileInspeccion" data-translate-key="label_uploadPDF">Subir archivo PDF</label>
-                        <label class="file-upload-label" for="fileInspeccion"><i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="Seleccionar archivo..." data-translate-key="span_selectFile">Seleccionar archivo...</span></label>
-                        <input type="file" id="fileInspeccion" name="fileInspeccion" accept=".pdf">
-                    </div>
-                </div>
+                <!-- FIN: Campo unificado para Instrucción -->
 
             </fieldset>
 
@@ -176,12 +154,12 @@ $conex->close();
                 'label_projectName': 'Nombre del Proyecto', 'label_client': 'Cliente',
                 'section_defects': 'Registro de Defectos', 'btn_addSLDefect': 'Añadir Defecto',
                 'defecto': 'Defecto',
-                'select_defect': 'Seleccione un defecto del catálogo', // <-- NUEVA TRADUCCIÓN
-                'title_addDefect': 'Añadir Defecto al Catálogo', // <-- NUEVA TRADUCCIÓN
-                'label_defectDescription': 'Descripción del defecto...', // (Se mantiene por si acaso, pero no se usa)
+                'select_defect': 'Seleccione un defecto del catálogo',
+                'title_addDefect': 'Añadir Defecto al Catálogo',
+                'label_defectDescription': 'Descripción del defecto...',
                 'section_documentation': 'Documentación',
-                'label_attachWorkInstruction': 'Adjuntar Work Instrucción (Opcional)',
-                'label_attachInspection': 'Adjuntar Instrucción de Inspección (Opcional)',
+                // --- CAMBIO AQUÍ ---
+                'label_attachInstruction': 'Adjuntar Instrucción de Trabajo / Inspección (Opcional)',
                 'label_docName': 'Nombre del Documento', 'label_uploadPDF': 'Subir archivo PDF',
                 'btn_saveSL': 'Guardar Safe Launch',
                 'span_selectFile': 'Seleccionar archivo...',
@@ -191,7 +169,8 @@ $conex->close();
                 'swal_connectionErrorText': 'No se pudo comunicar con el servidor.',
                 'tooltip_projectName': 'Nombre clave o identificador del proyecto.',
                 'tooltip_client': 'Cliente final para el cual es este proyecto.',
-                'tooltip_docName': 'Asigna un nombre descriptivo al documento (ej: WI-SL-001 o INSP-SL-001).',
+                // --- CAMBIO AQUÍ ---
+                'tooltip_instructionName': 'Asigna un nombre descriptivo al documento (ej: WI-INSP-001).',
                 // Traducciones para el pop-up de añadir catálogo (copiadas del original)
                 'swal_inputLabel': 'Nombre del nuevo', 'swal_placeholder': 'Ingrese el nombre...',
                 'swal_btnSave': 'Guardar', 'swal_btnCancel': 'Cancelar', 'swal_validationEmpty': 'El nombre no puede estar vacío',
@@ -204,12 +183,12 @@ $conex->close();
                 'label_projectName': 'Project Name', 'label_client': 'Client',
                 'section_defects': 'Defects Log', 'btn_addSLDefect': 'Add Defect',
                 'defecto': 'Defect',
-                'select_defect': 'Select a defect from the catalog', // <-- NEW TRANSLATION
-                'title_addDefect': 'Add Defect to Catalog', // <-- NEW TRANSLATION
+                'select_defect': 'Select a defect from the catalog',
+                'title_addDefect': 'Add Defect to Catalog',
                 'label_defectDescription': 'Defect description...',
                 'section_documentation': 'Documentation',
-                'label_attachWorkInstruction': 'Attach Work Instruction (Optional)',
-                'label_attachInspection': 'Attach Inspection Instruction (Optional)',
+                // --- CAMBIO AQUÍ ---
+                'label_attachInstruction': 'Attach Work / Inspection Instruction (Optional)',
                 'label_docName': 'Document Name', 'label_uploadPDF': 'Upload PDF file',
                 'btn_saveSL': 'Save Safe Launch',
                 'span_selectFile': 'Select file...',
@@ -219,7 +198,8 @@ $conex->close();
                 'swal_connectionErrorText': 'Could not communicate with the server.',
                 'tooltip_projectName': 'Key name or identifier for the project.',
                 'tooltip_client': 'End customer for this project.',
-                'tooltip_docName': 'Assign a descriptive name to the document (e.g., WI-SL-001 or INSP-SL-001).',
+                // --- CAMBIO AQUÍ ---
+                'tooltip_instructionName': 'Assign a descriptive name to the document (e.g., WI-INSP-001).',
                 // Translations for the add catalog popup (copied from original)
                 'swal_inputLabel': 'Name of the new', 'swal_placeholder': 'Enter the name...',
                 'swal_btnSave': 'Save', 'swal_btnCancel': 'Cancel', 'swal_validationEmpty': 'The name cannot be empty',
@@ -246,6 +226,13 @@ $conex->close();
                 const key = el.dataset.translateKeyTitle;
                 if(translations[lang] && translations[lang][key]) {
                     el.title = translations[lang][key];
+                }
+            });
+            // TRADUCIR TOOLTIPS
+            document.querySelectorAll('.tooltip-text[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
                 }
             });
             // Actualizar placeholders
@@ -275,18 +262,14 @@ $conex->close();
             if (langBtnToActivate) langBtnToActivate.click();
         }
 
-        // Lógica para mostrar/ocultar la Work Instrucción
-        document.getElementById('toggleWorkInstruccion').addEventListener('change', function() {
-            document.getElementById('work-instruccion-container').style.display = this.checked ? 'block' : 'none';
+        // --- CAMBIO AQUÍ: Lógica para mostrar/ocultar la Instrucción Unificada ---
+        document.getElementById('toggleInstruccion').addEventListener('change', function() {
+            document.getElementById('instruccion-container').style.display = this.checked ? 'block' : 'none';
         });
-
-        // Lógica para mostrar/ocultar la Instrucción de Inspección
-        document.getElementById('toggleInspeccion').addEventListener('change', function() {
-            document.getElementById('inspeccion-container').style.display = this.checked ? 'block' : 'none';
-        });
+        // --- FIN DEL CAMBIO ---
 
 
-        // --- CAMBIO AQUÍ: Lógica para añadir defectos (ahora con <select>) ---
+        // Lógica para añadir defectos (con <select>)
         const btnAddDefecto = document.getElementById('btn-add-sl-defecto');
         const defectosContainer = document.getElementById('defectos-sl-container');
         let defectoCounter = 0;
@@ -308,7 +291,6 @@ $conex->close();
             </div>`;
             defectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
         });
-        // --- FIN DEL CAMBIO ---
 
         // Lógica para eliminar un defecto
         defectosContainer.addEventListener('click', function(e) {
@@ -334,7 +316,7 @@ $conex->close();
             }
         });
 
-        // --- LÓGICA AÑADIDA PARA EL BOTÓN "+" (Añadir al Catálogo) ---
+        // LÓGICA PARA EL BOTÓN "+" (Añadir al Catálogo)
         <?php if ($esSuperUsuario): ?>
         document.querySelectorAll('.btn-add').forEach(button => {
             button.addEventListener('click', function() {
@@ -390,7 +372,6 @@ $conex->close();
             });
         });
         <?php endif; ?>
-        // --- FIN DE LÓGICA AÑADIDA ---
 
 
         // Lógica para Enviar el Formulario Completo
@@ -404,24 +385,16 @@ $conex->close();
                 return;
             }
 
-            // Validar campos de documentos si los checkboxes están marcados
-            const workInstruccionChecked = document.getElementById('toggleWorkInstruccion').checked;
-            const tituloWorkInstruccion = document.getElementById('tituloWorkInstruccion').value;
-            const fileWorkInstruccion = document.getElementById('fileWorkInstruccion').files.length;
+            // --- CAMBIO AQUÍ: Validación unificada ---
+            const instruccionChecked = document.getElementById('toggleInstruccion').checked;
+            const tituloInstruccion = document.getElementById('tituloInstruccion').value;
+            const fileInstruccion = document.getElementById('fileInstruccion').files.length;
 
-            if (workInstruccionChecked && (!tituloWorkInstruccion || fileWorkInstruccion === 0)) {
-                Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Si adjuntas la Work Instrucción, debes proporcionar un nombre y un archivo PDF.' });
+            if (instruccionChecked && (!tituloInstruccion || fileInstruccion === 0)) {
+                Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Si adjuntas la Instrucción, debes proporcionar un nombre y un archivo PDF.' });
                 return;
             }
-
-            const inspeccionChecked = document.getElementById('toggleInspeccion').checked;
-            const tituloInspeccion = document.getElementById('tituloInspeccion').value;
-            const fileInspeccion = document.getElementById('fileInspeccion').files.length;
-
-            if (inspeccionChecked && (!tituloInspeccion || fileInspeccion === 0)) {
-                Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Si adjuntas la Instrucción de Inspección, debes proporcionar un nombre y un archivo PDF.' });
-                return;
-            }
+            // --- FIN DEL CAMBIO ---
 
             const formData = new FormData(safeLaunchForm);
             Swal.fire({ title: translations[currentLang].swal_saving, text: translations[currentLang].swal_savingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
