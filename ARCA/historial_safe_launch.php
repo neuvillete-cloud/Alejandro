@@ -331,7 +331,20 @@ $conex->close();
                 'swal_share_success_title': '¡Enviado!',
                 'swal_share_success_text': 'El enlace de invitado ha sido enviado.',
                 'swal_share_error_title': 'Error',
-                'swal_share_error_text': 'No se pudo enviar el correo.'
+                'swal_share_error_text': 'No se pudo enviar el correo.',
+
+                // --- INICIO DE TRADUCCIONES AÑADIDAS (para el modal) ---
+                'loadingData': 'Cargando datos...',
+                'errorLoadingData': 'Error al cargar los datos.',
+                'section_generalData': 'Datos Generales',
+                'label_personInCharge_SL': 'Responsable',
+                'label_projectName_SL': 'Proyecto',
+                'label_client_SL': 'Cliente',
+                'section_instruction': 'Instrucción de Trabajo',
+                'section_defects': 'Defectos Registrados',
+                'defect': 'Defecto',
+                'noDefects': 'No se registraron defectos.'
+                // --- FIN DE TRADUCCIONES AÑADIDAS ---
             },
             'en': {
                 'nav_dashboard': 'Dashboard', 'nav_myRequests': 'My Contentions',
@@ -355,7 +368,20 @@ $conex->close();
                 'swal_share_success_title': 'Sent!',
                 'swal_share_success_text': 'The guest link has been sent.',
                 'swal_share_error_title': 'Error',
-                'swal_share_error_text': 'Could not send the email.'
+                'swal_share_error_text': 'Could not send the email.',
+
+                // --- INICIO DE TRADUCCIONES AÑADIDAS (para el modal) ---
+                'loadingData': 'Loading data...',
+                'errorLoadingData': 'Error loading data.',
+                'section_generalData': 'General Data',
+                'label_personInCharge_SL': 'Person in Charge',
+                'label_projectName_SL': 'Project',
+                'label_client_SL': 'Client',
+                'section_instruction': 'Work Instruction',
+                'section_defects': 'Registered Defects',
+                'defect': 'Defect',
+                'noDefects': 'No defects were registered.'
+                // --- FIN DE TRADUCCIONES AÑADIDAS ---
             }
         };
 
