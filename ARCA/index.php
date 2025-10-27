@@ -189,14 +189,19 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                 <i class="fa-solid fa-list-check"></i>
                 Ver mis Solicitudes
             </a>
-            <!-- ===== INICIO DE BOTÓN AÑADIDO ===== -->
-            <a href="safe_launch.php" class="cta-button secondary">
-                <i class="fa-solid fa-rocket"></i>
-                Safe Launch
-            </a>
-            <!-- ===== FIN DE BOTÓN AÑADIDO ===== -->
 
+            <!-- ==== INICIO: NUEVO BOTÓN HISTORIAL SAFE LAUNCH (PARA TODOS) ==== -->
+            <a href="historial_safe_launch.php" class="cta-button secondary">
+                <i class="fa-solid fa-clipboard-list"></i>
+                Historial Safe Launch
+            </a>
+            <!-- ==== FIN: NUEVO BOTÓN ==== -->
+
+
+            <!-- ==== INICIO: LÓGICA DE BOTONES CONDICIONAL ==== -->
             <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1): ?>
+
+                <!-- Botones de Admin -->
                 <a href="aprobar_metodos.php" class="cta-button secondary">
                     <i class="fa-solid fa-check-double"></i>
                     Aprobar Métodos
@@ -205,12 +210,28 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                     <i class="fa-solid fa-chart-line"></i>
                     Seguimiento Contenidos
                 </a>
-                <!-- BOTÓN AÑADIDO -->
                 <a href="dashboard_reportes.php" class="cta-button secondary">
                     <i class="fa-solid fa-chart-pie"></i>
                     Reportes
                 </a>
+
+                <!-- Botón Safe Launch (AL FINAL para Admin) -->
+                <a href="safe_launch.php" class="cta-button secondary">
+                    <i class="fa-solid fa-rocket"></i>
+                    Safe Launch
+                </a>
+
+            <?php else: ?>
+
+                <!-- Botón Safe Launch (Posición normal para usuarios) -->
+                <a href="safe_launch.php" class="cta-button secondary">
+                    <i class="fa-solid fa-rocket"></i>
+                    Safe Launch
+                </a>
+
             <?php endif; ?>
+            <!-- ==== FIN: LÓGICA DE BOTONES CONDICIONAL ==== -->
+
         </div>
     </section>
 
