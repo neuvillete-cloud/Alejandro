@@ -16,13 +16,14 @@ include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// ADICIÓN: Cargar el Catálogo de Defectos
-$catalogo_defectos = $conex->query("SELECT IdDefectoCatalogo, NombreDefecto FROM CatalogoDefectos ORDER BY NombreDefecto ASC");
+// --- CAMBIO AQUÍ: Consultar la nueva tabla ---
+$catalogo_defectos = $conex->query("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
 // Preparamos las opciones en una variable para inyectarla en JavaScript
 $defectos_options_html = "";
 if ($catalogo_defectos) {
     while($row = $catalogo_defectos->fetch_assoc()) {
-        $defectos_options_html .= "<option value='{$row['IdDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
+        // --- CAMBIO AQUÍ: Usar el nuevo ID (IdSLDefectoCatalogo) ---
+        $defectos_options_html .= "<option value='{$row['IdSLDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
     }
 }
 $conex->close();
@@ -99,7 +100,8 @@ $conex->close();
 
                     <!-- Botón opcional para añadir al catálogo (si es SuperUsuario) -->
                     <?php if ($esSuperUsuario): ?>
-                        <button type="button" class="btn-add" data-tipo="defectocatalogo" data-translate-key-title="title_addDefect" title="Añadir Defecto al Catálogo">+</button>
+                        <!-- --- CAMBIO AQUÍ: El data-tipo ahora apunta a una nueva lógica --- -->
+                        <button type="button" class="btn-add" data-tipo="sldefectocatalogo" data-translate-key-title="title_addDefect" title="Añadir Defecto al Catálogo">+</button>
                     <?php endif; ?>
                 </div>
             </fieldset>
@@ -320,9 +322,11 @@ $conex->close();
         <?php if ($esSuperUsuario): ?>
         document.querySelectorAll('.btn-add').forEach(button => {
             button.addEventListener('click', function() {
-                const tipo = this.dataset.tipo; // "defectocatalogo"
+                const tipo = this.dataset.tipo; // "sldefectocatalogo"
                 const titulos = {
-                    defectocatalogo: translations[currentLang].title_addDefect
+                    // --- CAMBIO AQUÍ: El tipo ahora es 'sldefectocatalogo' ---
+                    'sldefectocatalogo': translations[currentLang].title_addDefect,
+                    // (Se eliminaron los otros tipos que no están en esta página)
                 };
 
                 Swal.fire({
@@ -341,7 +345,8 @@ $conex->close();
                         const formData = new FormData();
                         formData.append('nombre', nombre);
 
-                        return fetch(`dao/add_${tipo}.php`, { // Llama a dao/add_defectocatalogo.php
+                        // --- CAMBIO AQUÍ: 'tipo' ahora es 'sldefectocatalogo' y llamará a 'dao/add_sldefectocatalogo.php' ---
+                        return fetch(`dao/add_${tipo}.php`, { // Llama a dao/add_sldefectocatalogo.php
                             method: 'POST',
                             body: formData
                         })
@@ -358,6 +363,7 @@ $conex->close();
                         Swal.fire(translations[currentLang].swal_saved, result.value.message, 'success');
 
                         // Actualizar la variable JS y todos los <select> existentes
+                        // 'result.value.data.id' debe ser el nuevo 'IdSLDefectoCatalogo' devuelto por el DAO
                         const newOptionHTML = `<option value="${result.value.data.id}">${result.value.data.nombre}</option>`;
                         opcionesDefectos += newOptionHTML;
 
@@ -424,4 +430,3 @@ $conex->close();
 
 </body>
 </html>
-
