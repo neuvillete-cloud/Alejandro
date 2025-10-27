@@ -274,20 +274,29 @@ $conex->close();
         // Lógica para añadir defectos (con <select>)
         const btnAddDefecto = document.getElementById('btn-add-sl-defecto');
         const defectosContainer = document.getElementById('defectos-sl-container');
-        let defectoCounter = 0;
+        let defectoCounter = 0; // Este contador SÓLO se incrementa, para IDs únicos
 
         btnAddDefecto.addEventListener('click', function() {
+            // --- ESTA ES LA LÓGICA CORREGIDA ---
+            // 1. Contamos los elementos Hijos ANTES de añadir el nuevo.
+            const numeroDeDefecto = defectosContainer.children.length + 1;
+
+            // 2. Seguimos usando el contador global para IDs únicos.
             defectoCounter++;
+
             const defectoHTML = `
             <div class="defecto-item-sl" id="defecto-sl-${defectoCounter}">
                 <div class="form-row">
                     <div class="form-group" style="flex-grow: 1;">
-                        <label for="defectoSelect-${defectoCounter}">${translations[currentLang].defecto} #${defectoCounter}</label>
+                        <!-- 3. Usamos numeroDeDefecto para la ETIQUETA visual -->
+                        <label for="defectoSelect-${defectoCounter}">${translations[currentLang].defecto} #${numeroDeDefecto}</label>
+                        <!-- 4. Usamos defectoCounter para el ID/NAME del select -->
                         <select id="defectoSelect-${defectoCounter}" name="defectos[${defectoCounter}][id]" required>
                             <option value="" disabled selected>${translations[currentLang].select_defect}</option>
                             ${opcionesDefectos}
                         </select>
                     </div>
+                    <!-- 5. Usamos defectoCounter para el data-defecto-id -->
                     <button type="button" class="btn-remove-defecto" data-defecto-id="${defectoCounter}" style="align-self: flex-end; margin-bottom: 15px; background: none; border: none; color: var(--color-error); font-size: 24px; cursor: pointer; padding: 0 10px;">&times;</button>
                 </div>
             </div>`;
@@ -297,9 +306,13 @@ $conex->close();
         // Lógica para eliminar un defecto
         defectosContainer.addEventListener('click', function(e) {
             if (e.target && e.target.classList.contains('btn-remove-defecto')) {
+                // Eliminamos el elemento padre
                 document.getElementById(`defecto-sl-${e.target.dataset.defectoId}`).remove();
-                // Renumerar etiquetas de los defectos restantes
+
+                // --- ESTA ES LA OTRA PARTE DE LA CORRECCIÓN ---
+                // 1. Después de eliminar, volvemos a buscar todos los 'labels' restantes
                 defectosContainer.querySelectorAll('.defecto-item-sl label').forEach((label, index) => {
+                    // 2. Re-numeramos la etiqueta basado en su nuevo índice (index + 1)
                     label.innerText = `${translations[currentLang].defecto} #${index + 1}`;
                 });
             }
@@ -393,17 +406,25 @@ $conex->close();
 
             // --- CAMBIO AQUÍ: Validación unificada ---
             const instruccionChecked = document.getElementById('toggleInstruccion').checked;
-            const tituloInstruccion = document.getElementById('tituloInstruccion').value;
+            const tituloInstruccion = document.getElementById('tituloInstruccion').value.trim();
             const fileInstruccion = document.getElementById('fileInstruccion').files.length;
 
-            if (instruccionChecked && (!tituloInstruccion || fileInstruccion === 0)) {
+            if (instruccionChecked && (tituloInstruccion === "" || fileInstruccion === 0)) {
                 Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Si adjuntas la Instrucción, debes proporcionar un nombre y un archivo PDF.' });
+                return;
+            }
+            if (instruccionChecked && !tituloInstruccion && fileInstruccion > 0) {
+                Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Si adjuntas un archivo PDF, debes darle un nombre al documento.' });
+                return;
+            }
+            if (instruccionChecked && tituloInstruccion && fileInstruccion === 0) {
+                Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Si pones un nombre al documento, debes adjuntar el archivo PDF.' });
                 return;
             }
             // --- FIN DEL CAMBIO ---
 
             const formData = new FormData(safeLaunchForm);
-            Swal.fire({ title: translations[currentLang].swal_saving, text: translations[currentLang].swal_savingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+            Swal.fire({ title: translations[currentLang].swal_saving, text: translations[currentLang].swal_savingText, allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
 
             // El action del form es 'dao/guardar_safe_launch.php'
             fetch(safeLaunchForm.action, { method: 'POST', body: formData })
