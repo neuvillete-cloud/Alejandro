@@ -189,6 +189,13 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                 <i class="fa-solid fa-list-check"></i>
                 Ver mis Solicitudes
             </a>
+            <!-- ===== INICIO DE BOTÓN AÑADIDO ===== -->
+            <a href="safe_launch.php" class="cta-button secondary">
+                <i class="fa-solid fa-rocket"></i>
+                Safe Launch
+            </a>
+            <!-- ===== FIN DE BOTÓN AÑADIDO ===== -->
+
             <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1): ?>
                 <a href="aprobar_metodos.php" class="cta-button secondary">
                     <i class="fa-solid fa-check-double"></i>
