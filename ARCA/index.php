@@ -190,12 +190,7 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                 Ver mis Solicitudes
             </a>
 
-            <!-- ==== INICIO: NUEVO BOTÓN HISTORIAL SAFE LAUNCH (PARA TODOS) ==== -->
-            <a href="historial_safe_launch.php" class="cta-button secondary">
-                <i class="fa-solid fa-clipboard-list"></i>
-                Historial Safe Launch
-            </a>
-            <!-- ==== FIN: NUEVO BOTÓN ==== -->
+            <!-- ==== BOTÓN DE HISTORIAL MOVIDO DENTRO DEL BLOQUE IF/ELSE ==== -->
 
 
             <!-- ==== INICIO: LÓGICA DE BOTONES CONDICIONAL ==== -->
@@ -221,12 +216,24 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                     Safe Launch
                 </a>
 
+                <!-- Historial Safe Launch (DESPUÉS de Safe Launch para Admin) -->
+                <a href="historial_safe_launch.php" class="cta-button secondary">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    Historial Safe Launch
+                </a>
+
             <?php else: ?>
 
                 <!-- Botón Safe Launch (Posición normal para usuarios) -->
                 <a href="safe_launch.php" class="cta-button secondary">
                     <i class="fa-solid fa-rocket"></i>
                     Safe Launch
+                </a>
+
+                <!-- Historial Safe Launch (DESPUÉS de Safe Launch para usuarios) -->
+                <a href="historial_safe_launch.php" class="cta-button secondary">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    Historial Safe Launch
                 </a>
 
             <?php endif; ?>
@@ -314,3 +321,6 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 
 </body>
 </html>
+
+
+
