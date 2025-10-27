@@ -462,7 +462,7 @@ $conex->close();
                         formData.append('email', result.value);
 
                         // Este DAO necesita ser creado
-                        fetch('dao/compartir_safe_launch.php', {
+                        fetch('https://grammermx.com/Mailer/compartir_safe_launch.php', {
                             method: 'POST',
                             body: formData
                         })
