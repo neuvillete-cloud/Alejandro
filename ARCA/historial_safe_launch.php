@@ -113,7 +113,10 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
         $sql_base .= " WHERE " . implode(" AND ", $where_clauses);
     }
 
-    $sql_base .= " GROUP BY sl.IdSafeLaunch";
+    // --- CORRECCIÓN AQUÍ ---
+    // Se añaden todas las columnas no agregadas (sl.*, u.Nombre) al GROUP BY
+    // para que la consulta sea compatible con todos los modos de SQL.
+    $sql_base .= " GROUP BY sl.IdSafeLaunch, sl.NombreProyecto, sl.Cliente, sl.FechaRegistro, sl.Estatus, u.Nombre, sl.RutaInstruccion, sl.EstatusInstruccion";
 }
 
 $sql_base .= " ORDER BY sl.IdSafeLaunch DESC";
@@ -487,4 +490,6 @@ $conex->close();
 
 </body>
 </html>
+
+
 
