@@ -54,6 +54,7 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
     $tituloPagina = "Safe Launch Compartido";
     $token = $_SESSION['vista_token_actual_sl'];
 
+    // --- CORRECCIÓN: Eliminado sl.EstatusInstruccion ---
     $sql_base = "SELECT 
                     sl.IdSafeLaunch, 
                     sl.NombreProyecto, 
@@ -61,8 +62,7 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
                     sl.FechaRegistro, 
                     sl.Estatus,
                     u.Nombre as NombreResponsable,
-                    sl.RutaInstruccion,
-                    sl.EstatusInstruccion
+                    sl.RutaInstruccion
                  FROM SafeLaunchSolicitudes sl
                  JOIN SafeLaunchSolicitudesCompartidas slsc ON sl.IdSafeLaunch = slsc.IdSafeLaunch
                  JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario
@@ -73,6 +73,7 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
 } else {
     // --- MODO USUARIO LOGUEADO (VISTA NORMAL) ---
     // --- CORRECCIÓN: Se usa una subconsulta para evitar el GROUP BY, que causaba el error 500. ---
+    // --- CORRECCIÓN: Eliminado sl.EstatusInstruccion ---
     $sql_base = "SELECT 
                     sl.IdSafeLaunch, 
                     sl.NombreProyecto, 
@@ -81,7 +82,6 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
                     sl.Estatus,
                     u.Nombre as NombreResponsable,
                     sl.RutaInstruccion,
-                    sl.EstatusInstruccion,
                     (SELECT slsc.IdSLCompartido 
                      FROM SafeLaunchSolicitudesCompartidas slsc 
                      WHERE slsc.IdSafeLaunch = sl.IdSafeLaunch 
@@ -123,10 +123,20 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
 
 $sql_base .= " ORDER BY sl.IdSafeLaunch DESC";
 $stmt = $conex->prepare($sql_base);
+if (!$stmt) {
+    // Manejo de error si la preparación falla
+    die("Error preparing statement: " . $conex->error);
+}
+
 if (!empty($types)) {
     $stmt->bind_param($types, ...$params);
 }
-$stmt->execute();
+
+if (!$stmt->execute()) {
+    // Manejo de error si la ejecución falla
+    die("Error executing statement: " . $stmt->error);
+}
+
 $solicitudes = $stmt->get_result();
 $conex->close();
 ?>
@@ -492,7 +502,4 @@ $conex->close();
 
 </body>
 </html>
-
-
-
 
