@@ -6,7 +6,6 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 $esSuperUsuario = (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1);
 $idUsuarioActual = $_SESSION['user_id'];
 
-// Validar que se recibió un ID de Safe Launch
 if (!isset($_GET['id'])) {
     die("Error: No se proporcionó un ID de Safe Launch.");
 }
@@ -17,128 +16,127 @@ include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// Obtenemos los datos de la solicitud Safe Launch
+// Obtenemos los datos de la solicitud de Safe Launch
 $stmt = $conex->prepare("SELECT sl.*, u.Nombre AS NombreCreador
                          FROM SafeLaunchSolicitudes sl
                          LEFT JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario
                          WHERE sl.IdSafeLaunch = ?");
 $stmt->bind_param("i", $idSafeLaunch);
 $stmt->execute();
-$solicitudSL = $stmt->get_result()->fetch_assoc();
-$stmt->close(); // Cerrar el statement anterior
+$safeLaunchData = $stmt->get_result()->fetch_assoc();
+$stmt->close(); // Cerrar el statement aquí
 
-if (!$solicitudSL) { die("Error: Safe Launch no encontrado."); }
+if (!$safeLaunchData) { die("Error: Safe Launch no encontrado."); }
 
 // --- Datos para la cabecera del formulario ---
-$nombreResponsable = htmlspecialchars($solicitudSL['NombreCreador']);
-$nombreProyecto = htmlspecialchars($solicitudSL['NombreProyecto']);
-$cliente = htmlspecialchars($solicitudSL['Cliente']);
-// Ya no necesitamos $cantidadSolicitada ni $nombresDefectosStr aquí
+$nombreResponsable = htmlspecialchars($safeLaunchData['NombreCreador']);
+$nombreProyecto = htmlspecialchars($safeLaunchData['NombreProyecto']);
+$cliente = htmlspecialchars($safeLaunchData['Cliente']);
 
-// --- Catálogo de Defectos para Safe Launch ---
-$catalogo_defectos_sl_query = $conex->prepare("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
-$catalogo_defectos_sl_query->execute();
-$catalogo_defectos_sl_result = $catalogo_defectos_sl_query->get_result()->fetch_all(MYSQLI_ASSOC);
-$catalogo_defectos_sl_query->close(); // Cerrar statement
-
-// Preparar opciones HTML para los <select>
-$defectos_options_html = "";
-$todos_los_defectos_sl = []; // Array para la tabla final
-foreach($catalogo_defectos_sl_result as $row) {
-    $defectos_options_html .= "<option value='{$row['IdSLDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
-    $todos_los_defectos_sl[$row['IdSLDefectoCatalogo']] = ['NombreDefecto' => htmlspecialchars($row['NombreDefecto']), 'Total' => 0]; // Inicializar total
+// --- Catálogo de Defectos para el formulario y la tabla ---
+$catalogo_defectos_query = $conex->query("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
+$catalogo_defectos_result = $catalogo_defectos_query->fetch_all(MYSQLI_ASSOC);
+$defectos_originales_para_js = []; // Mapa para nombres de defectos originales
+$defectos_para_formulario_y_tabla = []; // Array para iterar en HTML
+foreach($catalogo_defectos_result as $row) {
+    $defectos_originales_para_js[$row['IdSLDefectoCatalogo']] = htmlspecialchars($row['NombreDefecto']);
+    $defectos_para_formulario_y_tabla[] = [
+        'id' => $row['IdSLDefectoCatalogo'],
+        'nombre' => htmlspecialchars($row['NombreDefecto'])
+    ];
 }
 
-// --- Obtener Historial de Reportes de Inspección para este Safe Launch ---
-function parsearTiempoAMinutosSL($tiempoStr) {
+// --- Historial de Reportes Anteriores ---
+function parsearTiempoAMinutos($tiempoStr) {
     if (empty($tiempoStr)) return 0;
     $totalMinutos = 0;
-    if (preg_match('/(\d+)\s*hora(s)?/', $tiempoStr, $matches)) { $totalMinutos += intval($matches[1]) * 60; }
-    if (preg_match('/(\d+)\s*minuto(s)?/', $tiempoStr, $matches)) { $totalMinutos += intval($matches[1]); }
-    if ($totalMinutos === 0 && str_contains(strtolower($tiempoStr), 'hora')) { $totalMinutos = intval(filter_var($tiempoStr, FILTER_SANITIZE_NUMBER_INT)) * 60; }
+    if (preg_match('/(\d+)\s*hora(s)?/', $tiempoStr, $matches)) {
+        $totalMinutos += intval($matches[1]) * 60;
+    }
+    if (preg_match('/(\d+)\s*minuto(s)?/', $tiempoStr, $matches)) {
+        $totalMinutos += intval($matches[1]);
+    }
+    if ($totalMinutos === 0 && preg_match('/(\d+)/', $tiempoStr, $matches)) { // Fallback simple si solo hay números
+        if (str_contains(strtolower($tiempoStr), 'hora')) {
+            $totalMinutos = intval($matches[1]) * 60;
+        } else {
+            $totalMinutos = intval($matches[1]);
+        }
+    }
     return $totalMinutos;
 }
 
-function formatarMinutosATiempoSL($totalMinutos) {
+function formatarMinutosATiempo($totalMinutos) {
     if ($totalMinutos <= 0) return "0 minutos";
     $horas = floor($totalMinutos / 60);
     $minutos = $totalMinutos % 60;
     $partes = [];
-    if ($horas > 0) { $partes[] = $horas . " hora(s)"; }
-    if ($minutos > 0) { $partes[] = $minutos . " minuto(s)"; }
+    if ($horas > 0) {
+        $partes[] = $horas . " hora(s)";
+    }
+    if ($minutos > 0) {
+        $partes[] = $minutos . " minuto(s)";
+    }
     return empty($partes) ? "0 minutos" : implode(" ", $partes);
 }
 
+// --- CORRECCIÓN AQUÍ: Nombre de la tabla corregido ---
 $reportes_anteriores_query = $conex->prepare("
     SELECT
-        slri.IdSLReporte, slri.FechaInspeccion, slri.NombreInspector, slri.PiezasInspeccionadas, slri.PiezasAceptadas,
-        (slri.PiezasInspeccionadas - slri.PiezasAceptadas) AS PiezasRechazadasCalculadas,
-        slri.PiezasRetrabajadas,
-        slri.RangoHora,
-        slri.Comentarios,
-        slri.TiempoInspeccion
-    FROM SafeLaunchReportesInspeccion slri
-    WHERE slri.IdSafeLaunch = ? ORDER BY slri.FechaRegistro DESC
+        r.IdSLReporte, r.FechaInspeccion, r.NombreInspector, r.PiezasInspeccionadas, r.PiezasAceptadas,
+        (r.PiezasInspeccionadas - r.PiezasAceptadas) AS PiezasRechazadasCalculadas,
+        r.PiezasRetrabajadas,
+        r.RangoHora,
+        r.Comentarios,
+        r.TiempoInspeccion
+    FROM SafeLaunchReportesInspeccion r
+    WHERE r.IdSafeLaunch = ? ORDER BY r.FechaRegistro DESC
 ");
+// --- FIN DE LA CORRECCIÓN ---
 $reportes_anteriores_query->bind_param("i", $idSafeLaunch);
 $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
-$reportes_anteriores_query->close(); // Cerrar statement
+$reportes_anteriores_query->close(); // Cerrar el statement aquí
 
 $reportes_procesados = [];
 $totalMinutosRegistrados = 0;
 $totalPiezasInspeccionadasYa = 0;
-$totalDefectosGlobal = 0; // Para PPM
-
-// Preparar statements para obtener defectos por reporte (más eficiente dentro del bucle)
-$defectos_reporte_stmt = $conex->prepare("
-    SELECT slrd.CantidadEncontrada, slrd.BachLote, slcd.NombreDefecto, slrd.IdSLDefectoCatalogo
-    FROM SafeLaunchReporteDefectos slrd
-    JOIN SafeLaunchCatalogoDefectos slcd ON slrd.IdSLDefectoCatalogo = slcd.IdSLDefectoCatalogo
-    WHERE slrd.IdSLReporte = ?
-");
+$totalDefectosEncontradosGlobal = 0;
+$totalDefectosPorTipoGlobal = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0);
 
 foreach ($reportes_raw as $reporte) {
     $reporte_id = $reporte['IdSLReporte'];
-    $totalMinutosRegistrados += parsearTiempoAMinutosSL($reporte['TiempoInspeccion']);
+    $totalMinutosRegistrados += parsearTiempoAMinutos($reporte['TiempoInspeccion']);
     $totalPiezasInspeccionadasYa += (int)$reporte['PiezasInspeccionadas'];
+    $totalDefectosReporteActual = 0;
+    $reporte['DefectosPorTipo'] = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0); // Inicializar para este reporte
 
-    // Obtener defectos para este reporte
-    $defectos_reporte_stmt->bind_param("i", $reporte_id);
-    $defectos_reporte_stmt->execute();
-    $defectos_reporte_result = $defectos_reporte_stmt->get_result();
 
-    $reporte['DefectosDetallados'] = []; // Array para almacenar detalles por defecto para esta fila
-    // Inicializar contadores para esta fila
-    foreach ($todos_los_defectos_sl as $idDef => $defData) {
-        $reporte['DefectosDetallados'][$idDef] = ['Cantidad' => 0, 'Lotes' => []];
-    }
-
-    $lotes_encontrados_reporte = [];
-    $total_defectos_este_reporte = 0;
-
+    $defectos_reporte_query = $conex->prepare("
+        SELECT
+            rd.IdSLDefectoCatalogo, rd.CantidadEncontrada
+        FROM SafeLaunchReporteDefectos rd
+        WHERE rd.IdSLReporte = ?
+    ");
+    $defectos_reporte_query->bind_param("i", $reporte_id);
+    $defectos_reporte_query->execute();
+    $defectos_reporte_result = $defectos_reporte_query->get_result();
     while ($dr = $defectos_reporte_result->fetch_assoc()) {
-        $id_defecto_catalogo = $dr['IdSLDefectoCatalogo'];
-        $cantidad_encontrada = (int)$dr['CantidadEncontrada'];
-        $total_defectos_este_reporte += $cantidad_encontrada;
-        $totalDefectosGlobal += $cantidad_encontrada; // Sumar al total global
-
-        if (isset($reporte['DefectosDetallados'][$id_defecto_catalogo])) {
-            $reporte['DefectosDetallados'][$id_defecto_catalogo]['Cantidad'] += $cantidad_encontrada;
-            if (!empty($dr['BachLote'])) {
-                $reporte['DefectosDetallados'][$id_defecto_catalogo]['Lotes'][] = htmlspecialchars($dr['BachLote']);
-                $lotes_encontrados_reporte[] = htmlspecialchars($dr['BachLote']); // También para la columna general de lotes
-            }
-            // Acumular el total por defecto en el array global
-            if (isset($todos_los_defectos_sl[$id_defecto_catalogo])) {
-                $todos_los_defectos_sl[$id_defecto_catalogo]['Total'] += $cantidad_encontrada;
-            }
+        $idDefecto = $dr['IdSLDefectoCatalogo'];
+        $cantidad = (int)$dr['CantidadEncontrada'];
+        $reporte['DefectosPorTipo'][$idDefecto] = $cantidad; // Guardar cantidad por ID de defecto para la fila de la tabla
+        $totalDefectosReporteActual += $cantidad;
+        // Verificar si la clave existe antes de sumar
+        if (array_key_exists($idDefecto, $totalDefectosPorTipoGlobal)) {
+            $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad; // Sumar al total global
         }
     }
-    $reporte['LotesEncontrados'] = empty($lotes_encontrados_reporte) ? 'N/A' : implode(", ", array_unique($lotes_encontrados_reporte));
-    $reporte['TotalDefectosReporte'] = $total_defectos_este_reporte; // Total de defectos solo para esta fila
+    $reporte['TotalDefectosReporte'] = $totalDefectosReporteActual;
+    $totalDefectosEncontradosGlobal += $totalDefectosReporteActual;
+    $defectos_reporte_query->close(); // Cerrar el statement aquí
 
-    // Calcular Turno (igual que antes)
+
+    // Calcular Turno/Shift Leader
     $turno_shift_leader = 'N/A';
     if (isset($reporte['RangoHora'])) {
         $rangoHoraStr = $reporte['RangoHora'];
@@ -146,33 +144,40 @@ foreach ($reportes_raw as $reporte) {
         if (!empty($matches[1])) {
             $hora_inicio_str = $matches[1];
             $hora_inicio_timestamp = strtotime($hora_inicio_str);
-            $primer_turno_inicio = strtotime('06:30 am'); $primer_turno_fin = strtotime('02:30 pm');
-            $segundo_turno_inicio = strtotime('02:40 pm'); $segundo_turno_fin = strtotime('10:30 pm');
-            if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) { $turno_shift_leader = 'Primer Turno'; }
-            elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) { $turno_shift_leader = 'Segundo Turno'; }
-            else { $turno_shift_leader = 'Tercer Turno / Otro'; }
+
+            $primer_turno_inicio = strtotime('06:30 am');
+            $primer_turno_fin = strtotime('02:30 pm');
+            $segundo_turno_inicio = strtotime('02:40 pm');
+            $segundo_turno_fin = strtotime('10:30 pm');
+
+            if ($hora_inicio_timestamp >= $primer_turno_inicio && $hora_inicio_timestamp <= $primer_turno_fin) {
+                $turno_shift_leader = 'Primer Turno';
+            } elseif ($hora_inicio_timestamp >= $segundo_turno_inicio && $hora_inicio_timestamp <= $segundo_turno_fin) {
+                $turno_shift_leader = 'Segundo Turno';
+            } else {
+                $turno_shift_leader = 'Tercer Turno / Otro';
+            }
         }
     }
     $reporte['TurnoShiftLeader'] = $turno_shift_leader;
 
     $reportes_procesados[] = $reporte;
 }
-$defectos_reporte_stmt->close(); // Cerrar statement preparado de defectos
+$tiempoTotalFormateado = formatarMinutosATiempo($totalMinutosRegistrados);
 
-$tiempoTotalFormateado = formatarMinutosATiempoSL($totalMinutosRegistrados);
+// Calcular PPM y % Defectuoso Global
+$ppm_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosEncontradosGlobal / $totalPiezasInspeccionadasYa) * 1000000) : 0;
+$porcentaje_defectuoso_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosEncontradosGlobal / $totalPiezasInspeccionadasYa) * 100, 2) : 0;
 
-// Calcular PPM y % Defectuoso
-$ppm = ($totalPiezasInspeccionadasYa > 0) ? ($totalDefectosGlobal / $totalPiezasInspeccionadasYa) * 1000000 : 0;
-$porcentajeDefectuoso = ($totalPiezasInspeccionadasYa > 0) ? ($totalDefectosGlobal / $totalPiezasInspeccionadasYa) * 100 : 0;
 
-$conex->close(); // Cerrar la conexión principal
+$conex->close(); // Cerrar conexión principal
 
-$mostrarVisorInstruccion = !empty($solicitudSL['RutaInstruccion']);
+$mostrarVisorPDF = !empty($safeLaunchData['RutaInstruccion']);
 
-// Determinar si mostrar el formulario principal
-// En Safe Launch, asumimos que siempre se puede reportar hasta que se cierre manualmente.
-// Podríamos añadir una lógica similar a la de Contenciones si fuera necesario.
-$mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
+// Determinar si el formulario principal debe mostrarse (siempre en Safe Launch, a menos que se implemente un cierre futuro)
+$mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en Safe Launch
+// Puedes añadir lógica aquí si implementas un estatus 'Cerrado' para SafeLaunchSolicitudes
+// if ($safeLaunchData['Estatus'] === 'Cerrado') { $mostrarFormularioPrincipal = false; }
 
 ?>
 <!DOCTYPE html>
@@ -180,13 +185,14 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Inspección Safe Launch - ARCA</title>
+    <title>Reporte Safe Launch - ARCA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Incluir los mismos estilos que trabajar_solicitud.php -->
+
+    <!-- Usamos el mismo CSS que trabajar_solicitud -->
     <style>
         /* =================================================================
            HOJA DE ESTILOS PRINCIPAL PARA EL PROYECTO ARCA
@@ -296,42 +302,41 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
         .notification-box.info { background-color: #e3f2fd; border-color: #bbdefb; color: #0d47a1; }
         .info-text { font-size: 14px; color: #666; margin-top: -10px; margin-bottom: 20px; font-style: italic; }
 
-        /* Estilos para la sección de clasificación de defectos */
-        .defect-classification-list .form-group {
-            border-bottom: 1px solid var(--color-borde);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            display: flex; /* Usar flex para alinear etiqueta y inputs */
-            flex-wrap: wrap; /* Permitir que los inputs bajen si no caben */
-            align-items: flex-end; /* Alinear abajo */
-            gap: 15px;
+        /* --- Ajustes para Clasificación de Defectos Safe Launch --- */
+        .defect-classification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
         }
-        .defect-classification-list .form-group label {
+        .defect-classification-item {
+            border: 1px solid var(--color-borde);
+            border-radius: 6px;
+            padding: 15px;
+            background-color: #fdfdfd;
+        }
+        .defect-classification-item label {
             font-weight: 700;
             color: var(--color-primario);
-            flex-basis: 200px; /* Ancho fijo para la etiqueta */
-            flex-shrink: 0; /* No encoger la etiqueta */
-            margin-bottom: 0; /* Quitar margen inferior */
+            display: block; /* Asegura que la etiqueta ocupe su propia línea */
+            margin-bottom: 10px;
         }
-        .defect-classification-list .input-pair {
-            display: flex;
-            gap: 10px;
-            flex-grow: 1; /* Ocupar el espacio restante */
+        .defect-classification-item .form-row {
+            gap: 10px; /* Menos espacio entre cantidad y lote */
+            align-items: flex-end; /* Alinea los inputs en la parte inferior */
         }
-        .defect-classification-list .input-pair .form-group {
-            flex: 1; /* Cada input ocupa la mitad del espacio */
-            border-bottom: none; /* Quitar borde interno */
-            padding-bottom: 0;
-            margin-bottom: 0;
+        .defect-classification-item .form-group {
+            margin-bottom: 0; /* Quita margen inferior extra */
         }
 
+
         .piezas-rechazadas-info { font-size: 15px; margin-bottom: 20px; padding: 10px 15px; background-color: #eaf2f8; border-left: 5px solid var(--color-secundario); border-radius: 4px; }
-        /* #tiempoMuertoSection eliminado */
+
 
         .pdf-viewer-container {
             border: 1px solid var(--color-borde);
             border-radius: 8px;
-            overflow: hidden;
+            overflow: hidden; /* Oculta el desbordamiento en PC */
             margin-top: 15px;
             height: 75vh;
         }
@@ -340,6 +345,10 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
             height: 100%;
             border: none;
         }
+
+        .form-row.defect-entry-row, .form-row.parte-inspeccionada-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
+        .form-row.defect-entry-row .form-group, .form-row.parte-inspeccionada-row .form-group { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+        #partes-inspeccionadas-container { margin-top: 15px; margin-bottom: 15px; }
 
         /* --- 5. Selector de Idioma --- */
         .language-selector { display: flex; align-items: center; gap: 5px; background-color: var(--color-fondo); padding: 4px; border-radius: 20px; margin-right: 0; border: 1px solid var(--color-borde); }
@@ -358,47 +367,86 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
         .btn-danger { background-color: var(--color-error); color: var(--color-blanco); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* --- 7. Subida de Archivos (eliminado) --- */
+        /* --- 7. Subida de Archivos --- */
+        .file-upload-label { border: 2px dashed var(--color-borde); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: all 0.3s ease; text-align: center; color: #777; background-color: #fdfdfd; }
+        .file-upload-label:hover { border-color: var(--color-secundario); background-color: #f7f9fc; color: var(--color-secundario); }
+        .file-upload-label i { font-size: 28px; margin-bottom: 10px; }
+        .file-upload-label span { font-weight: 600; font-size: 14px; }
+        input[type="file"] { display: none; }
 
         /* --- 8. Tabla de Historial --- */
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 20px; margin-bottom: 40px; border: 1px solid var(--color-borde); border-radius: 8px; box-shadow: var(--sombra-suave); }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 14px; /* Ajustar min-width según columnas */ }
-        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
-        .data-table th { background-color: var(--color-primario); color: var(--color-blanco); font-weight: 600; text-transform: uppercase; white-space: nowrap; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 14px; /* min-width: 1200px; */ /* Ajustado dinámicamente */ }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; white-space: nowrap; /* Evita que el contenido se rompa */ }
+        .data-table th { background-color: var(--color-primario); color: var(--color-blanco); font-weight: 600; text-transform: uppercase; position: sticky; top: 0; z-index: 1; }
         .data-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
         .data-table tbody tr:hover { background-color: #f0f4f8; }
         .data-table td .btn-small { margin: 0 2px; }
-        .data-table th.defect-col, .data-table td.defect-col { text-align: center; } /* Centrar columnas de defectos */
-        .data-table td.total-col { font-weight: bold; } /* Resaltar totales */
-        .data-table td.ppm-col { font-weight: bold; color: var(--color-error); } /* Resaltar PPM */
-        .data-table td.percent-col { font-weight: bold; color: var(--color-secundario); } /* Resaltar % */
+        /* Centrar contenido numérico y acciones */
+        .data-table th:nth-child(n+6):not(:nth-last-child(2)):not(:last-child), /* Columnas numéricas (Insp. hasta % Def.) */
+        .data-table td:nth-child(n+6):not(:nth-last-child(2)):not(:last-child) {
+            text-align: center;
+        }
+
+        .data-table td:last-child { /* Columna de acciones */
+            text-align: center;
+            white-space: nowrap;
+        }
+        /* Estilo para Totales, PPM, % Defectuoso */
+        .data-table .total-row td {
+            font-weight: bold;
+            background-color: #e9ecef;
+            border-top: 2px solid var(--color-primario);
+        }
+        .data-table .total-row td:first-child {
+            text-align: right;
+            padding-right: 10px;
+        }
+
 
         /* --- 9. Estilos Responsivos --- */
         @media (max-width: 992px) {
-            .info-row p { flex-basis: 100%; }
+            .info-row p {
+                flex-basis: 100%;
+            }
         }
 
         @media (max-width: 768px) {
-            .header { flex-direction: column; align-items: center; }
-            .user-info { flex-direction: column; justify-content: center; width: 100%; }
+            .header {
+                flex-direction: column;
+                align-items: center;
+            }
+            .user-info {
+                flex-direction: column;
+                justify-content: center;
+                width: 100%;
+            }
             .container { padding: 15px; }
             .form-container { padding: 20px 25px; }
             .form-container h1 { font-size: 20px; line-height: 1.4; }
             .form-row { flex-direction: column; gap: 0; }
-            .form-row .form-group.w-50, .form-row .form-group.w-25 { flex-basis: 100%; }
+            .form-row .form-group.w-50,
+            .form-row .form-group.w-25 {
+                flex-basis: 100%;
+            }
             .data-table { font-size: 12px; }
-            .data-table th, .data-table td { padding: 8px 10px; }
-            .pdf-viewer-container { overflow-x: auto; -webkit-overflow-scrolling: touch; height: 600px; }
-            #pdfViewerWrapper iframe { min-width: 600px; height: 100%; }
-            .defect-classification-list .form-group { flex-direction: column; align-items: stretch; }
-            .defect-classification-list .input-pair { flex-direction: column; gap: 5px; }
-        }
+            .data-table th,
+            .data-table td { padding: 8px 10px; }
 
-        /* Estilos para Nuevos Defectos */
-        .defecto-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 15px; background-color: #fafafa; }
-        .defecto-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .defecto-header h4 { margin: 0; font-family: 'Montserrat', sans-serif; }
-        .btn-remove-defecto { background: none; border: none; color: var(--color-error); font-size: 24px; font-weight: bold; cursor: pointer; padding: 0 5px; line-height: 1; }
+            .pdf-viewer-container {
+                overflow-x: auto; /* Permite scroll horizontal en móvil */
+                -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+                height: 600px; /* Altura fija para móvil */
+            }
+            #pdfViewerWrapper iframe {
+                min-width: 600px; /* Ancho mínimo para legibilidad */
+                height: 100%;
+            }
+
+            .defect-classification-grid {
+                grid-template-columns: 1fr; /* Una columna en móvil */
+            }
+        }
     </style>
 </head>
 <body>
@@ -406,7 +454,7 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
     <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
     <div class="user-info">
         <div class="language-selector">
-            <button type="button" class="lang-btn active" data-lang="es">ES</button>
+            <button type="button" class="lang-btn" data-lang="es">ES</button>
             <button type="button" class="lang-btn" data-lang="en">EN</button>
         </div>
         <span><span data-translate-key="welcome">Bienvenido</span>, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
@@ -416,24 +464,24 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
 
 <main class="container">
     <div class="form-container">
-        <h1><i class="fa-solid fa-hammer"></i> <span data-translate-key="main_title">Reporte de Inspección Safe Launch</span> - <span data-translate-key="folio">Folio</span> SL-<?php echo str_pad($solicitudSL['IdSafeLaunch'], 4, '0', STR_PAD_LEFT); ?></h1>
+        <h1><i class="fa-solid fa-hammer"></i> <span data-translate-key="main_title">Reporte de Inspección Safe Launch</span> - <span data-translate-key="folio">Folio</span> SL-<?php echo str_pad($safeLaunchData['IdSafeLaunch'], 4, '0', STR_PAD_LEFT); ?></h1>
 
         <div class="info-row">
-            <p><strong data-translate-key="project_name">Nombre del Proyecto:</strong> <span><?php echo $nombreProyecto; ?></span></p>
-            <p><strong data-translate-key="client">Cliente:</strong> <span><?php echo $cliente; ?></span></p>
+            <p><strong data-translate-key="project_name">Proyecto:</strong> <span><?php echo $nombreProyecto; ?></span></p>
             <p><strong data-translate-key="responsible">Responsable:</strong> <span><?php echo $nombreResponsable; ?></span></p>
-            <!-- Puedes añadir más info si es necesario -->
+            <p><strong data-translate-key="client">Cliente:</strong> <span><?php echo $cliente; ?></span></p>
+            <!-- Cantidad Total ya no es relevante aquí como en contenciones -->
         </div>
 
-        <?php if ($mostrarVisorInstruccion): ?>
+        <?php if ($mostrarVisorPDF): ?>
             <fieldset>
-                <legend><i class="fa-solid fa-file-alt"></i> <span data-translate-key="instruction_title">Instrucción de Trabajo</span></legend>
+                <legend><i class="fa-solid fa-file-shield"></i> <span data-translate-key="instruction_title">Instrucción de Trabajo</span></legend>
                 <div class="form-actions" style="margin-bottom: 15px;">
                     <button type="button" id="togglePdfViewerBtn" class="btn-secondary"><i class="fa-solid fa-eye"></i> <span data-translate-key="view_instruction_btn">Ver Instrucción</span></button>
                 </div>
                 <div id="pdfViewerWrapper" style="display: none;">
                     <div class="pdf-viewer-container">
-                        <iframe src="<?php echo htmlspecialchars($solicitudSL['RutaInstruccion']); ?>#view=FitH" frameborder="0"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($safeLaunchData['RutaInstruccion']); ?>#view=FitH" frameborder="0"></iframe>
                     </div>
                 </div>
             </fieldset>
@@ -441,16 +489,19 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
             <div class='notification-box warning'><i class='fa-solid fa-triangle-exclamation'></i> <span data-translate-key='no_instruction_attached'>No hay instrucción de trabajo adjunta para este Safe Launch.</span></div>
         <?php endif; ?>
 
+
         <?php if ($mostrarFormularioPrincipal): ?>
-            <form id="reporteSLForm" action="dao/guardar_reporte_safe_launch.php" method="POST">
+            <!-- Formulario Principal -->
+            <form id="reporteFormSL" action="dao/guardar_reporte_safe_launch.php" method="POST">
                 <input type="hidden" name="idSafeLaunch" value="<?php echo $idSafeLaunch; ?>">
                 <input type="hidden" name="idSLReporte" id="idSLReporte" value=""> <!-- Para edición -->
 
                 <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> <span data-translate-key="summary_title">Resumen de Inspección</span></legend>
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label data-translate-key="total_inspected">Total de Piezas Inspeccionadas</label>
+                            <label data-translate-key="total_inspected">Piezas Inspeccionadas</label>
                             <input type="number" name="piezasInspeccionadas" id="piezasInspeccionadas" min="0" required>
                         </div>
                         <div class="form-group"><label data-translate-key="accepted_pieces">Piezas Aceptadas</label><input type="number" name="piezasAceptadas" id="piezasAceptadas" min="0" required></div>
@@ -459,8 +510,9 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label data-translate-key="inspector_name">Nombre del Inspector</label><input type="text" name="nombreInspector" value="<?php echo htmlspecialchars($_SESSION['user_nombre']); ?>" required></div>
-                        <div class="form-group"><label data-translate-key="inspection_date">Fecha de Inspección</label><input type="date" name="fechaInspeccion" required></div>
+                        <div class="form-group"><label data-translate-key="inspection_date">Fecha de Inspección</label><input type="date" name="fechaInspeccion" required value="<?php echo date('Y-m-d'); ?>"></div>
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label data-translate-key="start_time">Hora de Inicio</label>
@@ -472,72 +524,65 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                         </div>
                     </div>
                     <input type="hidden" name="rangoHoraCompleto" id="rangoHoraCompleto">
+
                 </fieldset>
 
-                <fieldset><legend><i class="fa-solid fa-clipboard-check"></i> <span data-translate-key="defects_classification_title">Clasificación de Defectos</span></legend>
-                    <div class="defect-classification-list">
-                        <p class="piezas-rechazadas-info"><span data-translate-key="available_to_classify">Piezas rechazadas disponibles para clasificar:</span> <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
-                        <?php if (!empty($todos_los_defectos_sl)): ?>
-                            <?php foreach($todos_los_defectos_sl as $idDefecto => $defectoData): ?>
-                                <div class="form-group">
-                                    <label><?php echo $defectoData['NombreDefecto']; ?></label>
-                                    <div class="input-pair">
-                                        <div class="form-group">
-                                            <input type="number" class="defecto-cantidad" name="defectos[<?php echo $idDefecto; ?>][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="defecto-lote" name="defectos[<?php echo $idDefecto; ?>][lote]" placeholder="Bach/Lote...">
-                                        </div>
+                <fieldset>
+                    <legend><i class="fa-solid fa-clipboard-check"></i> <span data-translate-key="defect_classification_title">Clasificación de Defectos</span></legend>
+                    <p class="piezas-rechazadas-info"><span data-translate-key="available_to_classify">Piezas rechazadas disponibles para clasificar:</span> <span id="piezasRechazadasRestantes" style="font-weight: bold; color: var(--color-error);">0</span></p>
+                    <div class="defect-classification-grid">
+                        <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
+                            <div class="defect-classification-item" data-id-defecto-catalogo="<?php echo $defecto['id']; ?>">
+                                <label><?php echo $defecto['nombre']; ?></label>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <input type="number" class="defecto-cantidad" name="defectos[<?php echo $defecto['id']; ?>][cantidad]" placeholder="Cantidad..." value="0" min="0" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="defecto-lote" name="defectos[<?php echo $defecto['id']; ?>][lote]" placeholder="Bach/Lote...">
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p data-translate-key="no_defects_catalog">No hay defectos registrados en el catálogo de Safe Launch.</p>
+                            </div>
+                        <?php endforeach; ?>
+                        <?php if (empty($defectos_para_formulario_y_tabla)): ?>
+                            <p data-translate-key="no_defects_in_catalog">No hay defectos registrados en el catálogo de Safe Launch.</p>
                         <?php endif; ?>
                     </div>
                 </fieldset>
 
-                <!-- INICIO: Nueva Sección de Nuevos Defectos -->
-                <fieldset>
-                    <legend><i class="fa-solid fa-magnifying-glass-plus"></i> <span data-translate-key="new_defects_title_sl">Nuevos Defectos Encontrados (Opcional)</span></legend>
-                    <div id="nuevos-defectos-sl-container">
-                        <!-- Aquí se agregarán dinámicamente -->
-                    </div>
-                    <button type="button" id="btn-add-nuevo-defecto-sl" class="btn-secondary">
-                        <i class="fa-solid fa-plus"></i> <span data-translate-key="add_new_defect_btn_sl">Añadir Nuevo Defecto</span>
-                    </button>
-                </fieldset>
-                <!-- FIN: Nueva Sección de Nuevos Defectos -->
+                <!-- Sección de Nuevos Defectos Eliminada -->
 
-                <fieldset><legend><i class="fa-solid fa-stopwatch"></i> <span data-translate-key="session_time_comments_title">Tiempos y Comentarios de la Sesión</span></legend>
+                <fieldset>
+                    <legend><i class="fa-solid fa-stopwatch"></i> <span data-translate-key="session_time_comments_title">Tiempos y Comentarios de la Sesión</span></legend>
                     <div class="form-group">
                         <label data-translate-key="inspection_time_session">Tiempo de Inspección (Esta Sesión)</label>
                         <input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="" readonly style="background-color: #e9ecef; cursor: not-allowed;">
                     </div>
+                    <!-- Sección de Tiempo Muerto Eliminada -->
                     <div class="form-group"><label data-translate-key="additional_comments">Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
-                    <!-- Sección de Tiempo Muerto eliminada -->
                 </fieldset>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary" id="btnGuardarReporteSL"><span data-translate-key="save_session_report_btn_sl">Guardar Reporte de Sesión</span></button>
-                    <!-- Botón Cancelar Edición (se añadirá dinámicamente si es necesario) -->
+                    <button type="submit" class="btn-primary" id="btnGuardarReporteSL"><span data-translate-key="save_session_report_btn">Guardar Reporte de Sesión</span></button>
+                    <!-- Botón Cancelar Edición se añadirá dinámicamente si es necesario -->
                 </div>
             </form>
-        <?php else: ?>
-            <div class='notification-box error' style='margin-top: 20px;'><i class='fa-solid fa-lock'></i> <strong data-translate-key="sl_closed_title">Safe Launch Cerrado:</strong> <span data-translate-key="sl_closed_desc">Este Safe Launch ya ha sido marcado como 'Cerrado' y no se pueden registrar nuevos reportes.</span></div>
-        <?php endif; ?>
+            <!-- Formulario para Finalizar Eliminado -->
 
-        <!-- Formulario Finalizar eliminado -->
+        <?php else: ?>
+            <!-- Mensaje si el formulario principal no se muestra (ej. si Safe Launch está cerrado) -->
+            <div class='notification-box info' style='margin-top: 20px;'><i class='fa-solid fa-circle-check'></i> <strong data-translate-key="sl_closed_title">Safe Launch Cerrado:</strong> <span data-translate-key="sl_closed_desc">Este Safe Launch ya ha sido marcado como cerrado. No se pueden añadir nuevos reportes.</span></div>
+        <?php endif; ?>
 
         <hr style="margin-top: 40px; margin-bottom: 30px; border-color: var(--color-borde);">
 
-        <h2 style="margin-top: 40px;"><i class="fa-solid fa-list-check"></i> <span data-translate-key="history_title_sl">Historial de Registros de Inspección (Safe Launch)</span></h2>
+        <h2 style="margin-top: 40px;"><i class="fa-solid fa-list-check"></i> <span data-translate-key="history_title">Historial de Registros de Inspección</span></h2>
         <?php if (count($reportes_procesados) > 0): ?>
             <div class="table-responsive">
                 <table class="data-table">
                     <thead>
                     <tr>
-                        <th data-translate-key="th_report_id_sl">ID Reporte</th>
+                        <th data-translate-key="th_report_id">ID Reporte</th>
                         <th data-translate-key="th_inspection_date">Fecha Insp.</th>
                         <th data-translate-key="th_time_range">Rango Hora</th>
                         <th data-translate-key="th_shift_leader">Turno</th>
@@ -547,11 +592,12 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                         <th data-translate-key="th_rejected">Rech.</th>
                         <th data-translate-key="th_reworked">Retrab.</th>
                         <!-- Columnas dinámicas para cada defecto -->
-                        <?php foreach ($todos_los_defectos_sl as $idDefecto => $defectoData): ?>
-                            <th class="defect-col"><?php echo $defectoData['NombreDefecto']; ?></th>
+                        <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
+                            <th><?php echo $defecto['nombre']; ?></th>
                         <?php endforeach; ?>
-                        <th class="total-col" data-translate-key="th_total_defects">Total Def.</th>
-                        <th data-translate-key="th_lot_number">No. Lote(s)</th>
+                        <th data-translate-key="th_total_defects">Total Def.</th>
+                        <th data-translate-key="th_ppm">PPM</th>
+                        <th data-translate-key="th_defect_percent">% Def.</th>
                         <th data-translate-key="th_comments">Comentarios</th>
                         <th data-translate-key="th_actions">Acciones</th>
                     </tr>
@@ -559,22 +605,23 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                     <tbody>
                     <?php foreach ($reportes_procesados as $reporte): ?>
                         <tr>
-                            <td><?php echo "RSL-" . str_pad($reporte['IdSLReporte'], 4, '0', STR_PAD_LEFT); ?></td>
+                            <td><?php echo "SLR-" . str_pad($reporte['IdSLReporte'], 4, '0', STR_PAD_LEFT); ?></td>
                             <td><?php echo htmlspecialchars(date("d/m/Y", strtotime($reporte['FechaInspeccion']))); ?></td>
-                            <td><?php echo htmlspecialchars($reporte['RangoHora']); ?></td>
+                            <td><?php echo htmlspecialchars($reporte['RangoHora'] ?? 'N/A'); ?></td>
                             <td><?php echo htmlspecialchars($reporte['TurnoShiftLeader']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['NombreInspector']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasInspeccionadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasAceptadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRetrabajadas']); ?></td>
-                            <!-- Celdas dinámicas para cantidades de defectos -->
-                            <?php foreach ($todos_los_defectos_sl as $idDefecto => $defectoData): ?>
-                                <td class="defect-col"><?php echo $reporte['DefectosDetallados'][$idDefecto]['Cantidad'] ?? 0; ?></td>
+                            <!-- Celdas dinámicas para cada defecto -->
+                            <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
+                                <td><?php echo $reporte['DefectosPorTipo'][$defecto['id']] ?? 0; ?></td>
                             <?php endforeach; ?>
-                            <td class="total-col"><?php echo $reporte['TotalDefectosReporte']; ?></td>
-                            <td><?php echo $reporte['LotesEncontrados']; ?></td>
-                            <td><?php echo htmlspecialchars($reporte['Comentarios']); ?></td>
+                            <td><?php echo $reporte['TotalDefectosReporte']; ?></td>
+                            <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 1000000) : 0; ?></td>
+                            <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 100, 2) . '%' : '0%'; ?></td>
+                            <td><?php echo htmlspecialchars($reporte['Comentarios'] ?? 'N/A'); ?></td>
                             <td>
                                 <button class="btn-edit-reporte-sl btn-primary btn-small" data-id="<?php echo $reporte['IdSLReporte']; ?>"><i class="fa-solid fa-pen-to-square"></i></button>
                                 <button class="btn-delete-reporte-sl btn-danger btn-small" data-id="<?php echo $reporte['IdSLReporte']; ?>"><i class="fa-solid fa-trash-can"></i></button>
@@ -583,25 +630,19 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                     <?php endforeach; ?>
                     </tbody>
                     <tfoot>
-                    <tr style="background-color: #f0f4f8; font-weight: bold;">
-                        <td colspan="5" style="text-align: right;">Totales:</td>
+                    <tr class="total-row">
+                        <td colspan="5" style="text-align: right;"><span data-translate-key="totals">TOTALES:</span></td>
                         <td><?php echo $totalPiezasInspeccionadasYa; ?></td>
-                        <td><!-- Aceptadas Total --></td>
-                        <td><!-- Rechazadas Total --></td>
-                        <td><!-- Retrabajadas Total --></td>
-                        <?php foreach ($todos_los_defectos_sl as $idDefecto => $defectoData): ?>
-                            <td class="defect-col"><?php echo $defectoData['Total']; ?></td>
+                        <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasAceptadas')); ?></td>
+                        <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasRechazadasCalculadas')); ?></td>
+                        <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasRetrabajadas')); ?></td>
+                        <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
+                            <td><?php echo $totalDefectosPorTipoGlobal[$defecto['id']] ?? 0; ?></td>
                         <?php endforeach; ?>
-                        <td class="total-col"><?php echo $totalDefectosGlobal; ?></td>
-                        <td colspan="3"></td> <!-- Lotes, Comentarios, Acciones -->
-                    </tr>
-                    <tr style="background-color: #e9ecef; font-weight: bold;">
-                        <td colspan="<?php echo 9 + count($todos_los_defectos_sl); ?>" style="text-align: right;">PPM:</td>
-                        <td class="ppm-col" colspan="4"><?php echo number_format($ppm, 2); ?></td>
-                    </tr>
-                    <tr style="background-color: #e9ecef; font-weight: bold;">
-                        <td colspan="<?php echo 9 + count($todos_los_defectos_sl); ?>" style="text-align: right;">% Defectuoso:</td>
-                        <td class="percent-col" colspan="4"><?php echo number_format($porcentajeDefectuoso, 2); ?>%</td>
+                        <td><?php echo $totalDefectosEncontradosGlobal; ?></td>
+                        <td><?php echo $ppm_global; ?></td>
+                        <td><?php echo $porcentaje_defectuoso_global . '%'; ?></td>
+                        <td colspan="2"></td> <!-- Celdas vacías para Comentarios y Acciones -->
                     </tr>
                     </tfoot>
                 </table>
@@ -614,136 +655,176 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
 </main>
 
 <script>
-    // Pasar el catálogo de defectos SL a JavaScript
-    const opcionesDefectosSL = `<?php echo addslashes($defectos_options_html); ?>`;
-    // Mapa de defectos originales ya no es necesario aquí
-    // const defectosOriginalesMapa = <?php //echo json_encode($defectos_originales_para_js); ?>;
-    // Cantidad total ya no aplica de la misma forma
-    // const cantidadTotalSolicitada = <?php //echo intval($cantidadSolicitada); ?>;
-    // Total inspeccionado previamente sí es útil para validaciones futuras si se implementan
-    const totalPiezasInspeccionadasAnteriormente = <?php echo $totalPiezasInspeccionadasYa; ?>;
-    // isVariosPartes ya no aplica
-    // const isVariosPartes = <?php //echo json_encode($isVariosPartes); ?>;
-    let nuevoDefectoCounterSL = 0; // Renombrado para evitar conflictos
-    let editandoReporteSL = false; // Renombrado
-    let valorOriginalInspeccionadoAlEditarSL = 0; // Renombrado
+    // Pasamos todos los defectos del catálogo a JS para usarlos en la edición
+    const catalogoDefectosSL = <?php echo json_encode($defectos_para_formulario_y_tabla); ?>;
+    let editandoReporteSL = false;
+    let valorOriginalInspeccionadoAlEditarSL = 0;
 
 
     document.addEventListener('DOMContentLoaded', function() {
         // --- INICIO: LÓGICA DE TRADUCCIÓN ---
         const translations = {
             es: {
-                welcome: "Bienvenido", logout: "Cerrar Sesión",
-                main_title: "Reporte de Inspección Safe Launch", folio: "Folio",
-                project_name: "Nombre del Proyecto", client: "Cliente", responsible: "Responsable",
-                instruction_title: "Instrucción de Trabajo",
-                view_instruction_btn: "Ver Instrucción", hide_instruction_btn: "Ocultar Instrucción", download_instruction_btn: "Descargar Instrucción",
+                welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Reporte de Inspección Safe Launch",
+                folio: "Folio", project_name: "Proyecto", responsible: "Responsable", client: "Cliente",
+                instruction_title: "Instrucción de Trabajo", view_instruction_btn: "Ver Instrucción",
+                hide_instruction_btn: "Ocultar Instrucción", download_instruction_btn: "Descargar Instrucción",
                 no_instruction_attached: "No hay instrucción de trabajo adjunta para este Safe Launch.",
-                sl_closed_title: "Safe Launch Cerrado:", sl_closed_desc:"Este Safe Launch ya ha sido marcado como 'Cerrado' y no se pueden registrar nuevos reportes.",
-                summary_title: "Resumen de Inspección",
-                total_inspected: "Total de Piezas Inspeccionadas", accepted_pieces: "Piezas Aceptadas",
-                reworked_pieces: "Piezas Retrabajadas", rejected_pieces_calc: "Piezas Rechazadas (Cálculo)",
-                inspector_name: "Nombre del Inspector", inspection_date: "Fecha de Inspección",
-                start_time: "Hora de Inicio", end_time: "Hora de Fin",
-                defects_classification_title: "Clasificación de Defectos",
-                available_to_classify: "Piezas rechazadas disponibles para clasificar:",
-                no_defects_catalog: "No hay defectos registrados en el catálogo de Safe Launch.",
-                new_defects_title_sl: "Nuevos Defectos Encontrados (Opcional)", // Clave nueva
-                add_new_defect_btn_sl: "Añadir Nuevo Defecto", // Clave nueva
+                summary_title: "Resumen de Inspección", total_inspected: "Piezas Inspeccionadas",
+                accepted_pieces: "Piezas Aceptadas", reworked_pieces: "Piezas Retrabajadas",
+                rejected_pieces_calc: "Piezas Rechazadas (Cálculo)", inspector_name: "Nombre del Inspector",
+                inspection_date: "Fecha de Inspección", start_time: "Hora de Inicio", end_time: "Hora de Fin",
+                defect_classification_title: "Clasificación de Defectos", available_to_classify: "Piezas rechazadas disponibles para clasificar:",
+                no_defects_in_catalog: "No hay defectos registrados en el catálogo de Safe Launch.",
                 session_time_comments_title: "Tiempos y Comentarios de la Sesión",
                 inspection_time_session: "Tiempo de Inspección (Esta Sesión)",
                 additional_comments: "Comentarios Adicionales de la Sesión",
-                save_session_report_btn_sl: "Guardar Reporte de Sesión", // Clave nueva
-                update_session_report_btn_sl: "Actualizar Reporte de Sesión", // Clave nueva
-                cancel_edit_btn: "Cancelar Edición",
-                history_title_sl: "Historial de Registros de Inspección (Safe Launch)", // Clave nueva
-                th_report_id_sl: "ID Reporte", // Clave nueva
-                th_inspection_date: "Fecha Insp.", th_time_range: "Rango Hora", th_shift_leader: "Turno",
-                th_inspector: "Inspector", th_inspected: "Insp.", th_accepted: "Acep.",
-                th_rejected: "Rech.", th_reworked: "Retrab.",
-                th_total_defects: "Total Def.", th_lot_number: "No. Lote(s)",
-                th_comments: "Comentarios", th_actions: "Acciones",
-                no_history_records_sl: "Aún no hay registros de inspección para este Safe Launch.", // Clave nueva
-                new_defect_header_sl: "Nuevo Defecto", // Clave nueva
-                defect_type_label: "Tipo de Defecto", select_defect_option: "Seleccione un defecto",
-                qty_label: "Cantidad", qty_placeholder: "Cantidad...",
-                // Nuevas claves para la tabla de historial y totales
-                th_total: "Total", th_ppm: "PPM", th_defect_percent: "% Defectuoso"
+                save_session_report_btn: "Guardar Reporte de Sesión",
+                update_session_report_btn: "Actualizar Reporte de Sesión", cancel_edit_btn: "Cancelar Edición",
+                sl_closed_title: "Safe Launch Cerrado:", sl_closed_desc: "Este Safe Launch ya ha sido marcado como cerrado. No se pueden añadir nuevos reportes.",
+                history_title: "Historial de Registros de Inspección", th_report_id: "ID Reporte", th_inspection_date: "Fecha Insp.",
+                th_time_range: "Rango Hora", th_shift_leader: "Turno", th_inspector: "Inspector",
+                th_inspected: "Insp.", th_accepted: "Acep.", th_rejected: "Rech.", th_reworked: "Retrab.",
+                th_total_defects: "Total Def.", th_ppm: "PPM", th_defect_percent: "% Def.",
+                th_comments: "Comentarios", th_actions: "Acciones", totals: "TOTALES:",
+                no_history_records_sl: "Aún no hay registros de inspección para este Safe Launch.",
+                swal_saving_title: "Guardando Reporte...", swal_saving_text: "Por favor, espera.",
+                swal_success_title: "¡Éxito!", swal_error_title: "Error", swal_connection_error: "Error de Conexión",
+                swal_connection_error_text: "No se pudo comunicar con el servidor.",
+                swal_loading_edit_title: "Cargando Reporte...", swal_loading_edit_text: "Obteniendo datos para edición.",
+                swal_loading_edit_error: "No se pudo cargar el reporte para edición.",
+                swal_delete_title: "¿Estás seguro?", swal_delete_text: "¡No podrás revertir esto!",
+                swal_delete_confirm: "Sí, eliminar", swal_delete_cancel: "Cancelar",
+                swal_deleting_title: "Eliminando Reporte...", swal_deleting_text: "Por favor, espera.",
+                swal_deleted_title: "¡Eliminado!", swal_deleted_text: "El reporte ha sido eliminado.",
+                swal_delete_error: "No se pudo eliminar el reporte."
             },
             en: {
-                welcome: "Welcome", logout: "Logout",
-                main_title: "Safe Launch Inspection Report", folio: "Folio",
-                project_name: "Project Name", client: "Client", responsible: "Responsible",
-                instruction_title: "Work Instruction",
-                view_instruction_btn: "View Instruction", hide_instruction_btn: "Hide Instruction", download_instruction_btn: "Download Instruction",
+                welcome: "Welcome", logout: "Logout", main_title: "Safe Launch Inspection Report",
+                folio: "Folio", project_name: "Project", responsible: "Responsible", client: "Client",
+                instruction_title: "Work Instruction", view_instruction_btn: "View Instruction",
+                hide_instruction_btn: "Hide Instruction", download_instruction_btn: "Download Instruction",
                 no_instruction_attached: "No work instruction attached for this Safe Launch.",
-                sl_closed_title: "Safe Launch Closed:", sl_closed_desc: "This Safe Launch has been marked as 'Closed' and new reports cannot be registered.",
-                summary_title: "Inspection Summary",
-                total_inspected: "Total Inspected Pieces", accepted_pieces: "Accepted Pieces",
-                reworked_pieces: "Reworked Pieces", rejected_pieces_calc: "Rejected Pieces (Calculated)",
-                inspector_name: "Inspector's Name", inspection_date: "Inspection Date",
-                start_time: "Start Time", end_time: "End Time",
-                defects_classification_title: "Defects Classification",
-                available_to_classify: "Rejected pieces available for classification:",
-                no_defects_catalog: "No defects registered in the Safe Launch catalog.",
-                new_defects_title_sl: "New Defects Found (Optional)", // New key
-                add_new_defect_btn_sl: "Add New Defect", // New key
+                summary_title: "Inspection Summary", total_inspected: "Inspected Pieces",
+                accepted_pieces: "Accepted Pieces", reworked_pieces: "Reworked Pieces",
+                rejected_pieces_calc: "Rejected Pieces (Calculated)", inspector_name: "Inspector's Name",
+                inspection_date: "Inspection Date", start_time: "Start Time", end_time: "End Time",
+                defect_classification_title: "Defect Classification", available_to_classify: "Rejected pieces available for classification:",
+                no_defects_in_catalog: "No defects registered in the Safe Launch catalog.",
                 session_time_comments_title: "Session Times and Comments",
                 inspection_time_session: "Inspection Time (This Session)",
                 additional_comments: "Additional Session Comments",
-                save_session_report_btn_sl: "Save Session Report", // New key
-                update_session_report_btn_sl: "Update Session Report", // New key
-                cancel_edit_btn: "Cancel Edit",
-                history_title_sl: "Inspection Records History (Safe Launch)", // New key
-                th_report_id_sl: "Report ID", // New key
-                th_inspection_date: "Insp. Date", th_time_range: "Time Range", th_shift_leader: "Shift",
-                th_inspector: "Inspector", th_inspected: "Insp.", th_accepted: "Acc.",
-                th_rejected: "Rej.", th_reworked: "Rew.",
-                th_total_defects: "Total Def.", th_lot_number: "Lot No(s).",
-                th_comments: "Comments", th_actions: "Actions",
-                no_history_records_sl: "There are no inspection records for this Safe Launch yet.", // New key
-                new_defect_header_sl: "New Defect", // New key
-                defect_type_label: "Defect Type", select_defect_option: "Select a defect",
-                qty_label: "Quantity", qty_placeholder: "Quantity...",
-                // New keys for history table and totals
-                th_total: "Total", th_ppm: "PPM", th_defect_percent: "% Defective"
+                save_session_report_btn: "Save Session Report",
+                update_session_report_btn: "Update Session Report", cancel_edit_btn: "Cancel Edit",
+                sl_closed_title: "Safe Launch Closed:", sl_closed_desc: "This Safe Launch has already been marked as closed. New reports cannot be added.",
+                history_title: "Inspection Records History", th_report_id: "Report ID", th_inspection_date: "Insp. Date",
+                th_time_range: "Time Range", th_shift_leader: "Shift", th_inspector: "Inspector",
+                th_inspected: "Insp.", th_accepted: "Acc.", th_rejected: "Rej.", th_reworked: "Rew.",
+                th_total_defects: "Total Def.", th_ppm: "PPM", th_defect_percent: "% Def.",
+                th_comments: "Comments", th_actions: "Actions", totals: "TOTALS:",
+                no_history_records_sl: "There are no inspection records for this Safe Launch yet.",
+                swal_saving_title: "Saving Report...", swal_saving_text: "Please wait.",
+                swal_success_title: "Success!", swal_error_title: "Error", swal_connection_error: "Connection Error",
+                swal_connection_error_text: "Could not communicate with the server.",
+                swal_loading_edit_title: "Loading Report...", swal_loading_edit_text: "Fetching data for editing.",
+                swal_loading_edit_error: "Could not load the report for editing.",
+                swal_delete_title: "Are you sure?", swal_delete_text: "You won't be able to revert this!",
+                swal_delete_confirm: "Yes, delete it", swal_delete_cancel: "Cancel",
+                swal_deleting_title: "Deleting Report...", swal_deleting_text: "Please wait.",
+                swal_deleted_title: "Deleted!", swal_deleted_text: "The report has been deleted.",
+                swal_delete_error: "Could not delete the report."
             }
         };
 
-        function setLanguage(lang) { /* ... (código de traducción sin cambios) ... */ }
-        function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
-        function translate(key) { const lang = getCurrentLanguage(); return translations[lang] ? (translations[lang][key] || key) : key; }
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.getAttribute('data-translate-key');
+                if (translations[lang] && translations[lang][key]) {
+                    // Preservar iconos si existen
+                    const icon = el.querySelector('i');
+                    if (icon && (el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'BUTTON' || el.tagName === 'P' || el.tagName === 'STRONG')) {
+                        el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
+                    } else if (el.tagName === 'INPUT' && el.type === 'submit' || el.tagName === 'BUTTON') {
+                        el.value = translations[lang][key]; // Para botones input
+                        // Para botones normales, verificar si es el span interno
+                        const span = el.querySelector('span');
+                        if(span) span.innerText = translations[lang][key];
+                        else el.innerText = translations[lang][key]; // Si no hay span
+                    }
+                    else {
+                        el.innerText = translations[lang][key];
+                    }
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+            adjustPdfButtonText(); // Actualizar texto del botón PDF al cambiar idioma
+        }
 
-        document.querySelectorAll('.lang-btn').forEach(btn => { /* ... (listener sin cambios) ... */ });
+        function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
+        function translate(key) { const lang = getCurrentLanguage(); return translations[lang][key] || key; }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
         // --- FIN: LÓGICA DE TRADUCCIÓN ---
 
-        const reporteForm = document.getElementById('reporteSLForm'); // ID actualizado
+        const reporteForm = document.getElementById('reporteFormSL');
         if (reporteForm) {
-            const idSLReporteInput = document.getElementById('idSLReporte'); // ID actualizado
+            const idReporteInput = document.getElementById('idSLReporte');
             const piezasInspeccionadasInput = document.getElementById('piezasInspeccionadas');
             const piezasAceptadasInput = document.getElementById('piezasAceptadas');
             const piezasRetrabajadasInput = document.getElementById('piezasRetrabajadas');
             const piezasRechazadasCalculadasInput = document.getElementById('piezasRechazadasCalculadas');
             const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
-            const defectosClasificacionContainer = document.querySelector('.defect-classification-list'); // Clase actualizada
-            const btnGuardarReporte = document.getElementById('btnGuardarReporteSL'); // ID actualizado
-            const nuevosDefectosContainer = document.getElementById('nuevos-defectos-sl-container'); // ID NUEVO
-            const btnAddNuevoDefecto = document.getElementById('btn-add-nuevo-defecto-sl'); // ID NUEVO
+            const defectosContainer = document.querySelector('.defect-classification-grid');
+            const btnGuardarReporte = document.getElementById('btnGuardarReporteSL');
             const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
             const horaInicioInput = document.getElementById('horaInicio');
             const horaFinInput = document.getElementById('horaFin');
             const rangoHoraCompletoInput = document.getElementById('rangoHoraCompleto');
             const tiempoInspeccionInput = document.getElementById('tiempoInspeccion');
-            // Tiempo Muerto eliminado
             const comentariosTextarea = document.getElementById('comentarios');
-            // Desglose de partes eliminado
 
-            // --- Calcular Tiempo (sin cambios) ---
-            function calcularYActualizarTiempo() { /* ... (código sin cambios) ... */ }
+            function calcularYActualizarTiempo() {
+                const horaInicio = horaInicioInput.value;
+                const horaFin = horaFinInput.value;
+
+                if (horaInicio && horaFin) {
+                    const fechaInicio = new Date(`1970-01-01T${horaInicio}`);
+                    const fechaFin = new Date(`1970-01-01T${horaFin}`);
+
+                    if (fechaFin < fechaInicio) {
+                        tiempoInspeccionInput.value = 'Error: Hora de fin inválida';
+                        horaFinInput.setCustomValidity("La hora de fin no puede ser anterior a la hora de inicio.");
+                        horaFinInput.reportValidity();
+                        return;
+                    } else {
+                        horaFinInput.setCustomValidity("");
+                    }
+
+                    const diffMs = fechaFin - fechaInicio;
+                    const totalMinutos = Math.round(diffMs / 60000);
+                    const horas = Math.floor(totalMinutos / 60);
+                    const minutos = totalMinutos % 60;
+
+                    let tiempoStr = '';
+                    if (horas > 0) tiempoStr += `${horas} hora(s) `;
+                    if (minutos > 0 || horas === 0) tiempoStr += `${minutos} minuto(s)`;
+
+                    tiempoInspeccionInput.value = tiempoStr.trim() || '0 minuto(s)';
+
+                } else {
+                    tiempoInspeccionInput.value = '';
+                }
+            }
+
             horaInicioInput.addEventListener('change', calcularYActualizarTiempo);
             horaFinInput.addEventListener('change', calcularYActualizarTiempo);
 
-            // --- Actualizar Contadores (Adaptado) ---
             function actualizarContadores() {
                 if (!piezasInspeccionadasInput) return;
 
@@ -751,33 +832,34 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                 const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
                 const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-                // Validación de máximo (si aplica en SL, si no, se puede quitar)
-                // const piezasDeOtrosReportes = editandoReporteSL ? (totalPiezasInspeccionadasAnteriormente - valorOriginalInspeccionadoAlEditarSL) : totalPiezasInspeccionadasAnteriormente;
-                // const maximoPermitidoParaEsteReporte = cantidadTotalSolicitada - piezasDeOtrosReportes; // Necesitaría cantidadTotalSolicitada si aplica
-                // const esCantidadInvalida = false; // Ajustar si hay límite
-                // if (esCantidadInvalida && cantidadTotalSolicitada > 0) { /* ... */ } else { piezasInspeccionadasInput.setCustomValidity(''); }
+                // Validación simple de cantidad aceptada
+                if (aceptadas > inspeccionadas) {
+                    piezasAceptadasInput.setCustomValidity("Las piezas aceptadas no pueden ser mayores que las inspeccionadas.");
+                    piezasAceptadasInput.reportValidity();
+                } else {
+                    piezasAceptadasInput.setCustomValidity("");
+                }
 
                 const rechazadasBrutas = inspeccionadas - aceptadas;
                 piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
-                const esRetrabajoInvalido = retrabajadas > rechazadasBrutas;
 
-                if (esRetrabajoInvalido) {
+                // Validación simple de cantidad retrabajada
+                if (retrabajadas > rechazadasBrutas) {
                     piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
                     piezasRetrabajadasInput.reportValidity();
                 } else {
                     piezasRetrabajadasInput.setCustomValidity('');
                 }
 
-                // Sumar defectos clasificados (del catálogo) y nuevos defectos
                 const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
                 let sumDefectosClasificados = 0;
-                defectosClasificacionContainer.querySelectorAll('.defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
-                nuevosDefectosContainer.querySelectorAll('.nuevo-defecto-cantidad-sl').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; }); // Clase nueva
+                defectosContainer.querySelectorAll('.defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
 
                 const restantes = rechazadasDisponibles - sumDefectosClasificados;
                 piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
 
                 const sonDefectosInvalidos = restantes !== 0;
+
                 if (restantes < 0) {
                     piezasRechazadasRestantesSpan.style.color = 'var(--color-error)';
                 } else if (restantes > 0) {
@@ -786,315 +868,264 @@ $mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
                     piezasRechazadasRestantesSpan.style.color = 'var(--color-exito)';
                 }
 
-                // Deshabilitar botón si hay errores
                 let deshabilitar = false;
                 let titulo = '';
-                // if (esCantidadInvalida && cantidadTotalSolicitada > 0) { /* ... */ }
-                if (esRetrabajoInvalido) {
+
+                if (aceptadas > inspeccionadas) {
                     deshabilitar = true;
-                    titulo = 'Las piezas retrabajadas no pueden exceder las piezas rechazadas.';
+                    titulo = 'Las piezas aceptadas exceden las inspeccionadas.';
+                } else if (retrabajadas > rechazadasBrutas) {
+                    deshabilitar = true;
+                    titulo = 'Las piezas retrabajadas exceden las rechazadas.';
                 } else if (sonDefectosInvalidos) {
                     deshabilitar = true;
-                    titulo = restantes > 0 ? 'Aún faltan piezas por clasificar.' : 'La suma de defectos no puede exceder las piezas rechazadas disponibles.';
+                    titulo = restantes > 0 ? 'Aún faltan piezas por clasificar.' : 'La suma de defectos excede las piezas rechazadas disponibles.';
                 }
 
                 btnGuardarReporte.disabled = deshabilitar;
                 btnGuardarReporte.title = titulo;
             }
 
-            // --- Listeners para Contadores (Adaptado) ---
-            if (piezasInspeccionadasInput) {
-                piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
-                piezasAceptadasInput.addEventListener('input', actualizarContadores);
-                piezasRetrabajadasInput.addEventListener('input', actualizarContadores);
-                // Listener para defectos del catálogo
-                defectosClasificacionContainer.addEventListener('input', function(e) {
-                    if (e.target.classList.contains('defecto-cantidad')) {
-                        actualizarContadores();
-                    }
-                });
-                // Listener para NUEVOS defectos
-                nuevosDefectosContainer.addEventListener('input', function(e) {
-                    if (e.target.classList.contains('nuevo-defecto-cantidad-sl')) { // Clase nueva
-                        actualizarContadores();
-                    }
-                });
-                actualizarContadores(); // Llamada inicial
-            }
-
-            // --- INICIO: Función para Añadir Nuevo Defecto (Adaptada) ---
-            function addNuevoDefectoBlockSL(id = null, idDefectoCatalogo = '', cantidad = '') {
-                nuevoDefectoCounterSL++;
-                const currentCounter = nuevoDefectoCounterSL;
-
-                // HTML sin foto y sin número de parte (a menos que se necesite, se quitaría isVariosPartes)
-                const defectoHTML = `
-                <div class="defecto-item" id="nuevo-defecto-sl-${currentCounter}">
-                    <div class="defecto-header">
-                        <h4><span data-translate-key="new_defect_header_sl">Nuevo Defecto</span> #${currentCounter}</h4>
-                        <button type="button" class="btn-remove-nuevo-defecto-sl" data-defecto-id="${currentCounter}">&times;</button>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group w-50">
-                            <label data-translate-key="defect_type_label">Tipo de Defecto</label>
-                            <select name="nuevos_defectos[${currentCounter}][id]" required>
-                                <option value="" disabled selected>${translate('select_defect_option')}</option>
-                                ${opcionesDefectosSL} <!-- Usar las opciones correctas -->
-                            </select>
-                        </div>
-                        <div class="form-group w-50">
-                            <label data-translate-key="qty_label">Cantidad</label>
-                            <input type="number" class="nuevo-defecto-cantidad-sl" name="nuevos_defectos[${currentCounter}][cantidad]" placeholder="${translate('qty_placeholder')}" min="0" required value="${cantidad || ''}">
-                        </div>
-                    </div>
-                     ${id ? `<input type="hidden" name="nuevos_defectos[${currentCounter}][idSLReporteDefecto]" value="${id}">` : ''} <!-- Para identificar en edición -->
-                </div>`;
-                nuevosDefectosContainer.insertAdjacentHTML('beforeend', defectoHTML);
-
-                const newBlock = document.getElementById(`nuevo-defecto-sl-${currentCounter}`);
-                if (idDefectoCatalogo) {
-                    newBlock.querySelector(`select[name="nuevos_defectos[${currentCounter}][id]"]`).value = idDefectoCatalogo;
-                }
-                // Traducir el nuevo bloque
-                setLanguage(getCurrentLanguage());
-                return newBlock;
-            }
-
-            btnAddNuevoDefecto?.addEventListener('click', function() {
-                addNuevoDefectoBlockSL();
-                actualizarContadores();
-            });
-
-            nuevosDefectosContainer?.addEventListener('click', function(e) {
-                if (e.target && e.target.classList.contains('btn-remove-nuevo-defecto-sl')) { // Clase nueva
-                    const defectoItem = document.getElementById(`nuevo-defecto-sl-${e.target.dataset.defectoId}`);
-                    if (defectoItem) {
-                        // Lógica de eliminación al editar (si aplica) - Adaptar si es necesario guardar qué eliminar
-                        const idDefectoExistenteInput = defectoItem.querySelector('input[name*="[idSLReporteDefecto]"]');
-                        if (editandoReporteSL && idDefectoExistenteInput && idDefectoExistenteInput.value) {
-                            // Marcar para eliminar en el backend
-                            const inputEliminar = document.createElement('input');
-                            inputEliminar.type = 'hidden';
-                            inputEliminar.name = `nuevos_defectos_a_eliminar[]`; // Nombre para el backend
-                            inputEliminar.value = idDefectoExistenteInput.value;
-                            reporteForm.appendChild(inputEliminar);
-                            console.log("Marcado para eliminar defecto nuevo ID:", idDefectoExistenteInput.value);
-                        }
-                        defectoItem.remove();
-                        actualizarContadores();
-                    }
+            piezasInspeccionadasInput.addEventListener('input', actualizarContadores);
+            piezasAceptadasInput.addEventListener('input', actualizarContadores);
+            piezasRetrabajadasInput.addEventListener('input', actualizarContadores);
+            defectosContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('defecto-cantidad')) {
+                    actualizarContadores();
                 }
             });
-            // --- FIN: Función para Añadir Nuevo Defecto ---
+            actualizarContadores(); // Calcular al cargar
 
-            // --- Tiempo Muerto eliminado ---
-
-            // --- Submit del Formulario (Adaptado) ---
             reporteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
                 // Formatear rango de hora
-                if (horaInicioInput.value && horaFinInput.value) { /* ... (código sin cambios) ... */ }
-                else { rangoHoraCompletoInput.value = ''; }
+                if (horaInicioInput.value && horaFinInput.value) {
+                    const formatTo12Hour = (timeStr) => {
+                        if (!timeStr) return '';
+                        const [hours, minutes] = timeStr.split(':');
+                        let h = parseInt(hours);
+                        const ampm = h >= 12 ? 'pm' : 'am';
+                        h = h % 12;
+                        h = h ? h : 12; // Hour '0' should be '12'
+                        const finalHours = String(h).padStart(2, '0'); // Ensure 2 digits
+                        return `${finalHours}:${minutes} ${ampm}`;
+                    };
+                    const formattedRange = `${formatTo12Hour(horaInicioInput.value)} - ${formatTo12Hour(horaFinInput.value)}`;
+                    rangoHoraCompletoInput.value = formattedRange;
+                } else {
+                    rangoHoraCompletoInput.value = '';
+                }
 
                 const form = this;
                 const formData = new FormData(form);
 
-                Swal.fire({ title: 'Guardando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                Swal.fire({ title: translate('swal_saving_title'), text: translate('swal_saving_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-                // La acción del form debe apuntar a guardar_reporte_safe_launch.php o actualizar_reporte_sl.php
-                fetch(form.action, { method: 'POST', body: formData })
+                // Decide la URL de acción basada en si estamos editando
+                const actionUrl = editandoReporteSL ? 'dao/actualizar_reporte_sl.php' : 'dao/guardar_reporte_safe_launch.php';
+
+                fetch(actionUrl, { method: 'POST', body: formData })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
-                            Swal.fire('¡Éxito!', data.message, 'success').then(() => window.location.reload());
+                            Swal.fire(translate('swal_success_title'), data.message, 'success').then(() => window.location.reload());
                         } else {
-                            Swal.fire('Error', data.message, 'error');
+                            Swal.fire(translate('swal_error_title'), data.message, 'error');
                         }
                     })
-                    .catch(error => { console.error("Fetch Error:", error); Swal.fire('Error de Conexión', 'No se pudo comunicar con el servidor.', 'error'); });
+                    .catch(error => Swal.fire(translate('swal_connection_error'), translate('swal_connection_error_text'), 'error'));
             });
-
-            // --- Lógica para Cargar Reporte para Edición (Adaptada) ---
-            async function cargarReporteParaEdicionSL(idSLReporte) { // Nombre nuevo
-                const reporteForm = document.getElementById('reporteSLForm'); // ID nuevo
-                // Mostrar formulario si estaba oculto
-                reporteForm.style.display = 'block';
-                // Ocultar mensaje de completado si existe
-                document.getElementById('mensajeInspeccionCompletada')?.remove(); // Ocultarlo o removerlo
-
-                Swal.fire({ title: 'Cargando Reporte...', text: 'Obteniendo datos para edición.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                try {
-                    // Apuntar al nuevo DAO
-                    const response = await fetch(`dao/obtener_reporte_sl_para_edicion.php?idSLReporte=${idSLReporte}`);
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        const reporte = data.reporte;
-                        const defectosGuardados = data.defectos; // Solo hay un tipo de defecto ahora
-
-                        valorOriginalInspeccionadoAlEditarSL = parseInt(reporte.PiezasInspeccionadas, 10) || 0;
-
-                        idSLReporteInput.value = reporte.IdSLReporte;
-                        piezasInspeccionadasInput.value = reporte.PiezasInspeccionadas;
-                        piezasAceptadasInput.value = reporte.PiezasAceptadas;
-                        piezasRetrabajadasInput.value = reporte.PiezasRetrabajadas;
-                        fechaInspeccionInput.value = reporte.FechaInspeccion; // Ya viene formateada Y-m-d
-                        comentariosTextarea.value = reporte.Comentarios || '';
-
-                        // Rellenar horas
-                        if (reporte.RangoHora) { /* ... (código para convertir 12h a 24h sin cambios) ... */ }
-                        else { horaInicioInput.value = ''; horaFinInput.value = ''; }
-                        calcularYActualizarTiempo(); // Calcular tiempoInspeccion
-
-                        // Rellenar defectos del catálogo
-                        defectosClasificacionContainer.querySelectorAll('.form-group[data-id-sl-defecto-catalogo]').forEach(group => {
-                            const idDefecto = group.dataset.idSlDefectoCatalogo;
-                            const cantidadInput = group.querySelector('.defecto-cantidad');
-                            const loteInput = group.querySelector('.defecto-lote');
-                            const defectoGuardado = defectosGuardados.find(d => d.IdSLDefectoCatalogo == idDefecto);
-
-                            cantidadInput.value = defectoGuardado ? defectoGuardado.CantidadEncontrada : 0;
-                            loteInput.value = defectoGuardado ? (defectoGuardado.BachLote || '') : '';
-                        });
-
-                        // Rellenar nuevos defectos (si los hubiera en el reporte guardado - ASUMIENDO que se guardan en SafeLaunchReporteDefectos también)
-                        nuevosDefectosContainer.innerHTML = ''; // Limpiar contenedor
-                        nuevoDefectoCounterSL = 0; // Reiniciar contador
-                        // --- ESTA PARTE NECESITA QUE EL DAO DEVUELVA LOS "NUEVOS" ---
-                        // Si el DAO `obtener_reporte_sl_para_edicion` se modifica para devolver un array `nuevosDefectos` (ej. filtrando por algún flag o si simplemente todos van a SafeLaunchReporteDefectos)
-                        /*
-                        if (data.nuevosDefectos && data.nuevosDefectos.length > 0) {
-                             data.nuevosDefectos.forEach(defecto => {
-                                 addNuevoDefectoBlockSL(
-                                     defecto.IdSLReporteDefecto, // ID del registro en la tabla de defectos
-                                     defecto.IdSLDefectoCatalogo,
-                                     defecto.CantidadEncontrada
-                                     // No hay foto ni parte
-                                 );
-                             });
-                        }
-                        */
-                        // --- FIN PARTE NUEVOS DEFECTOS ---
-
-
-                        editandoReporteSL = true; // Marcar como edición
-                        actualizarContadores(); // Recalcular todo
-
-                        // Cambiar botón y acción del form
-                        btnGuardarReporte.querySelector('span').innerText = translate('update_session_report_btn_sl');
-                        reporteForm.action = 'dao/actualizar_reporte_sl.php'; // Apuntar al DAO de actualizar
-
-                        // Añadir botón Cancelar Edición
-                        const formActions = btnGuardarReporte.parentElement;
-                        let cancelButton = formActions.querySelector('.btn-cancel-edit');
-                        if (!cancelButton) { /* ... (código para crear botón Cancelar sin cambios) ... */ }
-
-                        Swal.close();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                    } else {
-                        Swal.fire('Error', data.message || 'No se pudieron cargar los datos del reporte.', 'error');
-                    }
-                } catch (error) {
-                    console.error("Error al cargar reporte SL para edición:", error);
-                    Swal.fire('Error de Conexión', 'No se pudo cargar el reporte para edición.', 'error');
-                }
-            }
-
-            // --- Listener para Botón Editar (Adaptado) ---
-            document.querySelectorAll('.btn-edit-reporte-sl').forEach(button => { // Clase nueva
-                button.addEventListener('click', function() {
-                    cargarReporteParaEdicionSL(this.dataset.id); // Función nueva
-                });
-            });
-
-            // --- Listener para Botón Eliminar (Adaptado) ---
-            document.querySelectorAll('.btn-delete-reporte-sl').forEach(button => { // Clase nueva
-                button.addEventListener('click', function() {
-                    const idReporteAEliminar = this.dataset.id;
-                    Swal.fire({
-                        title: '¿Estás seguro?',
-                        text: "¡No podrás revertir esto! Se eliminará este registro de inspección.", // Texto simplificado
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire({ title: 'Eliminando Reporte...', text: 'Por favor, espera.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                            fetch('dao/eliminar_reporte_sl.php', { // Apuntar al DAO nuevo
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                body: `idSLReporte=${idReporteAEliminar}` // ID nuevo
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.status === 'success') {
-                                        Swal.fire('¡Eliminado!', data.message, 'success').then(() => window.location.reload());
-                                    } else {
-                                        Swal.fire('Error', data.message, 'error');
-                                    }
-                                })
-                                .catch(error => { console.error("Error al eliminar:", error); Swal.fire('Error de Conexión', 'No se pudo eliminar el reporte.', 'error'); });
-                        }
-                    });
-                });
-            });
-
         } // Fin if (reporteForm)
 
-        // --- Lógica para subir/corregir método/instrucción (Adaptada) ---
-        const instruccionForm = document.getElementById('instruccionForm'); // Asumiendo un ID si se crea ese form
-        const btnSubirInstruccion = document.getElementById('btnSubirInstruccion'); // Asumiendo un ID
+        // --- LÓGICA PARA EDITAR REPORTE ---
+        async function cargarReporteParaEdicionSL(idReporte) {
+            const reporteForm = document.getElementById('reporteFormSL');
+            if (!reporteForm) return;
 
-        if (instruccionForm && btnSubirInstruccion) {
-            btnSubirInstruccion.addEventListener('click', function() {
-                // Similar a la lógica de subir método, pero apuntando a un DAO diferente
-                // dao/upload_instruccion_sl.php o dao/resubir_instruccion_sl.php
-                // Y usando los campos correctos (idSafeLaunch, tituloInstruccion, fileInstruccion)
-                Swal.fire('Funcionalidad Pendiente', 'La lógica para subir/resubir instrucciones aún no está implementada.', 'info');
-            });
+            Swal.fire({ title: translate('swal_loading_edit_title'), text: translate('swal_loading_edit_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            try {
+                // Este DAO necesita ser creado: dao/obtener_reporte_sl_para_edicion.php
+                const response = await fetch(`dao/obtener_reporte_sl_para_edicion.php?idSLReporte=${idReporte}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const reporte = data.reporte;
+                    const defectos = data.defectos; // Array de { IdSLDefectoCatalogo, CantidadEncontrada, BachLote }
+
+                    valorOriginalInspeccionadoAlEditarSL = parseInt(reporte.PiezasInspeccionadas, 10) || 0;
+
+                    document.getElementById('idSLReporte').value = reporte.IdSLReporte;
+                    document.getElementById('piezasInspeccionadas').value = reporte.PiezasInspeccionadas;
+                    document.getElementById('piezasAceptadas').value = reporte.PiezasAceptadas;
+                    document.getElementById('piezasRetrabajadas').value = reporte.PiezasRetrabajadas;
+                    document.querySelector('input[name="fechaInspeccion"]').value = reporte.FechaInspeccion;
+                    document.getElementById('comentarios').value = reporte.Comentarios || '';
+
+                    // Parsear y poner horas
+                    if (reporte.RangoHora) {
+                        const convertTo24Hour = (timeStr) => {
+                            if (!timeStr) return '';
+                            let [time, modifier] = timeStr.trim().split(' ');
+                            if (!modifier) return timeStr; // Ya está en 24h?
+                            let [hours, minutes] = time.split(':');
+                            if (hours === '12') hours = '00';
+                            if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
+                            return `${String(hours).padStart(2, '0')}:${minutes}`;
+                        };
+                        const [startStr, endStr] = reporte.RangoHora.split(' - ');
+                        if (startStr) document.getElementById('horaInicio').value = convertTo24Hour(startStr);
+                        if (endStr) document.getElementById('horaFin').value = convertTo24Hour(endStr);
+                    } else {
+                        document.getElementById('horaInicio').value = '';
+                        document.getElementById('horaFin').value = '';
+                    }
+                    calcularYActualizarTiempo(); // Actualiza el campo de tiempo total formateado
+
+                    // Resetear campos de defectos antes de llenarlos
+                    document.querySelectorAll('.defect-classification-item').forEach(item => {
+                        item.querySelector('.defecto-cantidad').value = 0;
+                        const loteInput = item.querySelector('.defecto-lote');
+                        if(loteInput) loteInput.value = '';
+                    });
+
+                    // Llenar campos de defectos
+                    if (defectos && defectos.length > 0) {
+                        defectos.forEach(def => {
+                            const itemDiv = document.querySelector(`.defect-classification-item[data-id-defecto-catalogo="${def.IdSLDefectoCatalogo}"]`);
+                            if (itemDiv) {
+                                itemDiv.querySelector('.defecto-cantidad').value = def.CantidadEncontrada;
+                                const loteInput = itemDiv.querySelector('.defecto-lote');
+                                if(loteInput) loteInput.value = def.BachLote || '';
+                            }
+                        });
+                    }
+
+                    editandoReporteSL = true;
+                    actualizarContadores(); // Recalcular rechazadas y validaciones
+
+                    // Cambiar botón Guardar a Actualizar y añadir Cancelar
+                    const btnGuardarReporte = document.getElementById('btnGuardarReporteSL');
+                    btnGuardarReporte.querySelector('span').innerText = translate('update_session_report_btn');
+
+                    const formActions = btnGuardarReporte.parentElement;
+                    let cancelButton = formActions.querySelector('.btn-cancel-edit');
+                    if (!cancelButton) {
+                        cancelButton = document.createElement('button');
+                        cancelButton.type = 'button';
+                        cancelButton.className = 'btn-secondary btn-cancel-edit';
+                        cancelButton.innerHTML = `<span data-translate-key="cancel_edit_btn">${translate('cancel_edit_btn')}</span>`;
+                        cancelButton.style.marginLeft = '10px';
+                        cancelButton.onclick = () => window.location.reload(); // Simplemente recarga la página
+                        formActions.appendChild(cancelButton);
+                    }
+
+                    Swal.close();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                } else {
+                    Swal.fire(translate('swal_error_title'), data.message, 'error');
+                }
+            } catch (error) {
+                console.error("Error al cargar reporte SL para edición:", error);
+                Swal.fire(translate('swal_connection_error'), translate('swal_loading_edit_error'), 'error');
+            }
         }
-        // Lógica para actualizar nombre de archivo (igual que antes)
-        function updateFileNameLabel(e) { /* ... (código sin cambios) ... */ }
-        document.querySelectorAll('input[type="file"]').forEach(input => input.addEventListener('change', updateFileNameLabel));
 
+        document.querySelectorAll('.btn-edit-reporte-sl').forEach(button => {
+            button.addEventListener('click', function() {
+                cargarReporteParaEdicionSL(this.dataset.id);
+            });
+        });
 
-        // --- Lógica Visor PDF (Adaptada) ---
+        // --- LÓGICA PARA ELIMINAR REPORTE ---
+        document.querySelectorAll('.btn-delete-reporte-sl').forEach(button => {
+            button.addEventListener('click', function() {
+                const idReporteAEliminar = this.dataset.id;
+                Swal.fire({
+                    title: translate('swal_delete_title'),
+                    text: translate('swal_delete_text'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: translate('swal_delete_confirm'),
+                    cancelButtonText: translate('swal_delete_cancel')
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({ title: translate('swal_deleting_title'), text: translate('swal_deleting_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                        // Este DAO necesita ser creado: dao/eliminar_reporte_sl.php
+                        fetch('dao/eliminar_reporte_sl.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `idSLReporte=${idReporteAEliminar}`
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    Swal.fire(translate('swal_deleted_title'), translate('swal_deleted_text'), 'success').then(() => window.location.reload());
+                                } else {
+                                    Swal.fire(translate('swal_error_title'), data.message || translate('swal_delete_error'), 'error');
+                                }
+                            })
+                            .catch(error => Swal.fire(translate('swal_connection_error'), translate('swal_delete_error'), 'error'));
+                    }
+                });
+            });
+        });
+
+        // --- Lógica del Visor PDF ---
         const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
         const pdfWrapper = document.getElementById('pdfViewerWrapper');
-        const pdfUrl = '<?php echo $mostrarVisorInstruccion ? htmlspecialchars($solicitudSL['RutaInstruccion']) : ''; ?>'; // Usar RutaInstruccion
+        const pdfUrl = '<?php echo $mostrarVisorPDF ? htmlspecialchars($safeLaunchData['RutaInstruccion']) : ''; ?>';
 
         function adjustPdfButtonText() {
             if (!togglePdfBtn) return;
             const isMobile = window.innerWidth <= 768;
             const span = togglePdfBtn.querySelector('span');
             const icon = togglePdfBtn.querySelector('i');
-            const keyView = 'view_instruction_btn'; // Clave nueva
-            const keyHide = 'hide_instruction_btn'; // Clave nueva
-            const keyDownload = 'download_instruction_btn'; // Clave nueva
 
             if (isMobile) {
-                span.innerText = translate(keyDownload);
+                span.innerText = translate('download_instruction_btn');
                 icon.className = 'fa-solid fa-download';
-                if (pdfWrapper && pdfWrapper.style.display !== 'none') { /* ... (código ocultar sin cambios) ... */ }
+                if (pdfWrapper && pdfWrapper.style.display !== 'none') {
+                    pdfWrapper.style.display = 'none';
+                    togglePdfBtn.classList.remove('btn-primary');
+                    togglePdfBtn.classList.add('btn-secondary');
+                }
             } else {
                 const isHidden = pdfWrapper ? pdfWrapper.style.display === 'none' : true;
-                span.innerText = isHidden ? translate(keyView) : translate(keyHide);
+                span.innerText = isHidden ? translate('view_instruction_btn') : translate('hide_instruction_btn');
                 icon.className = isHidden ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
-                if (isHidden) { /* ... (código clases sin cambios) ... */ } else { /* ... */ }
+                if (isHidden) {
+                    togglePdfBtn.classList.remove('btn-primary');
+                    togglePdfBtn.classList.add('btn-secondary');
+                } else {
+                    togglePdfBtn.classList.remove('btn-secondary');
+                    togglePdfBtn.classList.add('btn-primary');
+                }
             }
         }
 
-        if (togglePdfBtn && pdfUrl) {
-            togglePdfBtn.addEventListener('click', function() { /* ... (lógica click sin cambios, usa pdfUrl) ... */ });
-            adjustPdfButtonText();
-            window.addEventListener('resize', adjustPdfButtonText);
+        if (togglePdfBtn && pdfWrapper) {
+            togglePdfBtn.addEventListener('click', function() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.download = pdfUrl.substring(pdfUrl.lastIndexOf('/') + 1);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    const isHidden = pdfWrapper.style.display === 'none';
+                    pdfWrapper.style.display = isHidden ? 'block' : 'none';
+                    adjustPdfButtonText(); // Actualiza texto e icono
+                }
+            });
+            adjustPdfButtonText(); // Ajustar al cargar
+            window.addEventListener('resize', adjustPdfButtonText); // Ajustar al redimensionar
         }
-        // --- Fin Lógica Visor PDF ---
-
-        // Lógica add/remove batch eliminada
 
         // Carga inicial del idioma
         setLanguage(getCurrentLanguage());
