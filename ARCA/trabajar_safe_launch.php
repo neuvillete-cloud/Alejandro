@@ -80,6 +80,7 @@ function formatarMinutosATiempo($totalMinutos) {
     return empty($partes) ? "0 minutos" : implode(" ", $partes);
 }
 
+// --- CORRECCIÓN AQUÍ: Nombre de la tabla corregido ---
 $reportes_anteriores_query = $conex->prepare("
     SELECT
         r.IdSLReporte, r.FechaInspeccion, r.NombreInspector, r.PiezasInspeccionadas, r.PiezasAceptadas,
@@ -88,9 +89,10 @@ $reportes_anteriores_query = $conex->prepare("
         r.RangoHora,
         r.Comentarios,
         r.TiempoInspeccion
-    FROM SafeLaunchReportes r
+    FROM SafeLaunchReportesInspeccion r
     WHERE r.IdSafeLaunch = ? ORDER BY r.FechaRegistro DESC
 ");
+// --- FIN DE LA CORRECCIÓN ---
 $reportes_anteriores_query->bind_param("i", $idSafeLaunch);
 $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -124,7 +126,10 @@ foreach ($reportes_raw as $reporte) {
         $cantidad = (int)$dr['CantidadEncontrada'];
         $reporte['DefectosPorTipo'][$idDefecto] = $cantidad; // Guardar cantidad por ID de defecto para la fila de la tabla
         $totalDefectosReporteActual += $cantidad;
-        $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad; // Sumar al total global
+        // Verificar si la clave existe antes de sumar
+        if (array_key_exists($idDefecto, $totalDefectosPorTipoGlobal)) {
+            $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad; // Sumar al total global
+        }
     }
     $reporte['TotalDefectosReporte'] = $totalDefectosReporteActual;
     $totalDefectosEncontradosGlobal += $totalDefectosReporteActual;
@@ -378,10 +383,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .data-table tbody tr:hover { background-color: #f0f4f8; }
         .data-table td .btn-small { margin: 0 2px; }
         /* Centrar contenido numérico y acciones */
-        .data-table td:nth-child(n+7):not(:last-child), /* Columnas numéricas */
-        .data-table th:nth-child(n+7):not(:last-child) {
+        .data-table th:nth-child(n+6):not(:nth-last-child(2)):not(:last-child), /* Columnas numéricas (Insp. hasta % Def.) */
+        .data-table td:nth-child(n+6):not(:nth-last-child(2)):not(:last-child) {
             text-align: center;
         }
+
         .data-table td:last-child { /* Columna de acciones */
             text-align: center;
             white-space: nowrap;
@@ -1127,5 +1133,4 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 </script>
 </body>
 </html>
-
 
