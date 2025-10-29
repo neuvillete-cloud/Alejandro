@@ -5,7 +5,8 @@ include_once("verificar_sesion.php"); // Para verificar la sesión
 header('Content-Type: application/json');
 
 // Estructura de respuesta inicial
-$response = ['status' => 'error', 'message' => '', 'reporte' => null, 'defectos' => []];
+// --- MODIFICADO: Añadida la clave 'nuevosDefectos' ---
+$response = ['status' => 'error', 'message' => '', 'reporte' => null, 'defectos' => [], 'nuevosDefectos' => []];
 
 // Verificar sesión
 if (!isset($_SESSION['loggedin'])) {
@@ -40,13 +41,23 @@ try {
         throw new Exception("Reporte Safe Launch no encontrado.");
     }
 
-    // 2. Obtener los defectos clasificados para este reporte
+    // 2. Obtener los defectos clasificados (DE LA CUADRÍCULA) para este reporte
     $stmt_defectos = $conex->prepare("SELECT IdSLDefectoCatalogo, CantidadEncontrada, BachLote
                                       FROM SafeLaunchReporteDefectos WHERE IdSLReporte = ?");
     $stmt_defectos->bind_param("i", $idSLReporte);
     $stmt_defectos->execute();
     $defectos = $stmt_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt_defectos->close();
+
+    // --- INICIO NUEVO: 3. Obtener los NUEVOS DEFECTOS (OPCIONALES) para este reporte ---
+    // (Datos de la tabla que acabamos de crear)
+    $stmt_nuevos_defectos = $conex->prepare("SELECT IdSLNuevoDefecto, IdSLDefectoCatalogo, Cantidad
+                                            FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
+    $stmt_nuevos_defectos->bind_param("i", $idSLReporte);
+    $stmt_nuevos_defectos->execute();
+    $nuevosDefectos = $stmt_nuevos_defectos->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt_nuevos_defectos->close();
+    // --- FIN NUEVO ---
 
     // Formatear la fecha para el input type="date"
     if ($reporte['FechaInspeccion']) {
@@ -56,7 +67,8 @@ try {
     // Preparar la respuesta exitosa
     $response['status'] = 'success';
     $response['reporte'] = $reporte;
-    $response['defectos'] = $defectos; // Los defectos asociados al reporte
+    $response['defectos'] = $defectos; // Los defectos de la cuadrícula
+    $response['nuevosDefectos'] = $nuevosDefectos; // --- AÑADIDO: Los defectos opcionales
 
 } catch (Exception $e) {
     $response['message'] = "Error al obtener datos: " . $e->getMessage();
@@ -67,4 +79,3 @@ try {
     echo json_encode($response); // Enviar la respuesta JSON
 }
 ?>
-
