@@ -71,8 +71,8 @@ try {
     // Lógica para actualizar estatus de Solicitud eliminada (no aplica a SL)
     // Lógica para Desglose de Partes eliminada (no aplica a SL)
 
-    // 3. Procesar Clasificación de Defectos
-    $totalDefectosClasificados = 0;
+    // 3. Procesar Clasificación de Defectos (de la cuadrícula)
+    $totalDefectosClasificados = 0; // Se inicializa aquí
     if (isset($_POST['defectos']) && is_array($_POST['defectos'])) {
         foreach ($_POST['defectos'] as $idDefectoCatalogo => $defectData) {
             $cantidad = isset($defectData['cantidad']) ? intval($defectData['cantidad']) : 0;
@@ -86,19 +86,52 @@ try {
                     throw new Exception("Error al guardar el defecto del catálogo #{$idDefectoCatalogo}: " . $stmt_defecto->error);
                 }
                 $stmt_defecto->close();
-                $totalDefectosClasificados += $cantidad;
+                $totalDefectosClasificados += $cantidad; // Sumar a la cuenta total
             }
         }
     }
 
-    // Validación final: la suma de defectos clasificados debe coincidir con las rechazadas disponibles
+    // --- INICIO NUEVO: Procesar Nuevos Defectos Encontrados ---
+    // Asegúrate de tener una tabla 'SafeLaunchNuevosDefectos' similar a 'DefectosEncontrados' pero sin la columna de foto.
+    // Columnas asumidas: IdSLNuevoDefecto (PK, AutoInc), IdSLReporte (FK), IdSLDefectoCatalogo (FK), Cantidad
+    if (isset($_POST['nuevos_defectos_sl']) && is_array($_POST['nuevos_defectos_sl'])) {
+        foreach ($_POST['nuevos_defectos_sl'] as $tempId => $defectoData) {
+            // tempId es el contador del frontend (1, 2, 3...)
+            // id es el IdSLDefectoCatalogo
+            // cantidad es la cantidad ingresada
+            $cantidad = isset($defectoData['cantidad']) ? intval($defectoData['cantidad']) : 0;
+
+            if ($cantidad > 0) {
+                $idDefectoCatalogo = isset($defectoData['id']) ? intval($defectoData['id']) : 0;
+
+                // Validar que se haya seleccionado un tipo de defecto
+                if ($idDefectoCatalogo <= 0) {
+                    throw new Exception("Se ingresó cantidad para un nuevo defecto (#{$tempId}) pero no se seleccionó el tipo de defecto.");
+                }
+
+                // Insertar en la tabla de nuevos defectos para Safe Launch
+                // ¡¡¡ASEGÚRATE DE QUE LA TABLA SafeLaunchNuevosDefectos EXISTA!!!
+                $stmt_nuevo_defecto = $conex->prepare("INSERT INTO SafeLaunchNuevosDefectos (IdSLReporte, IdSLDefectoCatalogo, Cantidad) VALUES (?, ?, ?)");
+                // El bind_param debe coincidir con las columnas de tu tabla
+                $stmt_nuevo_defecto->bind_param("iii", $lastIdSLReporte, $idDefectoCatalogo, $cantidad);
+
+                if (!$stmt_nuevo_defecto->execute()) {
+                    throw new Exception("Error al guardar el nuevo defecto encontrado (#{$tempId}) en la base de datos: " . $stmt_nuevo_defecto->error);
+                }
+                $stmt_nuevo_defecto->close();
+                $totalDefectosClasificados += $cantidad; // Sumar también estos al total
+            }
+        }
+    }
+    // --- FIN NUEVO ---
+
+
+    // --- VALIDACIÓN FINAL MODIFICADA ---
+    // La suma de defectos (cuadrícula + nuevos) debe coincidir con las rechazadas disponibles
     $rechazadasDisponibles = $piezasRechazadasBrutas - $piezasRetrabajadas;
     if ($totalDefectosClasificados != $rechazadasDisponibles) {
-        throw new Exception("Error de validación: La suma de defectos clasificados ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles para clasificar ({$rechazadasDisponibles}).");
+        throw new Exception("Error de validación: La suma total de defectos clasificados ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles para clasificar ({$rechazadasDisponibles}).");
     }
-
-
-    // Lógica para Nuevos Defectos Encontrados eliminada (no aplica a SL)
 
     $conex->commit(); // Confirmar transacción si todo fue exitoso
     echo json_encode(['status' => 'success', 'message' => 'Reporte de inspección Safe Launch guardado exitosamente.']);
