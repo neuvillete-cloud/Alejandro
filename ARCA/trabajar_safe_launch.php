@@ -34,59 +34,49 @@ $nombreResponsable = htmlspecialchars($safeLaunchData['NombreCreador']);
 $nombreProyecto = htmlspecialchars($safeLaunchData['NombreProyecto']);
 $cliente = htmlspecialchars($safeLaunchData['Cliente']);
 
-// --- Catálogo de Defectos para el formulario y la tabla ---
-$catalogo_defectos_query = $conex->query("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
-$catalogo_defectos_result = $catalogo_defectos_query->fetch_all(MYSQLI_ASSOC);
+// --- Catálogo de Defectos para Safe Launch ---
+$catalogo_defectos_sl_query = $conex->prepare("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
+$catalogo_defectos_sl_query->execute();
+$catalogo_defectos_sl_result = $catalogo_defectos_sl_query->get_result()->fetch_all(MYSQLI_ASSOC);
+$catalogo_defectos_sl_query->close(); // Cerrar statement
 
-// Preparar opciones HTML para los <select> (usado en "Nuevos Defectos") y Array para JS/Tabla
+// Preparar opciones HTML para los <select> (usado en "Nuevos Defectos")
 $defectos_options_html = "";
-$defectos_para_formulario_y_tabla = []; // Array para iterar en HTML y JS
-$todos_los_defectos_sl = []; // Para acumular totales en PHP
-foreach($catalogo_defectos_result as $row) {
+$todos_los_defectos_sl = []; // Array para la tabla final y el formulario principal
+foreach($catalogo_defectos_sl_result as $row) {
     $defectos_options_html .= "<option value='{$row['IdSLDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
-    $defectos_para_formulario_y_tabla[] = [ // Usado para el grid de clasificación y cabeceras de tabla
-        'id' => $row['IdSLDefectoCatalogo'],
-        'nombre' => htmlspecialchars($row['NombreDefecto'])
-    ];
-    $todos_los_defectos_sl[$row['IdSLDefectoCatalogo']] = ['NombreDefecto' => htmlspecialchars($row['NombreDefecto']), 'Total' => 0]; // Para acumular totales en PHP
+    $todos_los_defectos_sl[$row['IdSLDefectoCatalogo']] = ['NombreDefecto' => htmlspecialchars($row['NombreDefecto']), 'Total' => 0]; // Inicializar total
 }
+// Array para iterar en el formulario principal (clasificación)
+$defectos_para_formulario_y_tabla = $catalogo_defectos_sl_result;
 
 
-// --- Historial de Reportes Anteriores ---
-function parsearTiempoAMinutos($tiempoStr) {
+// --- Obtener Historial de Reportes de Inspección para este Safe Launch ---
+function parsearTiempoAMinutosSL($tiempoStr) {
     if (empty($tiempoStr)) return 0;
     $totalMinutos = 0;
-    if (preg_match('/(\d+)\s*hora(s)?/', $tiempoStr, $matches)) {
-        $totalMinutos += intval($matches[1]) * 60;
-    }
-    if (preg_match('/(\d+)\s*minuto(s)?/', $tiempoStr, $matches)) {
-        $totalMinutos += intval($matches[1]);
-    }
-    if ($totalMinutos === 0 && preg_match('/(\d+)/', $tiempoStr, $matches)) { // Fallback simple si solo hay números
-        if (str_contains(strtolower($tiempoStr), 'hora')) {
-            $totalMinutos = intval($matches[1]) * 60;
-        } else {
-            $totalMinutos = intval($matches[1]);
-        }
+    if (preg_match('/(\d+)\s*hora(s)?/', $tiempoStr, $matches)) { $totalMinutos += intval($matches[1]) * 60; }
+    if (preg_match('/(\d+)\s*minuto(s)?/', $tiempoStr, $matches)) { $totalMinutos += intval($matches[1]); }
+    if ($totalMinutos === 0 && preg_match('/(\d+)/', $tiempoStr, $matches)) { // Fallback simple
+        if (str_contains(strtolower($tiempoStr), 'hora')) { $totalMinutos = intval($matches[1]) * 60; }
+        else { $totalMinutos = intval($matches[1]); }
     }
     return $totalMinutos;
 }
 
-function formatarMinutosATiempo($totalMinutos) {
+function formatarMinutosATiempoSL($totalMinutos) {
     if ($totalMinutos <= 0) return "0 minutos";
     $horas = floor($totalMinutos / 60);
     $minutos = $totalMinutos % 60;
     $partes = [];
-    if ($horas > 0) {
-        $partes[] = $horas . " hora(s)";
-    }
+    if ($horas > 0) { $partes[] = $horas . " hora(s)"; }
     if ($minutos > 0 || $horas === 0) { // Mostrar 0 minutos si no hay horas
         $partes[] = $minutos . " minuto(s)";
     }
     return empty($partes) ? "0 minutos" : implode(" ", $partes);
 }
 
-// --- Nombre de tabla corregido ---
+// Obtener reportes anteriores
 $reportes_anteriores_query = $conex->prepare("
     SELECT
         r.IdSLReporte, r.FechaInspeccion, r.NombreInspector, r.PiezasInspeccionadas, r.PiezasAceptadas,
@@ -103,56 +93,69 @@ $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
 $reportes_anteriores_query->close();
 
+
 $reportes_procesados = [];
 $totalMinutosRegistrados = 0;
 $totalPiezasInspeccionadasYa = 0;
-$totalDefectosEncontradosGlobal = 0;
-$totalDefectosPorTipoGlobal = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0);
+$totalDefectosGlobal = 0; // Para PPM
+$totalDefectosPorTipoGlobal = [];
+foreach ($todos_los_defectos_sl as $idDef => $defData) {
+    $totalDefectosPorTipoGlobal[$idDef] = 0; // Inicializar contadores globales
+}
 
 // Statement para obtener defectos por reporte
-$defectos_reporte_query = $conex->prepare("
-    SELECT
-        rd.IdSLDefectoCatalogo, rd.CantidadEncontrada, rd.BachLote
-    FROM SafeLaunchReporteDefectos rd
-    WHERE rd.IdSLReporte = ?
+$defectos_reporte_stmt = $conex->prepare("
+    SELECT slrd.CantidadEncontrada, slrd.BachLote, slrd.IdSLDefectoCatalogo
+    FROM SafeLaunchReporteDefectos slrd
+    WHERE slrd.IdSLReporte = ?
 ");
 
 
 foreach ($reportes_raw as $reporte) {
     $reporte_id = $reporte['IdSLReporte'];
-    $totalMinutosRegistrados += parsearTiempoAMinutos($reporte['TiempoInspeccion']);
+    $totalMinutosRegistrados += parsearTiempoAMinutosSL($reporte['TiempoInspeccion']);
     $piezasInspeccionadasReporte = (int)$reporte['PiezasInspeccionadas'];
     $totalPiezasInspeccionadasYa += $piezasInspeccionadasReporte;
-    $totalDefectosReporteActual = 0;
-    $reporte['DefectosPorTipo'] = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0); // Inicializar para este reporte
-    $lotes_encontrados_reporte = []; // Lotes específicos de este reporte
 
-    $defectos_reporte_query->bind_param("i", $reporte_id);
-    $defectos_reporte_query->execute();
-    $defectos_reporte_result = $defectos_reporte_query->get_result();
+    // Obtener defectos para este reporte
+    $defectos_reporte_stmt->bind_param("i", $reporte_id);
+    $defectos_reporte_stmt->execute();
+    $defectos_reporte_result = $defectos_reporte_stmt->get_result();
+
+    $reporte['DefectosPorTipo'] = []; // Almacena cantidad por ID de defecto para esta fila
+    foreach ($todos_los_defectos_sl as $idDef => $defData) {
+        $reporte['DefectosPorTipo'][$idDef] = 0; // Inicializar para esta fila
+    }
+
+    $lotes_encontrados_reporte = [];
+    $total_defectos_este_reporte = 0;
+
     while ($dr = $defectos_reporte_result->fetch_assoc()) {
-        $idDefecto = $dr['IdSLDefectoCatalogo'];
-        $cantidad = (int)$dr['CantidadEncontrada'];
-        // Solo sumar si el defecto aún existe en el catálogo actual
-        if (array_key_exists($idDefecto, $reporte['DefectosPorTipo'])) {
-            $reporte['DefectosPorTipo'][$idDefecto] = $cantidad;
+        $id_defecto_catalogo = $dr['IdSLDefectoCatalogo'];
+        $cantidad_encontrada = (int)$dr['CantidadEncontrada'];
+        $total_defectos_este_reporte += $cantidad_encontrada;
+        $totalDefectosGlobal += $cantidad_encontrada;
+
+        // Asegurarse que el ID existe en el catálogo actual antes de sumar
+        if (isset($reporte['DefectosPorTipo'][$id_defecto_catalogo])) {
+            $reporte['DefectosPorTipo'][$id_defecto_catalogo] += $cantidad_encontrada;
         }
-        $totalDefectosReporteActual += $cantidad;
-        if (array_key_exists($idDefecto, $totalDefectosPorTipoGlobal)) {
-            $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad;
+        if (isset($totalDefectosPorTipoGlobal[$id_defecto_catalogo])) {
+            $totalDefectosPorTipoGlobal[$id_defecto_catalogo] += $cantidad_encontrada;
         }
-        // Recolectar lotes asociados a este reporte
         if (!empty($dr['BachLote'])) {
             $lotes_encontrados_reporte[] = htmlspecialchars($dr['BachLote']);
         }
     }
-    $reporte['TotalDefectosReporte'] = $totalDefectosReporteActual;
-    $totalDefectosEncontradosGlobal += $totalDefectosReporteActual;
-    // Columna general de lotes para la tabla de historial
     $reporte['LotesEncontradosTabla'] = empty($lotes_encontrados_reporte) ? 'N/A' : implode(", ", array_unique($lotes_encontrados_reporte));
+    $reporte['TotalDefectosReporte'] = $total_defectos_este_reporte;
+
+    // Calcular PPM y % por reporte
+    $reporte['PPM_Reporte'] = ($piezasInspeccionadasReporte > 0) ? round(($total_defectos_este_reporte / $piezasInspeccionadasReporte) * 1000000) : 0;
+    $reporte['PorcentajeDefectuoso_Reporte'] = ($piezasInspeccionadasReporte > 0) ? round(($total_defectos_este_reporte / $piezasInspeccionadasReporte) * 100, 2) : 0;
 
 
-    // Calcular Turno/Shift Leader
+    // Calcular Turno (igual que antes)
     $turno_shift_leader = 'N/A';
     if (isset($reporte['RangoHora'])) {
         $rangoHoraStr = $reporte['RangoHora'];
@@ -171,19 +174,22 @@ foreach ($reportes_raw as $reporte) {
 
     $reportes_procesados[] = $reporte;
 }
-$defectos_reporte_query->close(); // Cerrar statement
-$tiempoTotalFormateado = formatarMinutosATiempo($totalMinutosRegistrados);
+$defectos_reporte_stmt->close();
+
+$tiempoTotalFormateado = formatarMinutosATiempoSL($totalMinutosRegistrados);
 
 // Calcular PPM y % Defectuoso Global
-$ppm_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosEncontradosGlobal / $totalPiezasInspeccionadasYa) * 1000000) : 0;
-$porcentaje_defectuoso_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosEncontradosGlobal / $totalPiezasInspeccionadasYa) * 100, 2) : 0;
+$ppm_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosGlobal / $totalPiezasInspeccionadasYa) * 1000000) : 0;
+$porcentaje_defectuoso_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosGlobal / $totalPiezasInspeccionadasYa) * 100, 2) : 0;
 
-$conex->close(); // Cerrar conexión principal
 
-$mostrarVisorPDF = !empty($safeLaunchData['RutaInstruccion']);
+$conex->close(); // Cerrar la conexión principal
 
-// Determinar si el formulario principal debe mostrarse
-$mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
+// CORRECCIÓN: Usar la variable correcta para verificar la ruta de instrucción
+$mostrarVisorPDF = !empty($solicitudSL['RutaInstruccion']);
+
+// Determinar si mostrar el formulario principal
+$mostrarFormularioPrincipal = ($solicitudSL['Estatus'] == 'Activo');
 
 ?>
 <!DOCTYPE html>
@@ -197,7 +203,6 @@ $mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <!-- Usamos el mismo CSS que trabajar_solicitud -->
     <style>
         /* =================================================================
@@ -500,7 +505,7 @@ $mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
             <p><strong data-translate-key="client">Cliente:</strong> <span><?php echo $cliente; ?></span></p>
         </div>
 
-        <?php if ($mostrarVisorInstruccion): ?>
+        <?php if ($mostrarVisorPDF): ?>
             <fieldset>
                 <legend><i class="fa-solid fa-file-shield"></i> <span data-translate-key="instruction_title">Instrucción de Trabajo</span></legend>
                 <div class="form-actions" style="margin-bottom: 15px;">
@@ -863,7 +868,8 @@ $mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
                 if (fechaFin < fechaInicio) {
                     tiempoInspeccionInput.value = 'Error: Hora de fin inválida';
                     horaFinInput.setCustomValidity("La hora de fin no puede ser anterior a la hora de inicio.");
-                    horaFinInput.reportValidity(); return;
+                    // No reportValidity() para no molestar
+                    return;
                 } else { horaFinInput.setCustomValidity(""); }
                 const diffMs = fechaFin - fechaInicio;
                 const totalMinutos = Math.round(diffMs / 60000);
@@ -881,8 +887,7 @@ $mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
 
                 // Validación simple de cantidad aceptada
                 piezasAceptadasInput.setCustomValidity(aceptadas > inspeccionadas ? "Las aceptadas no pueden superar las inspeccionadas." : "");
-                // No llamamos a reportValidity() aquí para no interrumpir al usuario constantemente
-                // La validación final antes de enviar lo hará si es necesario.
+                // No llamamos a reportValidity() aquí
 
                 const rechazadasBrutas = Math.max(0, inspeccionadas - aceptadas);
                 piezasRechazadasCalculadasInput.value = rechazadasBrutas;
@@ -1038,7 +1043,7 @@ $mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
                     const data = await response.json();
                     if (data.status === 'success') {
                         const reporte = data.reporte;
-                        const defectosGuardados = data.defectos; // Array de { IdSLDefectoCatalogo, CantidadEncontrada, BachLote }
+                        const defectosGuardados = data.defectos; // Array de { IdSLDefectoCatalogo, CantidadEncontrada, BachLote, IdSLReporteDefecto } <- IMPORTANTE añadir IdSLReporteDefecto en DAO
 
                         valorOriginalInspeccionadoAlEditarSL = parseInt(reporte.PiezasInspeccionadas, 10) || 0;
                         // Llenar campos principales
@@ -1080,31 +1085,24 @@ $mostrarFormularioPrincipal = ($safeLaunchData['Estatus'] == 'Activo');
                         nuevoDefectoCounterSL = 0; // Reiniciar contador de nuevos defectos
 
                         if (defectosGuardados && defectosGuardados.length > 0) {
-                            // Crear un mapa para buscar rápidamente si un defecto del catálogo fue guardado
-                            const defectosGuardadosMap = new Map();
-                            // Necesitamos el ID del registro en SafeLaunchReporteDefectos para editar/eliminar nuevos defectos
-                            // Asumimos que el DAO lo devuelve como 'IdSLReporteDefecto'
-                            defectosGuardados.forEach(def => {
-                                defectosGuardadosMap.set(def.IdSLDefectoCatalogo.toString(), def);
-                            });
+                            // Mapa para buscar rápidamente defectos del catálogo principal
+                            const catalogoPrincipalIds = new Set(catalogoDefectosSL.map(def => def.id.toString()));
 
-                            // Llenar los defectos del catálogo principal
-                            document.querySelectorAll('.defect-classification-item').forEach(item => {
-                                const idCat = item.dataset.idDefectoCatalogo;
-                                if (defectosGuardadosMap.has(idCat)) {
-                                    const defGuardado = defectosGuardadosMap.get(idCat);
-                                    item.querySelector('.defecto-cantidad').value = defGuardado.CantidadEncontrada;
-                                    const loteInput = item.querySelector('.defecto-lote');
-                                    if(loteInput) loteInput.value = defGuardado.BachLote || '';
-                                    defectosGuardadosMap.delete(idCat); // Remover para que solo queden los 'nuevos'
+                            defectosGuardados.forEach(defGuardado => {
+                                const idCatStr = defGuardado.IdSLDefectoCatalogo.toString();
+                                // ¿Es un defecto del catálogo principal?
+                                if (catalogoPrincipalIds.has(idCatStr)) {
+                                    const itemDiv = document.querySelector(`.defect-classification-item[data-id-defecto-catalogo="${idCatStr}"]`);
+                                    if (itemDiv) {
+                                        itemDiv.querySelector('.defecto-cantidad').value = defGuardado.CantidadEncontrada;
+                                        const loteInput = itemDiv.querySelector('.defecto-lote');
+                                        if(loteInput) loteInput.value = defGuardado.BachLote || '';
+                                    }
+                                } else {
+                                    // Si no está en el catálogo principal, lo añadimos como "nuevo defecto encontrado"
+                                    // Pasamos el ID del registro específico (IdSLReporteDefecto) para poder eliminarlo después
+                                    addNuevoDefectoBlockSL(defGuardado.IdSLReporteDefecto || null, defGuardado.IdSLDefectoCatalogo, defGuardado.CantidadEncontrada);
                                 }
-                            });
-
-                            // Los defectos restantes en el mapa son los que no estaban en el catálogo principal (o fueron agregados después)
-                            // y deberían mostrarse en la sección "Nuevos Defectos Encontrados"
-                            defectosGuardadosMap.forEach(defNuevo => {
-                                // Pasar el ID del registro específico (IdSLReporteDefecto) a addNuevoDefectoBlockSL
-                                addNuevoDefectoBlockSL(defNuevo.IdSLReporteDefecto || null, defNuevo.IdSLDefectoCatalogo, defNuevo.CantidadEncontrada);
                             });
                         }
 
