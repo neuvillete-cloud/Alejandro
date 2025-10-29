@@ -26,16 +26,22 @@ $conex = $con->conectar();
 $conex->begin_transaction(); // Iniciar transacción
 
 try {
-    // 1. Eliminar registros de SafeLaunchReporteDefectos asociados
-    // (No hay fotos que eliminar en este flujo)
+    // --- NUEVO PASO: Eliminar registros de SafeLaunchNuevosDefectos asociados ---
+    $delete_nuevos_defectos_sl = $conex->prepare("DELETE FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
+    $delete_nuevos_defectos_sl->bind_param("i", $idSLReporte);
+    if (!$delete_nuevos_defectos_sl->execute()) {
+        throw new Exception("Error al eliminar los nuevos defectos opcionales asociados: " . $delete_nuevos_defectos_sl->error);
+    }
+    $delete_nuevos_defectos_sl->close();
+    // --- FIN NUEVO PASO ---
+
+    // 1. Eliminar registros de SafeLaunchReporteDefectos asociados (Defectos de la cuadrícula)
     $delete_defectos_sl = $conex->prepare("DELETE FROM SafeLaunchReporteDefectos WHERE IdSLReporte = ?");
     $delete_defectos_sl->bind_param("i", $idSLReporte);
     if (!$delete_defectos_sl->execute()) {
         throw new Exception("Error al eliminar los defectos asociados al reporte Safe Launch: " . $delete_defectos_sl->error);
     }
     $delete_defectos_sl->close();
-
-    // Lógica para eliminar DefectosEncontrados y ReporteDefectosOriginales eliminada
 
     // 2. Eliminar el SafeLaunchReportesInspeccion principal
     $delete_reporte_sl = $conex->prepare("DELETE FROM SafeLaunchReportesInspeccion WHERE IdSLReporte = ?");
