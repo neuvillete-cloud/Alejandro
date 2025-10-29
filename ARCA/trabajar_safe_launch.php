@@ -546,8 +546,8 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
         <?php if ($mostrarFormularioPrincipal): ?>
             <!-- Formulario Principal -->
-            <!-- --- MODIFICADO: Añadido enctype para subida de archivos --- -->
-            <form id="reporteFormSL" action="dao/guardar_reporte_safe_launch.php" method="POST" enctype="multipart/form-data">
+            <!-- --- MODIFICADO: Se quitó enctype="multipart/form-data" --- -->
+            <form id="reporteFormSL" action="dao/guardar_reporte_safe_launch.php" method="POST">
                 <input type="hidden" name="idSafeLaunch" value="<?php echo $idSafeLaunch; ?>">
                 <input type="hidden" name="idSLReporte" id="idSLReporte" value=""> <!-- Para edición -->
 
@@ -770,10 +770,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 select_defect_option: "Seleccione un defecto",
                 qty_label: "Cantidad de Piezas",
                 qty_placeholder: "Cantidad con este defecto...",
-                evidence_photo_label: "Foto de Evidencia (Opcional)",
-                select_file: "Seleccionar archivo...",
-                current_file_info: "Archivo actual:",
-                view_photo: "Ver foto",
+                // --- SECCIÓN DE FOTO ELIMINADA ---
                 swal_remove_defect_title: "¿Estás seguro?",
                 swal_remove_defect_text: "Este defecto se eliminará del formulario.",
                 swal_remove_defect_confirm: "Sí, eliminar",
@@ -823,10 +820,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 select_defect_option: "Select a defect",
                 qty_label: "Quantity of Pieces",
                 qty_placeholder: "Quantity with this defect...",
-                evidence_photo_label: "Evidence Photo (Optional)",
-                select_file: "Select file...",
-                current_file_info: "Current file:",
-                view_photo: "View photo",
+                // --- PHOTO SECTION REMOVED ---
                 swal_remove_defect_title: "Are you sure?",
                 swal_remove_defect_text: "This defect will be removed from the form.",
                 swal_remove_defect_confirm: "Yes, remove",
@@ -1171,12 +1165,12 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         nuevoDefectoCounterSL = 0; // Resetear contador
                         if (nuevosDefectos && nuevosDefectos.length > 0) {
                             nuevosDefectos.forEach(defecto => {
-                                // Asumimos que el DAO devuelve: IdDefectoEncontrado, IdSLDefectoCatalogo, Cantidad, RutaFotoEvidencia
+                                // Asumimos que el DAO devuelve: IdDefectoEncontrado, IdSLDefectoCatalogo, Cantidad
                                 addNuevoDefectoBlockSL(
                                     defecto.IdDefectoEncontrado, // ID único del defecto guardado
                                     defecto.IdSLDefectoCatalogo, // ID del catálogo
-                                    defecto.Cantidad,             // Cantidad
-                                    defecto.RutaFotoEvidencia     // Ruta de la foto
+                                    defecto.Cantidad             // Cantidad
+                                    // --- RUTA DE FOTO ELIMINADA ---
                                 );
                             });
                         }
@@ -1312,21 +1306,13 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
         // --- INICIO: LÓGICA DE NUEVOS DEFECTOS (portada de contenciones) ---
 
-        // Función para actualizar el nombre del archivo en la etiqueta
-        function updateFileNameLabelSL(e) {
-            const labelSpan = e.target.previousElementSibling.querySelector('span');
-            const defaultText = labelSpan.dataset.defaultText || translate('select_file');
-            if (e.target.files.length > 0) {
-                labelSpan.textContent = e.target.files[0].name;
-            } else {
-                labelSpan.textContent = defaultText;
-            }
-        }
+        // --- Función 'updateFileNameLabelSL' eliminada, ya no es necesaria ---
 
         // Función para añadir un nuevo bloque de defecto
         // idDefectoEncontrado es el ID de la tabla 'SafeLaunchNuevosDefectos' (o como la llames)
         // idDefectoCatalogo es el ID de la tabla 'SafeLaunchCatalogoDefectos'
-        function addNuevoDefectoBlockSL(idDefectoEncontrado = null, idDefectoCatalogo = '', cantidad = '', rutaFoto = '') {
+        // --- 'rutaFoto' eliminada de la firma de la función ---
+        function addNuevoDefectoBlockSL(idDefectoEncontrado = null, idDefectoCatalogo = '', cantidad = '') {
             nuevoDefectoCounterSL++;
             const currentCounter = nuevoDefectoCounterSL;
             const nuevosDefectosContainerSL = document.getElementById('nuevos-defectos-container-sl');
@@ -1354,18 +1340,10 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <input type="number" class="nuevo-defecto-cantidad-sl" name="nuevos_defectos_sl[${currentCounter}][cantidad]" placeholder="${translate('qty_placeholder')}" min="0" value="0" required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label data-translate-key="evidence_photo_label">${translate('evidence_photo_label')}</label>
-                    <label class="file-upload-label" for="nuevoDefectoFotoSL-${currentCounter}">
-                        <i class="fa-solid fa-cloud-arrow-up"></i><span data-default-text="${translate('select_file')}" data-translate-key="select_file">${translate('select_file')}</span>
-                    </label>
-                    <input type="file" id="nuevoDefectoFotoSL-${currentCounter}" name="nuevos_defectos_sl[${currentCounter}][foto]" accept="image/*" class="input-file-sl">
-                    ${rutaFoto ?
-                `<p class="current-file-info"><span data-translate-key="current_file_info">${translate('current_file_info')}</span> <a href="${rutaFoto}" target="_blank" data-translate-key="view_photo">${translate('view_photo')}</a> (Se reemplazará si subes uno nuevo)</p>
-                         <input type="hidden" name="nuevos_defectos_sl[${currentCounter}][foto_existente]" value="${rutaFoto}">
-                         <input type="hidden" name="nuevos_defectos_sl[${currentCounter}][idDefectoEncontrado]" value="${idDefectoEncontrado}">` :
+                <!-- --- SECCIÓN DE FOTO ELIMINADA --- -->
+                ${idDefectoEncontrado ?
+                `<input type="hidden" name="nuevos_defectos_sl[${currentCounter}][idDefectoEncontrado]" value="${idDefectoEncontrado}">` :
                 ''}
-                </div>
             </div>`;
             nuevosDefectosContainerSL.insertAdjacentHTML('beforeend', defectoHTML);
 
@@ -1379,8 +1357,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 newBlock.querySelector(`input[name="nuevos_defectos_sl[${currentCounter}][cantidad]"]`).value = cantidad;
             }
 
-            // Añadir listener para el nombre del archivo
-            document.getElementById(`nuevoDefectoFotoSL-${currentCounter}`).addEventListener('change', updateFileNameLabelSL);
+            // --- Listener para el nombre del archivo eliminado ---
 
             return newBlock;
         }
@@ -1445,3 +1422,4 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 </script>
 </body>
 </html>
+
