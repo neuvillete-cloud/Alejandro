@@ -33,12 +33,26 @@ $nombreResponsable = htmlspecialchars($safeLaunchData['NombreCreador']);
 $nombreProyecto = htmlspecialchars($safeLaunchData['NombreProyecto']);
 $cliente = htmlspecialchars($safeLaunchData['Cliente']);
 
-// --- Catálogo de Defectos para el formulario y la tabla ---
-$catalogo_defectos_query = $conex->query("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
-$catalogo_defectos_result = $catalogo_defectos_query->fetch_all(MYSQLI_ASSOC);
+
+// --- INICIO CORRECCIÓN ---
+
+// --- 1. Catálogo de Defectos ASOCIADOS (para la CUADRÍCULA y la TABLA) ---
+// Esta consulta SÍ debe ser filtrada por el IdSafeLaunch
+$stmt_defectos_asociados = $conex->prepare("
+    SELECT slcd.IdSLDefectoCatalogo, slcd.NombreDefecto
+    FROM SafeLaunchDefectos sld
+    JOIN SafeLaunchCatalogoDefectos slcd ON sld.IdSLDefectoCatalogo = slcd.IdSLDefectoCatalogo
+    WHERE sld.IdSafeLaunch = ?
+    ORDER BY slcd.NombreDefecto ASC
+");
+$stmt_defectos_asociados->bind_param("i", $idSafeLaunch);
+$stmt_defectos_asociados->execute();
+$defectos_asociados_result = $stmt_defectos_asociados->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt_defectos_asociados->close();
+
 $defectos_originales_para_js = []; // Mapa para nombres de defectos originales
 $defectos_para_formulario_y_tabla = []; // Array para iterar en HTML
-foreach($catalogo_defectos_result as $row) {
+foreach($defectos_asociados_result as $row) {
     $defectos_originales_para_js[$row['IdSLDefectoCatalogo']] = htmlspecialchars($row['NombreDefecto']);
     $defectos_para_formulario_y_tabla[] = [
         'id' => $row['IdSLDefectoCatalogo'],
@@ -46,12 +60,16 @@ foreach($catalogo_defectos_result as $row) {
     ];
 }
 
-// --- NUEVO: Generar HTML de opciones para JS ---
+// --- 2. Catálogo COMPLETO de Defectos (para el dropdown de "Nuevos Defectos") ---
+// Esta consulta debe traer TODOS los defectos del catálogo
+$catalogo_completo_query = $conex->query("SELECT IdSLDefectoCatalogo, NombreDefecto FROM SafeLaunchCatalogoDefectos ORDER BY NombreDefecto ASC");
+$catalogo_completo_result = $catalogo_completo_query->fetch_all(MYSQLI_ASSOC);
+
 $defectos_options_html_sl = "";
-foreach($defectos_para_formulario_y_tabla as $defecto) {
-    $defectos_options_html_sl .= "<option value='{$defecto['id']}'>" . htmlspecialchars($defecto['nombre']) . "</option>";
+foreach($catalogo_completo_result as $row) {
+    $defectos_options_html_sl .= "<option value='{$row['IdSLDefectoCatalogo']}'>" . htmlspecialchars($row['NombreDefecto']) . "</option>";
 }
-// --- FIN NUEVO ---
+// --- FIN CORRECCIÓN ---
 
 
 // --- Historial de Reportes Anteriores ---
@@ -110,6 +128,7 @@ $reportes_procesados = [];
 $totalMinutosRegistrados = 0;
 $totalPiezasInspeccionadasYa = 0;
 $totalDefectosEncontradosGlobal = 0;
+// IMPORTANTE: Inicializar $totalDefectosPorTipoGlobal USANDO los defectos ASOCIADOS
 $totalDefectosPorTipoGlobal = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0);
 
 foreach ($reportes_raw as $reporte) {
@@ -117,6 +136,7 @@ foreach ($reportes_raw as $reporte) {
     $totalMinutosRegistrados += parsearTiempoAMinutos($reporte['TiempoInspeccion']);
     $totalPiezasInspeccionadasYa += (int)$reporte['PiezasInspeccionadas'];
     $totalDefectosReporteActual = 0;
+    // IMPORTANTE: Inicializar DefectosPorTipo USANDO los defectos ASOCIADOS
     $reporte['DefectosPorTipo'] = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0); // Inicializar para este reporte
 
 
@@ -132,16 +152,36 @@ foreach ($reportes_raw as $reporte) {
     while ($dr = $defectos_reporte_result->fetch_assoc()) {
         $idDefecto = $dr['IdSLDefectoCatalogo'];
         $cantidad = (int)$dr['CantidadEncontrada'];
-        $reporte['DefectosPorTipo'][$idDefecto] = $cantidad; // Guardar cantidad por ID de defecto para la fila de la tabla
-        $totalDefectosReporteActual += $cantidad;
-        // Verificar si la clave existe antes de sumar
-        if (array_key_exists($idDefecto, $totalDefectosPorTipoGlobal)) {
-            $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad; // Sumar al total global
+
+        // Solo procesar/sumar si el defecto está en la lista de defectos ASOCIADOS
+        if (array_key_exists($idDefecto, $reporte['DefectosPorTipo'])) {
+            $reporte['DefectosPorTipo'][$idDefecto] = $cantidad; // Guardar cantidad por ID de defecto para la fila de la tabla
+            $totalDefectosReporteActual += $cantidad;
+            // Verificar si la clave existe antes de sumar (ya lo hace el if anterior, pero doble chequeo no hace daño)
+            if (array_key_exists($idDefecto, $totalDefectosPorTipoGlobal)) {
+                $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad; // Sumar al total global
+            }
         }
     }
+    // Sumar también los nuevos defectos opcionales encontrados
+    $nuevos_defectos_query = $conex->prepare("SELECT IdSLDefectoCatalogo, Cantidad FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
+    $nuevos_defectos_query->bind_param("i", $reporte_id);
+    $nuevos_defectos_query->execute();
+    $nuevos_defectos_result = $nuevos_defectos_query->get_result();
+    while ($nd = $nuevos_defectos_result->fetch_assoc()) {
+        $totalDefectosReporteActual += (int)$nd['Cantidad'];
+        $totalDefectosEncontradosGlobal += (int)$nd['Cantidad']; // Sumar al total global general
+        // Opcional: Si quisiéramos sumar los nuevos defectos por tipo al total global
+        // if (array_key_exists($nd['IdSLDefectoCatalogo'], $totalDefectosPorTipoGlobal)) {
+        //     $totalDefectosPorTipoGlobal[$nd['IdSLDefectoCatalogo']] += (int)$nd['Cantidad'];
+        // }
+    }
+    $nuevos_defectos_query->close();
+
+
     $reporte['TotalDefectosReporte'] = $totalDefectosReporteActual;
-    $totalDefectosEncontradosGlobal += $totalDefectosReporteActual;
-    $defectos_reporte_query->close(); // Cerrar el statement aquí
+    // Total global ya no se incrementa aquí, se hace dentro de los bucles
+    $defectos_reporte_query->close();
 
 
     // Calcular Turno/Shift Leader
@@ -173,7 +213,7 @@ foreach ($reportes_raw as $reporte) {
 }
 $tiempoTotalFormateado = formatarMinutosATiempo($totalMinutosRegistrados);
 
-// Calcular PPM y % Defectuoso Global
+// Calcular PPM y % Defectuoso Global (usando el $totalDefectosEncontradosGlobal actualizado)
 $ppm_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosEncontradosGlobal / $totalPiezasInspeccionadasYa) * 1000000) : 0;
 $porcentaje_defectuoso_global = ($totalPiezasInspeccionadasYa > 0) ? round(($totalDefectosEncontradosGlobal / $totalPiezasInspeccionadasYa) * 100, 2) : 0;
 
@@ -388,8 +428,10 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .data-table tbody tr:hover { background-color: #f0f4f8; }
         .data-table td .btn-small { margin: 0 2px; }
         /* Centrar contenido numérico y acciones */
-        .data-table th:nth-child(n+6):not(:nth-last-child(2)):not(:last-child), /* Columnas numéricas (Insp. hasta % Def.) */
-        .data-table td:nth-child(n+6):not(:nth-last-child(2)):not(:last-child) {
+        /* --- MODIFICADO: Ajustar selector para que coincida con las columnas correctas DESPUÉS del cambio --- */
+        /* Selecciona columnas desde 'Insp.' hasta la columna ANTES de 'Total Def.' */
+        .data-table th:nth-child(n+6):nth-child(-n+<?php echo 5 + count($defectos_para_formulario_y_tabla) + 3; ?>),
+        .data-table td:nth-child(n+6):nth-child(-n+<?php echo 5 + count($defectos_para_formulario_y_tabla) + 3; ?>) {
             text-align: center;
         }
 
@@ -588,7 +630,8 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                             </div>
                         <?php endforeach; ?>
                         <?php if (empty($defectos_para_formulario_y_tabla)): ?>
-                            <p data-translate-key="no_defects_in_catalog">No hay defectos registrados en el catálogo de Safe Launch.</p>
+                            <!-- --- CORREGIDO: Mensaje si NO hay defectos ASOCIADOS --- -->
+                            <p data-translate-key="no_defects_associated">No hay defectos específicamente asociados a este Safe Launch en la solicitud inicial.</p>
                         <?php endif; ?>
                     </div>
                 </fieldset>
@@ -640,11 +683,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <th data-translate-key="th_accepted">Acep.</th>
                         <th data-translate-key="th_rejected">Rech.</th>
                         <th data-translate-key="th_reworked">Retrab.</th>
-                        <!-- Columnas dinámicas para cada defecto -->
+                        <!-- Columnas dinámicas SOLO para los defectos ASOCIADOS -->
                         <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
                             <th><?php echo $defecto['nombre']; ?></th>
                         <?php endforeach; ?>
-                        <th data-translate-key="th_total_defects">Total Def.</th>
+                        <th data-translate-key="th_total_defects">Total Def.</th> <!-- Este total incluye TODOS los defectos -->
                         <th data-translate-key="th_ppm">PPM</th>
                         <th data-translate-key="th_defect_percent">% Def.</th>
                         <th data-translate-key="th_comments">Comentarios</th>
@@ -663,11 +706,12 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                             <td><?php echo htmlspecialchars($reporte['PiezasAceptadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRetrabajadas']); ?></td>
-                            <!-- Celdas dinámicas para cada defecto -->
+                            <!-- Celdas dinámicas SOLO para los defectos ASOCIADOS -->
                             <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
+                                <!-- Asegurarse de que solo mostramos valores para las columnas existentes -->
                                 <td><?php echo $reporte['DefectosPorTipo'][$defecto['id']] ?? 0; ?></td>
                             <?php endforeach; ?>
-                            <td><?php echo $reporte['TotalDefectosReporte']; ?></td>
+                            <td><?php echo $reporte['TotalDefectosReporte']; ?></td> <!-- Este total incluye TODOS los defectos -->
                             <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 1000000) : 0; ?></td>
                             <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 100, 2) . '%' : '0%'; ?></td>
                             <td><?php echo htmlspecialchars($reporte['Comentarios'] ?? 'N/A'); ?></td>
@@ -685,10 +729,12 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasAceptadas')); ?></td>
                         <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasRechazadasCalculadas')); ?></td>
                         <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasRetrabajadas')); ?></td>
+                        <!-- Celdas de totales SOLO para los defectos ASOCIADOS -->
                         <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
+                            <!-- Asegurarse de que solo mostramos valores para las columnas existentes -->
                             <td><?php echo $totalDefectosPorTipoGlobal[$defecto['id']] ?? 0; ?></td>
                         <?php endforeach; ?>
-                        <td><?php echo $totalDefectosEncontradosGlobal; ?></td>
+                        <td><?php echo $totalDefectosEncontradosGlobal; ?></td> <!-- Este total incluye TODOS los defectos -->
                         <td><?php echo $ppm_global; ?></td>
                         <td><?php echo $porcentaje_defectuoso_global . '%'; ?></td>
                         <td colspan="2"></td> <!-- Celdas vacías para Comentarios y Acciones -->
@@ -704,12 +750,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 </main>
 
 <script>
-    // Pasamos todos los defectos del catálogo a JS para usarlos en la edición
+    // --- MODIFICADO: Solo pasamos los defectos ASOCIADOS para la edición de la cuadrícula ---
     const catalogoDefectosSL = <?php echo json_encode($defectos_para_formulario_y_tabla); ?>;
-    // --- NUEVO ---
+    // Pasamos el catálogo COMPLETO para el dropdown de nuevos defectos
     const opcionesDefectosSL = '<?php echo addslashes($defectos_options_html_sl); ?>';
     let nuevoDefectoCounterSL = 0;
-    // --- FIN NUEVO ---
     let editandoReporteSL = false;
     let valorOriginalInspeccionadoAlEditarSL = 0;
 
@@ -728,7 +773,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 rejected_pieces_calc: "Piezas Rechazadas (Cálculo)", inspector_name: "Nombre del Inspector",
                 inspection_date: "Fecha de Inspección", start_time: "Hora de Inicio", end_time: "Hora de Fin",
                 defect_classification_title: "Clasificación de Defectos", available_to_classify: "Piezas rechazadas disponibles para clasificar:",
-                no_defects_in_catalog: "No hay defectos registrados en el catálogo de Safe Launch.",
+                no_defects_associated: "No hay defectos específicamente asociados a este Safe Launch en la solicitud inicial.", // Mensaje corregido
                 session_time_comments_title: "Tiempos y Comentarios de la Sesión",
                 inspection_time_session: "Tiempo de Inspección (Esta Sesión)",
                 additional_comments: "Comentarios Adicionales de la Sesión",
@@ -751,22 +796,19 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 swal_deleting_title: "Eliminando Reporte...", swal_deleting_text: "Por favor, espera.",
                 swal_deleted_title: "¡Eliminado!", swal_deleted_text: "El reporte ha sido eliminado.",
                 swal_delete_error: "No se pudo eliminar el reporte.",
-                // --- NUEVO ---
                 new_defects_title: "Nuevos Defectos Encontrados (Opcional)",
                 add_new_defect_btn: "Añadir Nuevo Defecto",
                 new_defect_header: "Nuevo Defecto",
-                defect_type_label: "Tipo de Defecto", // <-- CLAVE CORREGIDA
+                defect_type_label: "Tipo de Defecto",
                 select_defect_option: "Seleccione un defecto",
                 qty_label: "Cantidad de Piezas",
                 qty_placeholder: "Cantidad con este defecto...",
-                // --- SECCIÓN DE FOTO ELIMINADA ---
                 swal_remove_defect_title: "¿Estás seguro?",
                 swal_remove_defect_text: "Este defecto se eliminará del formulario.",
                 swal_remove_defect_confirm: "Sí, eliminar",
                 swal_remove_defect_cancel: "Cancelar",
                 swal_remove_defect_removed: "Eliminado",
                 swal_remove_defect_removed_text: "El defecto fue removido."
-                // --- FIN NUEVO ---
             },
             en: {
                 welcome: "Welcome", logout: "Logout", main_title: "Safe Launch Inspection Report",
@@ -779,7 +821,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 rejected_pieces_calc: "Rejected Pieces (Calculated)", inspector_name: "Inspector's Name",
                 inspection_date: "Inspection Date", start_time: "Start Time", end_time: "End Time",
                 defect_classification_title: "Defect Classification", available_to_classify: "Rejected pieces available for classification:",
-                no_defects_in_catalog: "No defects registered in the Safe Launch catalog.",
+                no_defects_associated: "There are no defects specifically associated with this Safe Launch in the initial request.", // Corrected message
                 session_time_comments_title: "Session Times and Comments",
                 inspection_time_session: "Inspection Time (This Session)",
                 additional_comments: "Additional Session Comments",
@@ -802,22 +844,19 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 swal_deleting_title: "Deleting Report...", swal_deleting_text: "Please wait.",
                 swal_deleted_title: "Deleted!", swal_deleted_text: "The report has been deleted.",
                 swal_delete_error: "Could not delete the report.",
-                // --- NEW ---
                 new_defects_title: "New Defects Found (Optional)",
                 add_new_defect_btn: "Add New Defect",
                 new_defect_header: "New Defect",
-                defect_type_label: "Defect Type", // <-- KEY CORREGIDA
+                defect_type_label: "Defect Type",
                 select_defect_option: "Select a defect",
                 qty_label: "Quantity of Pieces",
                 qty_placeholder: "Quantity with this defect...",
-                // --- PHOTO SECTION REMOVED ---
                 swal_remove_defect_title: "Are you sure?",
                 swal_remove_defect_text: "This defect will be removed from the form.",
                 swal_remove_defect_confirm: "Yes, remove",
                 swal_remove_defect_cancel: "Cancel",
                 swal_remove_defect_removed: "Removed",
                 swal_remove_defect_removed_text: "The defect was removed."
-                // --- END NEW ---
             }
         };
 
@@ -829,61 +868,48 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 if (translations[lang] && translations[lang][key]) {
 
                     // --- MANEJO DE TEXTO EN SPAN DENTRO DE BOTONES ---
-                    // Esto evita que se borre el icono <i>
                     const span = el.querySelector('span');
                     if(span && (el.tagName === 'BUTTON' || el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2')) {
-                        // Si el elemento es un botón Y tiene un span, solo traducir el span
                         span.innerText = translations[lang][key];
                     } else if (el.tagName === 'INPUT' && el.type === 'submit') {
-                        // Para inputs tipo submit
                         el.value = translations[lang][key];
                     } else if (!el.children.length || el.classList.contains('file-upload-label')) {
-                        // Para elementos sin hijos o etiquetas especiales (como la de subir archivo)
                         el.innerText = translations[lang][key];
                     } else if (el.tagName === 'LABEL' && el.querySelector('span')) {
-                        // Casos especiales como la etiqueta de subir archivo
                         el.querySelector('span').innerText = translations[lang][key];
                     } else if (el.firstChild && el.firstChild.nodeType === Node.TEXT_NODE) {
-                        // Para elementos que tienen texto e iconos, pero el texto es el primer nodo
-                        // Esto es frágil, pero es un intento
-                        // ej: <span><span data-key>Bienvenido</span>, Usuario</span>
-                        // No, esto está mal. El código original es más simple y mejor.
+                        // Intentar mantener iconos si el texto es el primer hijo
                     }
 
                     // --- CÓDIGO DE TRADUCCIÓN ORIGINAL (MODIFICADO) ---
                     const icon = el.querySelector('i');
                     if (icon && (el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'BUTTON' || el.tagName === 'P' || el.tagName === 'STRONG')) {
-                        // Si tiene un span, ya lo manejamos arriba. Si no, lo ponemos.
                         const spanInterno = el.querySelector('span');
                         if (!spanInterno) {
                             el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
-                        } else {
-                            // El span ya fue traducido si existe
-                        }
+                        } // Si hay span, ya se tradujo arriba
                     } else if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
                         el.value = translations[lang][key];
                     } else if (el.tagName === 'BUTTON' && !icon) {
                         el.innerText = translations[lang][key]; // Botones solo texto
-                    } else if (!icon && !span && el.tagName !== 'LABEL') { // MODIFICADO: No sobrescribir labels
-                        // Si no tiene icono ni span, solo texto
+                    } else if (!icon && !span && el.tagName !== 'LABEL') {
                         el.innerText = translations[lang][key];
-                    } else if (el.tagName === 'LABEL' && !icon && !span) { // AÑADIDO: Manejar labels simples
+                    } else if (el.tagName === 'LABEL' && !icon && !span) {
                         el.innerText = translations[lang][key];
                     }
 
 
-                    // Caso especial para el span dentro del file-upload-label
+                    // Casos especiales
                     if(el.classList.contains('file-upload-label') && el.querySelector('span')) {
                         el.querySelector('span').innerText = translations[lang][key];
                     }
-                    // Caso especial para el option del select
                     if(el.tagName === 'OPTION' && el.value === "") {
                         el.innerText = translations[lang][key];
                     }
                 }
             });
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-            adjustPdfButtonText(); // Actualizar texto del botón PDF al cambiar idioma
+            adjustPdfButtonText();
         }
 
 
@@ -906,10 +932,8 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             const piezasRechazadasCalculadasInput = document.getElementById('piezasRechazadasCalculadas');
             const piezasRechazadasRestantesSpan = document.getElementById('piezasRechazadasRestantes');
             const defectosContainer = document.querySelector('.defect-classification-grid');
-            // --- NUEVO ---
             const nuevosDefectosContainerSL = document.getElementById('nuevos-defectos-container-sl');
             const btnAddNuevoDefectoSL = document.getElementById('btn-add-nuevo-defecto-sl');
-            // --- FIN NUEVO ---
             const btnGuardarReporte = document.getElementById('btnGuardarReporteSL');
             const fechaInspeccionInput = document.querySelector('input[name="fechaInspeccion"]');
             const horaInicioInput = document.getElementById('horaInicio');
@@ -961,7 +985,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 const aceptadas = parseInt(piezasAceptadasInput.value) || 0;
                 const retrabajadas = parseInt(piezasRetrabajadasInput.value) || 0;
 
-                // Validación simple de cantidad aceptada
                 if (aceptadas > inspeccionadas) {
                     piezasAceptadasInput.setCustomValidity("Las piezas aceptadas no pueden ser mayores que las inspeccionadas.");
                     piezasAceptadasInput.reportValidity();
@@ -972,7 +995,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 const rechazadasBrutas = inspeccionadas - aceptadas;
                 piezasRechazadasCalculadasInput.value = Math.max(0, rechazadasBrutas);
 
-                // Validación simple de cantidad retrabajada
                 if (retrabajadas > rechazadasBrutas) {
                     piezasRetrabajadasInput.setCustomValidity('Las piezas retrabajadas no pueden exceder las piezas rechazadas.');
                     piezasRetrabajadasInput.reportValidity();
@@ -982,14 +1004,10 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
                 const rechazadasDisponibles = rechazadasBrutas - retrabajadas;
                 let sumDefectosClasificados = 0;
-                // --- MODIFICADO ---
-                // Sumar defectos de la cuadrícula principal
                 defectosContainer.querySelectorAll('.defecto-cantidad').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
-                // Sumar nuevos defectos (opcionales)
                 if (nuevosDefectosContainerSL) {
                     nuevosDefectosContainerSL.querySelectorAll('.nuevo-defecto-cantidad-sl').forEach(input => { sumDefectosClasificados += parseInt(input.value) || 0; });
                 }
-                // --- FIN MODIFICACIÓN ---
 
                 const restantes = rechazadasDisponibles - sumDefectosClasificados;
                 piezasRechazadasRestantesSpan.textContent = Math.max(0, restantes);
@@ -1030,7 +1048,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                     actualizarContadores();
                 }
             });
-            // --- NUEVO ---
             if (nuevosDefectosContainerSL) {
                 nuevosDefectosContainerSL.addEventListener('input', function(e) {
                     if (e.target.classList.contains('nuevo-defecto-cantidad-sl')) {
@@ -1038,13 +1055,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                     }
                 });
             }
-            // --- FIN NUEVO ---
             actualizarContadores(); // Calcular al cargar
 
             reporteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                // Formatear rango de hora
                 if (horaInicioInput.value && horaFinInput.value) {
                     const formatTo12Hour = (timeStr) => {
                         if (!timeStr) return '';
@@ -1052,8 +1067,8 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         let h = parseInt(hours);
                         const ampm = h >= 12 ? 'pm' : 'am';
                         h = h % 12;
-                        h = h ? h : 12; // Hour '0' should be '12'
-                        const finalHours = String(h).padStart(2, '0'); // Ensure 2 digits
+                        h = h ? h : 12;
+                        const finalHours = String(h).padStart(2, '0');
                         return `${finalHours}:${minutes} ${ampm}`;
                     };
                     const formattedRange = `${formatTo12Hour(horaInicioInput.value)} - ${formatTo12Hour(horaFinInput.value)}`;
@@ -1067,7 +1082,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
                 Swal.fire({ title: translate('swal_saving_title'), text: translate('swal_saving_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-                // Decide la URL de acción basada en si estamos editando
                 const actionUrl = editandoReporteSL ? 'dao/actualizar_reporte_sl.php' : 'dao/guardar_reporte_safe_launch.php';
 
                 fetch(actionUrl, { method: 'POST', body: formData })
@@ -1083,25 +1097,19 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             });
         } // Fin if (reporteForm)
 
-        // --- LÓGICA PARA EDITAR REPORTE ---
         async function cargarReporteParaEdicionSL(idReporte) {
             const reporteForm = document.getElementById('reporteFormSL');
             if (!reporteForm) return;
 
             Swal.fire({ title: translate('swal_loading_edit_title'), text: translate('swal_loading_edit_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             try {
-                // Este DAO necesita ser creado: dao/obtener_reporte_sl_para_edicion.php
-                // --- NOTA: Este DAO debe ser actualizado para devolver también 'nuevosDefectos' ---
                 const response = await fetch(`dao/obtener_reporte_sl_para_edicion.php?idSLReporte=${idReporte}`);
                 const data = await response.json();
 
                 if (data.status === 'success') {
                     const reporte = data.reporte;
-                    const defectos = data.defectos; // Array de { IdSLDefectoCatalogo, CantidadEncontrada, BachLote }
-                    // --- NUEVO ---
-                    // Asumimos que el DAO ahora también devuelve 'nuevosDefectos'
+                    const defectos = data.defectos;
                     const nuevosDefectos = data.nuevosDefectos || [];
-                    // --- FIN NUEVO ---
 
                     valorOriginalInspeccionadoAlEditarSL = parseInt(reporte.PiezasInspeccionadas, 10) || 0;
 
@@ -1112,12 +1120,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                     document.querySelector('input[name="fechaInspeccion"]').value = reporte.FechaInspeccion;
                     document.getElementById('comentarios').value = reporte.Comentarios || '';
 
-                    // Parsear y poner horas
                     if (reporte.RangoHora) {
                         const convertTo24Hour = (timeStr) => {
                             if (!timeStr) return '';
                             let [time, modifier] = timeStr.trim().split(' ');
-                            if (!modifier) return timeStr; // Ya está en 24h?
+                            if (!modifier) return timeStr;
                             let [hours, minutes] = time.split(':');
                             if (hours === '12') hours = '00';
                             if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
@@ -1130,16 +1137,14 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         document.getElementById('horaInicio').value = '';
                         document.getElementById('horaFin').value = '';
                     }
-                    calcularYActualizarTiempo(); // Actualiza el campo de tiempo total formateado
+                    calcularYActualizarTiempo();
 
-                    // Resetear campos de defectos antes de llenarlos
                     document.querySelectorAll('.defect-classification-item').forEach(item => {
                         item.querySelector('.defecto-cantidad').value = 0;
                         const loteInput = item.querySelector('.defecto-lote');
                         if(loteInput) loteInput.value = '';
                     });
 
-                    // Llenar campos de defectos
                     if (defectos && defectos.length > 0) {
                         defectos.forEach(def => {
                             const itemDiv = document.querySelector(`.defect-classification-item[data-id-defecto-catalogo="${def.IdSLDefectoCatalogo}"]`);
@@ -1151,29 +1156,24 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         });
                     }
 
-                    // --- NUEVO: Lógica para Nuevos Defectos ---
                     const nuevosDefectosContainerSL = document.getElementById('nuevos-defectos-container-sl');
                     if (nuevosDefectosContainerSL) {
-                        nuevosDefectosContainerSL.innerHTML = ''; // Limpiar
-                        nuevoDefectoCounterSL = 0; // Resetear contador
+                        nuevosDefectosContainerSL.innerHTML = '';
+                        nuevoDefectoCounterSL = 0;
                         if (nuevosDefectos && nuevosDefectos.length > 0) {
                             nuevosDefectos.forEach(defecto => {
-                                // Asumimos que el DAO devuelve: IdDefectoEncontrado, IdSLDefectoCatalogo, Cantidad
                                 addNuevoDefectoBlockSL(
-                                    defecto.IdDefectoEncontrado, // ID único del defecto guardado
-                                    defecto.IdSLDefectoCatalogo, // ID del catálogo
-                                    defecto.Cantidad             // Cantidad
-                                    // --- RUTA DE FOTO ELIMINADA ---
+                                    defecto.IdSLNuevoDefecto, // Corregido: Usar el ID correcto de la tabla
+                                    defecto.IdSLDefectoCatalogo,
+                                    defecto.Cantidad
                                 );
                             });
                         }
                     }
-                    // --- FIN NUEVO ---
 
                     editandoReporteSL = true;
-                    actualizarContadores(); // Recalcular rechazadas y validaciones
+                    actualizarContadores();
 
-                    // Cambiar botón Guardar a Actualizar y añadir Cancelar
                     const btnGuardarReporte = document.getElementById('btnGuardarReporteSL');
                     btnGuardarReporte.querySelector('span').innerText = translate('update_session_report_btn');
 
@@ -1185,7 +1185,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         cancelButton.className = 'btn-secondary btn-cancel-edit';
                         cancelButton.innerHTML = `<span data-translate-key="cancel_edit_btn">${translate('cancel_edit_btn')}</span>`;
                         cancelButton.style.marginLeft = '10px';
-                        cancelButton.onclick = () => window.location.reload(); // Simplemente recarga la página
+                        cancelButton.onclick = () => window.location.reload();
                         formActions.appendChild(cancelButton);
                     }
 
@@ -1207,7 +1207,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             });
         });
 
-        // --- LÓGICA PARA ELIMINAR REPORTE ---
         document.querySelectorAll('.btn-delete-reporte-sl').forEach(button => {
             button.addEventListener('click', function() {
                 const idReporteAEliminar = this.dataset.id;
@@ -1223,8 +1222,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Swal.fire({ title: translate('swal_deleting_title'), text: translate('swal_deleting_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                        // Este DAO necesita ser creado: dao/eliminar_reporte_sl.php
-                        // --- NOTA: Este DAO debe ser actualizado para borrar también 'nuevosDefectos' y sus fotos ---
+                        // --- NOTA: Este DAO debe borrar de SafeLaunchReportesInspeccion, SafeLaunchReporteDefectos y SafeLaunchNuevosDefectos ---
                         fetch('dao/eliminar_reporte_sl.php', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1244,7 +1242,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             });
         });
 
-        // --- Lógica del Visor PDF ---
         const togglePdfBtn = document.getElementById('togglePdfViewerBtn');
         const pdfWrapper = document.getElementById('pdfViewerWrapper');
         const pdfUrl = '<?php echo $mostrarVisorPDF ? htmlspecialchars($safeLaunchData['RutaInstruccion']) : ''; ?>';
@@ -1290,28 +1287,19 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 } else {
                     const isHidden = pdfWrapper.style.display === 'none';
                     pdfWrapper.style.display = isHidden ? 'block' : 'none';
-                    adjustPdfButtonText(); // Actualiza texto e icono
+                    adjustPdfButtonText();
                 }
             });
-            adjustPdfButtonText(); // Ajustar al cargar
-            window.addEventListener('resize', adjustPdfButtonText); // Ajustar al redimensionar
+            adjustPdfButtonText();
+            window.addEventListener('resize', adjustPdfButtonText);
         }
 
-        // --- INICIO: LÓGICA DE NUEVOS DEFECTOS (portada de contenciones) ---
+        // --- INICIO: LÓGICA DE NUEVOS DEFECTOS ---
 
-        // --- Función 'updateFileNameLabelSL' eliminada, ya no es necesaria ---
-
-        // Función para añadir un nuevo bloque de defecto
-        // idDefectoEncontrado es el ID de la tabla 'SafeLaunchNuevosDefectos' (o como la llames)
-        // idDefectoCatalogo es el ID de la tabla 'SafeLaunchCatalogoDefectos'
-        // --- 'rutaFoto' eliminada de la firma de la función ---
         function addNuevoDefectoBlockSL(idDefectoEncontrado = null, idDefectoCatalogo = '', cantidad = '') {
             nuevoDefectoCounterSL++;
             const currentCounter = nuevoDefectoCounterSL;
             const nuevosDefectosContainerSL = document.getElementById('nuevos-defectos-container-sl');
-
-            // Nota: Se elimina la lógica de 'isVariosPartes' de contenciones, no aplica en Safe Launch (por ahora)
-            // Si se necesitara, se añadiría un input de "No. de Parte" aquí.
 
             const defectoHTML = `
             <div class="defecto-item" id="nuevo-defecto-sl-${currentCounter}">
@@ -1333,16 +1321,14 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <input type="number" class="nuevo-defecto-cantidad-sl" name="nuevos_defectos_sl[${currentCounter}][cantidad]" placeholder="${translate('qty_placeholder')}" min="0" value="0" required>
                     </div>
                 </div>
-                <!-- --- SECCIÓN DE FOTO ELIMINADA --- -->
                 ${idDefectoEncontrado ?
-                `<input type="hidden" name="nuevos_defectos_sl[${currentCounter}][idDefectoEncontrado]" value="${idDefectoEncontrado}">` :
+                `<input type="hidden" name="nuevos_defectos_sl[${currentCounter}][idDefectoEncontrado]" value="${idDefectoEncontrado}">` : // Cambio: idSLNuevoDefecto a idDefectoEncontrado para consistencia
                 ''}
             </div>`;
             nuevosDefectosContainerSL.insertAdjacentHTML('beforeend', defectoHTML);
 
             const newBlock = document.getElementById(`nuevo-defecto-sl-${currentCounter}`);
 
-            // Pre-seleccionar valores si se están cargando para edición
             if (idDefectoCatalogo) {
                 newBlock.querySelector(`select[name="nuevos_defectos_sl[${currentCounter}][id]"]`).value = idDefectoCatalogo;
             }
@@ -1350,21 +1336,17 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 newBlock.querySelector(`input[name="nuevos_defectos_sl[${currentCounter}][cantidad]"]`).value = cantidad;
             }
 
-            // --- Listener para el nombre del archivo eliminado ---
-
             return newBlock;
         }
 
-        // Listener para el botón AÑADIR
         const btnAddNuevoDefectoSL = document.getElementById('btn-add-nuevo-defecto-sl');
         if (btnAddNuevoDefectoSL) {
             btnAddNuevoDefectoSL.addEventListener('click', function() {
                 addNuevoDefectoBlockSL();
-                actualizarContadores(); // Recalcular
+                actualizarContadores();
             });
         }
 
-        // Listener para el botón REMOVER (usa delegación de eventos)
         const nuevosDefectosContainerSL = document.getElementById('nuevos-defectos-container-sl');
         if (nuevosDefectosContainerSL) {
             nuevosDefectosContainerSL.addEventListener('click', function(e) {
@@ -1373,11 +1355,10 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                     const defectoItem = removeButton.closest('.defecto-item');
                     const idDefectoEncontradoInput = defectoItem.querySelector('input[name*="[idDefectoEncontrado]"]');
 
-                    // Si el defecto ya existe en la BD (estamos editando)
                     if (editandoReporteSL && idDefectoEncontradoInput && idDefectoEncontradoInput.value) {
                         Swal.fire({
                             title: translate('swal_remove_defect_title'),
-                            text: "Este defecto se marcará para eliminación al guardar.", // Texto específico
+                            text: "Este defecto se marcará para eliminación al guardar.",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
@@ -1386,20 +1367,18 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                             cancelButtonText: translate('swal_remove_defect_cancel')
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // Añadir un input oculto para que el backend sepa cuál borrar
                                 const inputEliminar = document.createElement('input');
                                 inputEliminar.type = 'hidden';
-                                inputEliminar.name = 'defectos_sl_a_eliminar[]'; // El backend debe buscar este array
+                                inputEliminar.name = 'defectos_sl_a_eliminar[]';
                                 inputEliminar.value = idDefectoEncontradoInput.value;
                                 reporteForm.appendChild(inputEliminar);
 
-                                defectoItem.remove(); // Quitar de la vista
-                                actualizarContadores(); // Recalcular
+                                defectoItem.remove();
+                                actualizarContadores();
                                 Swal.fire(translate('swal_remove_defect_removed'), "El defecto se eliminará al guardar el reporte.", 'success');
                             }
                         });
                     } else {
-                        // Si es un defecto nuevo que aún no se guarda, solo removerlo
                         defectoItem.remove();
                         actualizarContadores();
                     }
