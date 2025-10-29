@@ -25,7 +25,7 @@ try {
         throw new Exception("Faltan datos obligatorios (ID de Reporte o ID de Safe Launch) para actualizar.");
     }
 
-    $idSLReporte = intval($_POST['idSLReporte']);
+    $idSLReporte = intval($_POST['idSLReportE']);
     $idSafeLaunch = intval($_POST['idSafeLaunch']); // Aunque no se use en UPDATE, es bueno tenerlo por contexto
 
     // Obtener los demás datos del formulario
@@ -69,16 +69,25 @@ try {
     }
     $stmt_reporte->close();
 
-    // 3. Borrar los defectos antiguos asociados a este reporte
+    // 3. Borrar los defectos antiguos (DE LA CUADRÍCULA) asociados a este reporte
     $stmt_delete_defectos = $conex->prepare("DELETE FROM SafeLaunchReporteDefectos WHERE IdSLReporte = ?");
     $stmt_delete_defectos->bind_param("i", $idSLReporte);
     if (!$stmt_delete_defectos->execute()) {
         throw new Exception("Error al limpiar los defectos antiguos del reporte: " . $stmt_delete_defectos->error);
     }
     $stmt_delete_defectos->close();
-    // Lógica para eliminar fotos ya no es necesaria
 
-    // 4. Insertar los nuevos detalles de defectos (lógica similar a guardar_reporte_safe_launch.php)
+    // --- INICIO NUEVO: 3b. Borrar los "nuevos defectos" antiguos (OPCIONALES) ---
+    // Esto es necesario para la lógica de "borrar y re-insertar"
+    $stmt_delete_nuevos_defectos = $conex->prepare("DELETE FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
+    $stmt_delete_nuevos_defectos->bind_param("i", $idSLReporte);
+    if (!$stmt_delete_nuevos_defectos->execute()) {
+        throw new Exception("Error al limpiar los nuevos defectos antiguos del reporte: " . $stmt_delete_nuevos_defectos->error);
+    }
+    $stmt_delete_nuevos_defectos->close();
+    // --- FIN NUEVO ---
+
+    // 4. Insertar los nuevos detalles de defectos (DE LA CUADRÍCULA)
     $totalDefectosClasificados = 0;
     if (isset($_POST['defectos']) && is_array($_POST['defectos'])) {
         foreach ($_POST['defectos'] as $idDefectoCatalogo => $defectData) {
@@ -99,15 +108,43 @@ try {
         }
     }
 
-    // Validación final: la suma de defectos clasificados debe coincidir con las rechazadas disponibles
-    $rechazadasDisponibles = $piezasRechazadasBrutas - $piezasRetrabajadas;
-    if ($totalDefectosClasificados != $rechazadasDisponibles) {
-        throw new Exception("Error de validación al actualizar: La suma de defectos clasificados ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles para clasificar ({$rechazadasDisponibles}).");
+    // --- INICIO NUEVO: 4b. Insertar los "nuevos defectos" actualizados (OPCIONALES) ---
+    // (Lógica copiada de guardar_reporte_safe_launch.php)
+    if (isset($_POST['nuevos_defectos_sl']) && is_array($_POST['nuevos_defectos_sl'])) {
+        foreach ($_POST['nuevos_defectos_sl'] as $tempId => $defectoData) {
+            $cantidad = isset($defectoData['cantidad']) ? intval($defectoData['cantidad']) : 0;
+            if ($cantidad > 0) {
+                $idDefectoCatalogo = isset($defectoData['id']) ? intval($defectoData['id']) : 0;
+                if ($idDefectoCatalogo <= 0) {
+                    throw new Exception("Se ingresó cantidad para un nuevo defecto (#{$tempId}) pero no se seleccionó el tipo de defecto.");
+                }
+
+                // Insertar en la tabla de nuevos defectos para Safe Launch
+                $stmt_nuevo_defecto = $conex->prepare("INSERT INTO SafeLaunchNuevosDefectos (IdSLReporte, IdSLDefectoCatalogo, Cantidad) VALUES (?, ?, ?)");
+                $stmt_nuevo_defecto->bind_param("iii", $idSLReporte, $idDefectoCatalogo, $cantidad);
+
+                if (!$stmt_nuevo_defecto->execute()) {
+                    throw new Exception("Error al guardar el nuevo defecto encontrado (#{$tempId}) en la base de datos: " . $stmt_nuevo_defecto->error);
+                }
+                $stmt_nuevo_defecto->close();
+                // --- IMPORTANTE: Sumar al total ---
+                $totalDefectosClasificados += $cantidad;
+            }
+        }
     }
+    // --- FIN NUEVO ---
+
+    // 5. Validación final: la suma de AMBOS tipos de defectos debe coincidir con las rechazadas disponibles
+    $rechazadasDisponibles = $piezasRechazadasBrutas - $piezasRetrabajadas;
+
+    // --- VALIDACIÓN MODIFICADA ---
+    if ($totalDefectosClasificados != $rechazadasDisponibles) {
+        throw new Exception("Error de validación al actualizar: La suma TOTAL de defectos clasificados ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles para clasificar ({$rechazadasDisponibles}).");
+    }
+    // --- FIN MODIFICACIÓN ---
 
     // Lógica para Desglose de Partes eliminada
     // Lógica para Defectos Originales eliminada
-    // Lógica para Nuevos Defectos Encontrados eliminada
 
     $conex->commit(); // Confirmar transacción si todo fue exitoso
     echo json_encode(['status' => 'success', 'message' => 'Reporte Safe Launch actualizado exitosamente.']);
