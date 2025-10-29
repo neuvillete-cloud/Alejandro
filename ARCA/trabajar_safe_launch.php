@@ -375,11 +375,8 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .btn-danger { background-color: var(--color-error); color: var(--color-blanco); }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* --- 7. Subida de Archivos --- */
-        .file-upload-label { border: 2px dashed var(--color-borde); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: all 0.3s ease; text-align: center; color: #777; background-color: #fdfdfd; }
-        .file-upload-label:hover { border-color: var(--color-secundario); background-color: #f7f9fc; color: var(--color-secundario); }
-        .file-upload-label i { font-size: 28px; margin-bottom: 10px; }
-        .file-upload-label span { font-weight: 600; font-size: 14px; }
+        /* --- 7. Subida de Archivos (CSS ELIMINADO PORQUE NO SE USA) --- */
+        /* --- ESTILOS DE .file-upload-label ELIMINADOS --- */
         input[type="file"] { display: none; }
 
         /* --- 8. Tabla de Historial --- */
@@ -445,16 +442,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .btn-remove-defecto:hover {
             color: #7a2121;
         }
-        p.current-file-info {
-            font-size: 13px;
-            color: #555;
-            margin-top: 10px;
-            margin-bottom: 0;
-        }
-        p.current-file-info a {
-            color: var(--color-secundario);
-            font-weight: bold;
-        }
+        /* --- Estilos de 'current-file-info' eliminados --- */
         /* --- FIN NUEVO --- */
 
 
@@ -767,6 +755,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 new_defects_title: "Nuevos Defectos Encontrados (Opcional)",
                 add_new_defect_btn: "Añadir Nuevo Defecto",
                 new_defect_header: "Nuevo Defecto",
+                defect_type_label: "Tipo de Defecto", // <-- CLAVE CORREGIDA
                 select_defect_option: "Seleccione un defecto",
                 qty_label: "Cantidad de Piezas",
                 qty_placeholder: "Cantidad con este defecto...",
@@ -817,6 +806,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 new_defects_title: "New Defects Found (Optional)",
                 add_new_defect_btn: "Add New Defect",
                 new_defect_header: "New Defect",
+                defect_type_label: "Defect Type", // <-- KEY CORREGIDA
                 select_defect_option: "Select a defect",
                 qty_label: "Quantity of Pieces",
                 qty_placeholder: "Quantity with this defect...",
@@ -874,10 +864,13 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         el.value = translations[lang][key];
                     } else if (el.tagName === 'BUTTON' && !icon) {
                         el.innerText = translations[lang][key]; // Botones solo texto
-                    } else if (!icon && !span) {
+                    } else if (!icon && !span && el.tagName !== 'LABEL') { // MODIFICADO: No sobrescribir labels
                         // Si no tiene icono ni span, solo texto
                         el.innerText = translations[lang][key];
+                    } else if (el.tagName === 'LABEL' && !icon && !span) { // AÑADIDO: Manejar labels simples
+                        el.innerText = translations[lang][key];
                     }
+
 
                     // Caso especial para el span dentro del file-upload-label
                     if(el.classList.contains('file-upload-label') && el.querySelector('span')) {
