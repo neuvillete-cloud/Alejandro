@@ -1,0 +1,848 @@
+<?php
+// Incluye el script que verifica si hay una sesión activa
+include_once("dao/verificar_sesion.php");
+if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
+
+// --- Cargar solicitudes de Safe Launch activas para el selector ---
+include_once("dao/conexionArca.php");
+$con = new LocalConector();
+$conex = $con->conectar();
+// Buscamos solicitudes "Activo" o "Cerrado"
+$solicitudes_activas_query = $conex->query("SELECT IdSafeLaunch, NombreProyecto FROM SafeLaunchSolicitudes WHERE Estatus IN ('Activo', 'Cerrado') ORDER BY IdSafeLaunch DESC");
+$conex->close();
+
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Safe Launch - ARCA</title>
+    <link rel="stylesheet" href="css/estilosT.css"> <!-- Asegúrate de que esta ruta sea correcta -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Librerías para Gráficas y PDF -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        #reporte-generado-container {
+            margin-top: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: var(--sombra-suave);
+            overflow: hidden;
+            display: none;
+        }
+
+        .reporte-header {
+            padding: 20px 30px;
+            background-color: var(--color-fondo);
+            border-bottom: 1px solid var(--color-borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reporte-header h3 {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--color-primario);
+        }
+
+        #contenido-reporte {
+            padding: 30px;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-borde);
+        }
+        .chart-box h5 {
+            text-align: center;
+            font-family: 'Montserrat';
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #contenido-reporte .report-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        #contenido-reporte .report-subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        #contenido-reporte .info-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        #contenido-reporte .info-section p {
+            margin: 0;
+            font-size: 14px;
+        }
+        #contenido-reporte .info-section strong {
+            color: #444;
+        }
+        #contenido-reporte h4 {
+            font-size: 18px;
+            color: var(--color-primario);
+            border-bottom: 2px solid var(--color-acento);
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        #contenido-reporte table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        #contenido-reporte th, #contenido-reporte td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+            word-break: break-word; /* Para que el texto largo no rompa la tabla */
+        }
+        #contenido-reporte th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        #contenido-reporte .summary-table td:first-child {
+            font-weight: bold;
+            width: 200px;
+        }
+        /* Estilos para listas de defectos en tablas */
+        #contenido-reporte .defect-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+        #contenido-reporte .defect-list li {
+            margin-bottom: 2px;
+        }
+
+
+        .chart-box, .info-section, .summary-table, h4, h5, table {
+            page-break-inside: avoid;
+        }
+
+        .dashboard-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .dashboard-filter-bar .form-group {
+            margin-bottom: 0;
+        }
+        .dashboard-filter-bar .btn-primary,
+        .dashboard-filter-bar .btn-secondary {
+            padding: 8px 15px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: auto;
+        }
+        #btn-limpiar-dashboard-sl {
+            background-color: transparent;
+            border: 1px solid var(--color-borde);
+            color: #555;
+        }
+        #btn-limpiar-dashboard-sl:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
+    <div class="user-info">
+        <div class="language-selector">
+            <button type="button" class="lang-btn" data-lang="es">ES</button>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <span><span data-translate-key="welcome">Bienvenido</span>, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?></span>
+        <button class="logout-btn" onclick="window.location.href='dao/logout.php'"><span data-translate-key="logout">Cerrar Sesión</span> <i class="fa-solid fa-right-from-bracket"></i></button>
+    </div>
+</header>
+
+<main class="container">
+    <div class="page-header">
+        <h1><i class="fa-solid fa-chart-pie"></i> <span data-translate-key="main_title">Dashboard de Safe Launch</span></h1>
+    </div>
+
+    <div class="form-container" style="margin-bottom: 30px;">
+        <div class="form-group">
+            <label for="safe-launch-selector"><i class="fa-solid fa-folder-open"></i> <span data-translate-key="select_request">Seleccionar Solicitud de Safe Launch</span></label>
+            <select id="safe-launch-selector">
+                <option value="" data-translate-key="select_request_option">-- Elige una solicitud --</option>
+                <?php while($solicitud = $solicitudes_activas_query->fetch_assoc()): ?>
+                    <option value="<?php echo $solicitud['IdSafeLaunch']; ?>">
+                        SL-<?php echo str_pad($solicitud['IdSafeLaunch'], 4, '0', STR_PAD_LEFT); ?> (<?php echo htmlspecialchars($solicitud['NombreProyecto']); ?>)
+                    </option>
+                <?php endwhile; ?>
+            </select>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="form-container">
+            <fieldset>
+                <legend><i class="fa-solid fa-calendar-week"></i> <span data-translate-key="partial_report_title">Reportes Parciales</span></legend>
+                <p data-translate-key="partial_report_desc">Genera un reporte de Safe Launch para un rango de fechas específico. Ideal para seguimientos semanales.</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha-inicio-sl" data-translate-key="start_date">Fecha de Inicio</label>
+                        <input type="date" id="fecha-inicio-sl" name="fecha-inicio-sl">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha-fin-sl" data-translate-key="end_date">Fecha de Fin</label>
+                        <input type="date" id="fecha-fin-sl" name="fecha-fin-sl">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button id="btn-generar-parcial-sl" class="btn-primary"><i class="fa-solid fa-file-waveform"></i> <span data-translate-key="generate_report_btn">Generar Reporte</span></button>
+                </div>
+            </fieldset>
+        </div>
+        <div class="form-container">
+            <fieldset>
+                <legend><i class="fa-solid fa-flag-checkered"></i> <span data-translate-key="final_report_title">Reporte Final de Safe Launch</span></legend>
+                <p data-translate-key="final_report_desc">Visualiza y descarga el reporte consolidado con todos los datos del proceso.</p>
+                <div class="form-actions" style="justify-content: center; text-align:center;">
+                    <button id="btn-ver-final-sl" class="btn-primary"><i class="fa-solid fa-file-pdf"></i> <span data-translate-key="view_final_report_btn">Ver Reporte Final</span></button>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div id="reporte-generado-container">
+        <div class="reporte-header">
+            <h3><i class="fa-solid fa-eye"></i> <span data-translate-key="report_preview_title">Vista Previa del Reporte</span></h3>
+            <button id="btn-descargar-pdf-sl" class="btn-secondary"><i class="fa-solid fa-download"></i> <span data-translate-key="download_pdf_btn">Descargar PDF</span></button>
+        </div>
+        <div id="contenido-reporte"></div>
+    </div>
+
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const solicitudSelector = document.getElementById('safe-launch-selector');
+        const btnGenerarParcial = document.getElementById('btn-generar-parcial-sl');
+        const btnVerFinal = document.getElementById('btn-ver-final-sl');
+        const btnDescargarPdf = document.getElementById('btn-descargar-pdf-sl');
+        const reporteContainer = document.getElementById('reporte-generado-container');
+        const contenidoReporteDiv = document.getElementById('contenido-reporte');
+        const campoFechaInicio = document.getElementById('fecha-inicio-sl');
+        const campoFechaFin = document.getElementById('fecha-fin-sl');
+
+        let paretoChartInstance, weeklyRejectsChartInstance, rejectionRateChartInstance, dailyProgressChartInstance, ppmTrendChartInstance = null;
+        let lastReportData;
+
+        // Función para cargar la primera fecha de inspección
+        function fetchPrimeraFecha(idSafeLaunch) {
+            campoFechaInicio.disabled = true;
+            campoFechaInicio.value = '';
+
+            // Apuntar a la nueva API de Safe Launch
+            fetch(`dao/api_get_primera_fecha_sl.php?idSafeLaunch=${idSafeLaunch}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.primeraFecha) {
+                        campoFechaInicio.value = data.primeraFecha;
+                        // Establecer la fecha final por defecto al día de hoy
+                        campoFechaFin.value = new Date().toISOString().split('T')[0];
+                    } else {
+                        console.warn(data.message || 'No se encontró primera fecha.');
+                        campoFechaInicio.value = '';
+                        campoFechaFin.value = new Date().toISOString().split('T')[0];
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener la primera fecha:', error);
+                    campoFechaInicio.value = '';
+                })
+                .finally(() => {
+                    campoFechaInicio.disabled = false;
+                });
+        }
+
+        solicitudSelector.addEventListener('change', function() {
+            const idSolicitudSeleccionada = this.value;
+            if (idSolicitudSeleccionada) {
+                fetchPrimeraFecha(idSolicitudSeleccionada);
+            } else {
+                campoFechaInicio.value = '';
+                campoFechaFin.value = '';
+            }
+        });
+
+
+        const translations = {
+            es: {
+                welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Dashboard de Safe Launch",
+                select_request: "Seleccionar Solicitud de Safe Launch", select_request_option: "-- Elige una solicitud --",
+                partial_report_title: "Reportes Parciales", partial_report_desc: "Genera un reporte de Safe Launch para un rango de fechas específico. Ideal para seguimientos semanales.",
+                start_date: "Fecha de Inicio", end_date: "Fecha de Fin", generate_report_btn: "Generar Reporte",
+                final_report_title: "Reporte Final de Safe Launch", final_report_desc: "Visualiza y descarga el reporte consolidado con todos los datos del proceso.",
+                view_final_report_btn: "Ver Reporte Final",
+                report_preview_title: "Vista Previa del Reporte", download_pdf_btn: "Descargar PDF",
+                missing_info: "Falta Información", select_request_warning: "Por favor, selecciona una solicitud de Safe Launch.",
+                incomplete_fields: "Campos incompletos", select_dates_warning: "Por favor, selecciona una fecha de inicio y una fecha de fin.",
+                generating_pdf: "Generando PDF", please_wait: "Por favor, espera un momento...",
+                generating_report_title: "Generando Reporte", generating_report_text: "Consultando la información...",
+                error_title: "Error", error_message_default: "No se pudo generar el reporte.",
+                connection_error_title: "Error de Conexión", connection_error_message: "No se pudo comunicar con el servidor.",
+                request_folio: "Folio de Safe Launch", general_info: "Información General",
+                project: "Proyecto", client: "Cliente", responsible: "Responsable", issue_date: "Fecha de Emisión",
+                period_summary: "Resumen General del Periodo",
+                inspected_pieces: "Piezas Inspeccionadas", accepted_pieces: "Piezas Aceptadas",
+                rejected_pieces: "Piezas Rechazadas", reworked_pieces: "Piezas Retrabajadas",
+                total_inspection_time: "Tiempo Total de Inspección", pieces_per_hour: "Rate (Piezas / Hora)",
+                hourly_breakdown: "Desglose de Inspección por Día",
+                day_totals: "Totales del día", inspected: "Inspeccionadas", accepted: "Aceptadas", rejected: "Rechazadas",
+                hour_by_hour: "Rango de Hora", shift: "Turno", inspector: "Inspector",
+                downtime: "Tiempo Muerto", no: "No", comments: "Comentarios",
+                defects_summary: "Resumen de Defectos del Periodo",
+                defect: "Defecto", total_qty_defect: "Cantidad Total",
+                new_defects_found: "Nuevos Defectos Encontrados (Opcionales)",
+                no_defects_found_period: "No se encontraron defectos en este periodo.",
+                visual_dashboards: "Dashboards Visuales",
+                pareto_chart_title: "Pareto de Defectos (Top 5)",
+                weekly_rejects_title: "Rechazadas por Semana",
+                accepted_vs_rejected_title: "Aceptadas vs. Rechazadas",
+                daily_progress_title: "Progreso Diario de Inspección",
+                ppm_trend_chart_title: "Tendencia PPM (Partes por Millón)", // NUEVO
+                chart_qty: "Cantidad", chart_cumulative: "% Acumulado", chart_week: "Semana", chart_ppm: "PPM",
+                dashboard_filter_apply: "Filtrar Gráficas", dashboard_filter_clear: "Limpiar Filtro"
+            },
+            en: {
+                welcome: "Welcome", logout: "Logout", main_title: "Safe Launch Dashboard",
+                select_request: "Select Safe Launch Request", select_request_option: "-- Choose a request --",
+                partial_report_title: "Partial Reports", partial_report_desc: "Generate a Safe Launch report for a specific date range. Ideal for weekly follow-ups.",
+                start_date: "Start Date", end_date: "End Date", generate_report_btn: "Generate Report",
+                final_report_title: "Final Safe Launch Report", final_report_desc: "View and download the consolidated report with all process data.",
+                view_final_report_btn: "View Final Report",
+                report_preview_title: "Report Preview", download_pdf_btn: "Download PDF",
+                missing_info: "Missing Information", select_request_warning: "Please select a Safe Launch request.",
+                incomplete_fields: "Incomplete Fields", select_dates_warning: "Please select a start and end date.",
+                generating_pdf: "Generating PDF", please_wait: "Please wait a moment...",
+                generating_report_title: "Generating Report", generating_report_text: "Querying information...",
+                error_title: "Error", error_message_default: "Could not generate report.",
+                connection_error_title: "Connection Error", connection_error_message: "Could not connect to the server.",
+                request_folio: "Safe Launch Folio", general_info: "General Information",
+                project: "Project", client: "Client", responsible: "Responsible", issue_date: "Issue Date",
+                period_summary: "General Period Summary",
+                inspected_pieces: "Inspected Pieces", accepted_pieces: "Accepted Pieces",
+                rejected_pieces: "Rejected Pieces", reworked_pieces: "Reworked Pieces",
+                total_inspection_time: "Total Inspection Time", pieces_per_hour: "Rate (Pieces / Hour)",
+                hourly_breakdown: "Daily Inspection Breakdown",
+                day_totals: "Day's Totals", inspected: "Inspected", accepted: "Accepted", rejected: "Rejected",
+                hour_by_hour: "Time Range", shift: "Shift", inspector: "Inspector",
+                downtime: "Downtime", no: "No", comments: "Comments",
+                defects_summary: "Defects Summary for the Period",
+                defect: "Defect", total_qty_defect: "Total Quantity",
+                new_defects_found: "New Defects Found (Optional)",
+                no_defects_found_period: "No defects found in this period.",
+                visual_dashboards: "Visual Dashboards",
+                pareto_chart_title: "Defects Pareto (Top 5)",
+                weekly_rejects_title: "Weekly Rejects",
+                accepted_vs_rejected_title: "Accepted vs. Rejected",
+                daily_progress_title: "Daily Inspection Progress",
+                ppm_trend_chart_title: "PPM (Parts Per Million) Trend", // NEW
+                chart_qty: "Quantity", chart_cumulative: "Cumulative %", chart_week: "Week", chart_ppm: "PPM",
+                dashboard_filter_apply: "Filter Charts", dashboard_filter_clear: "Clear Filter"
+            }
+        };
+
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.getAttribute('data-translate-key');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+        }
+
+        function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
+        function translate(key) { const lang = getCurrentLanguage(); return translations[lang][key] || key; }
+
+        function parsearTiempoAMinutosJS(tiempoStr) {
+            if (!tiempoStr) return 0;
+            let totalMinutos = 0;
+            const horasMatch = tiempoStr.match(/(\d+)\s*hora(s)?/);
+            const minutosMatch = tiempoStr.match(/(\d+)\s*minuto(s)?/);
+            if (horasMatch) { totalMinutos += parseInt(horasMatch[1], 10) * 60; }
+            if (minutosMatch) { totalMinutos += parseInt(minutosMatch[1], 10); }
+            return totalMinutos;
+        }
+
+        const fetchReportData = (url) => {
+            const alertTitle = translate('generating_report_title');
+            const alertText = translate('generating_report_text');
+            Swal.fire({ title: alertTitle, text: alertText, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            // Apuntar a la nueva API de Safe Launch
+            fetch(url.replace('api_generar_reporte.php', 'api_generar_reporte_sl.php'))
+                .then(response => response.json())
+                .then(data => {
+                    Swal.close();
+                    if (data.status === 'success') {
+                        lastReportData = data.reporte;
+                        renderizarReporte(data.reporte);
+                    } else {
+                        Swal.fire(translate('error_title'), data.message || translate('error_message_default'), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire(translate('connection_error_title'), translate('connection_error_message'), 'error');
+                });
+        };
+
+        btnGenerarParcial.addEventListener('click', () => {
+            const idSafeLaunch = solicitudSelector.value;
+            const fechaInicio = campoFechaInicio.value;
+            const fechaFin = campoFechaFin.value;
+            if (!idSafeLaunch) { Swal.fire(translate('missing_info'), translate('select_request_warning'), 'warning'); return; }
+            if (!fechaInicio || !fechaFin) { Swal.fire(translate('incomplete_fields'), translate('select_dates_warning'), 'warning'); return; }
+            const url = `dao/api_generar_reporte_sl.php?tipo=parcial&idSafeLaunch=${idSafeLaunch}&inicio=${fechaInicio}&fin=${fechaFin}`;
+            fetchReportData(url);
+        });
+
+        btnVerFinal.addEventListener('click', () => {
+            const idSafeLaunch = solicitudSelector.value;
+            if (!idSafeLaunch) { Swal.fire(translate('missing_info'), translate('select_request_warning'), 'warning'); return; }
+            const url = `dao/api_generar_reporte_sl.php?tipo=final&idSafeLaunch=${idSafeLaunch}`;
+            fetchReportData(url);
+        });
+
+        btnDescargarPdf.addEventListener('click', async () => {
+            Swal.fire({ title: translate('generating_pdf'), text: translate('please_wait'), allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const elementoReporte = document.getElementById('contenido-reporte');
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const margin = 10;
+            const contentWidth = pdfWidth - (margin * 2);
+            let yPosition = margin;
+
+            const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
+
+            for (const element of allElements) {
+                const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = pdf.getImageProperties(imgData);
+                const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
+
+                if (yPosition + imgHeight > pdfHeight - margin) {
+                    pdf.addPage();
+                    yPosition = margin;
+                }
+
+                pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
+                yPosition += imgHeight + 5; // Espacio entre elementos
+            }
+
+            pdf.save(`reporte-SL${solicitudSelector.value.padStart(4, '0')}.pdf`);
+            Swal.close();
+        });
+
+
+        function renderizarReporte(data) {
+            const currentLang = getCurrentLanguage();
+
+            let infoHtml = `
+            <p><strong>${translate('project')}:</strong> ${data.info.nombreProyecto}</p>
+            <p><strong>${translate('client')}:</strong> ${data.info.cliente}</p>
+            <p><strong>${translate('responsible')}:</strong> ${data.info.responsable}</p>
+            <p><strong>${translate('issue_date')}:</strong> ${new Date().toLocaleDateString(currentLang === 'en' ? 'en-US' : 'es-MX')}</p>
+            `;
+
+            let desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4></div>`;
+            if (data.desgloseDiario && data.desgloseDiario.length > 0) {
+                data.desgloseDiario.forEach(dia => {
+                    const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
+                    const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                    let diaHtml = `<div class="pdf-section">`;
+                    diaHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
+
+                    if (dia.totales) {
+                        diaHtml += `<p>${translate('day_totals')}: <strong>${dia.totales.inspeccionadas}</strong> ${translate('inspected')}, <strong>${dia.totales.aceptadas}</strong> ${translate('accepted')}, <strong>${dia.totales.rechazadas}</strong> ${translate('rejected')}.</p>`;
+                    }
+
+                    diaHtml += `<table><thead><tr>
+                                    <th>${translate('hour_by_hour')}</th>
+                                    <th>${translate('shift')}</th>
+                                    <th>${translate('inspector')}</th>
+                                    <th>${translate('inspected')}</th>
+                                    <th>${translate('accepted')}</th>
+                                    <th>${translate('rejected')}</th>
+                                    <th>${translate('comments')}</th>
+                                </tr></thead><tbody>`;
+                    dia.entradas.forEach(entrada => {
+                        diaHtml += `<tr>
+                                    <td>${entrada.RangoHora || 'N/A'}</td>
+                                    <td>${entrada.turno || 'N/A'}</td>
+                                    <td>${entrada.NombreInspector || 'N/A'}</td>
+                                    <td>${entrada.PiezasInspeccionadas}</td>
+                                    <td>${entrada.PiezasAceptadas}</td>
+                                    <td>${parseInt(entrada.PiezasInspeccionadas) - parseInt(entrada.PiezasAceptadas)}</td>
+                                    <td>${entrada.Comentarios || ''}</td>
+                                </tr>`;
+                    });
+                    diaHtml += `</tbody></table></div>`;
+                    desgloseHtml += diaHtml;
+                });
+            } else {
+                desgloseHtml = ''; // No mostrar desglose si no hay datos
+            }
+
+            let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> ${translate('defects_summary')}</h4>`;
+            defectosHtml += `<table><thead><tr><th>${translate('defect')}</th><th>${translate('total_qty_defect')}</th><th>${translate('defect_type')}</th></tr></thead><tbody>`;
+            if (data.defectos && data.defectos.length > 0) {
+                data.defectos.forEach(defecto => {
+                    defectosHtml += `<tr>
+                                        <td>${defecto.nombre}</td>
+                                        <td>${defecto.cantidad}</td>
+                                        <td>${defecto.tipo === 'asociado' ? 'Asociado' : 'Opcional'}</td>
+                                    </tr>`;
+                });
+            } else {
+                defectosHtml += `<tr><td colspan="3" style="text-align:center;">${translate('no_defects_found_period')}</td></tr>`;
+            }
+            defectosHtml += `</tbody></table></div>`;
+
+            let dashboardHtml = `
+            <div class="pdf-section">
+                <h4><i class="fa-solid fa-chart-line"></i> ${translate('visual_dashboards')}</h4>
+
+                <div class="dashboard-filter-bar">
+                    <div class="form-group">
+                        <label for="dashboard-fecha-inicio-sl" data-translate-key="start_date">Fecha de Inicio</label>
+                        <input type="date" id="dashboard-fecha-inicio-sl">
+                    </div>
+                    <div class="form-group">
+                        <label for="dashboard-fecha-fin-sl" data-translate-key="end_date">Fecha de Fin</label>
+                        <input type="date" id="dashboard-fecha-fin-sl">
+                    </div>
+                    <button id="btn-filtrar-dashboard-sl" class="btn-primary"><i class="fa-solid fa-filter"></i> <span data-translate-key="dashboard_filter_apply">Filtrar Gráficas</span></button>
+                    <button id="btn-limpiar-dashboard-sl" class="btn-secondary"><i class="fa-solid fa-times"></i> <span data-translate-key="dashboard_filter_clear">Limpiar Filtro</span></button>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h5>${translate('pareto_chart_title')}</h5>
+                        <canvas id="paretoChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h5>${translate('weekly_rejects_title')}</h5>
+                        <canvas id="weeklyRejectsChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h5>${translate('accepted_vs_rejected_title')}</h5>
+                        <canvas id="rejectionRateChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h5>${translate('daily_progress_title')}</h5>
+                        <canvas id="dailyProgressChart"></canvas>
+                    </div>
+                    <!-- --- NUEVO GRÁFICO --- -->
+                    <div class="chart-box" style="grid-column: 1 / -1;">
+                        <h5>${translate('ppm_trend_chart_title')}</h5>
+                        <canvas id="ppmTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            const totalMinutos = parsearTiempoAMinutosJS(data.resumen.tiempoTotal);
+            let piezasPorHora = '0.00';
+            if (totalMinutos > 0) {
+                const totalHoras = totalMinutos / 60;
+                piezasPorHora = (data.resumen.inspeccionadas / totalHoras).toFixed(2);
+            }
+
+            let html = `
+            <div class="report-title">${data.titulo}</div>
+            <div class="report-subtitle">${translate('request_folio')}: SL-${data.folio.toString().padStart(4, '0')}</div>
+            <div class="pdf-section">
+                <h4><i class="fa-solid fa-circle-info"></i> ${translate('general_info')}</h4>
+                <div class="info-section">${infoHtml}</div>
+            </div>
+            <div class="pdf-section">
+                <h4><i class="fa-solid fa-chart-simple"></i> ${translate('period_summary')}</h4>
+                <table class="summary-table">
+                    <tbody>
+                        <tr><td>${translate('inspected_pieces')}</td><td>${data.resumen.inspeccionadas}</td></tr>
+                        <tr><td>${translate('accepted_pieces')}</td><td>${data.resumen.aceptadas}</td></tr>
+                        <tr><td>${translate('rejected_pieces')}</td><td>${data.resumen.rechazadas}</td></tr>
+                        <tr><td>${translate('reworked_pieces')}</td><td>${data.resumen.retrabajadas}</td></tr>
+                        <tr><td><strong>${translate('total_inspection_time')}:</strong></td><td><strong>${data.resumen.tiempoTotal}</strong></td></tr>
+                        <tr><td><strong>${translate('pieces_per_hour')}:</strong></td><td><strong>${piezasPorHora}</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            ${desgloseHtml}
+            ${defectosHtml}
+            ${dashboardHtml}
+        `;
+
+            contenidoReporteDiv.innerHTML = html;
+            reporteContainer.style.display = 'block';
+
+            renderizarDashboards(data);
+
+            document.getElementById('btn-filtrar-dashboard-sl').addEventListener('click', () => {
+                const startDate = document.getElementById('dashboard-fecha-inicio-sl').value;
+                const endDate = document.getElementById('dashboard-fecha-fin-sl').value;
+                if(lastReportData){
+                    filtrarYRenderizarDashboards(startDate, endDate);
+                }
+            });
+
+            document.getElementById('btn-limpiar-dashboard-sl').addEventListener('click', () => {
+                document.getElementById('dashboard-fecha-inicio-sl').value = '';
+                document.getElementById('dashboard-fecha-fin-sl').value = '';
+                if(lastReportData){
+                    renderizarDashboards(lastReportData); // Renderizar con los datos originales completos
+                }
+            });
+
+            reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Re-aplicar traducciones a los elementos recién creados
+            setLanguage(getCurrentLanguage());
+        }
+
+        function filtrarYRenderizarDashboards(startDate, endDate) {
+            if (!lastReportData) return;
+
+            const filteredData = JSON.parse(JSON.stringify(lastReportData));
+            let dailyAggregates = {}; // Para recalcular PPM
+
+            if (startDate && endDate) {
+                const start = new Date(startDate + 'T00:00:00');
+                const end = new Date(endDate + 'T23:59:59');
+
+                filteredData.desgloseDiario = lastReportData.desgloseDiario.filter(dia => {
+                    const diaDate = new Date(dia.fecha + 'T00:00:00');
+                    return diaDate >= start && diaDate <= end;
+                });
+            }
+
+            if (filteredData.desgloseDiario.length === 0) {
+                Swal.fire(translate('missing_info'), 'No se encontraron datos en el rango de fechas seleccionado para las gráficas.', 'info');
+                return;
+            }
+
+            // --- RECALCULAR TODOS LOS DATOS PARA LOS DASHBOARDS ---
+            let inspeccionadas = 0, aceptadas = 0, retrabajadas = 0, rechazadas = 0;
+            const rechazoSemanal = {};
+
+            filteredData.desgloseDiario.forEach(dia => {
+                const diaRechazadas = dia.totales.inspeccionadas - dia.totales.aceptadas;
+                inspeccionadas += dia.totales.inspeccionadas;
+                aceptadas += dia.totales.aceptadas;
+                rechazadas += diaRechazadas;
+                dia.entradas.forEach(entrada => {
+                    retrabajadas += entrada.PiezasRetrabajadas;
+                });
+
+                // Para PPM Trend
+                dailyAggregates[dia.fecha] = {
+                    inspeccionadas: dia.totales.inspeccionadas,
+                    rechazadas: diaRechazadas
+                };
+
+                // Para Rechazadas por Semana
+                const fecha = new Date(dia.fecha + 'T00:00:00');
+                const year = fecha.getFullYear();
+                const week = Math.ceil((((fecha - new Date(year, 0, 1)) / 86400000) + new Date(year, 0, 1).getDay() + 1) / 7);
+                const weekKey = `${year}${String(week).padStart(2, '0')}`;
+                if (!rechazoSemanal[weekKey]) rechazoSemanal[weekKey] = 0;
+                rechazoSemanal[weekKey] += diaRechazadas;
+            });
+
+            filteredData.resumen = {
+                ...filteredData.resumen,
+                inspeccionadas, aceptadas, rechazadas, retrabajadas
+            };
+
+            // NOTA: El pareto NO se puede recalcular con precisión sin volver a consultar la BD por defectos en ese rango.
+            // Se seguirá mostrando el pareto del periodo completo (lastReportData).
+            filteredData.dashboardData.pareto = lastReportData.dashboardData.pareto;
+
+            // Actualizar data de rechazos por semana
+            filteredData.dashboardData.rechazadasPorSemana = Object.keys(rechazoSemanal).map(semana => ({
+                semana: semana,
+                rechazadas_semana: rechazoSemanal[semana]
+            })).sort((a, b) => a.semana.localeCompare(b.semana));
+
+            // Actualizar data de PPM
+            filteredData.dashboardData.dailyPPM = Object.keys(dailyAggregates).map(fecha => ({
+                fecha: fecha,
+                ppm: (dailyAggregates[fecha].inspeccionadas > 0) ? (dailyAggregates[fecha].rechazadas / dailyAggregates[fecha].inspeccionadas) * 1000000 : 0
+            })).sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+
+            renderizarDashboards(filteredData);
+        }
+
+
+        function renderizarDashboards(data) {
+            // Destruir gráficas anteriores
+            if (paretoChartInstance) paretoChartInstance.destroy();
+            if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.destroy();
+            if (rejectionRateChartInstance) rejectionRateChartInstance.destroy();
+            if (dailyProgressChartInstance) dailyProgressChartInstance.destroy();
+            if (ppmTrendChartInstance) ppmTrendChartInstance.destroy(); // NUEVO
+
+            const dashboardData = data.dashboardData;
+            const resumen = data.resumen;
+            const currentLang = getCurrentLanguage();
+            const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
+
+            // 1. Pareto
+            const paretoCtx = document.getElementById('paretoChart')?.getContext('2d');
+            if (paretoCtx && dashboardData.pareto && dashboardData.pareto.length > 0) {
+                const paretoLabels = dashboardData.pareto.map(item => item.defecto);
+                const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
+                const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
+                paretoChartInstance = new Chart(paretoCtx, {
+                    type: 'bar',
+                    data: { labels: paretoLabels, datasets: [ { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70', yAxisID: 'y' }, { label: translate('chart_cumulative'), data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' } ] },
+                    options: { responsive: true, interaction: { mode: 'index', intersect: false }, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } } }
+                });
+            }
+
+            // 2. Rechazadas por Semana
+            const weeklyCtx = document.getElementById('weeklyRejectsChart')?.getContext('2d');
+            if (weeklyCtx && dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
+                const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
+                const weeklyCounts = dashboardData.rechazadasPorSemana.map(item => item.rechazadas_semana);
+                weeklyRejectsChartInstance = new Chart(weeklyCtx, {
+                    type: 'line',
+                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+            }
+
+            // 3. Aceptadas vs Rechazadas
+            const rejectionCtx = document.getElementById('rejectionRateChart')?.getContext('2d');
+            if (rejectionCtx && resumen && resumen.inspeccionadas > 0) {
+                rejectionRateChartInstance = new Chart(rejectionCtx, {
+                    type: 'bar',
+                    data: { labels: [''], datasets: [ { label: translate('rejected'), data: [resumen.rechazadas], backgroundColor: '#a83232' }, { label: translate('accepted'), data: [resumen.aceptadas], backgroundColor: '#69A032' } ] },
+                    options: { indexAxis: 'y', responsive: true, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { legend: { position: 'top' } } }
+                });
+            }
+
+            // 4. Progreso Diario
+            const dailyCtx = document.getElementById('dailyProgressChart')?.getContext('2d');
+            const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
+            (data.desgloseDiario || []).forEach(dia => {
+                dailyData.labels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
+                dailyData.inspected.push(dia.totales.inspeccionadas);
+                dailyData.accepted.push(dia.totales.aceptadas);
+                dailyData.rejected.push(dia.totales.rechazadas);
+            });
+            if(dailyCtx) {
+                dailyProgressChartInstance = new Chart(dailyCtx, {
+                    type: 'bar',
+                    data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+            }
+
+            // 5. NUEVO: Tendencia PPM
+            const ppmCtx = document.getElementById('ppmTrendChart')?.getContext('2d');
+            if (ppmCtx && dashboardData.dailyPPM && dashboardData.dailyPPM.length > 0) {
+                const ppmLabels = dashboardData.dailyPPM.map(item => new Date(item.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
+                const ppmValues = dashboardData.dailyPPM.map(item => item.ppm);
+                ppmTrendChartInstance = new Chart(ppmCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ppmLabels,
+                        datasets: [{
+                            label: translate('chart_ppm'),
+                            data: ppmValues,
+                            borderColor: '#a83232',
+                            backgroundColor: 'rgba(168, 50, 50, 0.1)',
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { callback: value => value.toLocaleString() } } } }
+                });
+            }
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+                if (reporteContainer.style.display === 'block' && lastReportData) {
+                    renderizarReporte(lastReportData);
+                }
+            });
+        });
+
+        setLanguage(getCurrentLanguage());
+    });
+</script>
+</body>
+</html>
