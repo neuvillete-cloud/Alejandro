@@ -13,8 +13,6 @@ header('Content-Type: application/json');
 $baseUrl = "https://grammermx.com/AleTest/ARCA/";
 $projectRoot = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/AleTest/ARCA/';
 
-// Funciones de sanitización y procesamiento de archivos ya no son necesarias aquí
-
 $con = new LocalConector();
 $conex = $con->conectar();
 $conex->begin_transaction(); // Iniciar transacción
@@ -25,8 +23,12 @@ try {
         throw new Exception("Faltan datos obligatorios (ID de Reporte o ID de Safe Launch) para actualizar.");
     }
 
-    $idSLReporte = intval($_POST['idSLReportE']);
-    $idSafeLaunch = intval($_POST['idSafeLaunch']); // Aunque no se use en UPDATE, es bueno tenerlo por contexto
+    // --- CORRECCIÓN AQUÍ ---
+    // El error estaba aquí. Debe ser 'idSLReporte' (con 'e' minúscula)
+    $idSLReporte = intval($_POST['idSLReporte']);
+    // --- FIN CORRECCIÓN ---
+
+    $idSafeLaunch = intval($_POST['idSafeLaunch']);
 
     // Obtener los demás datos del formulario
     $nombreInspector = isset($_POST['nombreInspector']) ? trim($_POST['nombreInspector']) : '';
@@ -37,9 +39,8 @@ try {
     $piezasRetrabajadas = isset($_POST['piezasRetrabajadas']) ? intval($_POST['piezasRetrabajadas']) : 0;
     $tiempoInspeccion = isset($_POST['tiempoInspeccion']) ? trim($_POST['tiempoInspeccion']) : '';
     $comentarios = isset($_POST['comentarios']) ? trim($_POST['comentarios']) : '';
-    // IdTiempoMuerto ya no existe
 
-    // Validaciones básicas (igual que en guardar_reporte_safe_launch.php)
+    // Validaciones básicas
     if (empty($nombreInspector) || empty($fechaInspeccion) || empty($rangoHora) || $piezasInspeccionadas < 0 || $piezasAceptadas < 0 || $piezasRetrabajadas < 0) {
         throw new Exception("Por favor, complete todos los campos requeridos y asegúrese de que las cantidades sean válidas.");
     }
@@ -57,7 +58,6 @@ try {
                                         PiezasInspeccionadas = ?, PiezasAceptadas = ?, PiezasRetrabajadas = ?,
                                         TiempoInspeccion = ?, Comentarios = ?
                                     WHERE IdSLReporte = ?");
-    // Ajustar bind_param: removido IdTiempoMuerto
     $stmt_reporte->bind_param("sssiisssi",
         $nombreInspector, $fechaInspeccion, $rangoHora,
         $piezasInspeccionadas, $piezasAceptadas, $piezasRetrabajadas,
@@ -69,38 +69,42 @@ try {
     }
     $stmt_reporte->close();
 
-    // 3. Borrar los defectos antiguos (DE LA CUADRÍCULA) asociados a este reporte
+    // 3. Borrar los defectos antiguos (de la cuadrícula)
     $stmt_delete_defectos = $conex->prepare("DELETE FROM SafeLaunchReporteDefectos WHERE IdSLReporte = ?");
     $stmt_delete_defectos->bind_param("i", $idSLReporte);
     if (!$stmt_delete_defectos->execute()) {
-        throw new Exception("Error al limpiar los defectos antiguos del reporte: " . $stmt_delete_defectos->error);
+        throw new Exception("Error al limpiar los defectos de cuadrícula antiguos: " . $stmt_delete_defectos->error);
     }
     $stmt_delete_defectos->close();
 
-    // --- INICIO NUEVO: 3b. Borrar los "nuevos defectos" antiguos (OPCIONALES) ---
-    // Esto es necesario para la lógica de "borrar y re-insertar"
-    $stmt_delete_nuevos_defectos = $conex->prepare("DELETE FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
-    $stmt_delete_nuevos_defectos->bind_param("i", $idSLReporte);
-    if (!$stmt_delete_nuevos_defectos->execute()) {
-        throw new Exception("Error al limpiar los nuevos defectos antiguos del reporte: " . $stmt_delete_nuevos_defectos->error);
+    // 4. Borrar los defectos opcionales antiguos (nuevos)
+    $stmt_delete_nuevos = $conex->prepare("DELETE FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
+    $stmt_delete_nuevos->bind_param("i", $idSLReporte);
+    if (!$stmt_delete_nuevos->execute()) {
+        throw new Exception("Error al limpiar los defectos opcionales antiguos: " . $stmt_delete_nuevos->error);
     }
-    $stmt_delete_nuevos_defectos->close();
-    // --- FIN NUEVO ---
+    $stmt_delete_nuevos->close();
 
-    // 4. Insertar los nuevos detalles de defectos (DE LA CUADRÍCULA)
+    // 5. Manejar defectos marcados para eliminación (por si acaso, aunque la lógica de arriba ya borra todo)
+    if (isset($_POST['defectos_sl_a_eliminar']) && is_array($_POST['defectos_sl_a_eliminar'])) {
+        // Esta lógica ya no es estrictamente necesaria porque borramos todo,
+        // pero la dejamos por si se cambia la estrategia a futuro.
+        // No hace nada activamente si ya borramos todo.
+    }
+
+    // 6. Insertar los detalles de defectos (cuadrícula)
     $totalDefectosClasificados = 0;
     if (isset($_POST['defectos']) && is_array($_POST['defectos'])) {
         foreach ($_POST['defectos'] as $idDefectoCatalogo => $defectData) {
             $cantidad = isset($defectData['cantidad']) ? intval($defectData['cantidad']) : 0;
             if ($cantidad > 0) {
                 $lote = isset($defectData['lote']) ? trim($defectData['lote']) : null;
-                $idDefectoCatalogo = intval($idDefectoCatalogo); // Asegurar que es entero
+                $idDefectoCatalogo = intval($idDefectoCatalogo);
 
                 $stmt_defecto = $conex->prepare("INSERT INTO SafeLaunchReporteDefectos (IdSLReporte, IdSLDefectoCatalogo, CantidadEncontrada, BachLote) VALUES (?, ?, ?, ?)");
                 $stmt_defecto->bind_param("iiis", $idSLReporte, $idDefectoCatalogo, $cantidad, $lote);
                 if (!$stmt_defecto->execute()) {
-                    // Importante: Si falla la inserción de un defecto, la transacción hará rollback de todo
-                    throw new Exception("Error al guardar el defecto actualizado del catálogo #{$idDefectoCatalogo}: " . $stmt_defecto->error);
+                    throw new Exception("Error al re-insertar defecto de cuadrícula #{$idDefectoCatalogo}: " . $stmt_defecto->error);
                 }
                 $stmt_defecto->close();
                 $totalDefectosClasificados += $cantidad;
@@ -108,43 +112,34 @@ try {
         }
     }
 
-    // --- INICIO NUEVO: 4b. Insertar los "nuevos defectos" actualizados (OPCIONALES) ---
-    // (Lógica copiada de guardar_reporte_safe_launch.php)
+    // 7. Insertar los detalles de defectos (nuevos/opcionales)
     if (isset($_POST['nuevos_defectos_sl']) && is_array($_POST['nuevos_defectos_sl'])) {
         foreach ($_POST['nuevos_defectos_sl'] as $tempId => $defectoData) {
+            // Solo procesar si no está marcado para eliminación (aunque ya borramos todo, esto es doble seguridad)
+            if (isset($defectoData['idDefectoEncontrado']) && in_array($defectoData['idDefectoEncontrado'], $_POST['defectos_sl_a_eliminar'] ?? [])) {
+                continue; // Saltar este defecto, fue marcado para borrar
+            }
+
             $cantidad = isset($defectoData['cantidad']) ? intval($defectoData['cantidad']) : 0;
             if ($cantidad > 0) {
-                $idDefectoCatalogo = isset($defectoData['id']) ? intval($defectoData['id']) : 0;
-                if ($idDefectoCatalogo <= 0) {
-                    throw new Exception("Se ingresó cantidad para un nuevo defecto (#{$tempId}) pero no se seleccionó el tipo de defecto.");
-                }
+                $idDefectoCatalogo = intval($defectoData['id']);
 
-                // Insertar en la tabla de nuevos defectos para Safe Launch
                 $stmt_nuevo_defecto = $conex->prepare("INSERT INTO SafeLaunchNuevosDefectos (IdSLReporte, IdSLDefectoCatalogo, Cantidad) VALUES (?, ?, ?)");
                 $stmt_nuevo_defecto->bind_param("iii", $idSLReporte, $idDefectoCatalogo, $cantidad);
-
                 if (!$stmt_nuevo_defecto->execute()) {
-                    throw new Exception("Error al guardar el nuevo defecto encontrado (#{$tempId}) en la base de datos: " . $stmt_nuevo_defecto->error);
+                    throw new Exception("Error al re-insertar nuevo defecto #{$idDefectoCatalogo}: " . $stmt_nuevo_defecto->error);
                 }
                 $stmt_nuevo_defecto->close();
-                // --- IMPORTANTE: Sumar al total ---
                 $totalDefectosClasificados += $cantidad;
             }
         }
     }
-    // --- FIN NUEVO ---
 
-    // 5. Validación final: la suma de AMBOS tipos de defectos debe coincidir con las rechazadas disponibles
+    // 8. Validación final
     $rechazadasDisponibles = $piezasRechazadasBrutas - $piezasRetrabajadas;
-
-    // --- VALIDACIÓN MODIFICADA ---
     if ($totalDefectosClasificados != $rechazadasDisponibles) {
-        throw new Exception("Error de validación al actualizar: La suma TOTAL de defectos clasificados ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles para clasificar ({$rechazadasDisponibles}).");
+        throw new Exception("Error de validación al actualizar: La suma de todos los defectos ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles ({$rechazadasDisponibles}).");
     }
-    // --- FIN MODIFICACIÓN ---
-
-    // Lógica para Desglose de Partes eliminada
-    // Lógica para Defectos Originales eliminada
 
     $conex->commit(); // Confirmar transacción si todo fue exitoso
     echo json_encode(['status' => 'success', 'message' => 'Reporte Safe Launch actualizado exitosamente.']);
