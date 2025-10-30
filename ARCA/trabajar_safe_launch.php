@@ -106,7 +106,6 @@ function formatarMinutosATiempo($totalMinutos) {
     return empty($partes) ? "0 minutos" : implode(" ", $partes);
 }
 
-// --- CORRECCIÓN AQUÍ: Nombre de la tabla corregido ---
 $reportes_anteriores_query = $conex->prepare("
     SELECT
         r.IdSLReporte, r.FechaInspeccion, r.NombreInspector, r.PiezasInspeccionadas, r.PiezasAceptadas,
@@ -118,17 +117,15 @@ $reportes_anteriores_query = $conex->prepare("
     FROM SafeLaunchReportesInspeccion r
     WHERE r.IdSafeLaunch = ? ORDER BY r.FechaRegistro DESC
 ");
-// --- FIN DE LA CORRECCIÓN ---
 $reportes_anteriores_query->bind_param("i", $idSafeLaunch);
 $reportes_anteriores_query->execute();
 $reportes_raw = $reportes_anteriores_query->get_result()->fetch_all(MYSQLI_ASSOC);
-$reportes_anteriores_query->close(); // Cerrar el statement aquí
+$reportes_anteriores_query->close();
 
 $reportes_procesados = [];
 $totalMinutosRegistrados = 0;
 $totalPiezasInspeccionadasYa = 0;
 $totalDefectosEncontradosGlobal = 0;
-// IMPORTANTE: Inicializar $totalDefectosPorTipoGlobal USANDO los defectos ASOCIADOS
 $totalDefectosPorTipoGlobal = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0);
 
 foreach ($reportes_raw as $reporte) {
@@ -136,13 +133,13 @@ foreach ($reportes_raw as $reporte) {
     $totalMinutosRegistrados += parsearTiempoAMinutos($reporte['TiempoInspeccion']);
     $totalPiezasInspeccionadasYa += (int)$reporte['PiezasInspeccionadas'];
     $totalDefectosReporteActual = 0;
-    // IMPORTANTE: Inicializar DefectosPorTipo USANDO los defectos ASOCIADOS
-    $reporte['DefectosPorTipo'] = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0); // Inicializar para este reporte
+    $reporte['DefectosPorTipo'] = array_fill_keys(array_column($defectos_para_formulario_y_tabla, 'id'), 0);
 
+    // --- LÓGICA DE PROCESAMIENTO DE DEFECTOS MEJORADA ---
 
+    // 1. Obtener defectos de la cuadrícula (Asociados)
     $defectos_reporte_query = $conex->prepare("
-        SELECT
-            rd.IdSLDefectoCatalogo, rd.CantidadEncontrada
+        SELECT rd.IdSLDefectoCatalogo, rd.CantidadEncontrada
         FROM SafeLaunchReporteDefectos rd
         WHERE rd.IdSLReporte = ?
     ");
@@ -153,35 +150,42 @@ foreach ($reportes_raw as $reporte) {
         $idDefecto = $dr['IdSLDefectoCatalogo'];
         $cantidad = (int)$dr['CantidadEncontrada'];
 
-        // Solo procesar/sumar si el defecto está en la lista de defectos ASOCIADOS
         if (array_key_exists($idDefecto, $reporte['DefectosPorTipo'])) {
-            $reporte['DefectosPorTipo'][$idDefecto] = $cantidad; // Guardar cantidad por ID de defecto para la fila de la tabla
+            $reporte['DefectosPorTipo'][$idDefecto] = $cantidad;
             $totalDefectosReporteActual += $cantidad;
-            // Verificar si la clave existe antes de sumar (ya lo hace el if anterior, pero doble chequeo no hace daño)
             if (array_key_exists($idDefecto, $totalDefectosPorTipoGlobal)) {
-                $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad; // Sumar al total global
+                $totalDefectosPorTipoGlobal[$idDefecto] += $cantidad;
             }
         }
     }
-    // Sumar también los nuevos defectos opcionales encontrados
-    $nuevos_defectos_query = $conex->prepare("SELECT IdSLDefectoCatalogo, Cantidad FROM SafeLaunchNuevosDefectos WHERE IdSLReporte = ?");
+    $defectos_reporte_query->close();
+
+    // 2. Obtener defectos opcionales (Nuevos) CON NOMBRE
+    $nuevos_defectos_query = $conex->prepare("
+        SELECT slcd.NombreDefecto, snd.Cantidad 
+        FROM SafeLaunchNuevosDefectos snd
+        JOIN SafeLaunchCatalogoDefectos slcd ON snd.IdSLDefectoCatalogo = slcd.IdSLDefectoCatalogo
+        WHERE snd.IdSLReporte = ?
+    ");
     $nuevos_defectos_query->bind_param("i", $reporte_id);
     $nuevos_defectos_query->execute();
     $nuevos_defectos_result = $nuevos_defectos_query->get_result();
+
+    $nuevos_defectos_para_mostrar = [];
+    $totalNuevosDefectos = 0;
     while ($nd = $nuevos_defectos_result->fetch_assoc()) {
-        $totalDefectosReporteActual += (int)$nd['Cantidad'];
-        $totalDefectosEncontradosGlobal += (int)$nd['Cantidad']; // Sumar al total global general
-        // Opcional: Si quisiéramos sumar los nuevos defectos por tipo al total global
-        // if (array_key_exists($nd['IdSLDefectoCatalogo'], $totalDefectosPorTipoGlobal)) {
-        //     $totalDefectosPorTipoGlobal[$nd['IdSLDefectoCatalogo']] += (int)$nd['Cantidad'];
-        // }
+        $cantidad_nd = (int)$nd['Cantidad'];
+        $nuevos_defectos_para_mostrar[] = htmlspecialchars($nd['NombreDefecto']) . " (" . $cantidad_nd . ")";
+        $totalNuevosDefectos += $cantidad_nd;
     }
     $nuevos_defectos_query->close();
 
+    // 3. Almacenar totales y strings para mostrar
+    $reporte['NuevosDefectosParaMostrar'] = empty($nuevos_defectos_para_mostrar) ? 'N/A' : implode("<br>", $nuevos_defectos_para_mostrar);
+    $reporte['TotalDefectosReporte'] = $totalDefectosReporteActual + $totalNuevosDefectos; // Total combinado
+    $totalDefectosEncontradosGlobal += $reporte['TotalDefectosReporte']; // Sumar al gran total global
 
-    $reporte['TotalDefectosReporte'] = $totalDefectosReporteActual;
-    // Total global ya no se incrementa aquí, se hace dentro de los bucles
-    $defectos_reporte_query->close();
+    // --- FIN LÓGICA MEJORADA ---
 
 
     // Calcular Turno/Shift Leader
@@ -421,25 +425,22 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
         /* --- 8. Tabla de Historial --- */
         .table-responsive { width: 100%; overflow-x: auto; margin-top: 20px; margin-bottom: 40px; border: 1px solid var(--color-borde); border-radius: 8px; box-shadow: var(--sombra-suave); }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 14px; /* min-width: 1200px; */ /* Ajustado dinámicamente */ }
-        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; white-space: nowrap; /* Evita que el contenido se rompa */ }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; white-space: nowrap; }
         .data-table th { background-color: var(--color-primario); color: var(--color-blanco); font-weight: 600; text-transform: uppercase; position: sticky; top: 0; z-index: 1; }
         .data-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
         .data-table tbody tr:hover { background-color: #f0f4f8; }
         .data-table td .btn-small { margin: 0 2px; }
-        /* Centrar contenido numérico y acciones */
-        /* --- MODIFICADO: Ajustar selector para que coincida con las columnas correctas DESPUÉS del cambio --- */
-        /* Selecciona columnas desde 'Insp.' hasta la columna ANTES de 'Total Def.' */
-        .data-table th:nth-child(n+6):nth-child(-n+<?php echo 5 + count($defectos_para_formulario_y_tabla) + 3; ?>),
-        .data-table td:nth-child(n+6):nth-child(-n+<?php echo 5 + count($defectos_para_formulario_y_tabla) + 3; ?>) {
+        /* --- CSS CORREGIDO: +4 para incluir la nueva columna --- */
+        .data-table th:nth-child(n+6):nth-child(-n+<?php echo 5 + count($defectos_para_formulario_y_tabla) + 4; ?>),
+        .data-table td:nth-child(n+6):nth-child(-n+<?php echo 5 + count($defectos_para_formulario_y_tabla) + 4; ?>) {
             text-align: center;
         }
 
-        .data-table td:last-child { /* Columna de acciones */
+        .data-table td:last-child {
             text-align: center;
             white-space: nowrap;
         }
-        /* Estilo para Totales, PPM, % Defectuoso */
         .data-table .total-row td {
             font-weight: bold;
             background-color: #e9ecef;
@@ -484,7 +485,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .btn-remove-defecto:hover {
             color: #7a2121;
         }
-        /* --- Estilos de 'current-file-info' eliminados --- */
         /* --- FIN NUEVO --- */
 
 
@@ -554,7 +554,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             <p><strong data-translate-key="project_name">Proyecto:</strong> <span><?php echo $nombreProyecto; ?></span></p>
             <p><strong data-translate-key="responsible">Responsable:</strong> <span><?php echo $nombreResponsable; ?></span></p>
             <p><strong data-translate-key="client">Cliente:</strong> <span><?php echo $cliente; ?></span></p>
-            <!-- Cantidad Total ya no es relevante aquí como en contenciones -->
         </div>
 
         <?php if ($mostrarVisorPDF): ?>
@@ -575,11 +574,9 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
 
         <?php if ($mostrarFormularioPrincipal): ?>
-            <!-- Formulario Principal -->
-            <!-- --- MODIFICADO: Se quitó enctype="multipart/form-data" --- -->
             <form id="reporteFormSL" action="dao/guardar_reporte_safe_launch.php" method="POST">
                 <input type="hidden" name="idSafeLaunch" value="<?php echo $idSafeLaunch; ?>">
-                <input type="hidden" name="idSLReporte" id="idSLReporte" value=""> <!-- Para edición -->
+                <input type="hidden" name="idSLReporte" id="idSLReporte" value="">
 
                 <fieldset>
                     <legend><i class="fa-solid fa-chart-simple"></i> <span data-translate-key="summary_title">Resumen de Inspección</span></legend>
@@ -630,19 +627,16 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                             </div>
                         <?php endforeach; ?>
                         <?php if (empty($defectos_para_formulario_y_tabla)): ?>
-                            <!-- --- CORREGIDO: Mensaje si NO hay defectos ASOCIADOS --- -->
                             <p data-translate-key="no_defects_associated">No hay defectos específicamente asociados a este Safe Launch en la solicitud inicial.</p>
                         <?php endif; ?>
                     </div>
                 </fieldset>
 
-                <!-- --- INICIO BLOQUE NUEVO --- -->
                 <fieldset>
                     <legend><i class="fa-solid fa-magnifying-glass-plus"></i> <span data-translate-key="new_defects_title">Nuevos Defectos Encontrados (Opcional)</span></legend>
                     <div id="nuevos-defectos-container-sl"></div>
                     <button type="button" id="btn-add-nuevo-defecto-sl" class="btn-secondary"><i class="fa-solid fa-plus"></i> <span data-translate-key="add_new_defect_btn">Añadir Nuevo Defecto</span></button>
                 </fieldset>
-                <!-- --- FIN BLOQUE NUEVO --- -->
 
                 <fieldset>
                     <legend><i class="fa-solid fa-stopwatch"></i> <span data-translate-key="session_time_comments_title">Tiempos y Comentarios de la Sesión</span></legend>
@@ -650,19 +644,15 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <label data-translate-key="inspection_time_session">Tiempo de Inspección (Esta Sesión)</label>
                         <input type="text" name="tiempoInspeccion" id="tiempoInspeccion" value="" readonly style="background-color: #e9ecef; cursor: not-allowed;">
                     </div>
-                    <!-- Sección de Tiempo Muerto Eliminada -->
                     <div class="form-group"><label data-translate-key="additional_comments">Comentarios Adicionales de la Sesión</label><textarea name="comentarios" id="comentarios" rows="4"></textarea></div>
                 </fieldset>
 
                 <div class="form-actions">
                     <button type="submit" class="btn-primary" id="btnGuardarReporteSL"><span data-translate-key="save_session_report_btn">Guardar Reporte de Sesión</span></button>
-                    <!-- Botón Cancelar Edición se añadirá dinámicamente si es necesario -->
                 </div>
             </form>
-            <!-- Formulario para Finalizar Eliminado -->
 
         <?php else: ?>
-            <!-- Mensaje si el formulario principal no se muestra (ej. si Safe Launch está cerrado) -->
             <div class='notification-box info' style='margin-top: 20px;'><i class='fa-solid fa-circle-check'></i> <strong data-translate-key="sl_closed_title">Safe Launch Cerrado:</strong> <span data-translate-key="sl_closed_desc">Este Safe Launch ya ha sido marcado como cerrado. No se pueden añadir nuevos reportes.</span></div>
         <?php endif; ?>
 
@@ -683,11 +673,12 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <th data-translate-key="th_accepted">Acep.</th>
                         <th data-translate-key="th_rejected">Rech.</th>
                         <th data-translate-key="th_reworked">Retrab.</th>
-                        <!-- Columnas dinámicas SOLO para los defectos ASOCIADOS -->
                         <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
                             <th><?php echo $defecto['nombre']; ?></th>
                         <?php endforeach; ?>
-                        <th data-translate-key="th_total_defects">Total Def.</th> <!-- Este total incluye TODOS los defectos -->
+                        <!-- --- NUEVA COLUMNA --- -->
+                        <th data-translate-key="th_new_defects_qty">Nuevos Def. (Cant.)</th>
+                        <th data-translate-key="th_total_defects">Total Def.</th>
                         <th data-translate-key="th_ppm">PPM</th>
                         <th data-translate-key="th_defect_percent">% Def.</th>
                         <th data-translate-key="th_comments">Comentarios</th>
@@ -706,12 +697,12 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                             <td><?php echo htmlspecialchars($reporte['PiezasAceptadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRechazadasCalculadas']); ?></td>
                             <td><?php echo htmlspecialchars($reporte['PiezasRetrabajadas']); ?></td>
-                            <!-- Celdas dinámicas SOLO para los defectos ASOCIADOS -->
                             <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
-                                <!-- Asegurarse de que solo mostramos valores para las columnas existentes -->
                                 <td><?php echo $reporte['DefectosPorTipo'][$defecto['id']] ?? 0; ?></td>
                             <?php endforeach; ?>
-                            <td><?php echo $reporte['TotalDefectosReporte']; ?></td> <!-- Este total incluye TODOS los defectos -->
+                            <!-- --- NUEVA CELDA --- -->
+                            <td><?php echo $reporte['NuevosDefectosParaMostrar']; ?></td>
+                            <td><?php echo $reporte['TotalDefectosReporte']; ?></td>
                             <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 1000000) : 0; ?></td>
                             <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 100, 2) . '%' : '0%'; ?></td>
                             <td><?php echo htmlspecialchars($reporte['Comentarios'] ?? 'N/A'); ?></td>
@@ -729,15 +720,15 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasAceptadas')); ?></td>
                         <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasRechazadasCalculadas')); ?></td>
                         <td><?php echo array_sum(array_column($reportes_procesados, 'PiezasRetrabajadas')); ?></td>
-                        <!-- Celdas de totales SOLO para los defectos ASOCIADOS -->
                         <?php foreach ($defectos_para_formulario_y_tabla as $defecto): ?>
-                            <!-- Asegurarse de que solo mostramos valores para las columnas existentes -->
                             <td><?php echo $totalDefectosPorTipoGlobal[$defecto['id']] ?? 0; ?></td>
                         <?php endforeach; ?>
-                        <td><?php echo $totalDefectosEncontradosGlobal; ?></td> <!-- Este total incluye TODOS los defectos -->
+                        <!-- --- NUEVA CELDA (VACÍA) --- -->
+                        <td></td>
+                        <td><?php echo $totalDefectosEncontradosGlobal; ?></td>
                         <td><?php echo $ppm_global; ?></td>
                         <td><?php echo $porcentaje_defectuoso_global . '%'; ?></td>
-                        <td colspan="2"></td> <!-- Celdas vacías para Comentarios y Acciones -->
+                        <td colspan="2"></td>
                     </tr>
                     </tfoot>
                 </table>
@@ -750,9 +741,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 </main>
 
 <script>
-    // --- MODIFICADO: Solo pasamos los defectos ASOCIADOS para la edición de la cuadrícula ---
     const catalogoDefectosSL = <?php echo json_encode($defectos_para_formulario_y_tabla); ?>;
-    // Pasamos el catálogo COMPLETO para el dropdown de nuevos defectos
     const opcionesDefectosSL = '<?php echo addslashes($defectos_options_html_sl); ?>';
     let nuevoDefectoCounterSL = 0;
     let editandoReporteSL = false;
@@ -773,7 +762,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 rejected_pieces_calc: "Piezas Rechazadas (Cálculo)", inspector_name: "Nombre del Inspector",
                 inspection_date: "Fecha de Inspección", start_time: "Hora de Inicio", end_time: "Hora de Fin",
                 defect_classification_title: "Clasificación de Defectos", available_to_classify: "Piezas rechazadas disponibles para clasificar:",
-                no_defects_associated: "No hay defectos específicamente asociados a este Safe Launch en la solicitud inicial.", // Mensaje corregido
+                no_defects_associated: "No hay defectos específicamente asociados a este Safe Launch en la solicitud inicial.",
                 session_time_comments_title: "Tiempos y Comentarios de la Sesión",
                 inspection_time_session: "Tiempo de Inspección (Esta Sesión)",
                 additional_comments: "Comentarios Adicionales de la Sesión",
@@ -783,6 +772,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 history_title: "Historial de Registros de Inspección", th_report_id: "ID Reporte", th_inspection_date: "Fecha Insp.",
                 th_time_range: "Rango Hora", th_shift_leader: "Turno", th_inspector: "Inspector",
                 th_inspected: "Insp.", th_accepted: "Acep.", th_rejected: "Rech.", th_reworked: "Retrab.",
+                th_new_defects_qty: "Nuevos Def. (Cant.)", // --- NUEVA TRADUCCIÓN ---
                 th_total_defects: "Total Def.", th_ppm: "PPM", th_defect_percent: "% Def.",
                 th_comments: "Comentarios", th_actions: "Acciones", totals: "TOTALES:",
                 no_history_records_sl: "Aún no hay registros de inspección para este Safe Launch.",
@@ -821,7 +811,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 rejected_pieces_calc: "Rejected Pieces (Calculated)", inspector_name: "Inspector's Name",
                 inspection_date: "Inspection Date", start_time: "Start Time", end_time: "End Time",
                 defect_classification_title: "Defect Classification", available_to_classify: "Rejected pieces available for classification:",
-                no_defects_associated: "There are no defects specifically associated with this Safe Launch in the initial request.", // Corrected message
+                no_defects_associated: "There are no defects specifically associated with this Safe Launch in the initial request.",
                 session_time_comments_title: "Session Times and Comments",
                 inspection_time_session: "Inspection Time (This Session)",
                 additional_comments: "Additional Session Comments",
@@ -831,6 +821,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 history_title: "Inspection Records History", th_report_id: "Report ID", th_inspection_date: "Insp. Date",
                 th_time_range: "Time Range", th_shift_leader: "Shift", th_inspector: "Inspector",
                 th_inspected: "Insp.", th_accepted: "Acc.", th_rejected: "Rej.", th_reworked: "Rew.",
+                th_new_defects_qty: "New Def. (Qty)", // --- NEW TRANSLATION ---
                 th_total_defects: "Total Def.", th_ppm: "PPM", th_defect_percent: "% Def.",
                 th_comments: "Comments", th_actions: "Actions", totals: "TOTALS:",
                 no_history_records_sl: "There are no inspection records for this Safe Launch yet.",
@@ -867,7 +858,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 const key = el.getAttribute('data-translate-key');
                 if (translations[lang] && translations[lang][key]) {
 
-                    // --- MANEJO DE TEXTO EN SPAN DENTRO DE BOTONES ---
                     const span = el.querySelector('span');
                     if(span && (el.tagName === 'BUTTON' || el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2')) {
                         span.innerText = translations[lang][key];
@@ -877,29 +867,24 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                         el.innerText = translations[lang][key];
                     } else if (el.tagName === 'LABEL' && el.querySelector('span')) {
                         el.querySelector('span').innerText = translations[lang][key];
-                    } else if (el.firstChild && el.firstChild.nodeType === Node.TEXT_NODE) {
-                        // Intentar mantener iconos si el texto es el primer hijo
                     }
 
-                    // --- CÓDIGO DE TRADUCCIÓN ORIGINAL (MODIFICADO) ---
                     const icon = el.querySelector('i');
                     if (icon && (el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'BUTTON' || el.tagName === 'P' || el.tagName === 'STRONG')) {
                         const spanInterno = el.querySelector('span');
                         if (!spanInterno) {
                             el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
-                        } // Si hay span, ya se tradujo arriba
+                        }
                     } else if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
                         el.value = translations[lang][key];
                     } else if (el.tagName === 'BUTTON' && !icon) {
-                        el.innerText = translations[lang][key]; // Botones solo texto
+                        el.innerText = translations[lang][key];
                     } else if (!icon && !span && el.tagName !== 'LABEL') {
                         el.innerText = translations[lang][key];
                     } else if (el.tagName === 'LABEL' && !icon && !span) {
                         el.innerText = translations[lang][key];
                     }
 
-
-                    // Casos especiales
                     if(el.classList.contains('file-upload-label') && el.querySelector('span')) {
                         el.querySelector('span').innerText = translations[lang][key];
                     }
@@ -1222,7 +1207,6 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Swal.fire({ title: translate('swal_deleting_title'), text: translate('swal_deleting_text'), allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                        // --- NOTA: Este DAO debe borrar de SafeLaunchReportesInspeccion, SafeLaunchReporteDefectos y SafeLaunchNuevosDefectos ---
                         fetch('dao/eliminar_reporte_sl.php', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -1322,7 +1306,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                     </div>
                 </div>
                 ${idDefectoEncontrado ?
-                `<input type="hidden" name="nuevos_defectos_sl[${currentCounter}][idDefectoEncontrado]" value="${idDefectoEncontrado}">` : // Cambio: idSLNuevoDefecto a idDefectoEncontrado para consistencia
+                `<input type="hidden" name="nuevos_defectos_sl[${currentCounter}][idDefectoEncontrado]" value="${idDefectoEncontrado}">` :
                 ''}
             </div>`;
             nuevosDefectosContainerSL.insertAdjacentHTML('beforeend', defectoHTML);
