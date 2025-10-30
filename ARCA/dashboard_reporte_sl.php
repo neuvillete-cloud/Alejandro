@@ -518,7 +518,9 @@ $conex->close();
                 ppm: "PPM",
                 percent_defect: "% Defecto",
                 total: "Total",
-                percent: "%"
+                percent: "%",
+                defect_type_associated: "Asociado",
+                defect_type_optional: "Opcional"
                 // --- FIN NUEVAS TRADUCCIONES ---
             },
             en: {
@@ -565,25 +567,51 @@ $conex->close();
                 ppm: "PPM",
                 percent_defect: "% Defect",
                 total: "Total",
-                percent: "%"
+                percent: "%",
+                defect_type_associated: "Associated",
+                defect_type_optional: "Optional"
                 // --- END NEW TRANSLATIONS ---
             }
         };
 
+        // --- INICIO: setLanguage (VERSIÓN COMPLETA Y CORREGIDA) ---
         function setLanguage(lang) {
             document.documentElement.lang = lang;
             localStorage.setItem('language', lang);
             document.querySelectorAll('[data-translate-key]').forEach(el => {
                 const key = el.getAttribute('data-translate-key');
                 if (translations[lang] && translations[lang][key]) {
-                    el.innerText = translations[lang][key];
+
+                    const span = el.querySelector('span');
+                    const icon = el.querySelector('i');
+
+                    if (span && (el.tagName === 'BUTTON' || el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3')) {
+                        // Traduce solo el span si existe (para botones con icono)
+                        span.innerText = translations[lang][key];
+                    } else if (icon && (el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'BUTTON')) {
+                        // Si no hay span pero sí icono, añade el texto después del icono
+                        el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
+                    } else if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
+                        // Para inputs
+                        el.value = translations[lang][key];
+                    } else if (el.tagName === 'OPTION') {
+                        // Para options (como el placeholder del select)
+                        el.innerText = translations[lang][key];
+                    } else if (!el.children.length) {
+                        // Para elementos de texto simple (p, label, th, etc.)
+                        el.innerText = translations[lang][key];
+                    } else if (el.tagName === 'SPAN' && !el.children.length) {
+                        el.innerText = translations[lang][key];
+                    }
                 }
             });
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
         }
+        // --- FIN: setLanguage (VERSIÓN COMPLETA Y CORREGIDA) ---
+
 
         function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
-        function translate(key) { const lang = getCurrentLanguage(); return translations[lang][key] || key; }
+        function translate(key) { const lang = getCurrentLanguage(); return (translations[lang] && translations[lang][key]) ? translations[lang][key] : key; }
 
         function parsearTiempoAMinutosJS(tiempoStr) {
             if (!tiempoStr) return 0;
@@ -614,7 +642,7 @@ $conex->close();
                 })
                 .catch(error => {
                     console.error(error);
-                    Swal.fire(translate('connection_error_title'), translate('connection_error_message'), 'error');
+                    Swal.fire(translate('connection_error_title'), translate('connection_error_message') + ": " + error.message, 'error');
                 });
         };
 
@@ -665,13 +693,16 @@ $conex->close();
                 // Añadir el clon al body (fuera de vista) para que html2canvas lo renderice
                 sectionClone.style.position = 'absolute';
                 sectionClone.style.left = '-9999px';
-                sectionClone.style.width = (pdfWidth * 3.78) + 'px'; // Aprox. mm a px para captura
+                // Establecer un ancho grande para que capture todo
+                sectionClone.style.width = (contentWidth * 3.78 * 1.5) + 'px'; // Convertir mm a px (aprox 3.78) y dar extra
+                sectionClone.style.padding = '10px'; // Añadir padding
                 document.body.appendChild(sectionClone);
 
                 const canvas = await html2canvas(sectionClone, {
                     scale: 2,
                     useCORS: true,
-                    width: sectionClone.scrollWidth, // Capturar el ancho completo
+                    // Pedir a html2canvas que use el ancho completo del contenido
+                    width: sectionClone.scrollWidth,
                     windowWidth: sectionClone.scrollWidth
                 });
 
@@ -733,63 +764,45 @@ $conex->close();
 
             // Filas de Defectos
             let grandTotalProblems = 0;
+            const defectRowTotals = {}; // Almacenar totales por defecto
+
+            sortedDefectNames.forEach(defectName => {
+                let totalDefectQty = 0;
+                allDates.forEach(date => {
+                    const qty = data.defectosDiarios[date]?.defectos[defectName] || 0;
+                    totalDefectQty += qty;
+                });
+                defectRowTotals[defectName] = totalDefectQty;
+                grandTotalProblems += totalDefectQty; // Sumar al total general de problemas
+            });
+
             if (sortedDefectNames.length > 0) {
                 sortedDefectNames.forEach(defectName => {
                     tableHtml += `<tr><td>${defectName}</td>`;
-                    let totalDefectQty = 0;
                     allDates.forEach(date => {
                         const qty = data.defectosDiarios[date]?.defectos[defectName] || 0;
                         tableHtml += `<td>${qty > 0 ? qty : ''}</td>`;
-                        totalDefectQty += qty;
                     });
-                    grandTotalProblems += totalDefectQty; // Sumar al total general de problemas
-                    // El % por defecto se calcula contra el total de *problemas*, no de piezas
-                    // (Basado en el análisis de la imagen de ejemplo)
-                    tableHtml += `<td>${totalDefectQty}</td><td>...%</td></tr>`; // Placeholder para %
+                    const totalDefectQty = defectRowTotals[defectName] || 0;
+                    const percentDefect = grandTotalProblems > 0 ? ((totalDefectQty / grandTotalProblems) * 100).toFixed(2) : '0.00';
+                    tableHtml += `<td>${totalDefectQty}</td><td>${percentDefect}%</td></tr>`;
                 });
             } else {
                 tableHtml += `<tr><td colspan="${allDates.length + 3}" style="text-align:center;">${translate('no_defects_found_period')}</td></tr>`;
             }
 
-            // Recalcular porcentajes de defectos ahora que tenemos grandTotalProblems
-            if (grandTotalProblems > 0) {
-                tableHtml = tableHtml.replace(/<td>\.\.\.%<\/td>/g, () => {
-                    // Esta es una forma simple de hacerlo; una mejor forma sería almacenar los totales por defecto
-                    // y recalcular aquí. Por ahora, nos enfocamos en la estructura.
-                    // Para hacerlo bien, necesitaríamos recalcular los totales por fila.
-                    // Vamos a hacerlo bien.
-                    let newTbody = '';
-                    sortedDefectNames.forEach(defectName => {
-                        newTbody += `<tr><td>${defectName}</td>`;
-                        let totalDefectQty = 0;
-                        allDates.forEach(date => {
-                            const qty = data.defectosDiarios[date]?.defectos[defectName] || 0;
-                            newTbody += `<td>${qty > 0 ? qty : ''}</td>`;
-                            totalDefectQty += qty;
-                        });
-                        const percentDefect = grandTotalProblems > 0 ? ((totalDefectQty / grandTotalProblems) * 100).toFixed(2) : '0.00';
-                        newTbody += `<td>${totalDefectQty}</td><td>${percentDefect}%</td></tr>`;
-                    });
-                    tableHtml = tableHtml.substring(0, tableHtml.indexOf('<tbody>') + '<tbody>'.length) + newTbody;
-                } else {
-                    tableHtml = tableHtml.replace(/<td>\.\.\.%<\/td>/g, '<td>0.00%</td>');
-                }
-            } else {
-                tableHtml = tableHtml.replace(/<td>\.\.\.%<\/td>/g, '<td>0.00%</td>');
-            }
-
-
             tableHtml += `</tbody><tfoot>`; // Usar tfoot para las filas de resumen
 
             // Fila de TOTAL PROBLEMS
             tableHtml += `<tr class="total-row"><th>${translate('total_problems')}</th>`;
-            let grandTotalProblemsForPercent = 0; // Usar el total calculado en el bucle anterior
+            let grandTotalProblemsForPercent = 0;
             allDates.forEach(date => {
                 const dayTotal = data.defectosDiarios[date]?.totalDefectosDia || 0;
-                tableHtml += `<td>${dayTotal}</td>`;
+                tableHtml += `<td>${dayTotal > 0 ? dayTotal : ''}</td>`;
                 grandTotalProblemsForPercent += dayTotal;
             });
             const totalInspectedOverall = data.resumen.inspeccionadas;
+            // El % de "Total Problems" es contra el total de piezas inspeccionadas
             const grandPercentDefect = totalInspectedOverall > 0 ? ((grandTotalProblemsForPercent / totalInspectedOverall) * 100).toFixed(2) : '0.00';
             tableHtml += `<td>${grandTotalProblemsForPercent}</td><td>${grandPercentDefect}%</td></tr>`;
 
@@ -801,16 +814,17 @@ $conex->close();
             });
             tableHtml += `<td colspan="2">${totalInspectedOverall}</td></tr>`; // Total general de inspeccionadas
 
-            // Fila de PPM
+            // Fila de PPM (Basado en Total Problems, como en la imagen)
             tableHtml += `<tr class="metrics-row"><th>${translate('ppm')}</th>`;
             allDates.forEach(date => {
                 const ppmDay = data.defectosDiarios[date]?.ppmDia || 0;
                 tableHtml += `<td>${Math.round(ppmDay)}</td>`;
             });
-            // Usar el PPM Global calculado en la API
-            tableHtml += `<td colspan="2">${Math.round(data.resumen.ppmGlobal)}</td></tr>`;
+            // PPM Global (Total Problems / Total Inspeccionadas) * 1M
+            const ppmGlobal = totalInspectedOverall > 0 ? (grandTotalProblemsForPercent / totalInspectedOverall) * 1000000 : 0;
+            tableHtml += `<td colspan="2">${Math.round(ppmGlobal)}</td></tr>`;
 
-            // Fila de % DEFECTO
+            // Fila de % DEFECTO (Basado en Total Problems)
             tableHtml += `<tr class="metrics-row"><th>${translate('percent_defect')}</th>`;
             allDates.forEach(date => {
                 const dayData = data.defectosDiarios[date];
@@ -1174,7 +1188,7 @@ $conex->close();
                 });
             }
 
-            // 5. NUEVO: Tendencia PPM
+            // 5. NUEVO: Tendencia PPM (Basado en piezas RECHAZADAS)
             const ppmCtx = document.getElementById('ppmTrendChart')?.getContext('2d');
             if (ppmCtx && dashboardData.dailyPPM && dashboardData.dailyPPM.length > 0) {
                 const ppmLabels = dashboardData.dailyPPM.map(item => new Date(item.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
