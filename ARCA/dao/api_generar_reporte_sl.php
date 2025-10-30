@@ -95,7 +95,8 @@ try {
     $types = "i";
     if ($tipoReporte === 'parcial' && isset($_GET['inicio']) && isset($_GET['fin'])) {
         $reporteData['titulo'] = "Reporte Parcial de Safe Launch";
-        $dateFilter = " AND r.FechaInspeccion BETWEEN ? AND ?";
+        // --- CORRECCIÓN AQUÍ: Usar 'sri' en lugar de 'r' ---
+        $dateFilter = " AND sri.FechaInspeccion BETWEEN ? AND ?";
         $params[] = $_GET['inicio'];
         $params[] = $_GET['fin'];
         $types .= "ss";
@@ -105,9 +106,10 @@ try {
     }
 
     // 3. Obtener todos los reportes de inspección
-    $sql_reportes = "SELECT r.* FROM SafeLaunchReportesInspeccion r
-                     WHERE r.IdSafeLaunch = ? $dateFilter
-                     ORDER BY r.FechaInspeccion ASC, r.RangoHora ASC";
+    // --- CORRECCIÓN AQUÍ: Usar 'sri' en lugar de 'r' ---
+    $sql_reportes = "SELECT sri.* FROM SafeLaunchReportesInspeccion sri
+                     WHERE sri.IdSafeLaunch = ? $dateFilter
+                     ORDER BY sri.FechaInspeccion ASC, sri.RangoHora ASC";
     $stmt_reportes = $conex->prepare($sql_reportes);
     $stmt_reportes->bind_param($types, ...$params);
     $stmt_reportes->execute();
@@ -165,6 +167,7 @@ try {
     $types_defectos = $types;   // Reusar types (i, s, s)
 
     // Defectos de la Cuadrícula
+    // Esta consulta ya usa 'sri' y 'slcd', por lo que ahora $dateFilter funcionará.
     $sql_defectos_grid = "SELECT slcd.NombreDefecto, SUM(srd.CantidadEncontrada) as Cantidad
                           FROM SafeLaunchReporteDefectos srd
                           JOIN SafeLaunchReportesInspeccion sri ON srd.IdSLReporte = sri.IdSLReporte
@@ -184,6 +187,7 @@ try {
     $stmt_defectos_grid->close();
 
     // Defectos Opcionales (Nuevos)
+    // Esta consulta ya usa 'sri' y 'slcd', por lo que ahora $dateFilter funcionará.
     $sql_defectos_nuevos = "SELECT slcd.NombreDefecto, SUM(snd.Cantidad) as Cantidad
                             FROM SafeLaunchNuevosDefectos snd
                             JOIN SafeLaunchReportesInspeccion sri ON snd.IdSLReporte = sri.IdSLReporte
