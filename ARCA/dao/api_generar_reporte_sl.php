@@ -63,10 +63,11 @@ try {
         'info' => [],
         'resumen' => [
             'inspeccionadas' => 0, 'aceptadas' => 0, 'rechazadas' => 0,
-            'retrabajadas' => 0, 'tiempoTotal' => '0 minutos'
+            'retrabajadas' => 0, 'tiempoTotal' => '0 minutos', 'ppmGlobal' => 0
         ],
         'desgloseDiario' => [],
         'defectos' => [],
+        'defectosDiarios' => [], // <-- NUEVO: Para la tabla de defectos diarios
         'dashboardData' => [
             'pareto' => [],
             'rechazadasPorSemana' => [],
@@ -121,8 +122,12 @@ try {
     $weeklyRejects = []; // Para Rechazos Semanales
     $defectAggregates = []; // Para Pareto
 
+    // --- NUEVO: Inicializar para defectos diarios ---
+    $dailyDefectSummary = [];
+
     while ($row = $result_reportes->fetch_assoc()) {
         $fecha = $row['FechaInspeccion'];
+        $idSLReporte = $row['IdSLReporte'];
         $inspeccionadas = (int)$row['PiezasInspeccionadas'];
         $aceptadas = (int)$row['PiezasAceptadas'];
         $rechazadas = $inspeccionadas - $aceptadas;
@@ -156,18 +161,70 @@ try {
         $weekKey = $year . $week;
         if (!isset($weeklyRejects[$weekKey])) $weeklyRejects[$weekKey] = 0;
         $weeklyRejects[$weekKey] += $rechazadas;
-    }
+
+        // --- NUEVO: Recopilar datos de defectos por día para la tabla ---
+        if (!isset($dailyDefectSummary[$fecha])) {
+            $dailyDefectSummary[$fecha] = [
+                'piezasInspeccionadas' => 0,
+                'totalDefectosDia' => 0,
+                'defectos' => [] // [ 'NombreDefecto' => Cantidad ]
+            ];
+        }
+        $dailyDefectSummary[$fecha]['piezasInspeccionadas'] += $inspeccionadas;
+
+        // Obtener defectos de la cuadrícula para este reporte
+        $stmt_defectos_grid_diarios = $conex->prepare("SELECT slcd.NombreDefecto, srd.CantidadEncontrada 
+                                                        FROM SafeLaunchReporteDefectos srd
+                                                        JOIN SafeLaunchCatalogoDefectos slcd ON srd.IdSLDefectoCatalogo = slcd.IdSLDefectoCatalogo
+                                                        WHERE srd.IdSLReporte = ?");
+        $stmt_defectos_grid_diarios->bind_param("i", $idSLReporte);
+        $stmt_defectos_grid_diarios->execute();
+        $result_defectos_grid_diarios = $stmt_defectos_grid_diarios->get_result();
+        while ($defecto_row = $result_defectos_grid_diarios->fetch_assoc()) {
+            $nombreDefecto = $defecto_row['NombreDefecto'];
+            $cantidad = (int)$defecto_row['CantidadEncontrada'];
+            if (!isset($dailyDefectSummary[$fecha]['defectos'][$nombreDefecto])) {
+                $dailyDefectSummary[$fecha]['defectos'][$nombreDefecto] = 0;
+            }
+            $dailyDefectSummary[$fecha]['defectos'][$nombreDefecto] += $cantidad;
+            $dailyDefectSummary[$fecha]['totalDefectosDia'] += $cantidad;
+        }
+        $stmt_defectos_grid_diarios->close();
+
+        // Obtener defectos opcionales para este reporte
+        $stmt_defectos_nuevos_diarios = $conex->prepare("SELECT slcd.NombreDefecto, snd.Cantidad 
+                                                         FROM SafeLaunchNuevosDefectos snd
+                                                         JOIN SafeLaunchCatalogoDefectos slcd ON snd.IdSLDefectoCatalogo = slcd.IdSLDefectoCatalogo
+                                                         WHERE snd.IdSLReporte = ?");
+        $stmt_defectos_nuevos_diarios->bind_param("i", $idSLReporte);
+        $stmt_defectos_nuevos_diarios->execute();
+        $result_defectos_nuevos_diarios = $stmt_defectos_nuevos_diarios->get_result();
+        while ($defecto_row = $result_defectos_nuevos_diarios->fetch_assoc()) {
+            $nombreDefecto = $defecto_row['NombreDefecto'];
+            $cantidad = (int)$defecto_row['Cantidad'];
+            if (!isset($dailyDefectSummary[$fecha]['defectos'][$nombreDefecto])) {
+                $dailyDefectSummary[$fecha]['defectos'][$nombreDefecto] = 0;
+            }
+            $dailyDefectSummary[$fecha]['defectos'][$nombreDefecto] += $cantidad;
+            $dailyDefectSummary[$fecha]['totalDefectosDia'] += $cantidad;
+        }
+        $stmt_defectos_nuevos_diarios->close();
+    } // Fin del while $row
+
     $reporteData['resumen']['rechazadas'] = $reporteData['resumen']['inspeccionadas'] - $reporteData['resumen']['aceptadas'];
     $reporteData['resumen']['tiempoTotal'] = formatarMinutosATiempo($totalMinutos);
+    // --- NUEVO: Calcular PPM Global (usa rechazadas, no todos los defectos) ---
+    // (PPM se basa en piezas RECHAZADAS, no en el total de defectos individuales)
+    $reporteData['resumen']['ppmGlobal'] = ($reporteData['resumen']['inspeccionadas'] > 0) ? ($reporteData['resumen']['rechazadas'] / $reporteData['resumen']['inspeccionadas']) * 1000000 : 0;
+
     $reporteData['desgloseDiario'] = array_values($desglosePorFecha);
     $stmt_reportes->close();
 
-    // 4. Obtener Datos de Defectos (de ambas tablas)
-    $params_defectos = $params; // Reusar params (IdSafeLaunch, inicio, fin)
-    $types_defectos = $types;   // Reusar types (i, s, s)
+    // 4. Obtener Datos de Defectos (de ambas tablas) para el Resumen General de Defectos
+    $params_defectos = $params;
+    $types_defectos = $types;
 
     // Defectos de la Cuadrícula
-    // Esta consulta ya usa 'sri' y 'slcd', por lo que ahora $dateFilter funcionará.
     $sql_defectos_grid = "SELECT slcd.NombreDefecto, SUM(srd.CantidadEncontrada) as Cantidad
                           FROM SafeLaunchReporteDefectos srd
                           JOIN SafeLaunchReportesInspeccion sri ON srd.IdSLReporte = sri.IdSLReporte
@@ -187,7 +244,6 @@ try {
     $stmt_defectos_grid->close();
 
     // Defectos Opcionales (Nuevos)
-    // Esta consulta ya usa 'sri' y 'slcd', por lo que ahora $dateFilter funcionará.
     $sql_defectos_nuevos = "SELECT slcd.NombreDefecto, SUM(snd.Cantidad) as Cantidad
                             FROM SafeLaunchNuevosDefectos snd
                             JOIN SafeLaunchReportesInspeccion sri ON snd.IdSLReporte = sri.IdSLReporte
@@ -212,6 +268,16 @@ try {
         return $b['cantidad'] <=> $a['cantidad'];
     });
     $reporteData['defectos'] = $defectos_lista;
+
+    // --- NUEVO: Calcular PPM por día y agregar a dailyDefectSummary ---
+    // (Nota: $dailyDefectSummary usa el *total de defectos*, no solo rechazadas)
+    // El PPM de la tabla de ejemplo usa el "Total Problems", así que usaremos 'totalDefectosDia'
+    foreach ($dailyDefectSummary as $fecha => &$data) {
+        $data['ppmDia'] = ($data['piezasInspeccionadas'] > 0) ? ($data['totalDefectosDia'] / $data['piezasInspeccionadas']) * 1000000 : 0;
+    }
+    unset($data); // Romper la referencia
+    ksort($dailyDefectSummary); // Ordenar por fecha
+    $reporteData['defectosDiarios'] = $dailyDefectSummary;
 
     // 5. Procesar Datos para Dashboards
     // Pareto
@@ -240,7 +306,7 @@ try {
         ];
     }
 
-    // PPM Diario
+    // PPM Diario (del dashboard, usa piezas rechazadas)
     ksort($dailyAggregates);
     foreach ($dailyAggregates as $fecha => $data) {
         $ppm = ($data['inspeccionadas'] > 0) ? ($data['rechazadas'] / $data['inspeccionadas']) * 1000000 : 0;
@@ -254,7 +320,7 @@ try {
     $response['reporte'] = $reporteData;
 
 } catch (Exception $e) {
-    $response['message'] = $e->getMessage();
+    $response['message'] = "Error en la API: " . $e->getMessage() . " (Línea: " . $e->getLine() . ")";
 }
 
 $conex->close();

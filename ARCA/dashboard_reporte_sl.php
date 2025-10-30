@@ -18,19 +18,110 @@ $conex->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Safe Launch - ARCA</title>
-    <link rel="stylesheet" href="css/estilosT.css"> <!-- Asegúrate de que esta ruta sea correcta -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="css/estilosT.css"> <!-- Asegúrate de que esta ruta sea correcta --><link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Librerías para Gráficas y PDF -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Librerías para Gráficas y PDF --><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
+        :root {
+            --color-primario: #4a6984;
+            --color-secundario: #5c85ad;
+            --color-acento: #8ab4d7;
+            --color-fondo: #f4f6f9;
+            --color-blanco: #ffffff;
+            --color-texto: #333333;
+            --color-borde: #dbe1e8;
+            --color-exito: #28a745;
+            --color-error: #a83232;
+            --sombra-suave: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: var(--color-blanco);
+            box-shadow: var(--sombra-suave);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-primario);
+        }
+        .logo i { margin-right: 10px; }
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        .user-info span {
+            margin-right: 0;
+            font-weight: 700;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--color-secundario);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .logout-btn:hover { color: var(--color-primario); }
+        .logout-btn i { margin-left: 8px; }
+        .form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
+        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
+        fieldset:last-of-type { border-bottom: none; }
+        legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: var(--color-primario, #4a6984); margin-bottom: 20px; }
+        legend i { margin-right: 10px; color: var(--color-acento); }
+        .form-row { display: flex; flex-wrap: wrap; gap: 20px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; margin-bottom: 15px; min-width: 200px; }
+        .form-group label { margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; font-family: 'Lato', sans-serif; box-sizing: border-box; }
+        .form-actions { text-align: right; margin-top: 20px; }
+        .page-header {
+            margin-bottom: 20px;
+        }
+        .page-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--color-primario);
+            margin: 0;
+        }
+        .lang-btn { border: none; background-color: transparent; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 15px; cursor: pointer; color: #888; transition: all 0.3s ease; }
+        .lang-btn:not(.active):hover { background-color: #e9eef2; color: var(--color-primario); }
+        .lang-btn.active { background-color: var(--color-secundario); color: var(--color-blanco); cursor: default; }
+        .language-selector { display: flex; align-items: center; gap: 5px; background-color: var(--color-fondo); padding: 4px; border-radius: 20px; margin-right: 0; border: 1px solid var(--color-borde); }
+        .btn-primary, .btn-secondary { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        .btn-primary { background-color: var(--color-secundario); color: white; }
+        .btn-primary:hover { background-color: var(--color-primario); }
+        .btn-secondary { background-color: #e0e0e0; color: #333; }
+        .btn-secondary:hover { background-color: #bdbdbd; }
+
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -196,6 +287,63 @@ $conex->close();
             background-color: #e9ecef;
             border-color: #ced4da;
         }
+
+        /* --- NUEVO: Estilos para la tabla de defectos diarios --- */
+        .defect-daily-breakdown .table-responsive {
+            overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
+            margin-bottom: 20px;
+        }
+        .defect-daily-breakdown table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 800px; /* Ancho mínimo para forzar scroll si es necesario */
+        }
+        .defect-daily-breakdown th, .defect-daily-breakdown td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+            min-width: 80px; /* Ancho mínimo para celdas de fecha */
+        }
+        .defect-daily-breakdown th {
+            background-color: #e9ecef;
+            font-weight: bold;
+            position: sticky; /* Encabezados fijos */
+            top: 0;
+            z-index: 1;
+        }
+        .defect-daily-breakdown tbody td:first-child,
+        .defect-daily-breakdown tfoot th:first-child {
+            text-align: left; /* Alinea los nombres de defectos a la izquierda */
+            font-weight: bold;
+            background-color: #f8f9fa;
+            position: sticky; /* Columna de defectos fija */
+            left: 0;
+            z-index: 2;
+            min-width: 150px; /* Ancho para la columna de defectos */
+            word-break: break-word;
+        }
+        .defect-daily-breakdown tfoot th {
+            background-color: #e9ecef;
+            text-align: left;
+        }
+        .defect-daily-breakdown .total-row th,
+        .defect-daily-breakdown .total-row td {
+            background-color: #fdfdfd;
+            font-weight: bold;
+            border-top: 2px solid #ccc;
+        }
+        .defect-daily-breakdown .metrics-row th,
+        .defect-daily-breakdown .metrics-row td {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .defect-daily-breakdown .metrics-row th:first-child {
+            background-color: #e9ecef;
+        }
+        /* --- FIN NUEVO --- */
+
     </style>
 </head>
 <body>
@@ -351,7 +499,7 @@ $conex->close();
                 hour_by_hour: "Rango de Hora", shift: "Turno", inspector: "Inspector",
                 downtime: "Tiempo Muerto", no: "No", comments: "Comentarios",
                 defects_summary: "Resumen de Defectos del Periodo",
-                defect: "Defecto", total_qty_defect: "Cantidad Total",
+                defect: "Defecto", total_qty_defect: "Cantidad Total", defect_type: "Tipo de Defecto",
                 new_defects_found: "Nuevos Defectos Encontrados (Opcionales)",
                 no_defects_found_period: "No se encontraron defectos en este periodo.",
                 visual_dashboards: "Dashboards Visuales",
@@ -359,9 +507,19 @@ $conex->close();
                 weekly_rejects_title: "Rechazadas por Semana",
                 accepted_vs_rejected_title: "Aceptadas vs. Rechazadas",
                 daily_progress_title: "Progreso Diario de Inspección",
-                ppm_trend_chart_title: "Tendencia PPM (Partes por Millón)", // NUEVO
+                ppm_trend_chart_title: "Tendencia PPM (Partes por Millón)",
                 chart_qty: "Cantidad", chart_cumulative: "% Acumulado", chart_week: "Semana", chart_ppm: "PPM",
-                dashboard_filter_apply: "Filtrar Gráficas", dashboard_filter_clear: "Limpiar Filtro"
+                dashboard_filter_apply: "Filtrar Gráficas", dashboard_filter_clear: "Limpiar Filtro",
+                // --- NUEVAS TRADUCCIONES ---
+                daily_defects_title: "Detalle Diario de Defectos",
+                issues_found: "Problemas Encontrados",
+                total_problems: "Total de Problemas",
+                quantity_inspected: "Cantidad Inspeccionada",
+                ppm: "PPM",
+                percent_defect: "% Defecto",
+                total: "Total",
+                percent: "%"
+                // --- FIN NUEVAS TRADUCCIONES ---
             },
             en: {
                 welcome: "Welcome", logout: "Logout", main_title: "Safe Launch Dashboard",
@@ -388,7 +546,7 @@ $conex->close();
                 hour_by_hour: "Time Range", shift: "Shift", inspector: "Inspector",
                 downtime: "Downtime", no: "No", comments: "Comments",
                 defects_summary: "Defects Summary for the Period",
-                defect: "Defect", total_qty_defect: "Total Quantity",
+                defect: "Defect", total_qty_defect: "Total Quantity", defect_type: "Defect Type",
                 new_defects_found: "New Defects Found (Optional)",
                 no_defects_found_period: "No defects found in this period.",
                 visual_dashboards: "Visual Dashboards",
@@ -396,9 +554,19 @@ $conex->close();
                 weekly_rejects_title: "Weekly Rejects",
                 accepted_vs_rejected_title: "Accepted vs. Rejected",
                 daily_progress_title: "Daily Inspection Progress",
-                ppm_trend_chart_title: "PPM (Parts Per Million) Trend", // NEW
+                ppm_trend_chart_title: "PPM (Parts Per Million) Trend",
                 chart_qty: "Quantity", chart_cumulative: "Cumulative %", chart_week: "Week", chart_ppm: "PPM",
-                dashboard_filter_apply: "Filter Charts", dashboard_filter_clear: "Clear Filter"
+                dashboard_filter_apply: "Filter Charts", dashboard_filter_clear: "Clear Filter",
+                // --- NEW TRANSLATIONS ---
+                daily_defects_title: "Daily Defects Detail",
+                issues_found: "Issues Found",
+                total_problems: "Total Problems",
+                quantity_inspected: "Quantity Inspected",
+                ppm: "PPM",
+                percent_defect: "% Defect",
+                total: "Total",
+                percent: "%"
+                // --- END NEW TRANSLATIONS ---
             }
         };
 
@@ -480,12 +648,40 @@ $conex->close();
             const contentWidth = pdfWidth - (margin * 2);
             let yPosition = margin;
 
-            const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
+            const sectionsToPrint = Array.from(elementoReporte.children);
 
-            for (const element of allElements) {
-                const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+            for (const section of sectionsToPrint) {
+                // Clonar la sección para no afectar la vista del usuario
+                const sectionClone = section.cloneNode(true);
+                // Si es la tabla de defectos diarios, quitar el scroll para la captura
+                if (section.id === 'defect-daily-breakdown-container') {
+                    const responsiveWrapper = sectionClone.querySelector('.table-responsive');
+                    if (responsiveWrapper) {
+                        responsiveWrapper.style.overflowX = 'visible';
+                        responsiveWrapper.style.maxWidth = 'none';
+                    }
+                }
+
+                // Añadir el clon al body (fuera de vista) para que html2canvas lo renderice
+                sectionClone.style.position = 'absolute';
+                sectionClone.style.left = '-9999px';
+                sectionClone.style.width = (pdfWidth * 3.78) + 'px'; // Aprox. mm a px para captura
+                document.body.appendChild(sectionClone);
+
+                const canvas = await html2canvas(sectionClone, {
+                    scale: 2,
+                    useCORS: true,
+                    width: sectionClone.scrollWidth, // Capturar el ancho completo
+                    windowWidth: sectionClone.scrollWidth
+                });
+
+                // Remover el clon
+                document.body.removeChild(sectionClone);
+
+
                 const imgData = canvas.toDataURL('image/png');
                 const imgProps = pdf.getImageProperties(imgData);
+                // Ajustar la altura manteniendo la relación de aspecto
                 const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
 
                 if (yPosition + imgHeight > pdfHeight - margin) {
@@ -501,6 +697,132 @@ $conex->close();
             Swal.close();
         });
 
+
+        // --- NUEVA FUNCIÓN ---
+        function renderDailyDefectsTable(data) {
+            const currentLang = getCurrentLanguage();
+            const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
+
+            let tableHtml = `
+                <div class="pdf-section defect-daily-breakdown" id="defect-daily-breakdown-container">
+                    <h4><i class="fa-solid fa-table"></i> ${translate('daily_defects_title')}</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>${translate('issues_found')}</th>
+            `;
+
+            // Obtener todas las fechas y defectos
+            const allDates = Object.keys(data.defectosDiarios).sort();
+            const allDefectNames = new Set();
+            allDates.forEach(date => {
+                const dayData = data.defectosDiarios[date];
+                Object.keys(dayData.defectos).forEach(defectName => allDefectNames.add(defectName));
+            });
+            const sortedDefectNames = Array.from(allDefectNames).sort();
+
+            // Encabezados de Fecha
+            allDates.forEach(date => {
+                const dateObj = new Date(date + 'T00:00:00');
+                const dayOfWeek = dateObj.toLocaleDateString(dateLocale, { weekday: 'short' });
+                const monthDay = dateObj.toLocaleDateString(dateLocale, { month: 'short', day: 'numeric' });
+                tableHtml += `<th>${monthDay}<br>${dayOfWeek}</th>`;
+            });
+            tableHtml += `<th>${translate('total')}</th><th>${translate('percent')}</th></tr></thead><tbody>`;
+
+            // Filas de Defectos
+            let grandTotalProblems = 0;
+            if (sortedDefectNames.length > 0) {
+                sortedDefectNames.forEach(defectName => {
+                    tableHtml += `<tr><td>${defectName}</td>`;
+                    let totalDefectQty = 0;
+                    allDates.forEach(date => {
+                        const qty = data.defectosDiarios[date]?.defectos[defectName] || 0;
+                        tableHtml += `<td>${qty > 0 ? qty : ''}</td>`;
+                        totalDefectQty += qty;
+                    });
+                    grandTotalProblems += totalDefectQty; // Sumar al total general de problemas
+                    // El % por defecto se calcula contra el total de *problemas*, no de piezas
+                    // (Basado en el análisis de la imagen de ejemplo)
+                    tableHtml += `<td>${totalDefectQty}</td><td>...%</td></tr>`; // Placeholder para %
+                });
+            } else {
+                tableHtml += `<tr><td colspan="${allDates.length + 3}" style="text-align:center;">${translate('no_defects_found_period')}</td></tr>`;
+            }
+
+            // Recalcular porcentajes de defectos ahora que tenemos grandTotalProblems
+            if (grandTotalProblems > 0) {
+                tableHtml = tableHtml.replace(/<td>\.\.\.%<\/td>/g, () => {
+                    // Esta es una forma simple de hacerlo; una mejor forma sería almacenar los totales por defecto
+                    // y recalcular aquí. Por ahora, nos enfocamos en la estructura.
+                    // Para hacerlo bien, necesitaríamos recalcular los totales por fila.
+                    // Vamos a hacerlo bien.
+                    let newTbody = '';
+                    sortedDefectNames.forEach(defectName => {
+                        newTbody += `<tr><td>${defectName}</td>`;
+                        let totalDefectQty = 0;
+                        allDates.forEach(date => {
+                            const qty = data.defectosDiarios[date]?.defectos[defectName] || 0;
+                            newTbody += `<td>${qty > 0 ? qty : ''}</td>`;
+                            totalDefectQty += qty;
+                        });
+                        const percentDefect = grandTotalProblems > 0 ? ((totalDefectQty / grandTotalProblems) * 100).toFixed(2) : '0.00';
+                        newTbody += `<td>${totalDefectQty}</td><td>${percentDefect}%</td></tr>`;
+                    });
+                    tableHtml = tableHtml.substring(0, tableHtml.indexOf('<tbody>') + '<tbody>'.length) + newTbody;
+                } else {
+                    tableHtml = tableHtml.replace(/<td>\.\.\.%<\/td>/g, '<td>0.00%</td>');
+                }
+            } else {
+                tableHtml = tableHtml.replace(/<td>\.\.\.%<\/td>/g, '<td>0.00%</td>');
+            }
+
+
+            tableHtml += `</tbody><tfoot>`; // Usar tfoot para las filas de resumen
+
+            // Fila de TOTAL PROBLEMS
+            tableHtml += `<tr class="total-row"><th>${translate('total_problems')}</th>`;
+            let grandTotalProblemsForPercent = 0; // Usar el total calculado en el bucle anterior
+            allDates.forEach(date => {
+                const dayTotal = data.defectosDiarios[date]?.totalDefectosDia || 0;
+                tableHtml += `<td>${dayTotal}</td>`;
+                grandTotalProblemsForPercent += dayTotal;
+            });
+            const totalInspectedOverall = data.resumen.inspeccionadas;
+            const grandPercentDefect = totalInspectedOverall > 0 ? ((grandTotalProblemsForPercent / totalInspectedOverall) * 100).toFixed(2) : '0.00';
+            tableHtml += `<td>${grandTotalProblemsForPercent}</td><td>${grandPercentDefect}%</td></tr>`;
+
+            // Fila de QUANTITY INSPECTED
+            tableHtml += `<tr class="metrics-row"><th>${translate('quantity_inspected')}</th>`;
+            allDates.forEach(date => {
+                const qtyInspected = data.defectosDiarios[date]?.piezasInspeccionadas || 0;
+                tableHtml += `<td>${qtyInspected}</td>`;
+            });
+            tableHtml += `<td colspan="2">${totalInspectedOverall}</td></tr>`; // Total general de inspeccionadas
+
+            // Fila de PPM
+            tableHtml += `<tr class="metrics-row"><th>${translate('ppm')}</th>`;
+            allDates.forEach(date => {
+                const ppmDay = data.defectosDiarios[date]?.ppmDia || 0;
+                tableHtml += `<td>${Math.round(ppmDay)}</td>`;
+            });
+            // Usar el PPM Global calculado en la API
+            tableHtml += `<td colspan="2">${Math.round(data.resumen.ppmGlobal)}</td></tr>`;
+
+            // Fila de % DEFECTO
+            tableHtml += `<tr class="metrics-row"><th>${translate('percent_defect')}</th>`;
+            allDates.forEach(date => {
+                const dayData = data.defectosDiarios[date];
+                const percentDay = (dayData.piezasInspeccionadas > 0) ? ((dayData.totalDefectosDia / dayData.piezasInspeccionadas) * 100).toFixed(2) : '0.00';
+                tableHtml += `<td>${percentDay}%</td>`;
+            });
+            tableHtml += `<td colspan="2">${grandPercentDefect}%</td></tr>`; // % Defecto global
+
+            tableHtml += `</tfoot></table></div></div>`;
+            return tableHtml;
+        }
+        // --- FIN NUEVA FUNCIÓN ---
 
         function renderizarReporte(data) {
             const currentLang = getCurrentLanguage();
@@ -549,7 +871,7 @@ $conex->close();
                     desgloseHtml += diaHtml;
                 });
             } else {
-                desgloseHtml = ''; // No mostrar desglose si no hay datos
+                desgloseHtml = '';
             }
 
             let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> ${translate('defects_summary')}</h4>`;
@@ -559,13 +881,17 @@ $conex->close();
                     defectosHtml += `<tr>
                                         <td>${defecto.nombre}</td>
                                         <td>${defecto.cantidad}</td>
-                                        <td>${defecto.tipo === 'asociado' ? 'Asociado' : 'Opcional'}</td>
+                                        <td>${defecto.tipo === 'Asociado' ? translate('defect_type_associated') : translate('defect_type_optional')}</td>
                                     </tr>`;
                 });
             } else {
                 defectosHtml += `<tr><td colspan="3" style="text-align:center;">${translate('no_defects_found_period')}</td></tr>`;
             }
             defectosHtml += `</tbody></table></div>`;
+
+            // --- LLAMAR A LA NUEVA FUNCIÓN ---
+            const dailyDefectsTableHtml = (data.defectosDiarios && Object.keys(data.defectosDiarios).length > 0) ? renderDailyDefectsTable(data) : '';
+
 
             let dashboardHtml = `
             <div class="pdf-section">
@@ -601,14 +927,13 @@ $conex->close();
                         <h5>${translate('daily_progress_title')}</h5>
                         <canvas id="dailyProgressChart"></canvas>
                     </div>
-                    <!-- --- NUEVO GRÁFICO --- -->
                     <div class="chart-box" style="grid-column: 1 / -1;">
                         <h5>${translate('ppm_trend_chart_title')}</h5>
                         <canvas id="ppmTrendChart"></canvas>
                     </div>
                 </div>
             </div>
-        `;
+            `;
 
             const totalMinutos = parsearTiempoAMinutosJS(data.resumen.tiempoTotal);
             let piezasPorHora = '0.00';
@@ -637,16 +962,18 @@ $conex->close();
                     </tbody>
                 </table>
             </div>
+            ${dailyDefectsTableHtml} <!-- INSERTAR LA NUEVA TABLA AQUÍ -->
             ${desgloseHtml}
             ${defectosHtml}
             ${dashboardHtml}
-        `;
+            `;
 
             contenidoReporteDiv.innerHTML = html;
             reporteContainer.style.display = 'block';
 
             renderizarDashboards(data);
 
+            // --- Re-asignar listeners a los botones de filtro ---
             document.getElementById('btn-filtrar-dashboard-sl').addEventListener('click', () => {
                 const startDate = document.getElementById('dashboard-fecha-inicio-sl').value;
                 const endDate = document.getElementById('dashboard-fecha-fin-sl').value;
@@ -659,13 +986,11 @@ $conex->close();
                 document.getElementById('dashboard-fecha-inicio-sl').value = '';
                 document.getElementById('dashboard-fecha-fin-sl').value = '';
                 if(lastReportData){
-                    renderizarDashboards(lastReportData); // Renderizar con los datos originales completos
+                    renderizarReporte(lastReportData); // Renderizar con los datos originales completos
                 }
             });
 
             reporteContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            // Re-aplicar traducciones a los elementos recién creados
             setLanguage(getCurrentLanguage());
         }
 
@@ -673,7 +998,13 @@ $conex->close();
             if (!lastReportData) return;
 
             const filteredData = JSON.parse(JSON.stringify(lastReportData));
-            let dailyAggregates = {}; // Para recalcular PPM
+            let dailyAggregates = {};
+            let defectAggregatesFiltered = {};
+            let inspeccionadasTotal = 0;
+            let aceptadasTotal = 0;
+            let retrabajadasTotal = 0;
+            let rechazadasTotal = 0;
+            const rechazoSemanal = {};
 
             if (startDate && endDate) {
                 const start = new Date(startDate + 'T00:00:00');
@@ -683,33 +1014,36 @@ $conex->close();
                     const diaDate = new Date(dia.fecha + 'T00:00:00');
                     return diaDate >= start && diaDate <= end;
                 });
+
+                filteredData.defectosDiarios = {}; // Resetear y rellenar
+                Object.keys(lastReportData.defectosDiarios).forEach(dateKey => {
+                    const diaDate = new Date(dateKey + 'T00:00:00');
+                    if (diaDate >= start && diaDate <= end) {
+                        filteredData.defectosDiarios[dateKey] = lastReportData.defectosDiarios[dateKey];
+                    }
+                });
             }
 
-            if (filteredData.desgloseDiario.length === 0) {
-                Swal.fire(translate('missing_info'), 'No se encontraron datos en el rango de fechas seleccionado para las gráficas.', 'info');
+            if (filteredData.desgloseDiario.length === 0 && Object.keys(filteredData.defectosDiarios).length === 0) {
+                Swal.fire(translate('missing_info'), 'No se encontraron datos en el rango de fechas seleccionado.', 'info');
                 return;
             }
 
-            // --- RECALCULAR TODOS LOS DATOS PARA LOS DASHBOARDS ---
-            let inspeccionadas = 0, aceptadas = 0, retrabajadas = 0, rechazadas = 0;
-            const rechazoSemanal = {};
-
+            // --- RECALCULAR DATOS ---
             filteredData.desgloseDiario.forEach(dia => {
                 const diaRechazadas = dia.totales.inspeccionadas - dia.totales.aceptadas;
-                inspeccionadas += dia.totales.inspeccionadas;
-                aceptadas += dia.totales.aceptadas;
-                rechazadas += diaRechazadas;
+                inspeccionadasTotal += dia.totales.inspeccionadas;
+                aceptadasTotal += dia.totales.aceptadas;
+                rechazadasTotal += diaRechazadas;
                 dia.entradas.forEach(entrada => {
-                    retrabajadas += entrada.PiezasRetrabajadas;
+                    retrabajadasTotal += (parseInt(entrada.PiezasRetrabajadas) || 0);
                 });
 
-                // Para PPM Trend
                 dailyAggregates[dia.fecha] = {
                     inspeccionadas: dia.totales.inspeccionadas,
                     rechazadas: diaRechazadas
                 };
 
-                // Para Rechazadas por Semana
                 const fecha = new Date(dia.fecha + 'T00:00:00');
                 const year = fecha.getFullYear();
                 const week = Math.ceil((((fecha - new Date(year, 0, 1)) / 86400000) + new Date(year, 0, 1).getDay() + 1) / 7);
@@ -718,14 +1052,37 @@ $conex->close();
                 rechazoSemanal[weekKey] += diaRechazadas;
             });
 
-            filteredData.resumen = {
-                ...filteredData.resumen,
-                inspeccionadas, aceptadas, rechazadas, retrabajadas
-            };
+            // Recalcular defectos y pareto desde los datos diarios filtrados
+            Object.values(filteredData.defectosDiarios).forEach(dayData => {
+                Object.entries(dayData.defectos).forEach(([defectName, qty]) => {
+                    if (!defectAggregatesFiltered[defectName]) defectAggregatesFiltered[defectName] = { nombre: defectName, cantidad: 0 };
+                    defectAggregatesFiltered[defectName].cantidad += qty;
+                });
+            });
 
-            // NOTA: El pareto NO se puede recalcular con precisión sin volver a consultar la BD por defectos en ese rango.
-            // Se seguirá mostrando el pareto del periodo completo (lastReportData).
-            filteredData.dashboardData.pareto = lastReportData.dashboardData.pareto;
+            const defectosListaFiltrada = Object.values(defectAggregatesFiltered).sort((a, b) => b.cantidad - a.cantidad);
+            const totalDefectosFiltrados = defectosListaFiltrada.reduce((sum, d) => sum + d.cantidad, 0);
+            let acumuladoFiltrado = 0;
+            filteredData.dashboardData.pareto = [];
+            if (totalDefectosFiltrados > 0) {
+                const top5Filtrado = defectosListaFiltrada.slice(0, 5);
+                top5Filtrado.forEach(defecto => {
+                    acumuladoFiltrado += defecto.cantidad;
+                    filteredData.dashboardData.pareto.push({
+                        defecto: defecto.nombre,
+                        cantidad: defecto.cantidad,
+                        porcentajeAcumulado: Math.round((acumuladoFiltrado / totalDefectosFiltrados) * 100)
+                    });
+                });
+            }
+
+            // Actualizar resumen
+            filteredData.resumen.inspeccionadas = inspeccionadasTotal;
+            filteredData.resumen.aceptadas = aceptadasTotal;
+            filteredData.resumen.rechazadas = rechazadasTotal;
+            filteredData.resumen.retrabajadas = retrabajadasTotal;
+            filteredData.resumen.ppmGlobal = (inspeccionadasTotal > 0) ? (rechazadasTotal / inspeccionadasTotal) * 1000000 : 0;
+            // No se recalcula el tiempo total en filtro
 
             // Actualizar data de rechazos por semana
             filteredData.dashboardData.rechazadasPorSemana = Object.keys(rechazoSemanal).map(semana => ({
@@ -741,16 +1098,24 @@ $conex->close();
 
 
             renderizarDashboards(filteredData);
+
+            // --- RE-RENDERIZAR LA TABLA DE DEFECTOS DIARIOS ---
+            const newTableHtml = renderDailyDefectsTable(filteredData);
+            const oldTableContainer = contenidoReporteDiv.querySelector('#defect-daily-breakdown-container');
+            if (oldTableContainer) {
+                oldTableContainer.outerHTML = newTableHtml;
+            }
+            // --- FIN RE-RENDERIZAR ---
+
+            setLanguage(getCurrentLanguage());
         }
 
-
         function renderizarDashboards(data) {
-            // Destruir gráficas anteriores
             if (paretoChartInstance) paretoChartInstance.destroy();
             if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.destroy();
             if (rejectionRateChartInstance) rejectionRateChartInstance.destroy();
             if (dailyProgressChartInstance) dailyProgressChartInstance.destroy();
-            if (ppmTrendChartInstance) ppmTrendChartInstance.destroy(); // NUEVO
+            if (ppmTrendChartInstance) ppmTrendChartInstance.destroy();
 
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
@@ -801,7 +1166,7 @@ $conex->close();
                 dailyData.accepted.push(dia.totales.aceptadas);
                 dailyData.rejected.push(dia.totales.rechazadas);
             });
-            if(dailyCtx) {
+            if(dailyCtx && dailyData.labels.length > 0) {
                 dailyProgressChartInstance = new Chart(dailyCtx, {
                     type: 'bar',
                     data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
@@ -836,6 +1201,7 @@ $conex->close();
             btn.addEventListener('click', () => {
                 setLanguage(btn.dataset.lang);
                 if (reporteContainer.style.display === 'block' && lastReportData) {
+                    // Re-renderizar todo para que los títulos de las gráficas y fechas se actualicen
                     renderizarReporte(lastReportData);
                 }
             });
