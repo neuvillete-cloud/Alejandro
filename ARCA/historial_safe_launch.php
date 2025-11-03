@@ -118,16 +118,11 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
     if (count($where_clauses) > 0) {
         $sql_base .= " WHERE " . implode(" AND ", $where_clauses);
     }
-
-    // --- CORRECCIÓN AQUÍ ---
-    // Se elimina el GROUP BY, ya no es necesario gracias a la subconsulta.
-    // $sql_base .= " GROUP BY sl.IdSafeLaunch, sl.NombreProyecto, sl.Cliente, sl.FechaRegistro, sl.Estatus, u.Nombre, sl.RutaInstruccion, sl.EstatusInstruccion";
 }
 
 $sql_base .= " ORDER BY sl.IdSafeLaunch DESC";
 $stmt = $conex->prepare($sql_base);
 if (!$stmt) {
-    // Manejo de error si la preparación falla
     die("Error preparing statement: " . $conex->error);
 }
 
@@ -136,7 +131,6 @@ if (!empty($types)) {
 }
 
 if (!$stmt->execute()) {
-    // Manejo de error si la ejecución falla
     die("Error executing statement: " . $stmt->error);
 }
 
@@ -157,15 +151,10 @@ $conex->close();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* Estilo para el botón de resubir (ELIMINADO, pero se mantiene el CSS por si acaso) */
         .btn-icon.resubir { background-color: #fff3e0; color: #b75c09; }
         .btn-icon.resubir:hover { background-color: #ff9800; color: var(--color-blanco); }
-
-        /* Estilo para estatus 'Rechazado' (rojo) */
         .status.status-rechazado { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
         .status.status-rechazado::before { background-color: #dc3545; }
-
-        /* Estilo para el botón 'Revisar' (azul) */
         .btn-icon.revisar { background-color: #e3f2fd; color: #0d47a1; }
         .btn-icon.revisar:hover { background-color: #2196f3; color: var(--color-blanco); }
     </style>
@@ -243,55 +232,42 @@ $conex->close();
                         <td>
                             <?php
                             $estatus_clase = '';
-                            // Nueva lógica basada en IdEstatus
                             switch ($row['IdEstatus']) {
-                                case 1: // Recibido
-                                    $estatus_clase = 'status-recibido';
-                                    break;
-                                case 2: // Asignado
-                                    $estatus_clase = 'status-recibido'; // Mantenemos el azul para "Asignado"
-                                    break;
-                                case 3: // En Proceso
-                                    $estatus_clase = 'status-en-proceso';
-                                    break;
-                                case 4: // Cerrado
-                                    $estatus_clase = 'status-cerrado';
-                                    break;
-                                default:
-                                    $estatus_clase = 'status-recibido';
+                                case 1: $estatus_clase = 'status-recibido'; break;
+                                case 2: $estatus_clase = 'status-recibido'; break; // Mantenemos azul para 'Asignado'
+                                case 3: $estatus_clase = 'status-en-proceso'; break;
+                                case 4: $estatus_clase = 'status-cerrado'; break;
+                                default: $estatus_clase = 'status-recibido';
                             }
                             ?>
-                            <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span>
+                            <!-- *** CAMBIO AQUÍ: Añadido un ID único al <span> *** -->
+                            <span id="status-span-<?php echo $row['IdSafeLaunch']; ?>" class="status <?php echo $estatus_clase; ?>">
+                                <?php echo htmlspecialchars($row['NombreEstatus']); ?>
+                            </span>
                         </td>
                         <td class="actions-cell">
-                            <!-- Botón de Detalles (apunta a un nuevo JS) -->
                             <button class="btn-icon btn-details" data-id="<?php echo $row['IdSafeLaunch']; ?>" data-translate-key-title="title_viewDetails" title="Ver Detalles"><i class="fa-solid fa-eye"></i></button>
 
                             <?php if ($modoVista === 'usuario_logueado'): ?>
 
-                                <!-- INICIO: Botón de Enviar Correo (RE-INTEGRADO) -->
                                 <?php if (isset($row['IdCompartido']) && $row['IdCompartido'] !== null): ?>
                                     <button class="btn-icon btn-email sent" data-translate-key-title="title_emailSent" title="Correo Enviado" disabled>
                                         <i class="fa-solid fa-check"></i>
                                     </button>
                                 <?php else: ?>
+                                    <!-- *** CAMBIO AQUÍ: Añadido data-id al botón de email *** -->
                                     <button class="btn-icon btn-email" data-id="<?php echo $row['IdSafeLaunch']; ?>" data-translate-key-title="title_sendByEmail" title="Enviar por Correo">
                                         <i class="fa-solid fa-envelope"></i>
                                     </button>
                                 <?php endif; ?>
-                                <!-- FIN: Botón de Enviar Correo -->
 
-                                <!-- Botón de Revisar (Solo Admin y si no está Cerrado) -->
-                                <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1 && $row['IdEstatus'] != 4): // 1=Recibido, 2=Asignado, 3=En Proceso ?>
+                                <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1 && $row['IdEstatus'] != 4): ?>
                                     <a href="revisar_safe_launch.php?id=<?php echo $row['IdSafeLaunch']; ?>" class="btn-icon revisar" data-translate-key-title="title_reviewSL" title="Revisar Safe Launch">
                                         <i class="fa-solid fa-check-to-slot"></i>
                                     </a>
                                 <?php endif; ?>
 
-                                <!-- Botón Resubir (ELIMINADO) -->
-
                             <?php else: // Modo Invitado ?>
-                                <!-- Puedes añadir botones específicos para invitados aquí si es necesario -->
                                 <a href="trabajar_safe_launch.php?id=<?php echo $row['IdSafeLaunch']; ?>" class="btn-icon" title="Empezar a Trabajar" style="text-decoration: none; background-color: #5c85ad; color: #ffffff;"><i class="fa-solid fa-hammer"></i></a>
                             <?php endif; ?>
                         </td>
@@ -312,7 +288,6 @@ $conex->close();
     </div>
 </main>
 
-<!-- Modal de Detalles (no funcional hasta crear ver_safe_launch.js y el DAO) -->
 <div id="details-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
@@ -325,15 +300,8 @@ $conex->close();
     </div>
 </div>
 
-<!-- Modal para Resubir Instrucción (ELIMINADO) -->
-
-
-<!-- Apunta a un NUEVO JS que debe ser creado -->
 <script src="js/ver_safe_launch.js"></script>
 
-<!-- Script para el modal de resubir (ELIMINADO) -->
-
-<!-- INICIO: NUEVO SCRIPT PARA EL BOTÓN DE ENVIAR CORREO -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- TRADUCCIÓN (Simplificada para esta página) ---
@@ -361,8 +329,6 @@ $conex->close();
                 'swal_share_success_text': 'El enlace de invitado ha sido enviado.',
                 'swal_share_error_title': 'Error',
                 'swal_share_error_text': 'No se pudo enviar el correo.',
-
-                // --- INICIO DE TRADUCCIONES AÑADIDAS (para el modal) ---
                 'loadingData': 'Cargando datos...',
                 'errorLoadingData': 'Error al cargar los datos.',
                 'section_generalData': 'Datos Generales',
@@ -373,7 +339,6 @@ $conex->close();
                 'section_defects': 'Defectos Registrados',
                 'defect': 'Defecto',
                 'noDefects': 'No se registraron defectos.'
-                // --- FIN DE TRADUCCIONES AÑADIDAS ---
             },
             'en': {
                 'nav_dashboard': 'Dashboard', 'nav_myRequests': 'My Contentions',
@@ -398,8 +363,6 @@ $conex->close();
                 'swal_share_success_text': 'The guest link has been sent.',
                 'swal_share_error_title': 'Error',
                 'swal_share_error_text': 'Could not send the email.',
-
-                // --- INICIO DE TRADUCCIONES AÑADIDAS (para el modal) ---
                 'loadingData': 'Loading data...',
                 'errorLoadingData': 'Error loading data.',
                 'section_generalData': 'General Data',
@@ -410,7 +373,6 @@ $conex->close();
                 'section_defects': 'Registered Defects',
                 'defect': 'Defect',
                 'noDefects': 'No defects were registered.'
-                // --- FIN DE TRADUCCIONES AÑADIDAS ---
             }
         };
 
@@ -452,7 +414,7 @@ $conex->close();
         translatePage(currentLang);
 
 
-        // --- LÓGICA DEL BOTÓN DE ENVIAR CORREO (AÑADIDA) ---
+        // --- LÓGICA DEL BOTÓN DE ENVIAR CORREO (MODIFICADA) ---
         document.querySelectorAll('.btn-icon.btn-email').forEach(button => {
             button.addEventListener('click', function() {
                 const idSafeLaunch = this.dataset.id;
@@ -485,25 +447,43 @@ $conex->close();
                         formData.append('idSafeLaunch', idSafeLaunch);
                         formData.append('email', result.value);
 
-                        // Este DAO necesita ser creado
                         fetch('https://grammermx.com/Mailer/compartir_safe_launch.php', {
                             method: 'POST',
                             body: formData
                         })
                             .then(response => response.json())
                             .then(data => {
+                                // *** CAMBIO AQUÍ: Lógica de éxito mejorada ***
                                 if (data.status === 'success') {
-                                    Swal.fire(translations[currentLang].swal_share_success_title, translations[currentLang].swal_share_success_text, 'success');
+                                    Swal.fire(translations[currentLang].swal_share_success_title, data.message || translations[currentLang].swal_share_success_text, 'success');
+
+                                    // --- INICIO DE ACTUALIZACIÓN DINÁMICA ---
+
+                                    // 1. Encontrar el span del estatus usando el ID
+                                    const statusSpan = document.getElementById(`status-span-${idSafeLaunch}`);
+
+                                    if (statusSpan && data.nuevoEstatusNombre && data.nuevoEstatusClase) {
+                                        // 2. Actualizar el texto del estatus
+                                        statusSpan.innerText = data.nuevoEstatusNombre;
+
+                                        // 3. Actualizar la clase CSS del estatus
+                                        statusSpan.className = `status ${data.nuevoEstatusClase}`;
+                                    }
+
+                                    // --- FIN DE ACTUALIZACIÓN DINÁMICA ---
+
                                     // Cambiar el botón a "enviado"
                                     emailButton.innerHTML = '<i class="fa-solid fa-check"></i>';
                                     emailButton.classList.add('sent');
                                     emailButton.disabled = true;
                                     emailButton.title = translations[currentLang].title_emailSent;
+
                                 } else {
                                     Swal.fire(translations[currentLang].swal_share_error_title, data.message || translations[currentLang].swal_share_error_text, 'error');
                                 }
                             })
                             .catch(error => {
+                                console.error('Error en fetch:', error);
                                 Swal.fire(translations[currentLang].swal_share_error_title, translations[currentLang].swal_share_error_text, 'error');
                             });
                     }

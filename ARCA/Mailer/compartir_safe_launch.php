@@ -46,13 +46,24 @@ try {
     if (!$stmt_update_status->execute()) {
         throw new Exception("Error al actualizar el estatus de la solicitud.");
     }
-    // Verificamos si se actualizó alguna fila (opcional pero recomendado)
     if ($stmt_update_status->affected_rows === 0) {
-        // Esto podría pasar si el IdSafeLaunch no existe, aunque fallaría antes por la FK.
         throw new Exception("No se encontró la solicitud para actualizar el estatus.");
     }
     $stmt_update_status->close();
-    // --- FIN DEL CAMBIO ---
+
+    // --- NUEVO: OBTENER NOMBRE DEL NUEVO ESTATUS ---
+    // 2b. Obtener el nombre del nuevo estatus (IdEstatus = 2)
+    $stmt_status_name = $conex->prepare("SELECT NombreEstatus FROM Estatus WHERE IdEstatus = 2");
+    $stmt_status_name->execute();
+    $statusResult = $stmt_status_name->get_result();
+    $nuevoNombreEstatus = 'Asignado'; // Valor por defecto
+    if ($statusRow = $statusResult->fetch_assoc()) {
+        $nuevoNombreEstatus = $statusRow['NombreEstatus'];
+    }
+    $stmt_status_name->close();
+    // (Según la lógica de historial.php, IdEstatus 2 usa la clase 'status-recibido' (azul))
+    $nuevoEstatusClase = 'status-recibido';
+    // --- FIN NUEVO ---
 
 
     // 3. Obtener datos de 'SafeLaunchSolicitudes' para el correo
@@ -88,7 +99,13 @@ try {
     enviarCorreoSafeLaunch($emailDestino, $idSafeLaunch, $solicitudData, $defectos_nombres, $linkVerSolicitud, $_SESSION['user_nombre']);
 
     $conex->commit();
-    echo json_encode(["status" => "success", "message" => "El Safe Launch ha sido compartido y actualizado."]);
+    // --- MODIFICADO: Enviar el nuevo nombre y clase del estatus al frontend ---
+    echo json_encode([
+        "status" => "success",
+        "message" => "El Safe Launch ha sido compartido y actualizado.",
+        "nuevoEstatusNombre" => $nuevoNombreEstatus,
+        "nuevoEstatusClase" => $nuevoEstatusClase
+    ]);
 
 } catch (Exception $e) {
     $conex->rollback();
