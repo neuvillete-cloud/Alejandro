@@ -26,8 +26,6 @@ try {
     }
     $idSafeLaunch = intval($_POST['idSafeLaunch']);
 
-    // No necesitamos verificar 'isVariosPartes' para Safe Launch
-
     $nombreInspector = isset($_POST['nombreInspector']) ? trim($_POST['nombreInspector']) : '';
     $fechaInspeccion = isset($_POST['fechaInspeccion']) ? trim($_POST['fechaInspeccion']) : '';
     $rangoHora = isset($_POST['rangoHoraCompleto']) ? trim($_POST['rangoHoraCompleto']) : '';
@@ -36,7 +34,6 @@ try {
     $piezasRetrabajadas = isset($_POST['piezasRetrabajadas']) ? intval($_POST['piezasRetrabajadas']) : 0;
     $tiempoInspeccion = isset($_POST['tiempoInspeccion']) ? trim($_POST['tiempoInspeccion']) : '';
     $comentarios = isset($_POST['comentarios']) ? trim($_POST['comentarios']) : '';
-    // $idTiempoMuerto ya no se usa
 
     // Validaciones básicas
     if (empty($nombreInspector) || empty($fechaInspeccion) || empty($rangoHora) || $piezasInspeccionadas < 0 || $piezasAceptadas < 0 || $piezasRetrabajadas < 0) {
@@ -50,13 +47,25 @@ try {
         throw new Exception("Las piezas retrabajadas no pueden exceder las piezas rechazadas (" . $piezasRechazadasBrutas . ").");
     }
 
+    // --- ¡CAMBIO SOLICITADO! INICIO ---
+    // 1b. Verificar si este es el primer reporte para este Safe Launch
+    $stmt_check_count = $conex->prepare("SELECT COUNT(IdSLReporte) as count FROM SafeLaunchReportesInspeccion WHERE IdSafeLaunch = ?");
+    $stmt_check_count->bind_param("i", $idSafeLaunch);
+    $stmt_check_count->execute();
+    $result_count = $stmt_check_count->get_result();
+    $reportCount = $result_count->fetch_assoc()['count'];
+    $stmt_check_count->close();
+
+    $esPrimerReporte = ($reportCount == 0);
+    // --- ¡CAMBIO SOLICITADO! FIN ---
+
+
     // 2. Insertar en SafeLaunchReportesInspeccion
     $stmt_reporte = $conex->prepare("INSERT INTO SafeLaunchReportesInspeccion (
                                         IdSafeLaunch, NombreInspector, FechaInspeccion, RangoHora,
                                         PiezasInspeccionadas, PiezasAceptadas, PiezasRetrabajadas,
                                         TiempoInspeccion, Comentarios
                                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    // Ajustar bind_param: removido el tipo 'i' de IdTiempoMuerto
     $stmt_reporte->bind_param("isssiiiss",
         $idSafeLaunch, $nombreInspector, $fechaInspeccion, $rangoHora,
         $piezasInspeccionadas, $piezasAceptadas, $piezasRetrabajadas,
@@ -68,17 +77,29 @@ try {
     $lastIdSLReporte = $stmt_reporte->insert_id; // Obtener el ID del nuevo reporte
     $stmt_reporte->close();
 
-    // Lógica para actualizar estatus de Solicitud eliminada (no aplica a SL)
-    // Lógica para Desglose de Partes eliminada (no aplica a SL)
+    // --- ¡CAMBIO SOLICITADO! INICIO ---
+    // 2b. Si fue el primer reporte, actualizar el estatus de la solicitud principal a 'En Proceso' (IdEstatus = 3)
+    if ($esPrimerReporte) {
+        $stmt_update_solicitud_status = $conex->prepare("UPDATE SafeLaunchSolicitudes SET IdEstatus = 3 WHERE IdSafeLaunch = ?");
+        $stmt_update_solicitud_status->bind_param("i", $idSafeLaunch);
+        if (!$stmt_update_solicitud_status->execute()) {
+            // No lanzamos una excepción fatal, pero podríamos registrarla
+            // Para mantener la robustez, solo lanzamos si falla
+            throw new Exception("Error al actualizar el estatus principal del Safe Launch a 'En Proceso'.");
+        }
+        $stmt_update_solicitud_status->close();
+    }
+    // --- ¡CAMBIO SOLICITADO! FIN ---
+
 
     // 3. Procesar Clasificación de Defectos (de la cuadrícula)
-    $totalDefectosClasificados = 0; // Se inicializa aquí
+    $totalDefectosClasificados = 0;
     if (isset($_POST['defectos']) && is_array($_POST['defectos'])) {
         foreach ($_POST['defectos'] as $idDefectoCatalogo => $defectData) {
             $cantidad = isset($defectData['cantidad']) ? intval($defectData['cantidad']) : 0;
             if ($cantidad > 0) {
                 $lote = isset($defectData['lote']) ? trim($defectData['lote']) : null;
-                $idDefectoCatalogo = intval($idDefectoCatalogo); // Asegurar que es entero
+                $idDefectoCatalogo = intval($idDefectoCatalogo);
 
                 $stmt_defecto = $conex->prepare("INSERT INTO SafeLaunchReporteDefectos (IdSLReporte, IdSLDefectoCatalogo, CantidadEncontrada, BachLote) VALUES (?, ?, ?, ?)");
                 $stmt_defecto->bind_param("iiis", $lastIdSLReporte, $idDefectoCatalogo, $cantidad, $lote);
@@ -86,48 +107,35 @@ try {
                     throw new Exception("Error al guardar el defecto del catálogo #{$idDefectoCatalogo}: " . $stmt_defecto->error);
                 }
                 $stmt_defecto->close();
-                $totalDefectosClasificados += $cantidad; // Sumar a la cuenta total
+                $totalDefectosClasificados += $cantidad;
             }
         }
     }
 
-    // --- INICIO NUEVO: Procesar Nuevos Defectos Encontrados ---
-    // Asegúrate de tener una tabla 'SafeLaunchNuevosDefectos' similar a 'DefectosEncontrados' pero sin la columna de foto.
-    // Columnas asumidas: IdSLNuevoDefecto (PK, AutoInc), IdSLReporte (FK), IdSLDefectoCatalogo (FK), Cantidad
+    // 4. Procesar Nuevos Defectos Encontrados
     if (isset($_POST['nuevos_defectos_sl']) && is_array($_POST['nuevos_defectos_sl'])) {
         foreach ($_POST['nuevos_defectos_sl'] as $tempId => $defectoData) {
-            // tempId es el contador del frontend (1, 2, 3...)
-            // id es el IdSLDefectoCatalogo
-            // cantidad es la cantidad ingresada
             $cantidad = isset($defectoData['cantidad']) ? intval($defectoData['cantidad']) : 0;
 
             if ($cantidad > 0) {
                 $idDefectoCatalogo = isset($defectoData['id']) ? intval($defectoData['id']) : 0;
-
-                // Validar que se haya seleccionado un tipo de defecto
                 if ($idDefectoCatalogo <= 0) {
                     throw new Exception("Se ingresó cantidad para un nuevo defecto (#{$tempId}) pero no se seleccionó el tipo de defecto.");
                 }
 
-                // Insertar en la tabla de nuevos defectos para Safe Launch
-                // ¡¡¡ASEGÚRATE DE QUE LA TABLA SafeLaunchNuevosDefectos EXISTA!!!
                 $stmt_nuevo_defecto = $conex->prepare("INSERT INTO SafeLaunchNuevosDefectos (IdSLReporte, IdSLDefectoCatalogo, Cantidad) VALUES (?, ?, ?)");
-                // El bind_param debe coincidir con las columnas de tu tabla
                 $stmt_nuevo_defecto->bind_param("iii", $lastIdSLReporte, $idDefectoCatalogo, $cantidad);
 
                 if (!$stmt_nuevo_defecto->execute()) {
                     throw new Exception("Error al guardar el nuevo defecto encontrado (#{$tempId}) en la base de datos: " . $stmt_nuevo_defecto->error);
                 }
                 $stmt_nuevo_defecto->close();
-                $totalDefectosClasificados += $cantidad; // Sumar también estos al total
+                $totalDefectosClasificados += $cantidad;
             }
         }
     }
-    // --- FIN NUEVO ---
 
-
-    // --- VALIDACIÓN FINAL MODIFICADA ---
-    // La suma de defectos (cuadrícula + nuevos) debe coincidir con las rechazadas disponibles
+    // 5. VALIDACIÓN FINAL
     $rechazadasDisponibles = $piezasRechazadasBrutas - $piezasRetrabajadas;
     if ($totalDefectosClasificados != $rechazadasDisponibles) {
         throw new Exception("Error de validación: La suma total de defectos clasificados ({$totalDefectosClasificados}) no coincide con las piezas rechazadas disponibles para clasificar ({$rechazadasDisponibles}).");
