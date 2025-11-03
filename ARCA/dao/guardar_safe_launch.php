@@ -99,20 +99,25 @@ try {
     }
 
     // 2. Insertar los datos principales en la tabla `SafeLaunchSolicitudes`.
+    // --- CAMBIO AQUÍ: Se añade IdEstatus a la consulta ---
     $stmt_solicitud = $conex->prepare(
-        "INSERT INTO SafeLaunchSolicitudes (IdUsuario, NombreProyecto, Cliente, TituloInstruccion, RutaInstruccion) 
-         VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO SafeLaunchSolicitudes (IdUsuario, NombreProyecto, Cliente, TituloInstruccion, RutaInstruccion, IdEstatus) 
+         VALUES (?, ?, ?, ?, ?, ?)"
     );
 
     // Asumimos que 'user_id' está en la sesión, igual que en tu script base
     $idUsuario = $_SESSION['user_id'];
+    // --- CAMBIO AQUÍ: Definimos el estatus por defecto (1 = 'Recibido') ---
+    $defaultEstatus = 1;
 
-    $stmt_solicitud->bind_param("issss",
+    // --- CAMBIO AQUÍ: Se actualiza el bind_param de 'issss' a 'issssi' y se añade $defaultEstatus ---
+    $stmt_solicitud->bind_param("issssi",
         $idUsuario,
         $_POST['nombreProyecto'],
         $_POST['cliente'],
         $tituloInstruccionParaGuardar, // Será NULL si no se subió archivo
-        $rutaInstruccionPublica      // Será NULL si no se subió archivo
+        $rutaInstruccionPublica,     // Será NULL si no se subió archivo
+        $defaultEstatus              // Estatus por defecto 'Recibido'
     );
 
     if (!$stmt_solicitud->execute()) {
