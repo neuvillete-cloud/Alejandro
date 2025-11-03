@@ -222,6 +222,12 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                     Historial Safe Launch
                 </a>
 
+                <!-- ***** BOTÓN AÑADIDO ***** -->
+                <a href="dashboard_reporte_sl.php" class="cta-button secondary">
+                    <i class="fa-solid fa-chart-bar"></i>
+                    Reportes Safe Launch
+                </a>
+
             <?php else: ?>
 
                 <!-- Botón Safe Launch (Posición normal para usuarios) -->
@@ -321,6 +327,3 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 
 </body>
 </html>
-
-
-
