@@ -54,32 +54,34 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
     $tituloPagina = "Safe Launch Compartido";
     $token = $_SESSION['vista_token_actual_sl'];
 
-    // --- CORRECCIÓN: Eliminado sl.EstatusInstruccion ---
+    // --- CORRECCIÓN: Se usa IdEstatus, se añade JOIN con Estatus y se trae NombreEstatus ---
     $sql_base = "SELECT 
                     sl.IdSafeLaunch, 
                     sl.NombreProyecto, 
                     sl.Cliente, 
                     sl.FechaRegistro, 
-                    sl.Estatus,
+                    sl.IdEstatus,
+                    e.NombreEstatus,
                     u.Nombre as NombreResponsable,
                     sl.RutaInstruccion
                  FROM SafeLaunchSolicitudes sl
                  JOIN SafeLaunchSolicitudesCompartidas slsc ON sl.IdSafeLaunch = slsc.IdSafeLaunch
                  JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario
+                 JOIN Estatus e ON sl.IdEstatus = e.IdEstatus
                  WHERE slsc.Token = ?";
     $params[] = $token;
     $types = "s";
 
 } else {
     // --- MODO USUARIO LOGUEADO (VISTA NORMAL) ---
-    // --- CORRECCIÓN: Se usa una subconsulta para evitar el GROUP BY, que causaba el error 500. ---
-    // --- CORRECCIÓN: Eliminado sl.EstatusInstruccion ---
+    // --- CORRECCIÓN: Se usa IdEstatus, se añade JOIN con Estatus y se trae NombreEstatus ---
     $sql_base = "SELECT 
                     sl.IdSafeLaunch, 
                     sl.NombreProyecto, 
                     sl.Cliente, 
                     sl.FechaRegistro, 
-                    sl.Estatus,
+                    sl.IdEstatus,
+                    e.NombreEstatus,
                     u.Nombre as NombreResponsable,
                     sl.RutaInstruccion,
                     (SELECT slsc.IdSLCompartido 
@@ -87,7 +89,8 @@ if (isset($_SESSION['vista_token_actual_sl'])) {
                      WHERE slsc.IdSafeLaunch = sl.IdSafeLaunch 
                      LIMIT 1) as IdCompartido
                  FROM SafeLaunchSolicitudes sl
-                 JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario";
+                 JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario
+                 JOIN Estatus e ON sl.IdEstatus = e.IdEstatus";
 
     $where_clauses = [];
 
@@ -240,14 +243,25 @@ $conex->close();
                         <td>
                             <?php
                             $estatus_clase = '';
-                            switch (strtolower($row['Estatus'])) {
-                                case 'pendiente': $estatus_clase = 'status-en-proceso'; break;
-                                case 'aprobado': $estatus_clase = 'status-cerrado'; break;
-                                case 'rechazado': $estatus_clase = 'status-rechazado'; break;
-                                default: $estatus_clase = 'status-recibido';
+                            // Nueva lógica basada en IdEstatus
+                            switch ($row['IdEstatus']) {
+                                case 1: // Recibido
+                                    $estatus_clase = 'status-recibido';
+                                    break;
+                                case 2: // Asignado
+                                    $estatus_clase = 'status-recibido'; // Mantenemos el azul para "Asignado"
+                                    break;
+                                case 3: // En Proceso
+                                    $estatus_clase = 'status-en-proceso';
+                                    break;
+                                case 4: // Cerrado
+                                    $estatus_clase = 'status-cerrado';
+                                    break;
+                                default:
+                                    $estatus_clase = 'status-recibido';
                             }
                             ?>
-                            <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['Estatus']); ?></span>
+                            <span class="status <?php echo $estatus_clase; ?>"><?php echo htmlspecialchars($row['NombreEstatus']); ?></span>
                         </td>
                         <td class="actions-cell">
                             <!-- Botón de Detalles (apunta a un nuevo JS) -->
@@ -267,8 +281,8 @@ $conex->close();
                                 <?php endif; ?>
                                 <!-- FIN: Botón de Enviar Correo -->
 
-                                <!-- Botón de Revisar (Solo Admin y si está Pendiente) -->
-                                <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1 && $row['Estatus'] === 'Pendiente'): ?>
+                                <!-- Botón de Revisar (Solo Admin y si no está Cerrado) -->
+                                <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1 && $row['IdEstatus'] != 4): // 1=Recibido, 2=Asignado, 3=En Proceso ?>
                                     <a href="revisar_safe_launch.php?id=<?php echo $row['IdSafeLaunch']; ?>" class="btn-icon revisar" data-translate-key-title="title_reviewSL" title="Revisar Safe Launch">
                                         <i class="fa-solid fa-check-to-slot"></i>
                                     </a>
