@@ -17,9 +17,10 @@ $con = new LocalConector();
 $conex = $con->conectar();
 
 // Obtenemos los datos de la solicitud de Safe Launch
-$stmt = $conex->prepare("SELECT sl.*, u.Nombre AS NombreCreador
+$stmt = $conex->prepare("SELECT sl.*, u.Nombre AS NombreCreador, e.NombreEstatus
                          FROM SafeLaunchSolicitudes sl
                          LEFT JOIN Usuarios u ON sl.IdUsuario = u.IdUsuario
+                         LEFT JOIN Estatus e ON sl.IdEstatus = e.IdEstatus
                          WHERE sl.IdSafeLaunch = ?");
 $stmt->bind_param("i", $idSafeLaunch);
 $stmt->execute();
@@ -32,7 +33,8 @@ if (!$safeLaunchData) { die("Error: Safe Launch no encontrado."); }
 $nombreResponsable = htmlspecialchars($safeLaunchData['NombreCreador']);
 $nombreProyecto = htmlspecialchars($safeLaunchData['NombreProyecto']);
 $cliente = htmlspecialchars($safeLaunchData['Cliente']);
-
+$estatusActual = htmlspecialchars($safeLaunchData['NombreEstatus']);
+$idEstatusActual = intval($safeLaunchData['IdEstatus']); // Id 4 es 'Cerrado'
 
 // --- INICIO CORRECCIÓN ---
 
@@ -226,10 +228,9 @@ $conex->close(); // Cerrar conexión principal
 
 $mostrarVisorPDF = !empty($safeLaunchData['RutaInstruccion']);
 
-// Determinar si el formulario principal debe mostrarse (siempre en Safe Launch, a menos que se implemente un cierre futuro)
-$mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en Safe Launch
-// Puedes añadir lógica aquí si implementas un estatus 'Cerrado' para SafeLaunchSolicitudes
-// if ($safeLaunchData['Estatus'] === 'Cerrado') { $mostrarFormularioPrincipal = false; }
+// Determinar si el formulario principal debe mostrarse
+// No mostrar si el estatus es 'Cerrado' (IdEstatus = 4)
+$mostrarFormularioPrincipal = ($idEstatusActual != 4);
 
 ?>
 <!DOCTYPE html>
@@ -260,7 +261,9 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             --color-texto: #333333;
             --color-borde: #dbe1e8;
             --color-exito: #28a745;
-            --color-error: #a83232;
+            --color-error: #a83232; /* Un rojo más oscuro para peligro */
+            --color-peligro-fondo: #fdecea;
+            --color-peligro-borde: #f5c2c7;
             --sombra-suave: 0 4px 12px rgba(0,0,0,0.08);
         }
 
@@ -350,7 +353,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .notification-box { padding: 15px 20px; margin-bottom: 25px; border-radius: 8px; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 15px; border: 1px solid; }
         .notification-box i { font-size: 20px; }
         .notification-box.warning { background-color: #fff3e0; border-color: #ffe0b2; color: #b75c09; }
-        .notification-box.error { background-color: #fdecea; border-color: #f5c2c7; color: var(--color-error); }
+        .notification-box.error { background-color: var(--color-peligro-fondo); border-color: var(--color-peligro-borde); color: var(--color-error); }
         .notification-box.info { background-color: #e3f2fd; border-color: #bbdefb; color: #0d47a1; }
         .info-text { font-size: 14px; color: #666; margin-top: -10px; margin-bottom: 20px; font-style: italic; }
 
@@ -409,15 +412,41 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
         .lang-btn.active { background-color: var(--color-secundario); color: var(--color-blanco); cursor: default; }
 
         /* --- 6. Botones y Utilerías --- */
-        .btn-primary, .btn-secondary { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        .btn-primary, .btn-secondary, .btn-danger {
+            padding: 12px 25px;
+            border-radius: 6px;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
         .btn-primary { background-color: var(--color-secundario); color: white; }
         .btn-primary:hover { background-color: var(--color-primario); }
         .btn-secondary { background-color: #e0e0e0; color: #333; }
         .btn-secondary:hover { background-color: #bdbdbd; }
         .btn-add { width: 45px; height: 45px; border-radius: 50%; border: none; background-color: var(--color-primario); color: white; font-size: 24px; font-weight: bold; cursor: pointer; flex-shrink: 0; }
         .btn-small { padding: 6px 12px; font-size: 14px; border-radius: 4px; }
-        .btn-danger { background-color: var(--color-error); color: var(--color-blanco); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .btn-danger {
+            background-color: var(--color-error);
+            color: var(--color-blanco);
+        }
+        .btn-danger:hover {
+            background-color: #8c2a2a;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        button:disabled:hover {
+            background-color: var(--color-secundario); /* Evita cambio de color en hover */
+        }
+        .btn-danger:disabled:hover {
+            background-color: var(--color-error); /* Evita cambio de color en hover */
+        }
+
 
         /* --- 7. Subida de Archivos (CSS ELIMINADO PORQUE NO SE USA) --- */
         /* --- ESTILOS DE .file-upload-label ELIMINADOS --- */
@@ -548,12 +577,14 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 
 <main class="container">
     <div class="form-container">
-        <h1><i class="fa-solid fa-hammer"></i> <span data-translate-key="main_title">Reporte de Inspección Safe Launch</span> - <span data-translate-key="folio">Folio</span> SL-<?php echo str_pad($safeLaunchData['IdSafeLaunch'], 4, '0', STR_PAD_LEFT); ?></h1>
+        <h1><i class="fa-solid fa-rocket"></i> <span data-translate-key="main_title">Reporte de Inspección Safe Launch</span> - <span data-translate-key="folio">Folio</span> SL-<?php echo str_pad($safeLaunchData['IdSafeLaunch'], 4, '0', STR_PAD_LEFT); ?></h1>
 
         <div class="info-row">
             <p><strong data-translate-key="project_name">Proyecto:</strong> <span><?php echo $nombreProyecto; ?></span></p>
             <p><strong data-translate-key="responsible">Responsable:</strong> <span><?php echo $nombreResponsable; ?></span></p>
             <p><strong data-translate-key="client">Cliente:</strong> <span><?php echo $cliente; ?></span></p>
+            <!-- NUEVO: Mostrar Estatus -->
+            <p><strong data-translate-key="status">Estatus:</strong> <span style="font-weight: bold; color: <?php echo ($idEstatusActual == 4) ? 'var(--color-error)' : 'var(--color-exito)'; ?>;"><?php echo $estatusActual; ?></span></p>
         </div>
 
         <?php if ($mostrarVisorPDF): ?>
@@ -652,8 +683,27 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 </div>
             </form>
 
+
+            <!-- +++++ NUEVO: FORMULARIO DE FINALIZACIÓN +++++ -->
+            <form id="finalizarSLForm" style="margin-top: 40px;">
+                <input type="hidden" name="idSafeLaunch" value="<?php echo $idSafeLaunch; ?>">
+                <fieldset style="border-top: 2px solid var(--color-error); padding-top: 25px; border-bottom: none;">
+                    <legend style="color: var(--color-error);"><i class="fa-solid fa-flag-checkered"></i> <span data-translate-key="finalize_sl_title">Finalizar Safe Launch</span></legend>
+                    <p class="info-text" data-translate-key="finalize_sl_warning">
+                        Esta acción marcará el Safe Launch como 'Cerrado' y no se podrán registrar nuevas sesiones de inspección.
+                        Esta acción no se puede deshacer.
+                    </p>
+                    <div class="form-actions">
+                        <button type="button" id="btnFinalizarSL" class="btn-danger">
+                            <i class="fa-solid fa-lock"></i> <span data-translate-key="finalize_sl_btn">Finalizar Safe Launch Permanentemente</span>
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+            <!-- +++++ FIN DE NUEVO FORMULARIO +++++ -->
+
         <?php else: ?>
-            <div class='notification-box info' style='margin-top: 20px;'><i class='fa-solid fa-circle-check'></i> <strong data-translate-key="sl_closed_title">Safe Launch Cerrado:</strong> <span data-translate-key="sl_closed_desc">Este Safe Launch ya ha sido marcado como cerrado. No se pueden añadir nuevos reportes.</span></div>
+            <div class='notification-box info' style='margin-top: 20px;'><i class='fa-solid fa-circle-check'></i> <strong data-translate-key="sl_closed_title">Safe Launch Cerrado:</strong> <span data-translate-key="sl_closed_desc">Este Safe Launch ya ha sido marcado como cerrado (Estatus: <?php echo $estatusActual; ?>). No se pueden añadir nuevos reportes.</span></div>
         <?php endif; ?>
 
         <hr style="margin-top: 40px; margin-bottom: 30px; border-color: var(--color-borde);">
@@ -707,8 +757,13 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                             <td><?php echo ($reporte['PiezasInspeccionadas'] > 0) ? round(($reporte['TotalDefectosReporte'] / $reporte['PiezasInspeccionadas']) * 100, 2) . '%' : '0%'; ?></td>
                             <td><?php echo htmlspecialchars($reporte['Comentarios'] ?? 'N/A'); ?></td>
                             <td>
-                                <button class="btn-edit-reporte-sl btn-primary btn-small" data-id="<?php echo $reporte['IdSLReporte']; ?>"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="btn-delete-reporte-sl btn-danger btn-small" data-id="<?php echo $reporte['IdSLReporte']; ?>"><i class="fa-solid fa-trash-can"></i></button>
+                                <!-- Ocultar botones si el formulario no se muestra (es decir, está cerrado) -->
+                                <?php if ($mostrarFormularioPrincipal): ?>
+                                    <button class="btn-edit-reporte-sl btn-primary btn-small" data-id="<?php echo $reporte['IdSLReporte']; ?>"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="btn-delete-reporte-sl btn-danger btn-small" data-id="<?php echo $reporte['IdSLReporte']; ?>"><i class="fa-solid fa-trash-can"></i></button>
+                                <?php else: ?>
+                                    N/A
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -743,6 +798,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 <script>
     const catalogoDefectosSL = <?php echo json_encode($defectos_para_formulario_y_tabla); ?>;
     const opcionesDefectosSL = '<?php echo addslashes($defectos_options_html_sl); ?>';
+    const idSafeLaunchGlobal = <?php echo $idSafeLaunch; ?>; // +++ NUEVA VARIABLE GLOBAL +++
     let nuevoDefectoCounterSL = 0;
     let editandoReporteSL = false;
     let valorOriginalInspeccionadoAlEditarSL = 0;
@@ -754,6 +810,7 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
             es: {
                 welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Reporte de Inspección Safe Launch",
                 folio: "Folio", project_name: "Proyecto", responsible: "Responsable", client: "Cliente",
+                status: "Estatus", // +++ NUEVA TRADUCCIÓN +++
                 instruction_title: "Instrucción de Trabajo", view_instruction_btn: "Ver Instrucción",
                 hide_instruction_btn: "Ocultar Instrucción", download_instruction_btn: "Descargar Instrucción",
                 no_instruction_attached: "No hay instrucción de trabajo adjunta para este Safe Launch.",
@@ -768,11 +825,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 additional_comments: "Comentarios Adicionales de la Sesión",
                 save_session_report_btn: "Guardar Reporte de Sesión",
                 update_session_report_btn: "Actualizar Reporte de Sesión", cancel_edit_btn: "Cancelar Edición",
-                sl_closed_title: "Safe Launch Cerrado:", sl_closed_desc: "Este Safe Launch ya ha sido marcado como cerrado. No se pueden añadir nuevos reportes.",
+                sl_closed_title: "Safe Launch Cerrado:", sl_closed_desc: "Este Safe Launch ya ha sido marcado como cerrado.",
                 history_title: "Historial de Registros de Inspección", th_report_id: "ID Reporte", th_inspection_date: "Fecha Insp.",
                 th_time_range: "Rango Hora", th_shift_leader: "Turno", th_inspector: "Inspector",
                 th_inspected: "Insp.", th_accepted: "Acep.", th_rejected: "Rech.", th_reworked: "Retrab.",
-                th_new_defects_qty: "Nuevos Def. (Cant.)", // --- NUEVA TRADUCCIÓN ---
+                th_new_defects_qty: "Nuevos Def. (Cant.)",
                 th_total_defects: "Total Def.", th_ppm: "PPM", th_defect_percent: "% Def.",
                 th_comments: "Comentarios", th_actions: "Acciones", totals: "TOTALES:",
                 no_history_records_sl: "Aún no hay registros de inspección para este Safe Launch.",
@@ -798,11 +855,24 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 swal_remove_defect_confirm: "Sí, eliminar",
                 swal_remove_defect_cancel: "Cancelar",
                 swal_remove_defect_removed: "Eliminado",
-                swal_remove_defect_removed_text: "El defecto fue removido."
+                swal_remove_defect_removed_text: "El defecto fue removido.",
+                // +++ NUEVAS TRADUCCIONES PARA FINALIZAR +++
+                finalize_sl_title: "Finalizar Safe Launch",
+                finalize_sl_warning: "Esta acción marcará el Safe Launch como 'Cerrado' y no se podrán registrar nuevas sesiones de inspección. Esta acción no se puede deshacer.",
+                finalize_sl_btn: "Finalizar Safe Launch Permanentemente",
+                swal_finalize_title: "¿Estás seguro de finalizar?",
+                swal_finalize_text: "Estás a punto de cerrar este Safe Launch. No podrás añadir más reportes. Esta acción es irreversible.",
+                swal_finalize_confirm_btn: "Sí, finalizar",
+                swal_finalize_cancel_btn: "Cancelar",
+                swal_finalize_success_title: "¡Finalizado!",
+                swal_finalize_success_text: "El Safe Launch ha sido cerrado exitosamente.",
+                swal_finalizing_title: "Finalizando...",
+                swal_finalizing_text: "Cerrando el Safe Launch, por favor espera."
             },
             en: {
                 welcome: "Welcome", logout: "Logout", main_title: "Safe Launch Inspection Report",
                 folio: "Folio", project_name: "Project", responsible: "Responsible", client: "Client",
+                status: "Status", // +++ NEW TRANSLATION +++
                 instruction_title: "Work Instruction", view_instruction_btn: "View Instruction",
                 hide_instruction_btn: "Hide Instruction", download_instruction_btn: "Download Instruction",
                 no_instruction_attached: "No work instruction attached for this Safe Launch.",
@@ -817,11 +887,11 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 additional_comments: "Additional Session Comments",
                 save_session_report_btn: "Save Session Report",
                 update_session_report_btn: "Update Session Report", cancel_edit_btn: "Cancel Edit",
-                sl_closed_title: "Safe Launch Closed:", sl_closed_desc: "This Safe Launch has already been marked as closed. New reports cannot be added.",
+                sl_closed_title: "Safe Launch Closed:", sl_closed_desc: "This Safe Launch has already been marked as closed.",
                 history_title: "Inspection Records History", th_report_id: "Report ID", th_inspection_date: "Insp. Date",
                 th_time_range: "Time Range", th_shift_leader: "Shift", th_inspector: "Inspector",
                 th_inspected: "Insp.", th_accepted: "Acc.", th_rejected: "Rej.", th_reworked: "Rew.",
-                th_new_defects_qty: "New Def. (Qty)", // --- NEW TRANSLATION ---
+                th_new_defects_qty: "New Def. (Qty)",
                 th_total_defects: "Total Def.", th_ppm: "PPM", th_defect_percent: "% Def.",
                 th_comments: "Comments", th_actions: "Actions", totals: "TOTALS:",
                 no_history_records_sl: "There are no inspection records for this Safe Launch yet.",
@@ -847,7 +917,19 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 swal_remove_defect_confirm: "Yes, remove",
                 swal_remove_defect_cancel: "Cancel",
                 swal_remove_defect_removed: "Removed",
-                swal_remove_defect_removed_text: "The defect was removed."
+                swal_remove_defect_removed_text: "The defect was removed.",
+                // +++ NEW TRANSLATIONS FOR FINALIZE +++
+                finalize_sl_title: "Finalize Safe Launch",
+                finalize_sl_warning: "This action will mark the Safe Launch as 'Closed' and no new inspection sessions can be registered. This action cannot be undone.",
+                finalize_sl_btn: "Finalize Safe Launch Permanently",
+                swal_finalize_title: "Are you sure you want to finalize?",
+                swal_finalize_text: "You are about to close this Safe Launch. You will not be able to add more reports. This action is irreversible.",
+                swal_finalize_confirm_btn: "Yes, finalize",
+                swal_finalize_cancel_btn: "Cancel",
+                swal_finalize_success_title: "Finalized!",
+                swal_finalize_success_text: "The Safe Launch has been closed successfully.",
+                swal_finalizing_title: "Finalizing...",
+                swal_finalizing_text: "Closing the Safe Launch, please wait."
             }
         };
 
@@ -858,39 +940,41 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 const key = el.getAttribute('data-translate-key');
                 if (translations[lang] && translations[lang][key]) {
 
+                    // Intenta encontrar un span hijo directo para el texto
+                    let targetElement = el;
                     const span = el.querySelector('span');
-                    if(span && (el.tagName === 'BUTTON' || el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2')) {
-                        span.innerText = translations[lang][key];
-                    } else if (el.tagName === 'INPUT' && el.type === 'submit') {
-                        el.value = translations[lang][key];
-                    } else if (!el.children.length || el.classList.contains('file-upload-label')) {
-                        el.innerText = translations[lang][key];
-                    } else if (el.tagName === 'LABEL' && el.querySelector('span')) {
-                        el.querySelector('span').innerText = translations[lang][key];
-                    }
-
-                    const icon = el.querySelector('i');
-                    if (icon && (el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'BUTTON' || el.tagName === 'P' || el.tagName === 'STRONG')) {
-                        const spanInterno = el.querySelector('span');
-                        if (!spanInterno) {
-                            el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
+                    // Si el elemento es un botón o leyenda y tiene un span, ese span recibe el texto
+                    if ((el.tagName === 'BUTTON' || el.tagName === 'LEGEND' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'P') && span) {
+                        // Evitar sobrescribir spans de contadores (ej. piezas restantes)
+                        if (!span.id) {
+                            targetElement = span;
                         }
-                    } else if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
-                        el.value = translations[lang][key];
-                    } else if (el.tagName === 'BUTTON' && !icon) {
-                        el.innerText = translations[lang][key];
-                    } else if (!icon && !span && el.tagName !== 'LABEL') {
-                        el.innerText = translations[lang][key];
-                    } else if (el.tagName === 'LABEL' && !icon && !span) {
+                    }
+
+                    // Casos especiales donde el texto va en el innerText del elemento principal
+                    if (el.tagName === 'OPTION' || el.tagName === 'LABEL' || el.classList.contains('info-text') || el.classList.contains('logout-btn') || el.tagName === 'STRONG') {
+                        targetElement = el;
+                    }
+
+                    // Si el target sigue siendo el elemento principal y no tiene hijos (o es un span de contador)
+                    if (targetElement === el && (!el.children.length || el.children.length === 1 && (el.children[0].tagName === 'I' || el.children[0].id))) {
+                        // No hacer nada si es el span del contador
+                        if (el.id !== 'piezasRechazadasRestantes') {
+                            // Si tiene un icono, preservar el icono
+                            const icon = el.querySelector('i');
+                            if (icon) {
+                                el.innerHTML = icon.outerHTML + ' ' + translations[lang][key];
+                            } else {
+                                el.innerText = translations[lang][key];
+                            }
+                        }
+                    } else if (targetElement !== el) {
+                        // Se encontró un span hijo, se actualiza
+                        targetElement.innerText = translations[lang][key];
+                    } else if (el.tagName === 'LABEL' && !span) {
                         el.innerText = translations[lang][key];
                     }
 
-                    if(el.classList.contains('file-upload-label') && el.querySelector('span')) {
-                        el.querySelector('span').innerText = translations[lang][key];
-                    }
-                    if(el.tagName === 'OPTION' && el.value === "") {
-                        el.innerText = translations[lang][key];
-                    }
                 }
             });
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
@@ -1369,8 +1453,102 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
                 }
             });
         }
-
         // --- FIN: LÓGICA DE NUEVOS DEFECTOS ---
+
+
+        // +++++ NUEVA LÓGICA PARA FINALIZAR SAFE LAUNCH +++++
+        const btnFinalizarSL = document.getElementById('btnFinalizarSL');
+
+        if (btnFinalizarSL) {
+            btnFinalizarSL.addEventListener('click', function() {
+
+                // 1. Primera confirmación
+                Swal.fire({
+                    title: translate('swal_finalize_title'),
+                    text: translate('swal_finalize_text'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: translate('swal_finalize_confirm_btn'),
+                    cancelButtonText: translate('swal_finalize_cancel_btn')
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 2. Segunda confirmación (pide escribir el ID)
+                        Swal.fire({
+                            title: 'Confirmación Adicional',
+                            text: `Para confirmar, escribe el ID del Safe Launch: ${idSafeLaunchGlobal}`,
+                            input: 'text',
+                            inputPlaceholder: 'Escribe el ID aquí',
+                            showCancelButton: true,
+                            confirmButtonText: 'Confirmar y Cerrar',
+                            cancelButtonText: 'Cancelar',
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'Necesitas escribir el ID para confirmar';
+                                }
+                                if (parseInt(value) !== idSafeLaunchGlobal) {
+                                    return 'El ID no coincide. Inténtalo de nuevo.';
+                                }
+                            }
+                        }).then((inputResult) => {
+                            if (inputResult.isConfirmed && parseInt(inputResult.value) === idSafeLaunchGlobal) {
+                                // 3. El usuario confirmó correctamente, llamar al PHP
+                                finalizarSafeLaunch();
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function finalizarSafeLaunch() {
+            Swal.fire({
+                title: translate('swal_finalizing_title'),
+                text: translate('swal_finalizing_text'),
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const formData = new FormData();
+            formData.append('idSafeLaunch', idSafeLaunchGlobal);
+
+            fetch('dao/finalizar_safe_launch.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire(
+                            translate('swal_finalize_success_title'),
+                            translate('swal_finalize_success_text'),
+                            'success'
+                        ).then(() => {
+                            // Recargar la página para mostrar el estado 'Cerrado'
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire(
+                            translate('swal_error_title'),
+                            data.message || 'Hubo un error desconocido.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en fetch:', error);
+                    Swal.fire(
+                        translate('swal_connection_error'),
+                        translate('swal_connection_error_text'),
+                        'error'
+                    );
+                });
+        }
+        // +++++ FIN DE LA NUEVA LÓGICA +++++
+
 
         // Carga inicial del idioma
         setLanguage(getCurrentLanguage());
@@ -1378,4 +1556,3 @@ $mostrarFormularioPrincipal = true; // Por defecto, siempre se puede reportar en
 </script>
 </body>
 </html>
-
