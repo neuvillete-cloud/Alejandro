@@ -663,6 +663,7 @@ $conex->close();
             fetchReportData(url);
         });
 
+        // --- INICIO: LÓGICA DE PDF CORREGIDA ---
         btnDescargarPdf.addEventListener('click', async () => {
             Swal.fire({ title: translate('generating_pdf'), text: translate('please_wait'), allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
@@ -676,38 +677,36 @@ $conex->close();
             const contentWidth = pdfWidth - (margin * 2);
             let yPosition = margin;
 
-            const sectionsToPrint = Array.from(elementoReporte.children);
+            // Usar querySelectorAll para capturar todos los elementos en orden
+            const allElements = elementoReporte.querySelectorAll('.report-title, .report-subtitle, .pdf-section');
 
-            for (const section of sectionsToPrint) {
-                // Clonar la sección para no afectar la vista del usuario
-                const sectionClone = section.cloneNode(true);
-                // Si es la tabla de defectos diarios, quitar el scroll para la captura
-                if (section.id === 'defect-daily-breakdown-container') {
-                    const responsiveWrapper = sectionClone.querySelector('.table-responsive');
+            for (const element of allElements) {
+                // --- INICIO: Manejo de scroll en tabla ---
+                // Si el elemento es la tabla de defectos diarios, quitarle el scroll
+                let originalOverflow = null;
+                let responsiveWrapper = null;
+                if (element.id === 'defect-daily-breakdown-container') {
+                    responsiveWrapper = element.querySelector('.table-responsive');
                     if (responsiveWrapper) {
+                        originalOverflow = responsiveWrapper.style.overflowX;
                         responsiveWrapper.style.overflowX = 'visible';
-                        responsiveWrapper.style.maxWidth = 'none';
                     }
                 }
+                // --- FIN: Manejo de scroll ---
 
-                // Añadir el clon al body (fuera de vista) para que html2canvas lo renderice
-                sectionClone.style.position = 'absolute';
-                sectionClone.style.left = '-9999px';
-                // Establecer un ancho grande para que capture todo
-                sectionClone.style.width = (contentWidth * 3.78 * 1.5) + 'px'; // Convertir mm a px (aprox 3.78) y dar extra
-                sectionClone.style.padding = '10px'; // Añadir padding
-                document.body.appendChild(sectionClone);
-
-                const canvas = await html2canvas(sectionClone, {
+                const canvas = await html2canvas(element, {
                     scale: 2,
                     useCORS: true,
-                    // Pedir a html2canvas que use el ancho completo del contenido
-                    width: sectionClone.scrollWidth,
-                    windowWidth: sectionClone.scrollWidth
+                    // Permite que html2canvas capture todo el ancho (para la tabla con scroll)
+                    width: element.scrollWidth,
+                    windowWidth: element.scrollWidth
                 });
 
-                // Remover el clon
-                document.body.removeChild(sectionClone);
+                // --- INICIO: Restaurar scroll ---
+                if (responsiveWrapper) {
+                    responsiveWrapper.style.overflowX = originalOverflow;
+                }
+                // --- FIN: Restaurar scroll ---
 
 
                 const imgData = canvas.toDataURL('image/png');
@@ -727,6 +726,7 @@ $conex->close();
             pdf.save(`reporte-SL${solicitudSelector.value.padStart(4, '0')}.pdf`);
             Swal.close();
         });
+        // --- FIN: LÓGICA DE PDF CORREGIDA ---
 
 
         // --- NUEVA FUNCIÓN ---
@@ -848,13 +848,15 @@ $conex->close();
             <p><strong>${translate('issue_date')}:</strong> ${new Date().toLocaleDateString(currentLang === 'en' ? 'en-US' : 'es-MX')}</p>
             `;
 
-            let desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4></div>`;
+            // --- INICIO: CORRECCIÓN DE RENDERIZADO DE HTML ---
+            let desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4>`;
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 data.desgloseDiario.forEach(dia => {
                     const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
                     const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-                    let diaHtml = `<div class="pdf-section">`;
+                    // Quitar la clase "pdf-section" de los divs internos
+                    let diaHtml = `<div class="daily-breakdown-item">`;
                     diaHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
 
                     if (dia.totales) {
@@ -882,11 +884,14 @@ $conex->close();
                                 </tr>`;
                     });
                     diaHtml += `</tbody></table></div>`;
-                    desgloseHtml += diaHtml;
+                    desgloseHtml += diaHtml; // Añadir el HTML del día
                 });
             } else {
-                desgloseHtml = '';
+                desgloseHtml += `<p>${translate('no_history_records_sl')}</p>`; // Mostrar mensaje si no hay desglose
             }
+            desgloseHtml += `</div>`; // Cerrar el div wrapper "pdf-section"
+            // --- FIN: CORRECCIÓN DE RENDERIZADO DE HTML ---
+
 
             let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> ${translate('defects_summary')}</h4>`;
             defectosHtml += `<table><thead><tr><th>${translate('defect')}</th><th>${translate('total_qty_defect')}</th><th>${translate('defect_type')}</th></tr></thead><tbody>`;
@@ -1145,7 +1150,12 @@ $conex->close();
                 paretoChartInstance = new Chart(paretoCtx, {
                     type: 'bar',
                     data: { labels: paretoLabels, datasets: [ { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70', yAxisID: 'y' }, { label: translate('chart_cumulative'), data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' } ] },
-                    options: { responsive: true, interaction: { mode: 'index', intersect: false }, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } } }
+                    options: {
+                        animation: false, // <-- ARREGLO PARA PDF
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } }
+                    }
                 });
             }
 
@@ -1157,7 +1167,11 @@ $conex->close();
                 weeklyRejectsChartInstance = new Chart(weeklyCtx, {
                     type: 'line',
                     data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
-                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                    options: {
+                        animation: false, // <-- ARREGLO PARA PDF
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
                 });
             }
 
@@ -1167,7 +1181,13 @@ $conex->close();
                 rejectionRateChartInstance = new Chart(rejectionCtx, {
                     type: 'bar',
                     data: { labels: [''], datasets: [ { label: translate('rejected'), data: [resumen.rechazadas], backgroundColor: '#a83232' }, { label: translate('accepted'), data: [resumen.aceptadas], backgroundColor: '#69A032' } ] },
-                    options: { indexAxis: 'y', responsive: true, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { legend: { position: 'top' } } }
+                    options: {
+                        animation: false, // <-- ARREGLO PARA PDF
+                        indexAxis: 'y',
+                        responsive: true,
+                        scales: { x: { stacked: true }, y: { stacked: true } },
+                        plugins: { legend: { position: 'top' } }
+                    }
                 });
             }
 
@@ -1184,7 +1204,11 @@ $conex->close();
                 dailyProgressChartInstance = new Chart(dailyCtx, {
                     type: 'bar',
                     data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
-                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                    options: {
+                        animation: false, // <-- ARREGLO PARA PDF
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
                 });
             }
 
@@ -1206,7 +1230,11 @@ $conex->close();
                             tension: 0.1
                         }]
                     },
-                    options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { callback: value => value.toLocaleString() } } } }
+                    options: {
+                        animation: false, // <-- ARREGLO PARA PDF
+                        responsive: true,
+                        scales: { y: { beginAtZero: true, ticks: { callback: value => value.toLocaleString() } } }
+                    }
                 });
             }
         }
@@ -1226,3 +1254,4 @@ $conex->close();
 </script>
 </body>
 </html>
+
