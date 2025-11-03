@@ -11,7 +11,7 @@ use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json; charset=UTF-8');
 
-// --- CAMBIO 1: Validar 'idSafeLaunch' en lugar de 'id' ---
+// Validar 'idSafeLaunch'
 if (!isset($_POST['idSafeLaunch'], $_POST['email']) || !isset($_SESSION['loggedin'])) {
     echo json_encode(["status" => "error", "message" => "Datos incompletos o sesión no válida."]);
     exit;
@@ -30,7 +30,7 @@ $conex = $con->conectar();
 $conex->begin_transaction();
 
 try {
-    // --- CAMBIO 2: Guardar en la nueva tabla 'SafeLaunchSolicitudesCompartidas' ---
+    // 1. Guardar en la nueva tabla 'SafeLaunchSolicitudesCompartidas'
     $token = bin2hex(random_bytes(32));
     $stmt_token = $conex->prepare("INSERT INTO SafeLaunchSolicitudesCompartidas (IdSafeLaunch, EmailDestino, Token) VALUES (?, ?, ?)");
     $stmt_token->bind_param("iss", $idSafeLaunch, $emailDestino, $token);
@@ -39,10 +39,23 @@ try {
     }
     $stmt_token->close();
 
-    // --- CAMBIO 3: Se elimina el PASO 2 (Actualizar Estatus de Solicitud) ---
-    // El estatus de Safe Launch se maneja por revisión, no por envío de correo.
+    // --- ¡CAMBIO SOLICITADO! ---
+    // 2. Actualizar el estatus de la solicitud principal a 'Asignado' (IdEstatus = 2)
+    $stmt_update_status = $conex->prepare("UPDATE SafeLaunchSolicitudes SET IdEstatus = 2 WHERE IdSafeLaunch = ?");
+    $stmt_update_status->bind_param("i", $idSafeLaunch);
+    if (!$stmt_update_status->execute()) {
+        throw new Exception("Error al actualizar el estatus de la solicitud.");
+    }
+    // Verificamos si se actualizó alguna fila (opcional pero recomendado)
+    if ($stmt_update_status->affected_rows === 0) {
+        // Esto podría pasar si el IdSafeLaunch no existe, aunque fallaría antes por la FK.
+        throw new Exception("No se encontró la solicitud para actualizar el estatus.");
+    }
+    $stmt_update_status->close();
+    // --- FIN DEL CAMBIO ---
 
-    // --- CAMBIO 4: Obtener datos de 'SafeLaunchSolicitudes' ---
+
+    // 3. Obtener datos de 'SafeLaunchSolicitudes' para el correo
     $stmt_data = $conex->prepare("SELECT NombreProyecto, Cliente FROM SafeLaunchSolicitudes WHERE IdSafeLaunch = ?");
     $stmt_data->bind_param("i", $idSafeLaunch);
     $stmt_data->execute();
@@ -52,7 +65,7 @@ try {
     }
     $stmt_data->close();
 
-    // --- CAMBIO 5: Obtener defectos de las tablas 'SafeLaunch' ---
+    // 4. Obtener defectos de las tablas 'SafeLaunch'
     $stmt_defectos = $conex->prepare("SELECT sldc.NombreDefecto 
                                      FROM SafeLaunchDefectos sld
                                      JOIN SafeLaunchCatalogoDefectos sldc ON sld.IdSLDefectoCatalogo = sldc.IdSLDefectoCatalogo 
@@ -67,7 +80,7 @@ try {
     $stmt_defectos->close();
 
 
-    // --- CAMBIO 6: Construir link a 'historial_safe_launch.php' ---
+    // 5. Construir link a 'historial_safe_launch.php'
     $url_sitio = "https://grammermx.com/AleTest/ARCA"; // <-- ¡TU URL REAL!
     $linkVerSolicitud = "$url_sitio/historial_safe_launch.php?token=$token";
 
@@ -75,7 +88,7 @@ try {
     enviarCorreoSafeLaunch($emailDestino, $idSafeLaunch, $solicitudData, $defectos_nombres, $linkVerSolicitud, $_SESSION['user_nombre']);
 
     $conex->commit();
-    echo json_encode(["status" => "success", "message" => "El Safe Launch ha sido compartido."]);
+    echo json_encode(["status" => "success", "message" => "El Safe Launch ha sido compartido y actualizado."]);
 
 } catch (Exception $e) {
     $conex->rollback();
@@ -87,7 +100,7 @@ try {
 }
 
 
-// --- CAMBIO 7: Nueva función de correo específica para Safe Launch ---
+// Función de correo específica para Safe Launch
 function enviarCorreoSafeLaunch($emailDestino, $id, $solicitudData, $defectos_nombres, $link, $nombreRemitente) {
     $folio = "SL-" . str_pad($id, 4, '0', STR_PAD_LEFT);
     $asunto = "Acción Requerida: Solicitud de Safe Launch ARCA - Folio $folio";
@@ -167,9 +180,8 @@ function enviarCorreoSafeLaunch($emailDestino, $id, $solicitudData, $defectos_no
             throw new Exception("Error al enviar correo: " . $mail->ErrorInfo);
         }
     } catch (Exception $e) {
+        // Importante: Lanzamos la excepción para que la transacción principal haga rollback.
         throw new Exception("El registro en BD fue exitoso, pero el correo no pudo ser enviado. Error: {$e->getMessage()}");
     }
 }
 ?>
-
-
