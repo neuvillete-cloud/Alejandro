@@ -7,9 +7,8 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
-// --- CORRECCIÓN AQUÍ: Eliminamos el WHERE Estatus IN (...) para usar IdEstatus ---
-// En este dashboard, queremos ver todas las solicitudes, sin importar el estatus.
-$solicitudes_activas_query = $conex->query("SELECT IdSafeLaunch, NombreProyecto FROM SafeLaunchSolicitudes ORDER BY IdSafeLaunch DESC");
+// --- CORRECCIÓN AQUÍ: Añadimos el filtro por IdEstatus 3 y 4 ---
+$solicitudes_activas_query = $conex->query("SELECT IdSafeLaunch, NombreProyecto FROM SafeLaunchSolicitudes WHERE IdEstatus IN (3, 4) ORDER BY IdSafeLaunch DESC");
 $conex->close();
 
 ?>
