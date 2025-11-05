@@ -101,7 +101,7 @@ if (isset($_GET['token'])) {
                     <button type="submit" class="submit-btn">Actualizar Contraseña</button>
                 </form>
                 <div class="form-footer">
-                    <p><a href="login.html">Volver a Inicio de sesión</a></p>
+                    <p><a href="acceso.php">Volver a Inicio de sesión</a></p>
                 </div>
 
             <?php else: ?>
@@ -110,10 +110,10 @@ if (isset($_GET['token'])) {
                 <h2>Enlace Inválido</h2>
                 <p class="subtitle" style="color: #a83232;"><?php echo $mensajeError; ?></p>
 
-                <a href="recuperar.html" class="submit-btn" style="text-align: center; text-decoration: none;">Solicitar nuevo enlace</a>
+                <a href="recuperarContra.php" class="submit-btn" style="text-align: center; text-decoration: none;">Solicitar nuevo enlace</a>
 
                 <div class="form-footer">
-                    <p><a href="login.html">Volver a Inicio de sesión</a></p>
+                    <p><a href="acceso.php">Volver a Inicio de sesión</a></p>
                 </div>
 
             <?php endif; ?>
@@ -181,7 +181,7 @@ if (isset($_GET['token'])) {
                         timer: 2000
                     }).then(() => {
                         // Redirigir al login
-                        window.location.href = 'login.html';
+                        window.location.href = 'acceso.php';
                     });
                 } else {
                     Swal.fire({
