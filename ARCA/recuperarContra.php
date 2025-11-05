@@ -49,7 +49,7 @@
                 <button type="submit" class="submit-btn">Enviar Enlace</button>
             </form>
             <div class="form-footer">
-                <p>¿Recordaste tu contraseña? <a href="login.html">Inicia sesión aquí.</a></p>
+                <p>¿Recordaste tu contraseña? <a href="acceso.php">Inicia sesión aquí.</a></p>
             </div>
         </div>
         <div class="version-info">
