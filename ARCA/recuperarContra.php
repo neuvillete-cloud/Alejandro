@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al Sistema ARCA</title>
+    <title>Recuperar Contraseña - ARCA</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Enlazamos la misma hoja de estilos que el login -->
     <link rel="stylesheet" href="css/estilosAcceso.css">
 
 </head>
@@ -25,39 +26,31 @@
     </div>
     <div class="login-panel">
 
-        <!-- === INICIO: NUEVO ENCABEZADO PARA MÓVILES === -->
-        <!-- Este bloque solo será visible en pantallas pequeñas -->
+        <!-- Encabezado para móviles (igual que en login) -->
         <div class="mobile-branding">
             <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
             <p>Sistema de Gestión de Contenciones y Calidad</p>
         </div>
-        <!-- === FIN: NUEVO ENCABEZADO PARA MÓVILES === -->
 
         <div class="login-form-container">
-            <h2>Bienvenido de Vuelta</h2>
-            <p class="subtitle">Por favor, introduce tus credenciales para acceder.</p>
+            <h2>Recuperar Contraseña</h2>
+            <p class="subtitle">Introduce tu número de nómina para iniciar el proceso.</p>
 
-            <form id="loginForm" action="dao/daoLogin.php" method="POST">
+            <!-- Formulario de recuperación -->
+            <form id="recuperarForm" action="dao/daoRecuperar.php" method="POST">
                 <div class="input-group">
-                    <i class="fa-solid fa-user"></i>
-                    <input type="text" id="nombreUsuario" name="nombreUsuario" class="input-field" placeholder="Nombre de Usuario" required>
+                    <!-- Usamos un ícono relevante, y pedimos el NumNomina basado en tu BD -->
+                    <i class="fa-solid fa-id-card"></i>
+                    <input type="text" id="numNomina" name="numNomina" class="input-field" placeholder="Número de Nómina" required>
                 </div>
-                <div class="input-group">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" name="password" class="input-field" placeholder="Contraseña" required>
-                </div>
-                <div class="extra-options">
-                    <div>
-                        <input type="checkbox" id="remember" name="remember" style="margin-right: 5px;">
-                        <label for="remember">Recordar sesión</label>
-                    </div>
-                    <!-- ===== CAMBIO AQUÍ ===== -->
-                    <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
-                </div>
-                <button type="submit" class="submit-btn">Acceder</button>
+
+                <!-- Eliminamos "Recordar sesión" y "Olvidaste contraseña" -->
+
+                <button type="submit" class="submit-btn">Enviar Instrucciones</button>
             </form>
             <div class="form-footer">
-                <p>¿No tienes una cuenta? <a href="registro.php">Regístrate aquí.</a></p>
+                <!-- Enlace para volver al login -->
+                <p>¿Recordaste tu contraseña? <a href="login.html">Inicia sesión aquí.</a></p>
             </div>
         </div>
         <div class="version-info">
@@ -67,7 +60,7 @@
 </div>
 
 <script>
-    const form = document.getElementById('loginForm');
+    const form = document.getElementById('recuperarForm');
 
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // Prevenimos el envío tradicional
@@ -75,7 +68,7 @@
         const formData = new FormData(form);
 
         Swal.fire({
-            title: 'Iniciando Sesión...',
+            title: 'Procesando Solicitud...',
             text: 'Por favor, espera.',
             allowOutsideClick: false,
             didOpen: () => {
@@ -83,7 +76,8 @@
             }
         });
 
-        fetch('dao/daoLogin.php', {
+        // Apuntamos a un nuevo archivo DAO para manejar esta lógica
+        fetch('dao/daoRecuperar.php', {
             method: 'POST',
             body: formData
         })
@@ -92,20 +86,17 @@
                 if (data.status === 'success') {
                     Swal.fire({
                         icon: 'success',
-                        title: '¡Bienvenido!',
+                        title: '¡Revisa tu Correo!',
+                        // El mensaje (data.message) vendría del servidor
                         text: data.message,
-                        showConfirmButton: false,
-                        timer: 1500 // Se cierra automáticamente
-                    }).then(() => {
-                        // ¡ESTE ES EL CAMBIO!
-                        // Redirige a la URL que nos proporciona el PHP.
-                        window.location.href = data.redirect_url;
+                        showConfirmButton: true
+                        // No hay redirección, el usuario debe revisar su correo
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error de Acceso',
-                        text: data.message,
+                        title: 'Error',
+                        text: data.message, // Ej: "Número de nómina no encontrado"
                     });
                 }
             })
