@@ -77,7 +77,7 @@
         });
 
         // Apuntamos a un nuevo archivo DAO para manejar esta lógica
-        fetch('dao/daoRecuperar.php', {
+        fetch('https://grammermx.com/Mailer/RecuperarContra.php', {
             method: 'POST',
             body: formData
         })
