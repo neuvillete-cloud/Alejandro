@@ -26,6 +26,12 @@ if (!$emailDestino) {
 
 $con = new LocalConector();
 $conex = $con->conectar();
+
+// --- ¡NUEVO! ---
+// Establecer el charset de la conexión a utf8mb4 es crucial
+// para manejar acentos y caracteres especiales correctamente.
+$conex->set_charset("utf8mb4");
+
 $conex->begin_transaction();
 
 try {
@@ -42,7 +48,8 @@ try {
 
         // 3. Invalidar tokens antiguos (buena práctica)
         // Usamos TokenValido = 0 para marcar como usado/expirado
-        $stmt_invalidate = $conex->prepare("UPDATE ReestablecerContraseÃ±a SET TokenValido = 0 WHERE IdUsuario = ?");
+        // --- ¡CORRECCIÓN! --- Se usa 'ReestablecerContraseña' con 'ñ'
+        $stmt_invalidate = $conex->prepare("UPDATE ReestablecerContraseña SET TokenValido = 0 WHERE IdUsuario = ?");
         $stmt_invalidate->bind_param("i", $idUsuario);
         $stmt_invalidate->execute();
         $stmt_invalidate->close();
@@ -52,7 +59,8 @@ try {
         $expira = date('Y-m-d H:i:s', strtotime('+1 hour')); // 1 hora de validez
 
         // 5. Insertar el nuevo token en la BD
-        $stmt_token = $conex->prepare("INSERT INTO ReestablecerContraseÃ±a (IdUsuario, Token, Expira, TokenValido) VALUES (?, ?, ?, 1)");
+        // --- ¡CORRECCIÓN! --- Se usa 'ReestablecerContraseña' con 'ñ'
+        $stmt_token = $conex->prepare("INSERT INTO ReestablecerContraseña (IdUsuario, Token, Expira, TokenValido) VALUES (?, ?, ?, 1)");
         $stmt_token->bind_param("iss", $idUsuario, $token, $expira);
 
         if (!$stmt_token->execute()) {
