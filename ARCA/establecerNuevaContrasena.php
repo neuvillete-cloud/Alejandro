@@ -110,7 +110,9 @@ if (isset($_GET['token'])) {
                 <h2>Enlace Inválido</h2>
                 <p class="subtitle" style="color: #a83232;"><?php echo $mensajeError; ?></p>
 
-                <a href="recuperarContra.php" class="submit-btn" style="text-align: center; text-decoration: none;">Solicitar nuevo enlace</a>
+                <!-- === ¡AQUÍ ESTÁ LA CORRECCIÓN! === -->
+                <!-- Añadimos 'display: block;' y 'box-sizing: border-box;' para que el enlace ocupe el 100% del ancho -->
+                <a href="recuperarContra.php" class="submit-btn" style="text-align: center; text-decoration: none; display: block; box-sizing: border-box;">Solicitar nuevo enlace</a>
 
                 <div class="form-footer">
                     <p><a href="acceso.php">Volver a Inicio de sesión</a></p>
