@@ -1175,21 +1175,75 @@ $conex->close();
                 });
             }
 
-            // 3. Aceptadas vs Rechazadas
+            // 3. Aceptadas vs Rechazadas (--- INICIO DE LA MODIFICACIÓN ---)
             const rejectionCtx = document.getElementById('rejectionRateChart')?.getContext('2d');
             if (rejectionCtx && resumen && resumen.inspeccionadas > 0) {
+                const rechazoTotal = resumen.rechazadas;
+                const aceptadoTotal = resumen.aceptadas;
+                const totalInspeccionadas = resumen.inspeccionadas; // Base para el 100%
+
+                // 1. Calcular porcentajes
+                const porcentajeRechazadas = parseFloat(((rechazoTotal / totalInspeccionadas) * 100).toFixed(2));
+                const porcentajeAceptadas = parseFloat(((aceptadoTotal / totalInspeccionadas) * 100).toFixed(2));
+
                 rejectionRateChartInstance = new Chart(rejectionCtx, {
                     type: 'bar',
-                    data: { labels: [''], datasets: [ { label: translate('rejected'), data: [resumen.rechazadas], backgroundColor: '#a83232' }, { label: translate('accepted'), data: [resumen.aceptadas], backgroundColor: '#69A032' } ] },
+                    data: {
+                        labels: [''], // Sigue siendo una sola barra horizontal
+                        datasets: [
+                            {
+                                label: translate('rejected'),
+                                data: [porcentajeRechazadas], // <-- Usamos el porcentaje
+                                backgroundColor: '#a83232'
+                            },
+                            {
+                                label: translate('accepted'),
+                                data: [porcentajeAceptadas], // <-- Usamos el porcentaje
+                                backgroundColor: '#69A032'
+                            }
+                        ]
+                    },
                     options: {
                         animation: false, // <-- ARREGLO PARA PDF
-                        indexAxis: 'y',
+                        indexAxis: 'y', // Mantenemos la barra horizontal
                         responsive: true,
-                        scales: { x: { stacked: true }, y: { stacked: true } },
-                        plugins: { legend: { position: 'top' } }
+                        scales: {
+                            x: {
+                                stacked: true, // Mantenemos el apilado
+                                min: 0,
+                                max: 100, // <-- Eje X forzado de 0 a 100
+                                ticks: {
+                                    // Añadir '%' a las etiquetas del eje X
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            },
+                            y: { stacked: true }
+                        },
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    // Personalizar el tooltip para mostrar porcentaje
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.raw;
+                                        // El valor ya es un porcentaje, solo formateamos
+                                        return `${label}: ${value.toFixed(2)}%`;
+                                    },
+                                    // Ocultar el título del tooltip (que solo dice '')
+                                    title: function(context) {
+                                        return '';
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             }
+            // --- FIN DE LA MODIFICACIÓN ---
+
 
             // 4. Progreso Diario
             const dailyCtx = document.getElementById('dailyProgressChart')?.getContext('2d');
@@ -1254,4 +1308,3 @@ $conex->close();
 </script>
 </body>
 </html>
-
