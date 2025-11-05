@@ -50,7 +50,7 @@
             </form>
             <div class="form-footer">
                 <!-- Enlace para volver al login -->
-                <p>¿Recordaste tu contraseña? <a href="login.html">Inicia sesión aquí.</a></p>
+                <p>¿Recordaste tu contraseña? <a href="acceso.php">Inicia sesión aquí.</a></p>
             </div>
         </div>
         <div class="version-info">
