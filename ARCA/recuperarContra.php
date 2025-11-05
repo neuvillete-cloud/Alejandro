@@ -12,7 +12,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Enlazamos la misma hoja de estilos que el login -->
+    <!-- Este es el CSS que da estilo a tu página de login y a esta -->
     <link rel="stylesheet" href="css/estilosAcceso.css">
 
 </head>
@@ -26,31 +26,30 @@
     </div>
     <div class="login-panel">
 
-        <!-- Encabezado para móviles (igual que en login) -->
+        <!-- === Encabezado para Móviles === -->
         <div class="mobile-branding">
             <div class="logo"><i class="fa-solid fa-shield-halved"></i>ARCA</div>
-            <p>Sistema de Gestión de Contenciones y Calidad</p>
+            <p>Gestión de Contenciones y Calidad</p>
         </div>
 
         <div class="login-form-container">
             <h2>Recuperar Contraseña</h2>
-            <p class="subtitle">Introduce tu número de nómina para iniciar el proceso.</p>
+            <p class="subtitle">Ingresa tu correo y te enviaremos un enlace de recuperación.</p>
 
-            <!-- Formulario de recuperación -->
-            <form id="recuperarForm" action="dao/daoRecuperar.php" method="POST">
+            <!--
+              Este formulario apuntará a un nuevo script PHP que debes crear.
+              Basado en tu login, probablemente se llame 'dao/daoRecuperar.php'
+            -->
+            <form id="recoverForm" method="POST">
                 <div class="input-group">
-                    <!-- Usamos un ícono relevante, y pedimos el NumNomina basado en tu BD -->
-                    <i class="fa-solid fa-id-card"></i>
-                    <input type="text" id="numNomina" name="numNomina" class="input-field" placeholder="Número de Nómina" required>
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="correo" name="correo" class="input-field" placeholder="Correo Electrónico" required>
                 </div>
 
-                <!-- Eliminamos "Recordar sesión" y "Olvidaste contraseña" -->
-
-                <button type="submit" class="submit-btn">Enviar Instrucciones</button>
+                <button type="submit" class="submit-btn">Enviar Enlace</button>
             </form>
             <div class="form-footer">
-                <!-- Enlace para volver al login -->
-                <p>¿Recordaste tu contraseña? <a href="acceso.php">Inicia sesión aquí.</a></p>
+                <p>¿Recordaste tu contraseña? <a href="login.html">Inicia sesión aquí.</a></p>
             </div>
         </div>
         <div class="version-info">
@@ -60,7 +59,7 @@
 </div>
 
 <script>
-    const form = document.getElementById('recuperarForm');
+    const form = document.getElementById('recoverForm');
 
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // Prevenimos el envío tradicional
@@ -68,7 +67,7 @@
         const formData = new FormData(form);
 
         Swal.fire({
-            title: 'Procesando Solicitud...',
+            title: 'Procesando...',
             text: 'Por favor, espera.',
             allowOutsideClick: false,
             didOpen: () => {
@@ -86,17 +85,16 @@
                 if (data.status === 'success') {
                     Swal.fire({
                         icon: 'success',
-                        title: '¡Revisa tu Correo!',
-                        // El mensaje (data.message) vendría del servidor
+                        title: '¡Revisa tu correo!',
+                        // Mostramos el mensaje que viene del PHP
                         text: data.message,
-                        showConfirmButton: true
-                        // No hay redirección, el usuario debe revisar su correo
+                        // No redirigimos, el usuario debe ir a su email
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: data.message, // Ej: "Número de nómina no encontrado"
+                        text: data.message,
                     });
                 }
             })
