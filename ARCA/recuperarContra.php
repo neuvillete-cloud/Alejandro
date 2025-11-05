@@ -51,7 +51,8 @@
                         <input type="checkbox" id="remember" name="remember" style="margin-right: 5px;">
                         <label for="remember">Recordar sesión</label>
                     </div>
-                    <a href="recuperarContra.php">¿Olvidaste tu contraseña?</a>
+                    <!-- ===== CAMBIO AQUÍ ===== -->
+                    <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
                 </div>
                 <button type="submit" class="submit-btn">Acceder</button>
             </form>
