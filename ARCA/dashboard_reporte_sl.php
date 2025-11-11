@@ -28,6 +28,9 @@ $conex->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <!-- *** NUEVO: Plugin para Data Labels en Chart.js *** -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
     <style>
         :root {
             --color-primario: #4a6984;
@@ -421,6 +424,10 @@ $conex->close();
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // --- NUEVO: Registrar el plugin de datalabels globalmente ---
+        // Esto hará que las etiquetas de datos estén disponibles para todas las gráficas
+        Chart.register(ChartDataLabels);
 
         const solicitudSelector = document.getElementById('safe-launch-selector');
         const btnGenerarParcial = document.getElementById('btn-generar-parcial-sl');
@@ -1141,23 +1148,53 @@ $conex->close();
             const currentLang = getCurrentLanguage();
             const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
 
-            // 1. Pareto
+            // --- INICIO MODIFICACIÓN: GRÁFICA DE PARETO ---
+            // 1. Pareto (Modificado a Gráfica de Barras Horizontal)
             const paretoCtx = document.getElementById('paretoChart')?.getContext('2d');
             if (paretoCtx && dashboardData.pareto && dashboardData.pareto.length > 0) {
                 const paretoLabels = dashboardData.pareto.map(item => item.defecto);
                 const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
-                const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
+                // La línea acumulada ya no se usa
+                // const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
+
                 paretoChartInstance = new Chart(paretoCtx, {
-                    type: 'bar',
-                    data: { labels: paretoLabels, datasets: [ { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70', yAxisID: 'y' }, { label: translate('chart_cumulative'), data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' } ] },
+                    type: 'bar', // El tipo sigue siendo 'bar'
+                    data: {
+                        labels: paretoLabels,
+                        datasets: [
+                            {
+                                label: translate('chart_qty'),
+                                data: paretoCounts,
+                                backgroundColor: '#003D70'
+                            }
+                            // Se elimina el dataset de la línea acumulada
+                        ]
+                    },
                     options: {
+                        indexAxis: 'y', // <-- ESTA ES LA MODIFICACIÓN: Convierte la gráfica a horizontal
                         animation: false, // <-- ARREGLO PARA PDF
                         responsive: true,
-                        interaction: { mode: 'index', intersect: false },
-                        scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } }
+                        scales: {
+                            x: { // El eje de cantidades ahora es X
+                                beginAtZero: true
+                            }
+                            // Se eliminan los ejes Y duplicados
+                        },
+                        // --- NUEVO: Configuración de Datalabels ---
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Alinea la etiqueta al final de la barra (fuera)
+                                anchor: 'end', // Ancla la etiqueta al final de la barra
+                                color: '#444', // Color del texto
+                                font: { weight: 'bold', size: 10 },
+                                formatter: (value) => value // Muestra el valor numérico
+                            }
+                        }
                     }
                 });
             }
+            // --- FIN MODIFICACIÓN: GRÁFICA DE PARETO ---
+
 
             // 2. Rechazadas por Semana
             const weeklyCtx = document.getElementById('weeklyRejectsChart')?.getContext('2d');
@@ -1170,7 +1207,20 @@ $conex->close();
                     options: {
                         animation: false, // <-- ARREGLO PARA PDF
                         responsive: true,
-                        scales: { y: { beginAtZero: true } }
+                        scales: { y: { beginAtZero: true } },
+                        // --- NUEVO: Configuración de Datalabels ---
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Arriba del punto
+                                anchor: 'end',
+                                backgroundColor: 'rgba(0, 61, 112, 0.7)', // Fondo semitransparente
+                                color: 'white', // Texto blanco
+                                borderRadius: 4, // Bordes redondeados
+                                font: { size: 10 },
+                                formatter: (value) => value, // Mostrar el valor
+                                padding: 4 // Espaciado interno
+                            }
+                        }
                     }
                 });
             }
@@ -1237,6 +1287,17 @@ $conex->close();
                                         return '';
                                     }
                                 }
+                            },
+                            // --- NUEVO: Configuración de Datalabels ---
+                            datalabels: {
+                                color: 'white', // Etiquetas blancas para que se vean dentro
+                                font: { weight: 'bold', size: 12 },
+                                // Formatear para mostrar el porcentaje
+                                formatter: (value, context) => {
+                                    // Si el valor es muy pequeño, no mostrar etiqueta para que no se encime
+                                    if (value < 5) return '';
+                                    return value.toFixed(2) + '%';
+                                }
                             }
                         }
                     }
@@ -1261,7 +1322,21 @@ $conex->close();
                     options: {
                         animation: false, // <-- ARREGLO PARA PDF
                         responsive: true,
-                        scales: { y: { beginAtZero: true } }
+                        scales: { y: { beginAtZero: true } },
+                        // --- NUEVO: Configuración de Datalabels ---
+                        plugins: {
+                            datalabels: {
+                                align: 'top', // Poner la etiqueta arriba de la barra
+                                anchor: 'end',
+                                color: '#444', // Color oscuro
+                                font: { size: 9 }, // Letra pequeña
+                                rotation: -90, // Girar la etiqueta para que quepa
+                                offset: 8, // Separar un poco de la barra
+                                formatter: (value) => value,
+                                // Ocultar etiquetas si el valor es 0
+                                display: (context) => context.dataset.data[context.dataIndex] > 0
+                            }
+                        }
                     }
                 });
             }
@@ -1287,7 +1362,21 @@ $conex->close();
                     options: {
                         animation: false, // <-- ARREGLO PARA PDF
                         responsive: true,
-                        scales: { y: { beginAtZero: true, ticks: { callback: value => value.toLocaleString() } } }
+                        scales: { y: { beginAtZero: true, ticks: { callback: value => value.toLocaleString() } } },
+                        // --- NUEVO: Configuración de Datalabels ---
+                        plugins: {
+                            datalabels: {
+                                align: 'end', // Arriba del punto
+                                anchor: 'end',
+                                backgroundColor: 'rgba(168, 50, 50, 0.7)', // Fondo semitransparente
+                                color: 'white', // Texto blanco
+                                borderRadius: 4, // Bordes redondeados
+                                font: { size: 10 },
+                                // Redondear el valor de PPM para la etiqueta
+                                formatter: (value) => Math.round(value),
+                                padding: 4 // Espaciado interno
+                            }
+                        }
                     }
                 });
             }
