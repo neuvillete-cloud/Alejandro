@@ -30,6 +30,9 @@ $conex->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <!-- AÑADIR ESTA LÍNEA PARA LOS DATA LABELS -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
     <style>
         .dashboard-grid {
             display: grid;
@@ -269,6 +272,10 @@ $conex->close();
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // --- REGISTRAR EL PLUGIN DE DATA LABELS ---
+        // Esto "activa" el plugin para todas las gráficas que creemos
+        Chart.register(ChartDataLabels);
 
         const solicitudSelector = document.getElementById('solicitud-selector');
         const btnGenerarParcial = document.getElementById('btn-generar-parcial');
@@ -706,10 +713,51 @@ $conex->close();
                         labels: paretoLabels,
                         datasets: [
                             { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70', yAxisID: 'y' },
-                            { label: translate('chart_cumulative'), data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' }
+                            {
+                                label: translate('chart_cumulative'),
+                                data: paretoCumulative,
+                                type: 'line',
+                                borderColor: '#a83232',
+                                yAxisID: 'y1',
+                                // --- INICIO CAMBIO DE ESTILO PARETO ---
+                                tension: 0.4, // Suaviza la línea
+                                fill: true, // Rellena el área bajo la línea
+                                backgroundColor: 'rgba(168, 50, 50, 0.1)', // Color de relleno
+                                // --- FIN CAMBIO DE ESTILO PARETO ---
+
+                                // --- INICIO DATA LABELS (Solo para la línea) ---
+                                datalabels: {
+                                    display: true,
+                                    align: 'start',
+                                    anchor: 'start',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                    borderColor: '#a83232',
+                                    borderWidth: 1,
+                                    borderRadius: 4,
+                                    color: '#a83232',
+                                    font: {
+                                        weight: 'bold',
+                                        size: 10
+                                    },
+                                    formatter: (value) => value.toFixed(0) + '%' // Formato "80%"
+                                }
+                                // --- FIN DATA LABELS ---
+                            }
                         ]
                     },
-                    options: { responsive: true, interaction: { mode: 'index', intersect: false }, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } } }
+                    options: {
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } },
+                        // --- INICIO DATA LABELS (Configuración global del gráfico) ---
+                        plugins: {
+                            datalabels: {
+                                display: false // Desactivado globalmente (para las barras)
+                                // Se activa solo en el dataset de la línea (arriba)
+                            }
+                        }
+                        // --- FIN DATA LABELS ---
+                    }
                 });
             }
 
@@ -720,7 +768,25 @@ $conex->close();
                 weeklyRejectsChartInstance = new Chart(weeklyCtx, {
                     type: 'line',
                     data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
-                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } },
+                        // --- INICIO DATA LABELS ---
+                        plugins: {
+                            datalabels: {
+                                align: 'end',
+                                anchor: 'end',
+                                backgroundColor: 'rgba(0, 61, 112, 0.8)',
+                                color: 'white',
+                                borderRadius: 4,
+                                font: {
+                                    weight: 'bold'
+                                },
+                                formatter: (value) => (value > 0 ? value : '') // Oculta si es 0
+                            }
+                        }
+                        // --- FIN DATA LABELS ---
+                    }
                 });
             }
 
@@ -786,8 +852,22 @@ $conex->close();
                                     title: function(context) {
                                         return '';
                                     }
+
+                                }
+                            },
+                            // --- INICIO DATA LABELS ---
+                            datalabels: {
+                                color: 'white',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                formatter: (value, context) => {
+                                    // No mostrar si el valor es muy pequeño para caber
+                                    if (value < 5) return '';
+                                    return value.toFixed(1) + '%';
                                 }
                             }
+                            // --- FIN DATA LABELS ---
                         }
                     }
                 });
@@ -807,7 +887,27 @@ $conex->close();
             dailyProgressChartInstance = new Chart(dailyCtx, {
                 type: 'bar',
                 data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } },
+                    // --- INICIO DATA LABELS ---
+                    plugins: {
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            font: {
+                                size: 10
+                            },
+                            // Color dinámico para que se lea bien
+                            color: (context) => {
+                                // Si la barra es la de "inspeccionadas" (color claro), texto oscuro
+                                return context.dataset.backgroundColor === '#E9E6DD' ? '#333' : 'white';
+                            },
+                            formatter: (value) => (value > 0 ? value : '') // Oculta si es 0
+                        }
+                    }
+                    // --- FIN DATA LABELS ---
+                }
             });
         }
 
