@@ -716,16 +716,17 @@ $conex->close();
                                 label: translate('chart_qty'),
                                 data: paretoCounts,
                                 backgroundColor: '#003D70',
-                                yAxisID: 'y', // <-- CAMBIO: de xAxisID a yAxisID
+                                yAxisID: 'y',
                                 // --- INICIO DATA LABELS (Para las barras) ---
                                 datalabels: {
                                     display: true,
-                                    anchor: 'end', // Se mantiene 'end'
-                                    align: 'top', // <-- CAMBIO: de 'right' a 'top'
-                                    offset: 4,
-                                    color: '#333',
+                                    anchor: 'end', // Al final (parte superior) de la barra
+                                    align: 'center', // Centrada horizontalmente
+                                    offset: -6, // <-- Desplazamiento negativo para ponerla DENTRO
+                                    color: 'white', // <-- Color blanco para contraste
                                     font: {
-                                        size: 10
+                                        size: 10,
+                                        weight: 'bold' // <-- En negrita para que resalte
                                     },
                                     formatter: (value) => (value > 0 ? value : '') // Mostrar el número, ocultar si es 0
                                 }
