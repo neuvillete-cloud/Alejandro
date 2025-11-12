@@ -1202,8 +1202,8 @@ $conex->close();
                 const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
                 const weeklyCounts = dashboardData.rechazadasPorSemana.map(item => item.rechazadas_semana);
                 weeklyRejectsChartInstance = new Chart(weeklyCtx, {
-                    type: 'line',
-                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
+                    type: 'bar',
+                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, backgroundColor: '#003D70' }] },
                     options: {
                         animation: false, // <-- ARREGLO PARA PDF
                         responsive: true,
@@ -1211,14 +1211,11 @@ $conex->close();
                         // --- NUEVO: Configuración de Datalabels ---
                         plugins: {
                             datalabels: {
-                                align: 'end', // Arriba del punto
+                                align: 'end', // Arriba de la barra
                                 anchor: 'end',
-                                backgroundColor: 'rgba(0, 61, 112, 0.7)', // Fondo semitransparente
-                                color: 'white', // Texto blanco
-                                borderRadius: 4, // Bordes redondeados
-                                font: { size: 10 },
+                                color: '#444', // Color oscuro
+                                font: { size: 10, weight: 'bold' },
                                 formatter: (value) => value, // Mostrar el valor
-                                padding: 4 // Espaciado interno
                             }
                         }
                     }
@@ -1347,16 +1344,13 @@ $conex->close();
                 const ppmLabels = dashboardData.dailyPPM.map(item => new Date(item.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
                 const ppmValues = dashboardData.dailyPPM.map(item => item.ppm);
                 ppmTrendChartInstance = new Chart(ppmCtx, {
-                    type: 'line',
+                    type: 'bar',
                     data: {
                         labels: ppmLabels,
                         datasets: [{
                             label: translate('chart_ppm'),
                             data: ppmValues,
-                            borderColor: '#a83232',
-                            backgroundColor: 'rgba(168, 50, 50, 0.1)',
-                            fill: true,
-                            tension: 0.1
+                            backgroundColor: '#a83232'
                         }]
                     },
                     options: {
@@ -1366,15 +1360,12 @@ $conex->close();
                         // --- NUEVO: Configuración de Datalabels ---
                         plugins: {
                             datalabels: {
-                                align: 'end', // Arriba del punto
+                                align: 'end', // Arriba de la barra
                                 anchor: 'end',
-                                backgroundColor: 'rgba(168, 50, 50, 0.7)', // Fondo semitransparente
-                                color: 'white', // Texto blanco
-                                borderRadius: 4, // Bordes redondeados
-                                font: { size: 10 },
+                                color: '#444', // Color oscuro
+                                font: { size: 10, weight: 'bold' },
                                 // Redondear el valor de PPM para la etiqueta
-                                formatter: (value) => Math.round(value),
-                                padding: 4 // Espaciado interno
+                                formatter: (value) => Math.round(value).toLocaleString(),
                             }
                         }
                     }
