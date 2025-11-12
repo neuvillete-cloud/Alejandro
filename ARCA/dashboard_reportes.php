@@ -30,10 +30,103 @@ $conex->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- AÑADIR ESTA LÍNEA PARA LOS DATA LABELS -->
+    <!-- *** NUEVO: Plugin para Data Labels en Chart.js *** -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <style>
+        /* Estilos CSS (sin cambios) */
+        :root {
+            --color-primario: #4a6984;
+            --color-secundario: #5c85ad;
+            --color-acento: #8ab4d7;
+            --color-fondo: #f4f6f9;
+            --color-blanco: #ffffff;
+            --color-texto: #333333;
+            --color-borde: #dbe1e8;
+            --color-exito: #28a745;
+            --color-error: #a83232;
+            --sombra-suave: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: var(--color-blanco);
+            box-shadow: var(--sombra-suave);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-primario);
+        }
+        .logo i { margin-right: 10px; }
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        .user-info span {
+            margin-right: 0;
+            font-weight: 700;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--color-secundario);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .logout-btn:hover { color: var(--color-primario); }
+        .logout-btn i { margin-left: 8px; }
+        .form-container { background-color: #fff; padding: 30px 40px; border-radius: 12px; box-shadow: var(--sombra-suave); }
+        .form-container h1 { font-family: 'Montserrat', sans-serif; margin-top: 0; margin-bottom: 30px; font-size: 24px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        fieldset { border: none; padding: 0; margin-bottom: 25px; border-bottom: 1px solid #e0e0e0; padding-bottom: 25px; }
+        fieldset:last-of-type { border-bottom: none; }
+        legend { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 18px; color: var(--color-primario, #4a6984); margin-bottom: 20px; }
+        legend i { margin-right: 10px; color: var(--color-acento); }
+        .form-row { display: flex; flex-wrap: wrap; gap: 20px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; margin-bottom: 15px; min-width: 200px; }
+        .form-group label { margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; font-family: 'Lato', sans-serif; box-sizing: border-box; }
+        .form-actions { text-align: right; margin-top: 20px; }
+        .page-header {
+            margin-bottom: 20px;
+        }
+        .page-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--color-primario);
+            margin: 0;
+        }
+        .lang-btn { border: none; background-color: transparent; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 15px; cursor: pointer; color: #888; transition: all 0.3s ease; }
+        .lang-btn:not(.active):hover { background-color: #e9eef2; color: var(--color-primario); }
+        .lang-btn.active { background-color: var(--color-secundario); color: var(--color-blanco); cursor: default; }
+        .language-selector { display: flex; align-items: center; gap: 5px; background-color: var(--color-fondo); padding: 4px; border-radius: 20px; margin-right: 0; border: 1px solid var(--color-borde); }
+        .btn-primary, .btn-secondary { padding: 12px 25px; border-radius: 6px; border: none; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        .btn-primary { background-color: var(--color-secundario); color: white; }
+        .btn-primary:hover { background-color: var(--color-primario); }
+        .btn-secondary { background-color: #e0e0e0; color: #333; }
+        .btn-secondary:hover { background-color: #bdbdbd; }
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -273,8 +366,7 @@ $conex->close();
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- REGISTRAR EL PLUGIN DE DATA LABELS ---
-        // Esto "activa" el plugin para todas las gráficas que creemos
+        // --- NUEVO: Registrar el plugin de datalabels globalmente ---
         Chart.register(ChartDataLabels);
 
         const solicitudSelector = document.getElementById('solicitud-selector');
@@ -706,83 +798,32 @@ $conex->close();
             if (dashboardData.pareto && dashboardData.pareto.length > 0) {
                 const paretoLabels = dashboardData.pareto.map(item => item.defecto);
                 const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
-                const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
+                // const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado); // No se usa en horizontal
                 paretoChartInstance = new Chart(paretoCtx, {
                     type: 'bar',
                     data: {
                         labels: paretoLabels,
                         datasets: [
-                            {
-                                label: translate('chart_qty'),
-                                data: paretoCounts,
-                                backgroundColor: '#003D70',
-                                yAxisID: 'y',
-                                // --- INICIO DATA LABELS (Para las barras) ---
-                                datalabels: {
-                                    display: true,
-                                    anchor: 'center', // <-- CAMBIO: de 'end' a 'center'
-                                    align: 'center', // Se mantiene 'center'
-                                    offset: 0, // <-- CAMBIO: de -6 a 0 (ya no se necesita offset)
-                                    color: 'white', // <-- Color blanco para contraste
-                                    font: {
-                                        size: 10,
-                                        weight: 'bold' // <-- En negrita para que resalte
-                                    },
-                                    formatter: (value) => (value > 0 ? value : '') // Mostrar el número, ocultar si es 0
-                                }
-                                // --- FIN DATA LABELS ---
-                            },
-                            {
-                                label: translate('chart_cumulative'),
-                                data: paretoCumulative,
-                                type: 'line',
-                                borderColor: '#a83232',
-                                yAxisID: 'y1', // <-- CAMBIO: de xAxisID a yAxisID
-                                // --- INICIO CAMBIO DE ESTILO PARETO (LÍNEA SIMPLE) ---
-                                tension: 0, // Línea recta
-                                fill: false, // Sin relleno
-                                // backgroundColor: 'rgba(168, 50, 50, 0.1)', // Quitado
-                                // --- FIN CAMBIO DE ESTILO PARETO ---
-
-                                // --- INICIO DATA LABELS (Solo para la línea) ---
-                                datalabels: {
-                                    display: true,
-                                    align: 'bottom', // <-- CAMBIO: A 'bottom' (arriba del punto)
-                                    anchor: 'center', // <-- CAMBIO: A 'center' (centrado en el punto)
-                                    offset: 8, // <-- AÑADIDO: Empuja la etiqueta 8px hacia arriba
-                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                    borderColor: '#a83232',
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    color: '#a83232',
-                                    font: {
-                                        weight: 'bold',
-                                        size: 10
-                                    },
-                                    formatter: (value) => value.toFixed(0) + '%' // Formato "80%"
-                                }
-                                // --- FIN DATA LABELS ---
-                            }
+                            { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70' }
+                            // Se quita la línea de % acumulado
                         ]
                     },
                     options: {
-                        // indexAxis: 'y', // <-- ELIMINADO: Se quita para volver a vertical
+                        indexAxis: 'y', // <-- MODIFICACIÓN: Gráfica horizontal
+                        animation: false, // <-- MODIFICACIÓN: Para PDF
                         responsive: true,
-                        interaction: { mode: 'index', intersect: false },
                         scales: {
-                            // <-- CAMBIO: Reemplazamos la configuración de ejes horizontal por la vertical
-                            y: { type: 'linear', display: true, position: 'left', beginAtZero: true },
-                            y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } }
-                            // El eje 'x' (etiquetas) es automático
+                            x: { beginAtZero: true } // Eje X es ahora el de cantidad
                         },
-                        // --- INICIO DATA LABELS (Configuración global del gráfico) ---
                         plugins: {
                             datalabels: {
-                                display: false // Desactivado globalmente (para las barras)
-                                // Se activa solo en el dataset de la línea (arriba)
+                                align: 'end',
+                                anchor: 'end',
+                                color: '#444',
+                                font: { weight: 'bold', size: 10 },
+                                formatter: (value) => value
                             }
                         }
-                        // --- FIN DATA LABELS ---
                     }
                 });
             }
@@ -795,23 +836,24 @@ $conex->close();
                     type: 'line',
                     data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
                     options: {
+                        animation: false, // <-- MODIFICACIÓN: Para PDF
                         responsive: true,
-                        scales: { y: { beginAtZero: true } },
-                        // --- INICIO DATA LABELS ---
+                        scales: {
+                            y: { beginAtZero: true },
+                            x: { offset: true } // <-- MODIFICACIÓN: Añade espacio
+                        },
                         plugins: {
                             datalabels: {
                                 align: 'end',
                                 anchor: 'end',
-                                backgroundColor: 'rgba(0, 61, 112, 0.8)',
+                                backgroundColor: 'rgba(0, 61, 112, 0.7)',
                                 color: 'white',
                                 borderRadius: 4,
-                                font: {
-                                    weight: 'bold'
-                                },
-                                formatter: (value) => (value > 0 ? value : '') // Oculta si es 0
+                                font: { size: 10 },
+                                formatter: (value) => value,
+                                padding: 4
                             }
                         }
-                        // --- FIN DATA LABELS ---
                     }
                 });
             }
@@ -847,6 +889,7 @@ $conex->close();
                         ]
                     },
                     options: {
+                        animation: false, // <-- MODIFICACIÓN: Para PDF
                         indexAxis: 'y', // Mantenemos la barra horizontal
                         responsive: true,
                         scales: {
@@ -878,22 +921,17 @@ $conex->close();
                                     title: function(context) {
                                         return '';
                                     }
-
                                 }
                             },
-                            // --- INICIO DATA LABELS ---
+                            // --- NUEVO: Configuración de Datalabels ---
                             datalabels: {
                                 color: 'white',
-                                font: {
-                                    weight: 'bold'
-                                },
+                                font: { weight: 'bold', size: 12 },
                                 formatter: (value, context) => {
-                                    // No mostrar si el valor es muy pequeño para caber
                                     if (value < 5) return '';
-                                    return value.toFixed(1) + '%';
+                                    return value.toFixed(2) + '%';
                                 }
                             }
-                            // --- FIN DATA LABELS ---
                         }
                     }
                 });
@@ -914,25 +952,22 @@ $conex->close();
                 type: 'bar',
                 data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
                 options: {
+                    animation: false, // <-- MODIFICACIÓN: Para PDF
                     responsive: true,
                     scales: { y: { beginAtZero: true } },
-                    // --- INICIO DATA LABELS ---
+                    // --- NUEVO: Configuración de Datalabels ---
                     plugins: {
                         datalabels: {
-                            align: 'end',
+                            align: 'top',
                             anchor: 'end',
-                            font: {
-                                size: 10
-                            },
-                            // Color dinámico para que se lea bien
-                            color: (context) => {
-                                // Si la barra es la de "inspeccionadas" (color claro), texto oscuro
-                                return context.dataset.backgroundColor === '#E9E6DD' ? '#333' : 'white';
-                            },
-                            formatter: (value) => (value > 0 ? value : '') // Oculta si es 0
+                            color: '#444',
+                            font: { size: 9 },
+                            rotation: -90,
+                            offset: 8,
+                            formatter: (value) => value,
+                            display: (context) => context.dataset.data[context.dataIndex] > 0
                         }
                     }
-                    // --- FIN DATA LABELS ---
                 }
             });
         }
