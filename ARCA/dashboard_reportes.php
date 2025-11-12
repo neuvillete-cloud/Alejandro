@@ -716,12 +716,12 @@ $conex->close();
                                 label: translate('chart_qty'),
                                 data: paretoCounts,
                                 backgroundColor: '#003D70',
-                                xAxisID: 'x', // <-- CAMBIO: de yAxisID a xAxisID
+                                yAxisID: 'y', // <-- CAMBIO: de xAxisID a yAxisID
                                 // --- INICIO DATA LABELS (Para las barras) ---
                                 datalabels: {
                                     display: true,
                                     anchor: 'end', // Se mantiene 'end'
-                                    align: 'right', // <-- CAMBIO: de 'top' a 'right'
+                                    align: 'top', // <-- CAMBIO: de 'right' a 'top'
                                     offset: 4,
                                     color: '#333',
                                     font: {
@@ -736,7 +736,7 @@ $conex->close();
                                 data: paretoCumulative,
                                 type: 'line',
                                 borderColor: '#a83232',
-                                xAxisID: 'x1', // <-- CAMBIO: de yAxisID a xAxisID
+                                yAxisID: 'y1', // <-- CAMBIO: de xAxisID a yAxisID
                                 // --- INICIO CAMBIO DE ESTILO PARETO (LÍNEA SIMPLE) ---
                                 tension: 0, // Línea recta
                                 fill: false, // Sin relleno
@@ -746,8 +746,9 @@ $conex->close();
                                 // --- INICIO DATA LABELS (Solo para la línea) ---
                                 datalabels: {
                                     display: true,
-                                    align: 'right', // <-- CAMBIO: de 'start' a 'right'
-                                    anchor: 'end', // <-- CAMBIO: de 'start' a 'end'
+                                    align: 'bottom', // <-- CAMBIO: A 'bottom' (arriba del punto)
+                                    anchor: 'center', // <-- CAMBIO: A 'center' (centrado en el punto)
+                                    offset: 8, // <-- AÑADIDO: Empuja la etiqueta 8px hacia arriba
                                     backgroundColor: 'rgba(255, 255, 255, 0.8)',
                                     borderColor: '#a83232',
                                     borderWidth: 1,
@@ -764,16 +765,14 @@ $conex->close();
                         ]
                     },
                     options: {
-                        indexAxis: 'y', // <-- AÑADIDO: Eje principal es Y (barras horizontales)
+                        // indexAxis: 'y', // <-- ELIMINADO: Se quita para volver a vertical
                         responsive: true,
                         interaction: { mode: 'index', intersect: false },
                         scales: {
-                            // <-- CAMBIO: Se renombran 'y' a 'x' y 'y1' a 'x1'
-                            x: { type: 'linear', display: true, position: 'bottom', beginAtZero: true },
-                            x1: { type: 'linear', display: true, position: 'top', min: 0, max: 100, ticks: { callback: value => value + "%" } },
-                            y: { // Este es ahora el eje de etiquetas (defectos)
-                                reverse: true // Pone el defecto #1 arriba
-                            }
+                            // <-- CAMBIO: Reemplazamos la configuración de ejes horizontal por la vertical
+                            y: { type: 'linear', display: true, position: 'left', beginAtZero: true },
+                            y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } }
+                            // El eje 'x' (etiquetas) es automático
                         },
                         // --- INICIO DATA LABELS (Configuración global del gráfico) ---
                         plugins: {
