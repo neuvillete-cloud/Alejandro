@@ -27,10 +27,6 @@ $conex->close();
 
     <!-- Librerías para Gráficas y PDF -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- --- MODIFICACIÓN INICIA --- -->
-    <!-- 1. Se añade el plugin para las etiquetas de datos (datalabels) -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-    <!-- --- MODIFICACIÓN TERMINA --- -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -82,10 +78,6 @@ $conex->close();
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--color-borde);
-            /* --- MODIFICACIÓN INICIA --- */
-            /* Se añade posición relativa para que el canvas no se desborde */
-            position: relative;
-            /* --- MODIFICACIÓN TERMINA --- */
         }
         .chart-box h5 {
             text-align: center;
@@ -278,17 +270,6 @@ $conex->close();
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- MODIFICACIÓN INICIA ---
-        // 2. Registrar el plugin de datalabels globalmente
-        Chart.register(ChartDataLabels);
-        // Opcional: Desactivar datalabels por defecto para todas las gráficas
-        // Se activarán individualmente en las opciones de cada gráfica
-        Chart.defaults.set('plugins.datalabels', {
-            display: false
-        });
-        // --- MODIFICACIÓN TERMINA ---
-
-
         const solicitudSelector = document.getElementById('solicitud-selector');
         const btnGenerarParcial = document.getElementById('btn-generar-parcial');
         const btnVerFinal = document.getElementById('btn-ver-final');
@@ -425,19 +406,6 @@ $conex->close();
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const elementoReporte = document.getElementById('contenido-reporte');
 
-            // --- MODIFICACIÓN INICIA ---
-            // Desactivar animaciones de las gráficas temporalmente para que el PDF se genere bien
-            Chart.defaults.animation = false;
-            // Forzar un re-renderizado de las gráficas sin animación
-            if (paretoChartInstance) paretoChartInstance.update('none');
-            if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.update('none');
-            if (rejectionRateChartInstance) rejectionRateChartInstance.update('none');
-            if (dailyProgressChartInstance) dailyProgressChartInstance.update('none');
-
-            // Esperar un breve momento para que el DOM se actualice
-            await new Promise(resolve => setTimeout(resolve, 500));
-            // --- MODIFICACIÓN TERMINA ---
-
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
             const margin = 10;
@@ -447,8 +415,7 @@ $conex->close();
             const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             for (const element of allElements) {
-                // Se aumenta la escala para mejor calidad de imagen en el PDF
-                const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+                const canvas = await html2canvas(element, { scale: 2, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
                 const imgProps = pdf.getImageProperties(imgData);
                 const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
@@ -459,21 +426,10 @@ $conex->close();
                 }
 
                 pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
-                yPosition += imgHeight + 5; // Un pequeño espacio entre secciones
+                yPosition += imgHeight + 5;
             }
 
             pdf.save(`reporte-S${solicitudSelector.value.padStart(4, '0')}.pdf`);
-
-            // --- MODIFICACIÓN INICIA ---
-            // Reactivar animaciones después de generar el PDF
-            Chart.defaults.animation = true;
-            // Forzar un re-renderizado con animaciones
-            if (paretoChartInstance) paretoChartInstance.update();
-            if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.update();
-            if (rejectionRateChartInstance) rejectionRateChartInstance.update();
-            if (dailyProgressChartInstance) dailyProgressChartInstance.update();
-            // --- MODIFICACIÓN TERMINA ---
-
             Swal.close();
         });
 
@@ -739,71 +695,24 @@ $conex->close();
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
 
-            // --- MODIFICACIÓN INICIA ---
-            // 3. Cambio de Gráfico de Pareto (Bar/Línea -> Dona) y se agregan DataLabels
-
             const paretoCtx = document.getElementById('paretoChart').getContext('2d');
             if (dashboardData.pareto && dashboardData.pareto.length > 0) {
                 const paretoLabels = dashboardData.pareto.map(item => item.defecto);
                 const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
-
-                // Colores para el gráfico de dona
-                const paretoColors = [
-                    '#003D70', // Azul ARCA
-                    '#a83232', // Rojo
-                    '#E9E6DD', // Beige
-                    '#69A032', // Verde
-                    '#f2a900'  // Amarillo
-                ];
-
+                const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
                 paretoChartInstance = new Chart(paretoCtx, {
-                    type: 'doughnut', // <-- TIPO DE GRÁFICO CAMBIADO
+                    type: 'bar',
                     data: {
                         labels: paretoLabels,
                         datasets: [
-                            {
-                                label: translate('chart_qty'),
-                                data: paretoCounts,
-                                backgroundColor: paretoColors,
-                                hoverOffset: 4
-                            }
+                            { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70', yAxisID: 'y' },
+                            { label: translate('chart_cumulative'), data: paretoCumulative, type: 'line', borderColor: '#a83232', yAxisID: 'y1' }
                         ]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // Permitir que se ajuste al chart-box
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            // Configuración de DataLabels para el gráfico de dona
-                            datalabels: {
-                                display: true,
-                                color: '#fff', // Color del texto
-                                font: {
-                                    weight: 'bold'
-                                },
-                                // Formateador para mostrar porcentaje
-                                formatter: (value, ctx) => {
-                                    const datasets = ctx.chart.data.datasets;
-                                    if (datasets.indexOf(ctx.dataset) === datasets.length - 1) {
-                                        const sum = datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = (value * 100 / sum).toFixed(1) + '%';
-                                        return percentage;
-                                    } else {
-                                        return '';
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    options: { responsive: true, interaction: { mode: 'index', intersect: false }, scales: { y: { type: 'linear', display: true, position: 'left', beginAtZero: true }, y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, ticks: { callback: value => value + "%" } } } }
                 });
             }
-            // --- MODIFICACIÓN TERMINA ---
 
-
-            // --- MODIFICACIÓN INICIA ---
-            // 4. Se agregan DataLabels al gráfico Semanal
             const weeklyCtx = document.getElementById('weeklyRejectsChart').getContext('2d');
             if (dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
                 const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
@@ -811,73 +720,50 @@ $conex->close();
                 weeklyRejectsChartInstance = new Chart(weeklyCtx, {
                     type: 'line',
                     data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { y: { beginAtZero: true } },
-                        plugins: {
-                            // Configuración de DataLabels para el gráfico de línea
-                            datalabels: {
-                                display: true,
-                                align: 'end',     // Posición arriba del punto
-                                anchor: 'end',    // Anclado al final (arriba)
-                                backgroundColor: 'rgba(0, 61, 112, 0.75)', // Fondo semitransparente
-                                color: 'white',
-                                borderRadius: 4,
-                                font: {
-                                    size: 10,
-                                    weight: 'bold'
-                                },
-                                // Mostrar solo si el valor es mayor a 0
-                                display: function(context) {
-                                    return context.dataset.data[context.dataIndex] > 0;
-                                }
-                            }
-                        }
-                    }
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
                 });
             }
-            // --- MODIFICACIÓN TERMINA ---
 
+            // --- INICIO DE LA MODIFICACIÓN ---
+            // Modificación del gráfico "Aceptadas vs Rechazadas" para mostrar porcentajes
 
-            // --- INICIO DE LA MODIFICACIÓN (Gráfico Aceptadas vs Rechazadas) ---
-            // 5. Se agregan DataLabels al gráfico de barras apiladas horizontal
             const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
             if (resumen && resumen.inspeccionadas > 0) {
                 const rechazoTotal = resumen.rechazadas;
                 const aceptadoTotal = resumen.aceptadas;
-                const totalInspeccionadas = resumen.inspeccionadas;
+                const totalInspeccionadas = resumen.inspeccionadas; // Base para el 100%
 
+                // 1. Calcular porcentajes
                 const porcentajeRechazadas = parseFloat(((rechazoTotal / totalInspeccionadas) * 100).toFixed(2));
                 const porcentajeAceptadas = parseFloat(((aceptadoTotal / totalInspeccionadas) * 100).toFixed(2));
 
                 rejectionRateChartInstance = new Chart(rejectionCtx, {
                     type: 'bar',
                     data: {
-                        labels: [''],
+                        labels: [''], // Sigue siendo una sola barra horizontal
                         datasets: [
                             {
                                 label: translate('rejected'),
-                                data: [porcentajeRechazadas],
+                                data: [porcentajeRechazadas], // <-- Usamos el porcentaje
                                 backgroundColor: '#a83232'
                             },
                             {
                                 label: translate('accepted'),
-                                data: [porcentajeAceptadas],
+                                data: [porcentajeAceptadas], // <-- Usamos el porcentaje
                                 backgroundColor: '#69A032'
                             }
                         ]
                     },
                     options: {
-                        indexAxis: 'y',
+                        indexAxis: 'y', // Mantenemos la barra horizontal
                         responsive: true,
-                        maintainAspectRatio: false,
                         scales: {
                             x: {
-                                stacked: true,
+                                stacked: true, // Mantenemos el apilado
                                 min: 0,
-                                max: 100,
+                                max: 100, // <-- Eje X forzado de 0 a 100
                                 ticks: {
+                                    // Añadir '%' a las etiquetas del eje X
                                     callback: function(value) {
                                         return value + '%';
                                     }
@@ -889,28 +775,17 @@ $conex->close();
                             legend: { position: 'top' },
                             tooltip: {
                                 callbacks: {
+                                    // Personalizar el tooltip para mostrar porcentaje
                                     label: function(context) {
                                         const label = context.dataset.label || '';
                                         const value = context.raw;
+                                        // El valor ya es un porcentaje, solo formateamos
                                         return `${label}: ${value.toFixed(2)}%`;
                                     },
-                                    title: function(context) { return ''; }
-                                }
-                            },
-                            // Configuración de DataLabels para el gráfico apilado horizontal
-                            datalabels: {
-                                display: true,
-                                align: 'center',  // Centrado dentro del segmento
-                                anchor: 'center', // Anclado al centro
-                                color: 'white',
-                                font: {
-                                    weight: 'bold'
-                                },
-                                // Formateador para mostrar el porcentaje
-                                formatter: (value, context) => {
-                                    // No mostrar si el valor es muy pequeño (ej. 0%)
-                                    if (value < 1) return '';
-                                    return value.toFixed(1) + '%';
+                                    // Ocultar el título del tooltip (que solo dice '')
+                                    title: function(context) {
+                                        return '';
+                                    }
                                 }
                             }
                         }
@@ -920,57 +795,20 @@ $conex->close();
             // --- FIN DE LA MODIFICACIÓN ---
 
 
-            // --- MODIFICACIÓN INICIA ---
-            // 6. Cambio de Gráfico de Progreso (Agrupado -> Apilado) y se agregan DataLabels
-
             const dailyCtx = document.getElementById('dailyProgressChart').getContext('2d');
-            const dailyData = { labels: [], accepted: [], rejected: [] }; // Se quita 'inspected'
+            const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
             (data.desgloseDiario || []).forEach(dia => {
                 const dateLocale = getCurrentLanguage() === 'en' ? 'en-US' : 'es-MX';
                 dailyData.labels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
-                // No se agrega 'inspected'
+                dailyData.inspected.push(dia.totales.inspeccionadas);
                 dailyData.accepted.push(dia.totales.aceptadas);
                 dailyData.rejected.push(dia.totales.inspeccionadas - dia.totales.aceptadas);
             });
             dailyProgressChartInstance = new Chart(dailyCtx, {
                 type: 'bar',
-                data: {
-                    labels: dailyData.labels,
-                    datasets: [
-                        // Se quita el dataset de 'inspected'
-                        { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' },
-                        { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    // Se configuran las escalas para apilarse (stacked)
-                    scales: {
-                        x: { stacked: true },
-                        y: { stacked: true, beginAtZero: true }
-                    },
-                    plugins: {
-                        // Configuración de DataLabels para el gráfico apilado
-                        datalabels: {
-                            display: true,
-                            align: 'center',
-                            anchor: 'center',
-                            color: 'white',
-                            font: {
-                                weight: 'bold',
-                                size: 10
-                            },
-                            // Mostrar solo si el valor es mayor a 0
-                            display: function(context) {
-                                return context.dataset.data[context.dataIndex] > 0;
-                            },
-                            formatter: (value) => value // Muestra el número simple
-                        }
-                    }
-                }
+                data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
             });
-            // --- MODIFICACIÓN TERMINA ---
         }
 
         const strtolower = (str) => String(str).toLowerCase();
