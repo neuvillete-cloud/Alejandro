@@ -720,9 +720,9 @@ $conex->close();
                                 // --- INICIO DATA LABELS (Para las barras) ---
                                 datalabels: {
                                     display: true,
-                                    anchor: 'end', // Al final (parte superior) de la barra
-                                    align: 'center', // Centrada horizontalmente
-                                    offset: -6, // <-- Desplazamiento negativo para ponerla DENTRO
+                                    anchor: 'center', // <-- CAMBIO: de 'end' a 'center'
+                                    align: 'center', // Se mantiene 'center'
+                                    offset: 0, // <-- CAMBIO: de -6 a 0 (ya no se necesita offset)
                                     color: 'white', // <-- Color blanco para contraste
                                     font: {
                                         size: 10,
