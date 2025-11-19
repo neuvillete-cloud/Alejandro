@@ -2,6 +2,70 @@
 // Incluye el script que verifica si hay una sesión activa
 include_once("dao/verificar_sesion.php");
 if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
+
+// =========================================================================================================
+// LÓGICA DE BASE DE DATOS (USANDO TU CLASE DE CONEXIÓN)
+// =========================================================================================================
+
+// Incluimos tu archivo de conexión
+include_once("dao/conexionArca.php");
+$con = new LocalConector();
+$conex = $con->conectar();
+
+// --- 1. MÉTRICAS ---
+
+// A. Solicitudes Abiertas (Estatus 1=Recibido, 2=Asignado, 3=En Proceso)
+$sqlAbiertas = "SELECT COUNT(*) AS total FROM Solicitudes WHERE IdEstatus IN (1, 2, 3)";
+$resAbiertas = $conex->query($sqlAbiertas);
+$metricas['abiertas'] = ($resAbiertas) ? ($resAbiertas->fetch_assoc()['total'] ?? 0) : 0;
+
+// B. Pendientes de Revisión (Métodos)
+// Tabla: Metodos, Columna: EstatusAprobacion = 'Pendiente'
+$sqlPendientes = "SELECT COUNT(*) AS total FROM Metodos WHERE EstatusAprobacion = 'Pendiente'";
+$resPendientes = $conex->query($sqlPendientes);
+$metricas['pendientes'] = ($resPendientes) ? ($resPendientes->fetch_assoc()['total'] ?? 0) : 0;
+
+// C. Material Retenido (Piezas)
+// Sumamos la 'Cantidad' total de las solicitudes que están abiertas (en proceso de contención)
+$sqlRetenido = "SELECT SUM(Cantidad) AS total FROM Solicitudes WHERE IdEstatus IN (1, 2, 3)";
+$resRetenido = $conex->query($sqlRetenido);
+$metricas['material_retenido'] = ($resRetenido) ? ($resRetenido->fetch_assoc()['total'] ?? 0) : 0;
+
+// D. Proveedores con Incidencias Activas
+// Contamos proveedores distintos involucrados en solicitudes abiertas
+$sqlProveedores = "SELECT COUNT(DISTINCT IdProvedor) AS total FROM Solicitudes WHERE IdEstatus IN (1, 2, 3)";
+$resProveedores = $conex->query($sqlProveedores);
+$metricas['proveedores_activos'] = ($resProveedores) ? ($resProveedores->fetch_assoc()['total'] ?? 0) : 0;
+
+// --- 2. ACTIVIDAD RECIENTE ---
+// Obtenemos las últimas 5 solicitudes para la tabla inferior
+$sqlRecientes = "
+    SELECT 
+        s.IdSolicitud, 
+        s.NumeroParte, 
+        p.NombreProvedor, 
+        s.FechaRegistro, 
+        e.NombreEstatus
+    FROM Solicitudes s
+    LEFT JOIN Provedores p ON s.IdProvedor = p.IdProvedor
+    LEFT JOIN Estatus e ON s.IdEstatus = e.IdEstatus
+    ORDER BY s.FechaRegistro DESC 
+    LIMIT 5
+";
+$resultRecientes = $conex->query($sqlRecientes);
+
+// Función auxiliar para clases CSS de estatus
+function getStatusClass($statusName) {
+    $statusName = strtolower($statusName);
+    if (in_array($statusName, ['recibido', 'asignado'])) {
+        return 'open';
+    } elseif ($statusName === 'en proceso') {
+        return 'review';
+    } elseif ($statusName === 'cerrado') {
+        return 'closed';
+    }
+    return 'open';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -190,12 +254,7 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                 Ver mis Solicitudes
             </a>
 
-            <!-- ==== BOTÓN DE HISTORIAL MOVIDO DENTRO DEL BLOQUE IF/ELSE ==== -->
-
-
-            <!-- ==== INICIO: LÓGICA DE BOTONES CONDICIONAL ==== -->
             <?php if (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1): ?>
-
                 <!-- Botones de Admin -->
                 <a href="aprobar_metodos.php" class="cta-button secondary">
                     <i class="fa-solid fa-check-double"></i>
@@ -209,42 +268,29 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
                     <i class="fa-solid fa-chart-pie"></i>
                     Reportes
                 </a>
-
-                <!-- Botón Safe Launch (AL FINAL para Admin) -->
                 <a href="safe_launch.php" class="cta-button secondary">
                     <i class="fa-solid fa-rocket"></i>
                     Safe Launch
                 </a>
-
-                <!-- Historial Safe Launch (DESPUÉS de Safe Launch para Admin) -->
                 <a href="historial_safe_launch.php" class="cta-button secondary">
                     <i class="fa-solid fa-clipboard-list"></i>
                     Historial Safe Launch
                 </a>
-
-                <!-- ***** BOTÓN AÑADIDO ***** -->
                 <a href="dashboard_reporte_sl.php" class="cta-button secondary">
                     <i class="fa-solid fa-chart-bar"></i>
                     Reportes Safe Launch
                 </a>
-
             <?php else: ?>
-
-                <!-- Botón Safe Launch (Posición normal para usuarios) -->
+                <!-- Botones Usuario Estandard -->
                 <a href="safe_launch.php" class="cta-button secondary">
                     <i class="fa-solid fa-rocket"></i>
                     Safe Launch
                 </a>
-
-                <!-- Historial Safe Launch (DESPUÉS de Safe Launch para usuarios) -->
                 <a href="historial_safe_launch.php" class="cta-button secondary">
                     <i class="fa-solid fa-clipboard-list"></i>
                     Historial Safe Launch
                 </a>
-
             <?php endif; ?>
-            <!-- ==== FIN: LÓGICA DE BOTONES CONDICIONAL ==== -->
-
         </div>
     </section>
 
@@ -253,28 +299,28 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
             <div class="icon"><i class="fa-solid fa-box-open"></i></div>
             <div class="info">
                 <h3>Solicitudes Abiertas</h3>
-                <p>12</p>
+                <p><?php echo number_format($metricas['abiertas']); ?></p>
             </div>
         </div>
         <div class="metric-card">
             <div class="icon"><i class="fa-solid fa-user-clock"></i></div>
             <div class="info">
                 <h3>Pendientes de Revisión</h3>
-                <p>3</p>
+                <p><?php echo number_format($metricas['pendientes']); ?></p>
             </div>
         </div>
         <div class="metric-card">
             <div class="icon"><i class="fa-solid fa-boxes-stacked"></i></div>
             <div class="info">
                 <h3>Material Retenido (Pzs)</h3>
-                <p>1,450</p>
+                <p><?php echo number_format($metricas['material_retenido']); ?></p>
             </div>
         </div>
         <div class="metric-card">
             <div class="icon"><i class="fa-solid fa-truck-fast"></i></div>
             <div class="info">
                 <h3>Proveedores con Incidencias</h3>
-                <p>5</p>
+                <p><?php echo number_format($metricas['proveedores_activos']); ?></p>
             </div>
         </div>
     </section>
@@ -292,38 +338,35 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>S-0125</td>
-                <td>PN-5874A</td>
-                <td>Componentes Industriales S.A.</td>
-                <td>15/09/2025</td>
-                <td><span class="status open">Abierta</span></td>
-            </tr>
-            <tr>
-                <td>S-0124</td>
-                <td>PN-9912B</td>
-                <td>Metales del Norte</td>
-                <td>14/09/2025</td>
-                <td><span class="status review">En Revisión</span></td>
-            </tr>
-            <tr>
-                <td>S-0123</td>
-                <td>PN-3010C</td>
-                <td>Plásticos ABC</td>
-                <td>12/09/2025</td>
-                <td><span class="status closed">Cerrada</span></td>
-            </tr>
-            <tr>
-                <td>S-0122</td>
-                <td>PN-5874A</td>
-                <td>Componentes Industriales S.A.</td>
-                <td>11/09/2025</td>
-                <td><span class="status closed">Cerrada</span></td>
-            </tr>
+            <?php if ($resultRecientes && $resultRecientes->num_rows > 0): ?>
+                <?php while($row = $resultRecientes->fetch_assoc()): ?>
+                    <tr>
+                        <td>S-<?php echo str_pad($row['IdSolicitud'], 4, '0', STR_PAD_LEFT); ?></td>
+                        <td><?php echo htmlspecialchars($row['NumeroParte']); ?></td>
+                        <td><?php echo htmlspecialchars($row['NombreProvedor'] ?? 'No Asignado'); ?></td>
+                        <td><?php echo date("d/m/Y", strtotime($row['FechaRegistro'])); ?></td>
+                        <td>
+                            <span class="status <?php echo getStatusClass($row['NombreEstatus']); ?>">
+                                <?php echo htmlspecialchars($row['NombreEstatus']); ?>
+                            </span>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #777;">No hay actividad reciente registrada.</td>
+                </tr>
+            <?php endif; ?>
             </tbody>
         </table>
     </section>
 </main>
 
+<?php
+// Cerramos la conexión si el método close() existe en tu objeto mysqli
+if(isset($conex) && method_exists($conex, 'close')) {
+    $conex->close();
+}
+?>
 </body>
 </html>
