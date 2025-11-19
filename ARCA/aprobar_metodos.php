@@ -2,7 +2,15 @@
 // Se revierte a las rutas relativas que funcionan en tus otros archivos.
 include_once("dao/verificar_sesion.php");
 
-if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
+// --- INICIO MODIFICACIÓN INTELIGENTE ---
+if (!isset($_SESSION['loggedin'])) {
+    // Guardamos la URL actual en la variable EXACTA que tu login ya sabe leer
+    $_SESSION['url_destino_post_login'] = $_SERVER['REQUEST_URI'];
+    header('Location: acceso.php');
+    exit();
+}
+// --- FIN MODIFICACIÓN INTELIGENTE ---
+
 if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] != 1) { die("Acceso denegado. Esta página es solo para administradores."); }
 
 // Conexión a la base de datos
@@ -297,4 +305,3 @@ if ($pendientes === false) {
 </script>
 </body>
 </html>
-
