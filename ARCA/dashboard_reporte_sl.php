@@ -7,7 +7,7 @@ if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
-// --- CORRECCIÓN AQUÍ: Añadimos el filtro por IdEstatus 3 y 4 ---
+// Buscamos solicitudes activas (IdEstatus 3 o 4)
 $solicitudes_activas_query = $conex->query("SELECT IdSafeLaunch, NombreProyecto FROM SafeLaunchSolicitudes WHERE IdEstatus IN (3, 4) ORDER BY IdSafeLaunch DESC");
 $conex->close();
 
@@ -18,18 +18,19 @@ $conex->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Safe Launch - ARCA</title>
-    <link rel="stylesheet" href="css/estilosT.css"> <!-- Asegúrate de que esta ruta sea correcta --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="css/estilosT.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Librerías para Gráficas y PDF --><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Librerías para Gráficas y PDF -->
+    <!-- REEMPLAZO: ApexCharts en lugar de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- *** NUEVO: Plugin para Data Labels en Chart.js *** -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <style>
         :root {
@@ -172,6 +173,7 @@ $conex->close();
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--color-borde);
+            min-height: 400px; /* Altura mínima para ApexCharts */
         }
         .chart-box h5 {
             text-align: center;
@@ -425,10 +427,6 @@ $conex->close();
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- NUEVO: Registrar el plugin de datalabels globalmente ---
-        // Esto hará que las etiquetas de datos estén disponibles para todas las gráficas
-        Chart.register(ChartDataLabels);
-
         const solicitudSelector = document.getElementById('safe-launch-selector');
         const btnGenerarParcial = document.getElementById('btn-generar-parcial-sl');
         const btnVerFinal = document.getElementById('btn-ver-final-sl');
@@ -438,7 +436,8 @@ $conex->close();
         const campoFechaInicio = document.getElementById('fecha-inicio-sl');
         const campoFechaFin = document.getElementById('fecha-fin-sl');
 
-        let paretoChartInstance, weeklyRejectsChartInstance, rejectionRateChartInstance, dailyProgressChartInstance, ppmTrendChartInstance = null;
+        // Variables para las instancias de ApexCharts
+        let paretoChart, weeklyRejectsChart, rejectionRateChart, dailyProgressChart, ppmTrendChart;
         let lastReportData;
 
         // Función para cargar la primera fecha de inspección
@@ -581,7 +580,6 @@ $conex->close();
             }
         };
 
-        // --- INICIO: setLanguage (VERSIÓN COMPLETA Y CORREGIDA) ---
         function setLanguage(lang) {
             document.documentElement.lang = lang;
             localStorage.setItem('language', lang);
@@ -614,8 +612,6 @@ $conex->close();
             });
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
         }
-        // --- FIN: setLanguage (VERSIÓN COMPLETA Y CORREGIDA) ---
-
 
         function getCurrentLanguage() { return localStorage.getItem('language') || 'es'; }
         function translate(key) { const lang = getCurrentLanguage(); return (translations[lang] && translations[lang][key]) ? translations[lang][key] : key; }
@@ -670,7 +666,6 @@ $conex->close();
             fetchReportData(url);
         });
 
-        // --- INICIO: LÓGICA DE PDF CORREGIDA ---
         btnDescargarPdf.addEventListener('click', async () => {
             Swal.fire({ title: translate('generating_pdf'), text: translate('please_wait'), allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
@@ -684,12 +679,10 @@ $conex->close();
             const contentWidth = pdfWidth - (margin * 2);
             let yPosition = margin;
 
-            // Usar querySelectorAll para capturar todos los elementos en orden
             const allElements = elementoReporte.querySelectorAll('.report-title, .report-subtitle, .pdf-section');
 
             for (const element of allElements) {
-                // --- INICIO: Manejo de scroll en tabla ---
-                // Si el elemento es la tabla de defectos diarios, quitarle el scroll
+                // Manejo de scroll en tabla
                 let originalOverflow = null;
                 let responsiveWrapper = null;
                 if (element.id === 'defect-daily-breakdown-container') {
@@ -699,26 +692,21 @@ $conex->close();
                         responsiveWrapper.style.overflowX = 'visible';
                     }
                 }
-                // --- FIN: Manejo de scroll ---
 
+                // html2canvas funciona mejor con SVG si se captura el elemento y se usa useCORS
                 const canvas = await html2canvas(element, {
                     scale: 2,
                     useCORS: true,
-                    // Permite que html2canvas capture todo el ancho (para la tabla con scroll)
                     width: element.scrollWidth,
                     windowWidth: element.scrollWidth
                 });
 
-                // --- INICIO: Restaurar scroll ---
                 if (responsiveWrapper) {
                     responsiveWrapper.style.overflowX = originalOverflow;
                 }
-                // --- FIN: Restaurar scroll ---
-
 
                 const imgData = canvas.toDataURL('image/png');
                 const imgProps = pdf.getImageProperties(imgData);
-                // Ajustar la altura manteniendo la relación de aspecto
                 const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
 
                 if (yPosition + imgHeight > pdfHeight - margin) {
@@ -727,16 +715,14 @@ $conex->close();
                 }
 
                 pdf.addImage(imgData, 'PNG', margin, yPosition, contentWidth, imgHeight);
-                yPosition += imgHeight + 5; // Espacio entre elementos
+                yPosition += imgHeight + 5;
             }
 
             pdf.save(`reporte-SL${solicitudSelector.value.padStart(4, '0')}.pdf`);
             Swal.close();
         });
-        // --- FIN: LÓGICA DE PDF CORREGIDA ---
 
 
-        // --- NUEVA FUNCIÓN ---
         function renderDailyDefectsTable(data) {
             const currentLang = getCurrentLanguage();
             const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
@@ -751,7 +737,6 @@ $conex->close();
                                     <th>${translate('issues_found')}</th>
             `;
 
-            // Obtener todas las fechas y defectos
             const allDates = Object.keys(data.defectosDiarios).sort();
             const allDefectNames = new Set();
             allDates.forEach(date => {
@@ -760,7 +745,6 @@ $conex->close();
             });
             const sortedDefectNames = Array.from(allDefectNames).sort();
 
-            // Encabezados de Fecha
             allDates.forEach(date => {
                 const dateObj = new Date(date + 'T00:00:00');
                 const dayOfWeek = dateObj.toLocaleDateString(dateLocale, { weekday: 'short' });
@@ -769,9 +753,8 @@ $conex->close();
             });
             tableHtml += `<th>${translate('total')}</th><th>${translate('percent')}</th></tr></thead><tbody>`;
 
-            // Filas de Defectos
             let grandTotalProblems = 0;
-            const defectRowTotals = {}; // Almacenar totales por defecto
+            const defectRowTotals = {};
 
             sortedDefectNames.forEach(defectName => {
                 let totalDefectQty = 0;
@@ -780,7 +763,7 @@ $conex->close();
                     totalDefectQty += qty;
                 });
                 defectRowTotals[defectName] = totalDefectQty;
-                grandTotalProblems += totalDefectQty; // Sumar al total general de problemas
+                grandTotalProblems += totalDefectQty;
             });
 
             if (sortedDefectNames.length > 0) {
@@ -798,7 +781,7 @@ $conex->close();
                 tableHtml += `<tr><td colspan="${allDates.length + 3}" style="text-align:center;">${translate('no_defects_found_period')}</td></tr>`;
             }
 
-            tableHtml += `</tbody><tfoot>`; // Usar tfoot para las filas de resumen
+            tableHtml += `</tbody><tfoot>`;
 
             // Fila de TOTAL PROBLEMS
             tableHtml += `<tr class="total-row"><th>${translate('total_problems')}</th>`;
@@ -809,7 +792,6 @@ $conex->close();
                 grandTotalProblemsForPercent += dayTotal;
             });
             const totalInspectedOverall = data.resumen.inspeccionadas;
-            // El % de "Total Problems" es contra el total de piezas inspeccionadas
             const grandPercentDefect = totalInspectedOverall > 0 ? ((grandTotalProblemsForPercent / totalInspectedOverall) * 100).toFixed(2) : '0.00';
             tableHtml += `<td>${grandTotalProblemsForPercent}</td><td>${grandPercentDefect}%</td></tr>`;
 
@@ -819,31 +801,29 @@ $conex->close();
                 const qtyInspected = data.defectosDiarios[date]?.piezasInspeccionadas || 0;
                 tableHtml += `<td>${qtyInspected}</td>`;
             });
-            tableHtml += `<td colspan="2">${totalInspectedOverall}</td></tr>`; // Total general de inspeccionadas
+            tableHtml += `<td colspan="2">${totalInspectedOverall}</td></tr>`;
 
-            // Fila de PPM (Basado en Total Problems, como en la imagen)
+            // Fila de PPM
             tableHtml += `<tr class="metrics-row"><th>${translate('ppm')}</th>`;
             allDates.forEach(date => {
                 const ppmDay = data.defectosDiarios[date]?.ppmDia || 0;
                 tableHtml += `<td>${Math.round(ppmDay)}</td>`;
             });
-            // PPM Global (Total Problems / Total Inspeccionadas) * 1M
             const ppmGlobal = totalInspectedOverall > 0 ? (grandTotalProblemsForPercent / totalInspectedOverall) * 1000000 : 0;
             tableHtml += `<td colspan="2">${Math.round(ppmGlobal)}</td></tr>`;
 
-            // Fila de % DEFECTO (Basado en Total Problems)
+            // Fila de % DEFECTO
             tableHtml += `<tr class="metrics-row"><th>${translate('percent_defect')}</th>`;
             allDates.forEach(date => {
                 const dayData = data.defectosDiarios[date];
                 const percentDay = (dayData.piezasInspeccionadas > 0) ? ((dayData.totalDefectosDia / dayData.piezasInspeccionadas) * 100).toFixed(2) : '0.00';
                 tableHtml += `<td>${percentDay}%</td>`;
             });
-            tableHtml += `<td colspan="2">${grandPercentDefect}%</td></tr>`; // % Defecto global
+            tableHtml += `<td colspan="2">${grandPercentDefect}%</td></tr>`;
 
             tableHtml += `</tfoot></table></div></div>`;
             return tableHtml;
         }
-        // --- FIN NUEVA FUNCIÓN ---
 
         function renderizarReporte(data) {
             const currentLang = getCurrentLanguage();
@@ -855,14 +835,12 @@ $conex->close();
             <p><strong>${translate('issue_date')}:</strong> ${new Date().toLocaleDateString(currentLang === 'en' ? 'en-US' : 'es-MX')}</p>
             `;
 
-            // --- INICIO: CORRECCIÓN DE RENDERIZADO DE HTML ---
             let desgloseHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-calendar-day"></i> ${translate('hourly_breakdown')}</h4>`;
             if (data.desgloseDiario && data.desgloseDiario.length > 0) {
                 data.desgloseDiario.forEach(dia => {
                     const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
                     const fechaFormateada = new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-                    // Quitar la clase "pdf-section" de los divs internos
                     let diaHtml = `<div class="daily-breakdown-item">`;
                     diaHtml += `<h5 style="font-size: 16px; margin-top: 20px; color: #555;">${fechaFormateada}</h5>`;
 
@@ -891,13 +869,12 @@ $conex->close();
                                 </tr>`;
                     });
                     diaHtml += `</tbody></table></div>`;
-                    desgloseHtml += diaHtml; // Añadir el HTML del día
+                    desgloseHtml += diaHtml;
                 });
             } else {
-                desgloseHtml += `<p>${translate('no_history_records_sl')}</p>`; // Mostrar mensaje si no hay desglose
+                desgloseHtml += `<p>No hay registros de historial.</p>`;
             }
-            desgloseHtml += `</div>`; // Cerrar el div wrapper "pdf-section"
-            // --- FIN: CORRECCIÓN DE RENDERIZADO DE HTML ---
+            desgloseHtml += `</div>`;
 
 
             let defectosHtml = `<div class="pdf-section"><h4><i class="fa-solid fa-magnifying-glass"></i> ${translate('defects_summary')}</h4>`;
@@ -915,10 +892,10 @@ $conex->close();
             }
             defectosHtml += `</tbody></table></div>`;
 
-            // --- LLAMAR A LA NUEVA FUNCIÓN ---
             const dailyDefectsTableHtml = (data.defectosDiarios && Object.keys(data.defectosDiarios).length > 0) ? renderDailyDefectsTable(data) : '';
 
 
+            // CAMBIO: DIVS para ApexCharts en lugar de CANVAS
             let dashboardHtml = `
             <div class="pdf-section">
                 <h4><i class="fa-solid fa-chart-line"></i> ${translate('visual_dashboards')}</h4>
@@ -939,23 +916,23 @@ $conex->close();
                 <div class="charts-container">
                     <div class="chart-box">
                         <h5>${translate('pareto_chart_title')}</h5>
-                        <canvas id="paretoChart"></canvas>
+                        <div id="paretoChart"></div>
                     </div>
                     <div class="chart-box">
                         <h5>${translate('weekly_rejects_title')}</h5>
-                        <canvas id="weeklyRejectsChart"></canvas>
+                        <div id="weeklyRejectsChart"></div>
                     </div>
                     <div class="chart-box">
                         <h5>${translate('accepted_vs_rejected_title')}</h5>
-                        <canvas id="rejectionRateChart"></canvas>
+                        <div id="rejectionRateChart"></div>
                     </div>
                     <div class="chart-box">
                         <h5>${translate('daily_progress_title')}</h5>
-                        <canvas id="dailyProgressChart"></canvas>
+                        <div id="dailyProgressChart"></div>
                     </div>
                     <div class="chart-box" style="grid-column: 1 / -1;">
                         <h5>${translate('ppm_trend_chart_title')}</h5>
-                        <canvas id="ppmTrendChart"></canvas>
+                        <div id="ppmTrendChart"></div>
                     </div>
                 </div>
             </div>
@@ -988,7 +965,7 @@ $conex->close();
                     </tbody>
                 </table>
             </div>
-            ${dailyDefectsTableHtml} <!-- INSERTAR LA NUEVA TABLA AQUÍ -->
+            ${dailyDefectsTableHtml}
             ${desgloseHtml}
             ${defectosHtml}
             ${dashboardHtml}
@@ -999,7 +976,6 @@ $conex->close();
 
             renderizarDashboards(data);
 
-            // --- Re-asignar listeners a los botones de filtro ---
             document.getElementById('btn-filtrar-dashboard-sl').addEventListener('click', () => {
                 const startDate = document.getElementById('dashboard-fecha-inicio-sl').value;
                 const endDate = document.getElementById('dashboard-fecha-fin-sl').value;
@@ -1012,7 +988,7 @@ $conex->close();
                 document.getElementById('dashboard-fecha-inicio-sl').value = '';
                 document.getElementById('dashboard-fecha-fin-sl').value = '';
                 if(lastReportData){
-                    renderizarReporte(lastReportData); // Renderizar con los datos originales completos
+                    renderizarReporte(lastReportData);
                 }
             });
 
@@ -1041,7 +1017,7 @@ $conex->close();
                     return diaDate >= start && diaDate <= end;
                 });
 
-                filteredData.defectosDiarios = {}; // Resetear y rellenar
+                filteredData.defectosDiarios = {};
                 Object.keys(lastReportData.defectosDiarios).forEach(dateKey => {
                     const diaDate = new Date(dateKey + 'T00:00:00');
                     if (diaDate >= start && diaDate <= end) {
@@ -1055,7 +1031,7 @@ $conex->close();
                 return;
             }
 
-            // --- RECALCULAR DATOS ---
+            // Recalcular datos
             filteredData.desgloseDiario.forEach(dia => {
                 const diaRechazadas = dia.totales.inspeccionadas - dia.totales.aceptadas;
                 inspeccionadasTotal += dia.totales.inspeccionadas;
@@ -1078,7 +1054,6 @@ $conex->close();
                 rechazoSemanal[weekKey] += diaRechazadas;
             });
 
-            // Recalcular defectos y pareto desde los datos diarios filtrados
             Object.values(filteredData.defectosDiarios).forEach(dayData => {
                 Object.entries(dayData.defectos).forEach(([defectName, qty]) => {
                     if (!defectAggregatesFiltered[defectName]) defectAggregatesFiltered[defectName] = { nombre: defectName, cantidad: 0 };
@@ -1102,21 +1077,17 @@ $conex->close();
                 });
             }
 
-            // Actualizar resumen
             filteredData.resumen.inspeccionadas = inspeccionadasTotal;
             filteredData.resumen.aceptadas = aceptadasTotal;
             filteredData.resumen.rechazadas = rechazadasTotal;
             filteredData.resumen.retrabajadas = retrabajadasTotal;
             filteredData.resumen.ppmGlobal = (inspeccionadasTotal > 0) ? (rechazadasTotal / inspeccionadasTotal) * 1000000 : 0;
-            // No se recalcula el tiempo total en filtro
 
-            // Actualizar data de rechazos por semana
             filteredData.dashboardData.rechazadasPorSemana = Object.keys(rechazoSemanal).map(semana => ({
                 semana: semana,
                 rechazadas_semana: rechazoSemanal[semana]
             })).sort((a, b) => a.semana.localeCompare(b.semana));
 
-            // Actualizar data de PPM
             filteredData.dashboardData.dailyPPM = Object.keys(dailyAggregates).map(fecha => ({
                 fecha: fecha,
                 ppm: (dailyAggregates[fecha].inspeccionadas > 0) ? (dailyAggregates[fecha].rechazadas / dailyAggregates[fecha].inspeccionadas) * 1000000 : 0
@@ -1125,266 +1096,316 @@ $conex->close();
 
             renderizarDashboards(filteredData);
 
-            // --- RE-RENDERIZAR LA TABLA DE DEFECTOS DIARIOS ---
             const newTableHtml = renderDailyDefectsTable(filteredData);
             const oldTableContainer = contenidoReporteDiv.querySelector('#defect-daily-breakdown-container');
             if (oldTableContainer) {
                 oldTableContainer.outerHTML = newTableHtml;
             }
-            // --- FIN RE-RENDERIZAR ---
 
             setLanguage(getCurrentLanguage());
         }
 
         function renderizarDashboards(data) {
-            if (paretoChartInstance) paretoChartInstance.destroy();
-            if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.destroy();
-            if (rejectionRateChartInstance) rejectionRateChartInstance.destroy();
-            if (dailyProgressChartInstance) dailyProgressChartInstance.destroy();
-            if (ppmTrendChartInstance) ppmTrendChartInstance.destroy();
+            // Destruir instancias de ApexCharts
+            if (paretoChart) paretoChart.destroy();
+            if (weeklyRejectsChart) weeklyRejectsChart.destroy();
+            if (rejectionRateChart) rejectionRateChart.destroy();
+            if (dailyProgressChart) dailyProgressChart.destroy();
+            if (ppmTrendChart) ppmTrendChart.destroy();
 
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
             const currentLang = getCurrentLanguage();
             const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
 
-            // --- INICIO MODIFICACIÓN: GRÁFICA DE PARETO ---
-            // 1. Pareto (Modificado a Gráfica de Barras Horizontal)
-            const paretoCtx = document.getElementById('paretoChart')?.getContext('2d');
-            if (paretoCtx && dashboardData.pareto && dashboardData.pareto.length > 0) {
+            // Paleta de colores
+            const colorPalette = {
+                primary: '#008FFB',
+                warning: '#FEB019',
+                success: '#00E396',
+                danger: '#FF4560',
+                dark: '#263238'
+            };
+            const fontFamily = 'Montserrat, sans-serif';
+
+            // --- 1. PARETO DE DEFECTOS (ApexCharts - Column + Line) ---
+            if (dashboardData.pareto && dashboardData.pareto.length > 0) {
                 const paretoLabels = dashboardData.pareto.map(item => item.defecto);
                 const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
-                // La línea acumulada ya no se usa
-                // const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
+                const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado);
 
-                paretoChartInstance = new Chart(paretoCtx, {
-                    type: 'bar', // El tipo sigue siendo 'bar'
-                    data: {
-                        labels: paretoLabels,
-                        datasets: [
-                            {
-                                label: translate('chart_qty'),
-                                data: paretoCounts,
-                                backgroundColor: '#003D70'
-                            }
-                            // Se elimina el dataset de la línea acumulada
-                        ]
+                const paretoOptions = {
+                    series: [{
+                        name: translate('chart_qty'),
+                        type: 'column',
+                        data: paretoCounts
+                    }, {
+                        name: translate('chart_cumulative'),
+                        type: 'line',
+                        data: paretoCumulative
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                        fontFamily: fontFamily,
+                        toolbar: { show: true },
+                        animations: { enabled: false },
+                        dropShadow: { enabled: true, top: 0, left: 0, blur: 3, opacity: 0.1 }
                     },
-                    options: {
-                        indexAxis: 'y', // <-- ESTA ES LA MODIFICACIÓN: Convierte la gráfica a horizontal
-                        animation: false, // <-- ARREGLO PARA PDF
-                        responsive: true,
-                        scales: {
-                            x: { // El eje de cantidades ahora es X
-                                beginAtZero: true
-                            }
-                            // Se eliminan los ejes Y duplicados
-                        },
-                        // --- NUEVO: Configuración de Datalabels ---
-                        plugins: {
-                            datalabels: {
-                                align: 'end', // Alinea la etiqueta al final de la barra (fuera)
-                                anchor: 'end', // Ancla la etiqueta al final de la barra
-                                color: '#444', // Color del texto
-                                font: { weight: 'bold', size: 10 },
-                                formatter: (value) => value // Muestra el valor numérico
-                            }
+                    plotOptions: {
+                        bar: {
+                            columnWidth: '60%',
+                            borderRadius: 4,
+                            dataLabels: { position: 'top' }
                         }
-                    }
-                });
+                    },
+                    stroke: {
+                        width: [0, 4],
+                        curve: 'smooth'
+                    },
+                    fill: {
+                        type: ['gradient', 'solid'],
+                        gradient: {
+                            shade: 'light',
+                            type: "vertical",
+                            shadeIntensity: 0.5,
+                            gradientToColors: [colorPalette.primary],
+                            inverseColors: true,
+                            opacityFrom: 0.9,
+                            opacityTo: 0.9,
+                            stops: [0, 100]
+                        }
+                    },
+                    title: { text: undefined },
+                    dataLabels: {
+                        enabled: true,
+                        enabledOnSeries: [0, 1],
+                        style: { fontSize: '11px', colors: ['#333', colorPalette.warning] }
+                    },
+                    labels: paretoLabels,
+                    yaxis: [{
+                        title: { text: translate('chart_qty'), style: { fontWeight: 600 } },
+                    }, {
+                        opposite: true,
+                        title: { text: translate('chart_cumulative'), style: { fontWeight: 600 } },
+                        max: 100
+                    }],
+                    colors: [colorPalette.primary, colorPalette.warning],
+                    grid: { borderColor: '#f1f1f1' }
+                };
+                paretoChart = new ApexCharts(document.querySelector("#paretoChart"), paretoOptions);
+                paretoChart.render();
             }
-            // --- FIN MODIFICACIÓN: GRÁFICA DE PARETO ---
 
 
-            // 2. Rechazadas por Semana
-            const weeklyCtx = document.getElementById('weeklyRejectsChart')?.getContext('2d');
-            if (weeklyCtx && dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
+            // --- 2. RECHAZADAS POR SEMANA (ApexCharts - Area Gradient) ---
+            if (dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
                 const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
                 const weeklyCounts = dashboardData.rechazadasPorSemana.map(item => item.rechazadas_semana);
-                weeklyRejectsChartInstance = new Chart(weeklyCtx, {
-                    type: 'line',
-                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
-                    options: {
-                        animation: false, // <-- ARREGLO PARA PDF
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true },
-                            x: { offset: true } // <-- MODIFICACIÓN: Añade espacio al inicio/fin del eje X
-                        },
-                        // --- NUEVO: Configuración de Datalabels ---
-                        plugins: {
-                            datalabels: {
-                                align: 'end', // Arriba del punto
-                                anchor: 'end',
-                                backgroundColor: 'rgba(0, 61, 112, 0.7)', // Fondo semitransparente
-                                color: 'white', // Texto blanco
-                                borderRadius: 4, // Bordes redondeados
-                                font: { size: 10 },
-                                formatter: (value) => value, // Mostrar el valor
-                                padding: 4 // Espaciado interno
-                            }
-                        }
-                    }
-                });
-            }
 
-            // 3. Aceptadas vs Rechazadas (--- INICIO DE LA MODIFICACIÓN ---)
-            const rejectionCtx = document.getElementById('rejectionRateChart')?.getContext('2d');
-            if (rejectionCtx && resumen && resumen.inspeccionadas > 0) {
-                const rechazoTotal = resumen.rechazadas;
-                const aceptadoTotal = resumen.aceptadas;
-                const totalInspeccionadas = resumen.inspeccionadas; // Base para el 100%
-
-                // 1. Calcular porcentajes
-                const porcentajeRechazadas = parseFloat(((rechazoTotal / totalInspeccionadas) * 100).toFixed(2));
-                const porcentajeAceptadas = parseFloat(((aceptadoTotal / totalInspeccionadas) * 100).toFixed(2));
-
-                rejectionRateChartInstance = new Chart(rejectionCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: [''], // Sigue siendo una sola barra horizontal
-                        datasets: [
-                            {
-                                label: translate('rejected'),
-                                data: [porcentajeRechazadas], // <-- Usamos el porcentaje
-                                backgroundColor: '#a83232'
-                            },
-                            {
-                                label: translate('accepted'),
-                                data: [porcentajeAceptadas], // <-- Usamos el porcentaje
-                                backgroundColor: '#69A032'
-                            }
-                        ]
+                const weeklyOptions = {
+                    series: [{
+                        name: translate('rejected_pieces'),
+                        data: weeklyCounts
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'area',
+                        fontFamily: fontFamily,
+                        zoom: { enabled: true },
+                        toolbar: { show: true },
+                        animations: { enabled: false },
+                        dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15 }
                     },
-                    options: {
-                        animation: false, // <-- ARREGLO PARA PDF
-                        indexAxis: 'y', // Mantenemos la barra horizontal
-                        responsive: true,
-                        scales: {
-                            x: {
-                                stacked: true, // Mantenemos el apilado
-                                min: 0,
-                                max: 100, // <-- Eje X forzado de 0 a 100
-                                ticks: {
-                                    // Añadir '%' a las etiquetas del eje X
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                }
-                            },
-                            y: { stacked: true }
+                    dataLabels: { enabled: true, style: { colors: [colorPalette.primary] } },
+                    stroke: { curve: 'smooth', width: 3 },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.7,
+                            opacityTo: 0.2,
+                            stops: [0, 90, 100]
+                        }
+                    },
+                    xaxis: { categories: weeklyLabels },
+                    colors: [colorPalette.primary],
+                    grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
+                };
+                weeklyRejectsChart = new ApexCharts(document.querySelector("#weeklyRejectsChart"), weeklyOptions);
+                weeklyRejectsChart.render();
+            }
+
+            // --- 3. ACEPTADAS VS RECHAZADAS % (ApexCharts - Horizontal Stacked 100%) ---
+            if (resumen && resumen.inspeccionadas > 0) {
+                const porcentajeRechazadas = parseFloat(((resumen.rechazadas / resumen.inspeccionadas) * 100).toFixed(2));
+                const porcentajeAceptadas = parseFloat(((resumen.aceptadas / resumen.inspeccionadas) * 100).toFixed(2));
+
+                const rejectionOptions = {
+                    series: [{
+                        name: translate('accepted'),
+                        data: [porcentajeAceptadas]
+                    }, {
+                        name: translate('rejected'),
+                        data: [porcentajeRechazadas]
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 250,
+                        fontFamily: fontFamily,
+                        stacked: true,
+                        stackType: '100%',
+                        toolbar: { show: true },
+                        animations: { enabled: false }
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            borderRadius: 8,
+                            barHeight: '60%',
                         },
-                        plugins: {
-                            legend: { position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    // Personalizar el tooltip para mostrar porcentaje
-                                    label: function(context) {
-                                        const label = context.dataset.label || '';
-                                        const value = context.raw;
-                                        // El valor ya es un porcentaje, solo formateamos
-                                        return `${label}: ${value.toFixed(2)}%`;
-                                    },
-                                    // Ocultar el título del tooltip (que solo dice '')
-                                    title: function(context) {
-                                        return '';
+                    },
+                    fill: { opacity: 1 },
+                    colors: [colorPalette.success, colorPalette.danger],
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '14px', fontWeight: 'bold', colors: ['#fff'] },
+                        formatter: function (val) {
+                            if(val < 5) return "";
+                            return val.toFixed(2) + "%";
+                        }
+                    },
+                    xaxis: {
+                        categories: [translate('period_summary')],
+                        labels: { show: false },
+                        axisBorder: { show: false },
+                        axisTicks: { show: false }
+                    },
+                    yaxis: { show: false },
+                    legend: { position: 'top', horizontalAlign: 'center' },
+                    grid: { show: false }
+                };
+                rejectionRateChart = new ApexCharts(document.querySelector("#rejectionRateChart"), rejectionOptions);
+                rejectionRateChart.render();
+            }
+
+
+            // --- 4. PROGRESO DIARIO (ApexCharts - Stacked Column Chart) ---
+            const dailyLabels = [];
+            const dailyAccepted = [];
+            const dailyRejected = [];
+
+            (data.desgloseDiario || []).forEach(dia => {
+                const fecha = new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'});
+                dailyLabels.push(fecha);
+                dailyAccepted.push(dia.totales.aceptadas);
+                dailyRejected.push(dia.totales.rechazadas);
+            });
+
+            if(dailyLabels.length > 0) {
+                const dailyOptions = {
+                    series: [{
+                        name: translate('accepted'),
+                        data: dailyAccepted
+                    }, {
+                        name: translate('rejected'),
+                        data: dailyRejected
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                        fontFamily: fontFamily,
+                        stacked: true,
+                        toolbar: { show: true },
+                        zoom: { enabled: true }, // Habilitar Zoom explícitamente
+                        animations: { enabled: false },
+                        dropShadow: { enabled: true, top: 0, left: 0, blur: 3, opacity: 0.1 }
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '60%',
+                            borderRadius: 4,
+                            dataLabels: {
+                                total: {
+                                    enabled: true,
+                                    style: {
+                                        fontSize: '13px',
+                                        fontWeight: 900
                                     }
                                 }
-                            },
-                            // --- NUEVO: Configuración de Datalabels ---
-                            datalabels: {
-                                color: 'white', // Etiquetas blancas para que se vean dentro
-                                font: { weight: 'bold', size: 12 },
-                                // Formatear para mostrar el porcentaje
-                                formatter: (value, context) => {
-                                    // Si el valor es muy pequeño, no mostrar etiqueta para que no se encime
-                                    if (value < 5) return '';
-                                    return value.toFixed(2) + '%';
-                                }
                             }
-                        }
-                    }
-                });
-            }
-            // --- FIN DE LA MODIFICACIÓN ---
-
-
-            // 4. Progreso Diario
-            const dailyCtx = document.getElementById('dailyProgressChart')?.getContext('2d');
-            const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
-            (data.desgloseDiario || []).forEach(dia => {
-                dailyData.labels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
-                dailyData.inspected.push(dia.totales.inspeccionadas);
-                dailyData.accepted.push(dia.totales.aceptadas);
-                dailyData.rejected.push(dia.totales.rechazadas);
-            });
-            if(dailyCtx && dailyData.labels.length > 0) {
-                dailyProgressChartInstance = new Chart(dailyCtx, {
-                    type: 'bar',
-                    data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
-                    options: {
-                        animation: false, // <-- ARREGLO PARA PDF
-                        responsive: true,
-                        scales: { y: { beginAtZero: true } },
-                        // --- NUEVO: Configuración de Datalabels ---
-                        plugins: {
-                            datalabels: {
-                                align: 'top', // Poner la etiqueta arriba de la barra
-                                anchor: 'end',
-                                color: '#444', // Color oscuro
-                                font: { size: 9 }, // Letra pequeña
-                                rotation: -90, // Girar la etiqueta para que quepa
-                                offset: 8, // Separar un poco de la barra
-                                formatter: (value) => value,
-                                // Ocultar etiquetas si el valor es 0
-                                display: (context) => context.dataset.data[context.dataIndex] > 0
-                            }
-                        }
-                    }
-                });
+                        },
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', fontWeight: 'bold' }
+                    },
+                    stroke: {
+                        show: true,
+                        width: 1,
+                        colors: ['#fff']
+                    },
+                    xaxis: { categories: dailyLabels },
+                    yaxis: {
+                        title: { text: translate('chart_qty') },
+                    },
+                    fill: { opacity: 1 },
+                    colors: [colorPalette.success, colorPalette.danger],
+                    grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
+                    tooltip: {
+                        shared: true,
+                        intersect: false
+                    },
+                    legend: { position: 'top' }
+                };
+                dailyProgressChart = new ApexCharts(document.querySelector("#dailyProgressChart"), dailyOptions);
+                dailyProgressChart.render();
             }
 
-            // 5. NUEVO: Tendencia PPM (Basado en piezas RECHAZADAS)
-            const ppmCtx = document.getElementById('ppmTrendChart')?.getContext('2d');
-            if (ppmCtx && dashboardData.dailyPPM && dashboardData.dailyPPM.length > 0) {
+            // --- 5. TENDENCIA PPM (ApexCharts - Line Chart) ---
+            if (dashboardData.dailyPPM && dashboardData.dailyPPM.length > 0) {
                 const ppmLabels = dashboardData.dailyPPM.map(item => new Date(item.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
                 const ppmValues = dashboardData.dailyPPM.map(item => item.ppm);
-                ppmTrendChartInstance = new Chart(ppmCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ppmLabels,
-                        datasets: [{
-                            label: translate('chart_ppm'),
-                            data: ppmValues,
-                            borderColor: '#a83232',
-                            backgroundColor: 'rgba(168, 50, 50, 0.1)',
-                            fill: true,
-                            tension: 0.1
-                        }]
+
+                const ppmOptions = {
+                    series: [{
+                        name: translate('chart_ppm'),
+                        data: ppmValues
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                        fontFamily: fontFamily,
+                        zoom: { enabled: true },
+                        toolbar: { show: true },
+                        animations: { enabled: false },
+                        dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15 }
                     },
-                    options: {
-                        animation: false, // <-- ARREGLO PARA PDF
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true, ticks: { callback: value => value.toLocaleString() } },
-                            x: { offset: true } // <-- MODIFICACIÓN: Añade espacio al inicio/fin del eje X
-                        },
-                        // --- NUEVO: Configuración de Datalabels ---
-                        plugins: {
-                            datalabels: {
-                                align: 'end', // Arriba del punto
-                                anchor: 'end',
-                                backgroundColor: 'rgba(168, 50, 50, 0.7)', // Fondo semitransparente
-                                color: 'white', // Texto blanco
-                                borderRadius: 4, // Bordes redondeados
-                                font: { size: 10 },
-                                // Redondear el valor de PPM para la etiqueta
-                                formatter: (value) => Math.round(value).toLocaleString(),
-                                padding: 4 // Espaciado interno
-                            }
+                    dataLabels: {
+                        enabled: true,
+                        background: { enabled: true, borderRadius: 2 },
+                        formatter: (value) => Math.round(value).toLocaleString()
+                    },
+                    stroke: {
+                        curve: 'smooth',
+                        width: 3
+                    },
+                    markers: {
+                        size: 5,
+                        hover: { size: 7 }
+                    },
+                    xaxis: { categories: ppmLabels },
+                    yaxis: {
+                        labels: {
+                            formatter: (value) => value.toLocaleString()
                         }
-                    }
-                });
+                    },
+                    colors: [colorPalette.danger],
+                    grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
+                };
+                ppmTrendChart = new ApexCharts(document.querySelector("#ppmTrendChart"), ppmOptions);
+                ppmTrendChart.render();
             }
         }
 
@@ -1392,7 +1413,6 @@ $conex->close();
             btn.addEventListener('click', () => {
                 setLanguage(btn.dataset.lang);
                 if (reporteContainer.style.display === 'block' && lastReportData) {
-                    // Re-renderizar todo para que los títulos de las gráficas y fechas se actualicen
                     renderizarReporte(lastReportData);
                 }
             });
