@@ -818,7 +818,7 @@ $conex->close();
                     height: 350,
                     type: 'line',
                     fontFamily: fontFamily,
-                    toolbar: { show: false },
+                    toolbar: { show: true },
                     animations: { enabled: false },
                     dropShadow: { enabled: true, top: 0, left: 0, blur: 3, opacity: 0.1 } // Sombra sutil
                 },
@@ -879,8 +879,8 @@ $conex->close();
                     height: 350,
                     type: 'area', // Cambiado a AREA para efecto visual
                     fontFamily: fontFamily,
-                    zoom: { enabled: false },
-                    toolbar: { show: false },
+                    zoom: { enabled: true },
+                    toolbar: { show: true },
                     animations: { enabled: false },
                     dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15 }
                 },
@@ -925,7 +925,7 @@ $conex->close();
                     fontFamily: fontFamily,
                     stacked: true,
                     stackType: '100%',
-                    toolbar: { show: false },
+                    toolbar: { show: true },
                     animations: { enabled: false }
                 },
                 plotOptions: {
@@ -986,7 +986,7 @@ $conex->close();
                     height: 350,
                     fontFamily: fontFamily,
                     stacked: true, // Habilitar apilado
-                    toolbar: { show: false },
+                    toolbar: { show: true },
                     animations: { enabled: false }, // Importante para PDF
                     dropShadow: { enabled: true, top: 0, left: 0, blur: 3, opacity: 0.1 }
                 },
