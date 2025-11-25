@@ -26,12 +26,11 @@ $conex->close();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Librerías para Gráficas y PDF -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- REEMPLAZO: ApexCharts en lugar de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- *** NUEVO: Plugin para Data Labels en Chart.js *** -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <style>
         /* Estilos CSS (sin cambios) */
@@ -174,6 +173,7 @@ $conex->close();
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--color-borde);
+            min-height: 400px; /* Altura mínima para ApexCharts */
         }
         .chart-box h5 {
             text-align: center;
@@ -366,40 +366,29 @@ $conex->close();
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- NUEVO: Registrar el plugin de datalabels globalmente ---
-        Chart.register(ChartDataLabels);
-
         const solicitudSelector = document.getElementById('solicitud-selector');
         const btnGenerarParcial = document.getElementById('btn-generar-parcial');
         const btnVerFinal = document.getElementById('btn-ver-final');
         const btnDescargarPdf = document.getElementById('btn-descargar-pdf');
         const reporteContainer = document.getElementById('reporte-generado-container');
         const contenidoReporteDiv = document.getElementById('contenido-reporte');
-        let paretoChartInstance, weeklyRejectsChartInstance, rejectionRateChartInstance, dailyProgressChartInstance = null;
-        let lastReportData;
 
-        // --- INICIO DE CÓDIGO AÑADIDO ---
+        // Variables para las instancias de ApexCharts
+        let paretoChart, weeklyRejectsChart, rejectionRateChart, dailyProgressChart;
+        let lastReportData;
 
         const campoFechaInicio = document.getElementById('fecha-inicio');
 
-        /**
-         * Busca la primera fecha de inspección para una solicitud y la pone en el campo de fecha de inicio.
-         * @param {string} idSolicitud El ID de la solicitud seleccionada.
-         */
         function fetchPrimeraFecha(idSolicitud) {
-            // Mostramos un "cargando" visualmente deshabilitando el campo
             campoFechaInicio.disabled = true;
-            campoFechaInicio.value = ''; // Limpiamos valor anterior
+            campoFechaInicio.value = '';
 
             fetch(`dao/api_get_primera_fecha.php?idSolicitud=${idSolicitud}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success' && data.primeraFecha) {
-                        // ¡Éxito! Asignamos la fecha.
-                        // El formato YYYY-MM-DD de MySQL es compatible con <input type="date">
                         campoFechaInicio.value = data.primeraFecha;
                     } else {
-                        // No se encontró fecha o hubo un error, lo dejamos vacío
                         console.warn(data.message || 'No se encontró primera fecha.');
                         campoFechaInicio.value = '';
                     }
@@ -409,30 +398,23 @@ $conex->close();
                     campoFechaInicio.value = '';
                 })
                 .finally(() => {
-                    // Volvemos a habilitar el campo
                     campoFechaInicio.disabled = false;
                 });
         }
 
-        // Añadimos el "oyente" de eventos al selector de solicitudes
         solicitudSelector.addEventListener('change', function() {
             const idSolicitudSeleccionada = this.value;
 
             if (idSolicitudSeleccionada) {
-                // Si el usuario seleccionó una solicitud válida, buscamos su fecha
                 fetchPrimeraFecha(idSolicitudSeleccionada);
             } else {
-                // Si el usuario seleccionó "-- Elige una solicitud --", limpiamos el campo
                 campoFechaInicio.value = '';
             }
         });
 
-        // --- FIN DE CÓDIGO AÑADIDO ---
-
-
         const translations = {
-            es: { welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Dashboard de Reportes", select_request: "Seleccionar Solicitud de Contención", select_request_option: "-- Elige una solicitud --", partial_report_title: "Reportes Parciales", partial_report_desc: "Genera un reporte de contención para un rango de fechas específico. Ideal para seguimientos semanales mientras el proceso está activo.", start_date: "Fecha de Inicio", end_date: "Fecha de Fin", generate_report_btn: "Generar Reporte", final_report_title: "Reporte Final de Contención", final_report_desc: "Visualiza y descarga el reporte consolidado con todos los datos del proceso una vez que la contención ha sido finalizada.", view_final_report_btn: "Ver Reporte Final", report_preview_title: "Vista Previa del Reporte", download_pdf_btn: "Descargar PDF", missing_info: "Falta Información", select_request_warning: "Por favor, selecciona una solicitud.", incomplete_fields: "Campos incompletos", select_dates_warning: "Por favor, selecciona una fecha de inicio y una fecha de fin.", generating_pdf: "Generando PDF", please_wait: "Por favor, espera un momento...", generating_report_title: "Generando Reporte", generating_report_text: "Consultando la información...", error_title: "Error", error_message_default: "No se pudo generar el reporte.", connection_error_title: "Error de Conexión", connection_error_message: "No se pudo comunicar con el servidor.", request_folio: "Folio de Solicitud", general_info: "Información General", part_number: "No. de Parte", responsible: "Responsable", total_qty: "Cantidad Total Solicitada", issue_date: "Fecha de Emisión", project: "Proyecto", involved_parts: "Partes Involucradas", period_summary: "Resumen General del Periodo", inspected_pieces: "Piezas Inspeccionadas", accepted_pieces: "Piezas Aceptadas", rejected_pieces: "Piezas Rechazadas", reworked_pieces: "Piezas Retrabajadas", total_inspection_time: "Tiempo Total de Inspección", pieces_per_hour: "Rate (Piezas / Hora)", hourly_breakdown: "Desglose Hora por Hora", day_totals: "Totales del día", inspected: "Inspeccionadas", accepted: "Aceptadas", rejected: "Rechazadas", hour_by_hour: "Hora por Hora", shift: "Turno", inspector: "Inspector", part_breakdown: "Desglose por Parte", downtime: "Tiempo Muerto", no: "No", comments: "Comentarios", defects_summary: "Resumen de Defectos del Periodo", total_defects_for: "Total de defectos para", defect: "Defecto", total_qty_defect: "Cantidad Total", lot_numbers: "No. de Lote(s)", no_defects_found_parts: "No se encontraron defectos para los números de parte en este periodo.", no_defects_found_period: "No se encontraron defectos en este periodo.", visual_dashboards: "Dashboards Visuales", pareto_chart_title: "Pareto de Defectos (Top 5)", weekly_rejects_title: "Rechazadas por Semana", accepted_vs_rejected_title: "Aceptadas vs. Rechazadas", daily_progress_title: "Progreso Diario de Inspección", chart_qty: "Cantidad", chart_cumulative: "% Acumulado", chart_week: "Semana", dashboard_filter_apply: "Filtrar Gráficas", dashboard_filter_clear: "Limpiar Filtro" },
-            en: { welcome: "Welcome", logout: "Logout", main_title: "Reports Dashboard", select_request: "Select Containment Request", select_request_option: "-- Choose a request --", partial_report_title: "Partial Reports", partial_report_desc: "Generate a containment report for a specific date range. Ideal for weekly follow-ups while the process is active.", start_date: "Start Date", end_date: "End Date", generate_report_btn: "Generate Report", final_report_title: "Final Containment Report", final_report_desc: "View and download the consolidated report with all process data once the containment has been finalized.", view_final_report_btn: "View Final Report", report_preview_title: "Report Preview", download_pdf_btn: "Download PDF", missing_info: "Missing Information", select_request_warning: "Please select a request.", incomplete_fields: "Incomplete Fields", select_dates_warning: "Please select a start and end date.", generating_pdf: "Generating PDF", please_wait: "Please wait a moment...", generating_report_title: "Generating Report", generating_report_text: "Querying information...", error_title: "Error", error_message_default: "Could not generate report.", connection_error_title: "Connection Error", connection_error_message: "Could not connect to the server.", request_folio: "Request Folio", general_info: "General Information", part_number: "Part Number", responsible: "Responsible", total_qty: "Total Quantity Requested", issue_date: "Issue Date", project: "Project", involved_parts: "Involved Parts", period_summary: "General Period Summary", inspected_pieces: "Inspected Pieces", accepted_pieces: "Accepted Pieces", rejected_pieces: "Rejected Pieces", reworked_pieces: "Reworked Pieces", total_inspection_time: "Total Inspection Time", pieces_per_hour: "Rate (Pieces / Hour)", hourly_breakdown: "Hour by Hour Breakdown", day_totals: "Day's Totals", inspected: "Inspected", accepted: "Accepted", rejected: "Rejected", hour_by_hour: "Hour by Hour", shift: "Shift", inspector: "Inspector", part_breakdown: "Part Breakdown", downtime: "Downtime", no: "No", comments: "Comments", defects_summary: "Defects Summary for the Period", total_defects_for: "Total defects for", defect: "Defecto", total_qty_defect: "Total Quantity", lot_numbers: "Lot Number(s)", no_defects_found_parts: "No defects found for the part numbers in this period.", no_defects_found_period: "No defects found in this period.", visual_dashboards: "Visual Dashboards", pareto_chart_title: "Defects Pareto (Top 5)", weekly_rejects_title: "Weekly Rejects", accepted_vs_rejected_title: "Accepted vs. Rejected", daily_progress_title: "Daily Inspection Progress", chart_qty: "Quantity", chart_cumulative: "Cumulative %", chart_week: "Week", dashboard_filter_apply: "Filter Charts", dashboard_filter_clear: "Clear Filter" }
+            es: { welcome: "Bienvenido", logout: "Cerrar Sesión", main_title: "Dashboard de Reportes", select_request: "Seleccionar Solicitud de Contención", select_request_option: "-- Elige una solicitud --", partial_report_title: "Reportes Parciales", partial_report_desc: "Genera un reporte de contención para un rango de fechas específico. Ideal para seguimientos semanales mientras el proceso está activo.", start_date: "Fecha de Inicio", end_date: "Fecha de Fin", generate_report_btn: "Generar Reporte", final_report_title: "Reporte Final de Contención", final_report_desc: "Visualiza y descarga el reporte consolidado con todos los datos del proceso una vez que la contención ha sido finalizada.", view_final_report_btn: "Ver Reporte Final", report_preview_title: "Vista Previa del Reporte", download_pdf_btn: "Descargar PDF", missing_info: "Falta Información", select_request_warning: "Por favor, selecciona una solicitud.", incomplete_fields: "Campos incompletos", select_dates_warning: "Por favor, selecciona una fecha de inicio y una fecha de fin.", generating_pdf: "Generando PDF", please_wait: "Por favor, espera un momento...", generating_report_title: "Generando Reporte", generating_report_text: "Consultando la información...", error_title: "Error", error_message_default: "No se pudo generar el reporte.", connection_error_title: "Error de Conexión", connection_error_message: "No se pudo comunicar con el servidor.", request_folio: "Folio de Solicitud", general_info: "Información General", part_number: "No. de Parte", responsible: "Responsable", total_qty: "Cantidad Total Solicitada", issue_date: "Fecha de Emisión", project: "Proyecto", involved_parts: "Partes Involucradas", period_summary: "Resumen General del Periodo", inspected_pieces: "Piezas Inspeccionadas", accepted_pieces: "Piezas Aceptadas", rejected_pieces: "Piezas Rechazadas", reworked_pieces: "Piezas Retrabajadas", total_inspection_time: "Tiempo Total de Inspección", pieces_per_hour: "Rate (Piezas / Hora)", hourly_breakdown: "Desglose Hora por Hora", day_totals: "Totales del día", inspected: "Inspeccionadas", accepted: "Aceptadas", rejected: "Rechazadas", hour_by_hour: "Hora por Hora", shift: "Turno", inspector: "Inspector", part_breakdown: "Desglose por Parte", downtime: "Tiempo Muerto", no: "No", comments: "Comentarios", defects_summary: "Resumen de Defectos del Periodo", total_defects_for: "Total de defectos para", defect: "Defecto", total_qty_defect: "Cantidad Total", lot_numbers: "No. de Lote(s)", no_defects_found_parts: "No se encontraron defectos para los números de parte en este periodo.", no_defects_found_period: "No se encontraron defectos en este periodo.", visual_dashboards: "Dashboards Visuales", pareto_chart_title: "Pareto de Defectos (Completo)", weekly_rejects_title: "Rechazadas por Semana", accepted_vs_rejected_title: "Aceptadas vs. Rechazadas (%)", daily_progress_title: "Progreso Diario de Inspección", chart_qty: "Cantidad", chart_cumulative: "% Acumulado", chart_week: "Semana", dashboard_filter_apply: "Filtrar Gráficas", dashboard_filter_clear: "Limpiar Filtro" },
+            en: { welcome: "Welcome", logout: "Logout", main_title: "Reports Dashboard", select_request: "Select Containment Request", select_request_option: "-- Choose a request --", partial_report_title: "Partial Reports", partial_report_desc: "Generate a containment report for a specific date range. Ideal for weekly follow-ups while the process is active.", start_date: "Start Date", end_date: "End Date", generate_report_btn: "Generate Report", final_report_title: "Final Containment Report", final_report_desc: "View and download the consolidated report with all process data once the containment has been finalized.", view_final_report_btn: "View Final Report", report_preview_title: "Report Preview", download_pdf_btn: "Download PDF", missing_info: "Missing Information", select_request_warning: "Please select a request.", incomplete_fields: "Incomplete Fields", select_dates_warning: "Please select a start and end date.", generating_pdf: "Generating PDF", please_wait: "Please wait a moment...", generating_report_title: "Generating Report", generating_report_text: "Querying information...", error_title: "Error", error_message_default: "Could not generate report.", connection_error_title: "Connection Error", connection_error_message: "Could not connect to the server.", request_folio: "Request Folio", general_info: "General Information", part_number: "Part Number", responsible: "Responsible", total_qty: "Total Quantity Requested", issue_date: "Issue Date", project: "Project", involved_parts: "Involved Parts", period_summary: "General Period Summary", inspected_pieces: "Inspected Pieces", accepted_pieces: "Accepted Pieces", rejected_pieces: "Rejected Pieces", reworked_pieces: "Reworked Pieces", total_inspection_time: "Total Inspection Time", pieces_per_hour: "Rate (Pieces / Hour)", hourly_breakdown: "Hour by Hour Breakdown", day_totals: "Day's Totals", inspected: "Inspected", accepted: "Accepted", rejected: "Rejected", hour_by_hour: "Hour by Hour", shift: "Shift", inspector: "Inspector", part_breakdown: "Part Breakdown", downtime: "Downtime", no: "No", comments: "Comments", defects_summary: "Defects Summary for the Period", total_defects_for: "Total defects for", defect: "Defecto", total_qty_defect: "Total Quantity", lot_numbers: "Lot Number(s)", no_defects_found_parts: "No defects found for the part numbers in this period.", no_defects_found_period: "No defects found in this period.", visual_dashboards: "Visual Dashboards", pareto_chart_title: "Defects Pareto (Full)", weekly_rejects_title: "Weekly Rejects", accepted_vs_rejected_title: "Accepted vs. Rejected (%)", daily_progress_title: "Daily Inspection Progress", chart_qty: "Quantity", chart_cumulative: "Cumulative %", chart_week: "Week", dashboard_filter_apply: "Filter Charts", dashboard_filter_clear: "Clear Filter" }
         };
 
         function setLanguage(lang) {
@@ -514,6 +496,7 @@ $conex->close();
             const allElements = elementoReporte.querySelectorAll('.pdf-section, .report-title, .report-subtitle');
 
             for (const element of allElements) {
+                // html2canvas funciona bien con ApexCharts si están renderizados como SVG (por defecto)
                 const canvas = await html2canvas(element, { scale: 2, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
                 const imgProps = pdf.getImageProperties(imgData);
@@ -614,6 +597,7 @@ $conex->close();
             }
             defectosHtml += `</div>`;
 
+            // CAMBIO: Contenedores DIV para ApexCharts en lugar de CANVAS
             let dashboardHtml = `
             <div class="pdf-section">
                 <h4><i class="fa-solid fa-chart-line"></i> ${translate('visual_dashboards')}</h4>
@@ -634,19 +618,19 @@ $conex->close();
                 <div class="charts-container">
                     <div class="chart-box">
                         <h5>${translate('pareto_chart_title')}</h5>
-                        <canvas id="paretoChart"></canvas>
+                        <div id="paretoChart"></div>
                     </div>
                     <div class="chart-box">
                         <h5>${translate('weekly_rejects_title')}</h5>
-                        <canvas id="weeklyRejectsChart"></canvas>
+                        <div id="weeklyRejectsChart"></div>
                     </div>
                     <div class="chart-box">
                         <h5>${translate('accepted_vs_rejected_title')}</h5>
-                        <canvas id="rejectionRateChart"></canvas>
+                        <div id="rejectionRateChart"></div>
                     </div>
                     <div class="chart-box">
                         <h5>${translate('daily_progress_title')}</h5>
-                        <canvas id="dailyProgressChart"></canvas>
+                        <div id="dailyProgressChart"></div>
                     </div>
                 </div>
             </div>
@@ -728,9 +712,7 @@ $conex->close();
                 return;
             }
 
-            // --- RECALCULAR TODOS LOS DATOS PARA LOS DASHBOARDS ---
-
-            // 1. Recalcular Resumen
+            // Recalcular Resumen para el filtrado
             let inspeccionadas = 0, aceptadas = 0, retrabajadas = 0;
             filteredData.desgloseDiario.forEach(dia => {
                 inspeccionadas += dia.totales.inspeccionadas;
@@ -748,21 +730,7 @@ $conex->close();
                 retrabajadas
             };
 
-            // 2. Recalcular Datos de Defectos (para Pareto)
-            const defectosMap = new Map();
-            const allDefects = lastReportData.defectos || []; // Usar el agregado original
-
-            // Crear un mapa de defectos con las cantidades filtradas
-            filteredData.desgloseDiario.forEach(dia => {
-                // Aquí necesitaríamos una forma de saber los defectos por día/entrada
-                // Como no tenemos esa info, el pareto no se puede filtrar con precisión.
-                // Se mostrará el pareto del periodo completo.
-            });
-            // Por ahora, el pareto usará los datos completos como fallback.
-            filteredData.dashboardData.pareto = lastReportData.dashboardData.pareto;
-
-
-            // 3. Recalcular Rechazadas por Semana
+            // Recalcular Rechazadas por Semana
             const rechazoSemanal = {};
             filteredData.desgloseDiario.forEach(dia => {
                 const fecha = new Date(dia.fecha + 'T00:00:00');
@@ -780,196 +748,228 @@ $conex->close();
                 rechazadas_semana: rechazoSemanal[semana]
             })).sort((a, b) => a.semana.localeCompare(b.semana));
 
+            // Nota sobre Pareto: El pareto sigue usando los datos globales de defectos,
+            // ya que los defectos no siempre están vinculados a la fecha en la estructura básica
+            // pero si tu backend lo envía, podrías filtrarlo aquí.
 
             renderizarDashboards(filteredData);
         }
 
 
         function renderizarDashboards(data) {
-            if (paretoChartInstance) paretoChartInstance.destroy();
-            if (weeklyRejectsChartInstance) weeklyRejectsChartInstance.destroy();
-            if (rejectionRateChartInstance) rejectionRateChartInstance.destroy();
-            if (dailyProgressChartInstance) dailyProgressChartInstance.destroy();
+            // Destruir gráficas anteriores si existen
+            if (paretoChart) paretoChart.destroy();
+            if (weeklyRejectsChart) weeklyRejectsChart.destroy();
+            if (rejectionRateChart) rejectionRateChart.destroy();
+            if (dailyProgressChart) dailyProgressChart.destroy();
 
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
 
-            const paretoCtx = document.getElementById('paretoChart').getContext('2d');
-            if (dashboardData.pareto && dashboardData.pareto.length > 0) {
-                const paretoLabels = dashboardData.pareto.map(item => item.defecto);
-                const paretoCounts = dashboardData.pareto.map(item => item.cantidad);
-                // const paretoCumulative = dashboardData.pareto.map(item => item.porcentajeAcumulado); // No se usa en horizontal
-                paretoChartInstance = new Chart(paretoCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: paretoLabels,
-                        datasets: [
-                            { label: translate('chart_qty'), data: paretoCounts, backgroundColor: '#003D70' }
-                            // Se quita la línea de % acumulado
-                        ]
-                    },
-                    options: {
-                        indexAxis: 'y', // <-- MODIFICACIÓN: Gráfica horizontal
-                        animation: false, // <-- MODIFICACIÓN: Para PDF
-                        responsive: true,
-                        scales: {
-                            x: { beginAtZero: true } // Eje X es ahora el de cantidad
-                        },
-                        plugins: {
-                            datalabels: {
-                                align: 'end',
-                                anchor: 'end',
-                                color: '#444',
-                                font: { weight: 'bold', size: 10 },
-                                formatter: (value) => value
-                            }
-                        }
-                    }
-                });
-            }
+            // --- 1. PARETO DE DEFECTOS (ApexCharts) ---
+            // "Literalmente un pareto de todos los defectos"
+            const defectosRaw = data.defectos || []; // Tomamos TODOS los defectos disponibles
 
-            const weeklyCtx = document.getElementById('weeklyRejectsChart').getContext('2d');
-            if (dashboardData.rechazadasPorSemana && dashboardData.rechazadasPorSemana.length > 0) {
-                const weeklyLabels = dashboardData.rechazadasPorSemana.map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
-                const weeklyCounts = dashboardData.rechazadasPorSemana.map(item => item.rechazadas_semana);
-                weeklyRejectsChartInstance = new Chart(weeklyCtx, {
-                    type: 'line',
-                    data: { labels: weeklyLabels, datasets: [{ label: translate('rejected_pieces'), data: weeklyCounts, borderColor: '#003D70', backgroundColor: 'rgba(0, 61, 112, 0.2)', fill: true, tension: 0.1 }] },
-                    options: {
-                        animation: false, // <-- MODIFICACIÓN: Para PDF
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true },
-                            x: { offset: true } // <-- MODIFICACIÓN: Añade espacio
-                        },
-                        plugins: {
-                            datalabels: {
-                                align: 'end',
-                                anchor: 'end',
-                                backgroundColor: 'rgba(0, 61, 112, 0.7)',
-                                color: 'white',
-                                borderRadius: 4,
-                                font: { size: 10 },
-                                formatter: (value) => value,
-                                padding: 4
-                            }
-                        }
-                    }
-                });
-            }
+            // Agrupar y sumar defectos por nombre (por si vienen repetidos)
+            const defectosAgrupados = {};
+            let totalDefectos = 0;
 
-            // --- INICIO DE LA MODIFICACIÓN ---
-            // Modificación del gráfico "Aceptadas vs Rechazadas" para mostrar porcentajes
-
-            const rejectionCtx = document.getElementById('rejectionRateChart').getContext('2d');
-            if (resumen && resumen.inspeccionadas > 0) {
-                const rechazoTotal = resumen.rechazadas;
-                const aceptadoTotal = resumen.aceptadas;
-                const totalInspeccionadas = resumen.inspeccionadas; // Base para el 100%
-
-                // 1. Calcular porcentajes
-                const porcentajeRechazadas = parseFloat(((rechazoTotal / totalInspeccionadas) * 100).toFixed(2));
-                const porcentajeAceptadas = parseFloat(((aceptadoTotal / totalInspeccionadas) * 100).toFixed(2));
-
-                rejectionRateChartInstance = new Chart(rejectionCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: [''], // Sigue siendo una sola barra horizontal
-                        datasets: [
-                            {
-                                label: translate('rejected'),
-                                data: [porcentajeRechazadas], // <-- Usamos el porcentaje
-                                backgroundColor: '#a83232'
-                            },
-                            {
-                                label: translate('accepted'),
-                                data: [porcentajeAceptadas], // <-- Usamos el porcentaje
-                                backgroundColor: '#69A032'
-                            }
-                        ]
-                    },
-                    options: {
-                        animation: false, // <-- MODIFICACIÓN: Para PDF
-                        indexAxis: 'y', // Mantenemos la barra horizontal
-                        responsive: true,
-                        scales: {
-                            x: {
-                                stacked: true, // Mantenemos el apilado
-                                min: 0,
-                                max: 100, // <-- Eje X forzado de 0 a 100
-                                ticks: {
-                                    // Añadir '%' a las etiquetas del eje X
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                }
-                            },
-                            y: { stacked: true }
-                        },
-                        plugins: {
-                            legend: { position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    // Personalizar el tooltip para mostrar porcentaje
-                                    label: function(context) {
-                                        const label = context.dataset.label || '';
-                                        const value = context.raw;
-                                        // El valor ya es un porcentaje, solo formateamos
-                                        return `${label}: ${value.toFixed(2)}%`;
-                                    },
-                                    // Ocultar el título del tooltip (que solo dice '')
-                                    title: function(context) {
-                                        return '';
-                                    }
-                                }
-                            },
-                            // --- NUEVO: Configuración de Datalabels ---
-                            datalabels: {
-                                color: 'white',
-                                font: { weight: 'bold', size: 12 },
-                                formatter: (value, context) => {
-                                    if (value < 5) return '';
-                                    return value.toFixed(2) + '%';
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            // --- FIN DE LA MODIFICACIÓN ---
-
-
-            const dailyCtx = document.getElementById('dailyProgressChart').getContext('2d');
-            const dailyData = { labels: [], inspected: [], accepted: [], rejected: [] };
-            (data.desgloseDiario || []).forEach(dia => {
-                const dateLocale = getCurrentLanguage() === 'en' ? 'en-US' : 'es-MX';
-                dailyData.labels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
-                dailyData.inspected.push(dia.totales.inspeccionadas);
-                dailyData.accepted.push(dia.totales.aceptadas);
-                dailyData.rejected.push(dia.totales.inspeccionadas - dia.totales.aceptadas);
+            defectosRaw.forEach(d => {
+                const nombre = d.nombre;
+                const cantidad = parseInt(d.cantidad) || 0;
+                if(!defectosAgrupados[nombre]) defectosAgrupados[nombre] = 0;
+                defectosAgrupados[nombre] += cantidad;
+                totalDefectos += cantidad;
             });
-            dailyProgressChartInstance = new Chart(dailyCtx, {
-                type: 'bar',
-                data: { labels: dailyData.labels, datasets: [ { label: translate('inspected'), data: dailyData.inspected, backgroundColor: '#E9E6DD' }, { label: translate('accepted'), data: dailyData.accepted, backgroundColor: '#69A032' }, { label: translate('rejected'), data: dailyData.rejected, backgroundColor: '#a83232' } ] },
-                options: {
-                    animation: false, // <-- MODIFICACIÓN: Para PDF
-                    responsive: true,
-                    scales: { y: { beginAtZero: true } },
-                    // --- NUEVO: Configuración de Datalabels ---
-                    plugins: {
-                        datalabels: {
-                            align: 'top',
-                            anchor: 'end',
-                            color: '#444',
-                            font: { size: 9 },
-                            rotation: -90,
-                            offset: 8,
-                            formatter: (value) => value,
-                            display: (context) => context.dataset.data[context.dataIndex] > 0
+
+            // Convertir a array y ordenar descendente
+            let paretoData = Object.keys(defectosAgrupados).map(key => ({
+                defecto: key,
+                cantidad: defectosAgrupados[key]
+            })).sort((a, b) => b.cantidad - a.cantidad);
+
+            // Calcular porcentaje acumulado
+            let acumulado = 0;
+            paretoData = paretoData.map(item => {
+                acumulado += item.cantidad;
+                item.porcentaje = totalDefectos > 0 ? ((acumulado / totalDefectos) * 100).toFixed(1) : 0;
+                return item;
+            });
+
+            const paretoOptions = {
+                series: [{
+                    name: translate('chart_qty'),
+                    type: 'column',
+                    data: paretoData.map(d => d.cantidad)
+                }, {
+                    name: translate('chart_cumulative'),
+                    type: 'line',
+                    data: paretoData.map(d => d.porcentaje)
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    toolbar: { show: false },
+                    animations: { enabled: false } // Desactivar animación para PDF
+                },
+                stroke: {
+                    width: [0, 4]
+                },
+                title: { text: undefined },
+                dataLabels: {
+                    enabled: true,
+                    enabledOnSeries: [0, 1]
+                },
+                labels: paretoData.map(d => d.defecto),
+                yaxis: [{
+                    title: { text: translate('chart_qty') },
+                }, {
+                    opposite: true,
+                    title: { text: translate('chart_cumulative') },
+                    max: 100
+                }],
+                colors: ['#003D70', '#E2C044'],
+                plotOptions: {
+                    bar: { columnWidth: '50%' }
+                }
+            };
+            paretoChart = new ApexCharts(document.querySelector("#paretoChart"), paretoOptions);
+            paretoChart.render();
+
+            // --- 2. RECHAZADAS POR SEMANA (ApexCharts) ---
+            const weeklyLabels = (dashboardData.rechazadasPorSemana || []).map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
+            const weeklyCounts = (dashboardData.rechazadasPorSemana || []).map(item => item.rechazadas_semana);
+
+            const weeklyOptions = {
+                series: [{
+                    name: translate('rejected_pieces'),
+                    data: weeklyCounts
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line', // o 'area'
+                    zoom: { enabled: false },
+                    toolbar: { show: false },
+                    animations: { enabled: false }
+                },
+                dataLabels: { enabled: true },
+                stroke: { curve: 'straight' },
+                xaxis: { categories: weeklyLabels },
+                colors: ['#003D70']
+            };
+            weeklyRejectsChart = new ApexCharts(document.querySelector("#weeklyRejectsChart"), weeklyOptions);
+            weeklyRejectsChart.render();
+
+
+            // --- 3. ACEPTADAS VS RECHAZADAS % (ApexCharts - Stacked Bar 100%) ---
+            let porcentajeRechazadas = 0;
+            let porcentajeAceptadas = 0;
+            if (resumen && resumen.inspeccionadas > 0) {
+                porcentajeRechazadas = parseFloat(((resumen.rechazadas / resumen.inspeccionadas) * 100).toFixed(2));
+                porcentajeAceptadas = parseFloat(((resumen.aceptadas / resumen.inspeccionadas) * 100).toFixed(2));
+            }
+
+            const rejectionOptions = {
+                series: [{
+                    name: translate('accepted'),
+                    data: [porcentajeAceptadas]
+                }, {
+                    name: translate('rejected'),
+                    data: [porcentajeRechazadas]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 250,
+                    stacked: true,
+                    stackType: '100%',
+                    toolbar: { show: false },
+                    animations: { enabled: false }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                    },
+                },
+                colors: ['#69A032', '#a83232'],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val.toFixed(2) + "%";
+                    }
+                },
+                xaxis: {
+                    categories: [translate('period_summary')],
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + "%"
                         }
                     }
                 }
+            };
+            rejectionRateChart = new ApexCharts(document.querySelector("#rejectionRateChart"), rejectionOptions);
+            rejectionRateChart.render();
+
+
+            // --- 4. PROGRESO DIARIO (ApexCharts) ---
+            const dailyLabels = [];
+            const dailyInspected = [];
+            const dailyAccepted = [];
+            const dailyRejected = [];
+
+            (data.desgloseDiario || []).forEach(dia => {
+                const dateLocale = getCurrentLanguage() === 'en' ? 'en-US' : 'es-MX';
+                dailyLabels.push(new Date(dia.fecha + 'T00:00:00').toLocaleDateString(dateLocale, {month: 'short', day: 'numeric'}));
+                dailyInspected.push(dia.totales.inspeccionadas);
+                dailyAccepted.push(dia.totales.aceptadas);
+                dailyRejected.push(dia.totales.inspeccionadas - dia.totales.aceptadas);
             });
+
+            const dailyOptions = {
+                series: [{
+                    name: translate('inspected'),
+                    data: dailyInspected
+                }, {
+                    name: translate('accepted'),
+                    data: dailyAccepted
+                }, {
+                    name: translate('rejected'),
+                    data: dailyRejected
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: { show: false },
+                    animations: { enabled: false }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: { enabled: false },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: { categories: dailyLabels },
+                yaxis: { title: { text: translate('chart_qty') } },
+                fill: { opacity: 1 },
+                colors: ['#E9E6DD', '#69A032', '#a83232'],
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val
+                        }
+                    }
+                }
+            };
+            dailyProgressChart = new ApexCharts(document.querySelector("#dailyProgressChart"), dailyOptions);
+            dailyProgressChart.render();
         }
 
         const strtolower = (str) => String(str).toLowerCase();
