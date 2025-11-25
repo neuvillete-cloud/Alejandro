@@ -766,11 +766,21 @@ $conex->close();
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
 
-            // --- 1. PARETO DE DEFECTOS (ApexCharts) ---
-            // "Literalmente un pareto de todos los defectos"
-            const defectosRaw = data.defectos || []; // Tomamos TODOS los defectos disponibles
+            // Colores más vibrantes y modernos
+            const colorPalette = {
+                primary: '#008FFB', // Azul vibrante
+                warning: '#FEB019', // Naranja/Amarillo
+                success: '#00E396', // Verde brillante
+                danger: '#FF4560',  // Rojo suave
+                dark: '#263238'
+            };
 
-            // Agrupar y sumar defectos por nombre (por si vienen repetidos)
+            // Fuente global
+            const fontFamily = 'Montserrat, sans-serif';
+
+            // --- 1. PARETO DE DEFECTOS (ApexCharts) ---
+            const defectosRaw = data.defectos || [];
+
             const defectosAgrupados = {};
             let totalDefectos = 0;
 
@@ -782,13 +792,11 @@ $conex->close();
                 totalDefectos += cantidad;
             });
 
-            // Convertir a array y ordenar descendente
             let paretoData = Object.keys(defectosAgrupados).map(key => ({
                 defecto: key,
                 cantidad: defectosAgrupados[key]
             })).sort((a, b) => b.cantidad - a.cantidad);
 
-            // Calcular porcentaje acumulado
             let acumulado = 0;
             paretoData = paretoData.map(item => {
                 acumulado += item.cantidad;
@@ -809,34 +817,56 @@ $conex->close();
                 chart: {
                     height: 350,
                     type: 'line',
+                    fontFamily: fontFamily,
                     toolbar: { show: false },
-                    animations: { enabled: false } // Desactivar animación para PDF
+                    animations: { enabled: false },
+                    dropShadow: { enabled: true, top: 0, left: 0, blur: 3, opacity: 0.1 } // Sombra sutil
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: '60%',
+                        borderRadius: 4, // Bordes redondeados
+                        dataLabels: { position: 'top' }
+                    }
                 },
                 stroke: {
-                    width: [0, 4]
+                    width: [0, 4],
+                    curve: 'smooth' // Línea suave
+                },
+                fill: {
+                    type: ['gradient', 'solid'], // Gradiente para barra, solido para línea
+                    gradient: {
+                        shade: 'light',
+                        type: "vertical",
+                        shadeIntensity: 0.5,
+                        gradientToColors: [colorPalette.primary], // Gradiente azul sobre azul
+                        inverseColors: true,
+                        opacityFrom: 0.9,
+                        opacityTo: 0.9,
+                        stops: [0, 100]
+                    }
                 },
                 title: { text: undefined },
                 dataLabels: {
                     enabled: true,
-                    enabledOnSeries: [0, 1]
+                    enabledOnSeries: [0, 1],
+                    style: { fontSize: '11px', colors: ['#333', colorPalette.warning] }
                 },
                 labels: paretoData.map(d => d.defecto),
                 yaxis: [{
-                    title: { text: translate('chart_qty') },
+                    title: { text: translate('chart_qty'), style: { fontWeight: 600 } },
                 }, {
                     opposite: true,
-                    title: { text: translate('chart_cumulative') },
+                    title: { text: translate('chart_cumulative'), style: { fontWeight: 600 } },
                     max: 100
                 }],
-                colors: ['#003D70', '#E2C044'],
-                plotOptions: {
-                    bar: { columnWidth: '50%' }
-                }
+                colors: [colorPalette.primary, colorPalette.warning], // Azul y Naranja
+                grid: { borderColor: '#f1f1f1' }
             };
             paretoChart = new ApexCharts(document.querySelector("#paretoChart"), paretoOptions);
             paretoChart.render();
 
-            // --- 2. RECHAZADAS POR SEMANA (ApexCharts) ---
+            // --- 2. RECHAZADAS POR SEMANA (ApexCharts - Area Gradient) ---
             const weeklyLabels = (dashboardData.rechazadasPorSemana || []).map(item => `${translate('chart_week')} ${String(item.semana).substring(4)}`);
             const weeklyCounts = (dashboardData.rechazadasPorSemana || []).map(item => item.rechazadas_semana);
 
@@ -847,21 +877,33 @@ $conex->close();
                 }],
                 chart: {
                     height: 350,
-                    type: 'line', // o 'area'
+                    type: 'area', // Cambiado a AREA para efecto visual
+                    fontFamily: fontFamily,
                     zoom: { enabled: false },
                     toolbar: { show: false },
-                    animations: { enabled: false }
+                    animations: { enabled: false },
+                    dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15 }
                 },
-                dataLabels: { enabled: true },
-                stroke: { curve: 'straight' },
+                dataLabels: { enabled: true, style: { colors: [colorPalette.primary] } },
+                stroke: { curve: 'smooth', width: 3 },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.2, // Desvanecimiento hacia abajo
+                        stops: [0, 90, 100]
+                    }
+                },
                 xaxis: { categories: weeklyLabels },
-                colors: ['#003D70']
+                colors: [colorPalette.primary],
+                grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
             };
             weeklyRejectsChart = new ApexCharts(document.querySelector("#weeklyRejectsChart"), weeklyOptions);
             weeklyRejectsChart.render();
 
 
-            // --- 3. ACEPTADAS VS RECHAZADAS % (ApexCharts - Stacked Bar 100%) ---
+            // --- 3. ACEPTADAS VS RECHAZADAS % (ApexCharts - Stacked Bar 100% con estilo) ---
             let porcentajeRechazadas = 0;
             let porcentajeAceptadas = 0;
             if (resumen && resumen.inspeccionadas > 0) {
@@ -880,6 +922,7 @@ $conex->close();
                 chart: {
                     type: 'bar',
                     height: 250,
+                    fontFamily: fontFamily,
                     stacked: true,
                     stackType: '100%',
                     toolbar: { show: false },
@@ -888,31 +931,35 @@ $conex->close();
                 plotOptions: {
                     bar: {
                         horizontal: true,
+                        borderRadius: 8, // Bordes muy redondeados
+                        barHeight: '60%', // Barra más gruesa
                     },
                 },
-                colors: ['#69A032', '#a83232'],
+                fill: { opacity: 1 },
+                colors: [colorPalette.success, colorPalette.danger], // Verde y Rojo vibrantes
                 dataLabels: {
                     enabled: true,
+                    style: { fontSize: '14px', fontWeight: 'bold', colors: ['#fff'] },
                     formatter: function (val) {
+                        if(val < 5) return ""; // Ocultar si es muy pequeño
                         return val.toFixed(2) + "%";
                     }
                 },
                 xaxis: {
                     categories: [translate('period_summary')],
+                    labels: { show: false },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false }
                 },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return val + "%"
-                        }
-                    }
-                }
+                yaxis: { show: false }, // Ocultar eje Y para limpieza
+                legend: { position: 'top', horizontalAlign: 'center' },
+                grid: { show: false }
             };
             rejectionRateChart = new ApexCharts(document.querySelector("#rejectionRateChart"), rejectionOptions);
             rejectionRateChart.render();
 
 
-            // --- 4. PROGRESO DIARIO (ApexCharts) ---
+            // --- 4. PROGRESO DIARIO (ApexCharts - Grouped Bars) ---
             const dailyLabels = [];
             const dailyInspected = [];
             const dailyAccepted = [];
@@ -940,17 +987,21 @@ $conex->close();
                 chart: {
                     type: 'bar',
                     height: 350,
+                    fontFamily: fontFamily,
                     toolbar: { show: false },
                     animations: { enabled: false }
                 },
                 plotOptions: {
                     bar: {
                         horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded'
+                        columnWidth: '65%',
+                        borderRadius: 3, // Bordes sutilmente redondeados
+                        dataLabels: { position: 'top' }
                     },
                 },
-                dataLabels: { enabled: false },
+                dataLabels: {
+                    enabled: false // Desactivado para limpieza visual, visible en tooltip
+                },
                 stroke: {
                     show: true,
                     width: 2,
@@ -959,14 +1010,13 @@ $conex->close();
                 xaxis: { categories: dailyLabels },
                 yaxis: { title: { text: translate('chart_qty') } },
                 fill: { opacity: 1 },
-                colors: ['#E9E6DD', '#69A032', '#a83232'],
+                colors: ['#CFD8DC', colorPalette.success, colorPalette.danger], // Gris para inspeccionadas, colores vibrantes para el resto
+                grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
                 tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return val
-                        }
-                    }
-                }
+                    shared: true,
+                    intersect: false
+                },
+                legend: { position: 'top' }
             };
             dailyProgressChart = new ApexCharts(document.querySelector("#dailyProgressChart"), dailyOptions);
             dailyProgressChart.render();
