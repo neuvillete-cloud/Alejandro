@@ -1,8 +1,10 @@
 <?php
+// dao/get_solicitud_details.php
 include_once("verificar_sesion.php");
 include_once("conexionArca.php");
 header('Content-Type: application/json');
 
+// Validar sesión e ID
 if (!isset($_SESSION['loggedin']) || !isset($_GET['id'])) {
     echo json_encode(['status' => 'error', 'message' => 'Acceso no autorizado o ID no proporcionado.']);
     exit();
@@ -14,9 +16,8 @@ $idUsuario = $_SESSION['user_id'];
 $con = new LocalConector();
 $conex = $con->conectar();
 
-// --- INICIO DE LA MODIFICACIÓN DE LA CONSULTA ---
-// Se modifica la consulta para permitir ver la solicitud si el usuario es el creador
-// O si la solicitud ha sido compartida (existe en SolicitudesCompartidas).
+// 1. OBTENER DATOS DE LA SOLICITUD (Con tu lógica de seguridad original)
+// Verificamos si es el dueño O si está en SolicitudesCompartidas
 $sql_solicitud = "SELECT s.*, u.Nombre AS NombreUsuario, p.NombreProvedor, t.NombreTerciaria, l.NombreLugar, e.NombreEstatus, m.RutaArchivo 
                   FROM Solicitudes s
                   LEFT JOIN Usuarios u ON s.IdUsuario = u.IdUsuario
@@ -35,15 +36,13 @@ $sql_solicitud = "SELECT s.*, u.Nombre AS NombreUsuario, p.NombreProvedor, t.Nom
 
 $stmt = $conex->prepare($sql_solicitud);
 $stmt->bind_param("ii", $idSolicitud, $idUsuario);
-// --- FIN DE LA MODIFICACIÓN DE LA CONSULTA ---
-
 $stmt->execute();
 $resultado_solicitud = $stmt->get_result();
 
 if ($resultado_solicitud->num_rows === 1) {
     $solicitud = $resultado_solicitud->fetch_assoc();
 
-    // La consulta de defectos no cambia
+    // 2. OBTENER DEFECTOS ORIGINALES (Tu consulta original)
     $stmt_defectos = $conex->prepare(
         "SELECT d.*, cd.NombreDefecto 
          FROM Defectos d 
@@ -58,8 +57,35 @@ if ($resultado_solicitud->num_rows === 1) {
     while ($defecto = $resultado_defectos->fetch_assoc()) {
         $defectos[] = $defecto;
     }
-
     $solicitud['defectos'] = $defectos;
+
+    // 3. OBTENER NUEVOS DEFECTOS ENCONTRADOS (Lógica Nueva Agregada)
+    // Buscamos en DefectosEncontrados uniendo con ReportesInspeccion para filtrar por solicitud
+    $sql_nuevos = "SELECT 
+                        de.IdDefectoEncontrado,
+                        de.Cantidad,
+                        de.RutaFotoEvidencia,
+                        de.NumeroParte,
+                        cd.NombreDefecto,
+                        ri.FechaInspeccion,
+                        ri.NombreInspector
+                   FROM DefectosEncontrados de
+                   JOIN ReportesInspeccion ri ON de.IdReporte = ri.IdReporte
+                   JOIN CatalogoDefectos cd ON de.IdDefectoCatalogo = cd.IdDefectoCatalogo
+                   WHERE ri.IdSolicitud = ?";
+
+    $stmt_nuevos = $conex->prepare($sql_nuevos);
+    $stmt_nuevos->bind_param("i", $idSolicitud);
+    $stmt_nuevos->execute();
+    $resultado_nuevos = $stmt_nuevos->get_result();
+
+    $nuevosDefectos = [];
+    while ($nuevo = $resultado_nuevos->fetch_assoc()) {
+        $nuevosDefectos[] = $nuevo;
+    }
+    // Agregamos los nuevos defectos al JSON de respuesta
+    $solicitud['nuevosDefectos'] = $nuevosDefectos;
+
 
     echo json_encode(['status' => 'success', 'data' => $solicitud]);
 
@@ -68,5 +94,7 @@ if ($resultado_solicitud->num_rows === 1) {
 }
 
 $stmt->close();
+$stmt_defectos->close(); // Cerramos el stmt de defectos
+if(isset($stmt_nuevos)) $stmt_nuevos->close(); // Cerramos el stmt de nuevos
 $conex->close();
 ?>
