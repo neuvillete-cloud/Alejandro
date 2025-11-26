@@ -17,9 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'section_generalData': 'Datos Generales', 'label_personInCharge': 'Responsable', 'label_partNumberModal': 'Número de Parte',
             'label_quantity': 'Cantidad', 'label_partDescription': 'Descripción de Parte', 'label_problemDescription': 'Descripción del Problema',
             'section_classification': 'Clasificación', 'label_supplierModal': 'Proveedor', 'label_location': 'Lugar de Contención',
-            'label_tertiary': 'Terciaria', 'section_workMethod': 'Método de Trabajo', 'section_defects': 'Defectos Originales',
-            'section_new_defects': 'Nuevos Defectos Encontrados',
-            'label_inspector': 'Inspector', 'label_date': 'Fecha', 'label_evidence': 'Evidencia', 'label_qty_found': 'Cant. Encontrada',
+            'label_tertiary': 'Terciaria', 'section_workMethod': 'Método de Trabajo', 'section_defects': 'Defectos Registrados',
             'noDefects': 'No se registraron defectos para esta solicitud.', 'defect': 'Defecto', 'photo_ok': 'Foto OK', 'photo_nok': 'Foto NO OK',
             'swal_sendTitle': 'Enviar Solicitud por Correo', 'swal_sendLabel': 'Dirección de correo electrónico del destinatario',
             'swal_sendPlaceholder': 'ejemplo@dominio.com', 'swal_sendConfirm': 'Enviar', 'swal_sendCancel': 'Cancelar',
@@ -40,9 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'section_generalData': 'General Data', 'label_personInCharge': 'Person in Charge', 'label_partNumberModal': 'Part Number',
             'label_quantity': 'Quantity', 'label_partDescription': 'Part Description', 'label_problemDescription': 'Problem Description',
             'section_classification': 'Classification', 'label_supplierModal': 'Supplier', 'label_location': 'Containment Location',
-            'label_tertiary': 'Tertiary', 'section_workMethod': 'Work Method', 'section_defects': 'Original Defects',
-            'section_new_defects': 'New Defects Found',
-            'label_inspector': 'Inspector', 'label_date': 'Date', 'label_evidence': 'Evidence', 'label_qty_found': 'Qty Found',
+            'label_tertiary': 'Tertiary', 'section_workMethod': 'Work Method', 'section_defects': 'Registered Defects',
             'noDefects': 'No defects were registered for this request.', 'defect': 'Defect', 'photo_ok': 'OK Photo', 'photo_nok': 'NOK Photo',
             'swal_sendTitle': 'Send Request by Email', 'swal_sendLabel': 'Recipient\'s email address',
             'swal_sendPlaceholder': 'example@domain.com', 'swal_sendConfirm': 'Send', 'swal_sendCancel': 'Cancel',
@@ -156,9 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (data.RutaArchivo) {
                             metodoHTML = `<fieldset><legend><i class="fa-solid fa-paperclip"></i> ${translations[currentLang].section_workMethod}</legend><iframe src="${data.RutaArchivo}" width="100%" height="500px" frameborder="0"></iframe></fieldset>`;
                         }
-
-                        // --- 1. DEFECTOS ORIGINALES ---
-                        let defectosHTML = `<fieldset><legend><i class="fa-solid fa-clipboard-check"></i> ${translations[currentLang].section_defects}</legend>`;
+                        let defectosHTML = `<fieldset><legend><i class="fa-solid fa-bug"></i> ${translations[currentLang].section_defects}</legend>`;
                         if (data.defectos && data.defectos.length > 0) {
                             data.defectos.forEach((defecto, index) => {
                                 defectosHTML += `
@@ -174,39 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             defectosHTML += `<p>${translations[currentLang].noDefects}</p>`;
                         }
                         defectosHTML += '</fieldset>';
-
-                        // --- 2. NUEVOS DEFECTOS ENCONTRADOS (SECCIÓN NUEVA) ---
-                        let nuevosDefectosHTML = '';
-                        if (data.nuevosDefectos && data.nuevosDefectos.length > 0) {
-                            nuevosDefectosHTML = `<fieldset style="border-top: 2px dashed #dbe1e8; margin-top: 20px;"><legend><i class="fa-solid fa-magnifying-glass-plus"></i> ${translations[currentLang].section_new_defects}</legend>`;
-
-                            data.nuevosDefectos.forEach((nuevo, index) => {
-                                let fotoEvidencia = '';
-                                if (nuevo.RutaFotoEvidencia) {
-                                    fotoEvidencia = `
-                                    <div class="defect-photo-box nok-box" style="margin-top: 10px; max-width: 250px;">
-                                        <div class="box-label"><i class="fa-solid fa-camera"></i> <span>${translations[currentLang].label_evidence}</span></div>
-                                        <img src="${nuevo.RutaFotoEvidencia}" alt="Evidencia: ${nuevo.NombreDefecto}">
-                                    </div>`;
-                                }
-
-                                const parteInfo = nuevo.NumeroParte ? ` - <strong>${translations[currentLang].label_partNumberModal}:</strong> ${nuevo.NumeroParte}` : '';
-
-                                nuevosDefectosHTML += `
-                                <div class="defecto-view-item" style="background-color: #fff8f0; border-left: 4px solid #f0ad4e;">
-                                    <h4 style="color: #b75c09;">${nuevo.NombreDefecto} ${parteInfo}</h4>
-                                    <div style="font-size: 0.9em; margin-bottom: 5px; color: #555;">
-                                        <strong><i class="fa-solid fa-hashtag"></i> ${translations[currentLang].label_qty_found}:</strong> ${nuevo.Cantidad} | 
-                                        <strong><i class="fa-solid fa-user-tag"></i> ${translations[currentLang].label_inspector}:</strong> ${nuevo.NombreInspector} | 
-                                        <strong><i class="fa-solid fa-calendar"></i> ${translations[currentLang].label_date}:</strong> ${new Date(nuevo.FechaInspeccion).toLocaleDateString()}
-                                    </div>
-                                    ${fotoEvidencia}
-                                </div>`;
-                            });
-                            nuevosDefectosHTML += '</fieldset>';
-                        }
-
-                        // --- 3. CONSTRUCCIÓN FINAL DEL MODAL ---
                         modalBody.innerHTML = `
                             <fieldset><legend><i class="fa-solid fa-file-lines"></i> ${translations[currentLang].section_generalData}</legend>
                                 <div class="form-row">
@@ -225,8 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             </fieldset>
                             ${metodoHTML}
-                            ${defectosHTML}
-                            ${nuevosDefectosHTML}`; // AQUI SE INYECTA LA NUEVA SECCIÓN
+                            ${defectosHTML}`;
                     } else {
                         modalBody.innerHTML = `<p style="color:var(--color-error);">${result.message}</p>`;
                     }
