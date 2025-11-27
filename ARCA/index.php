@@ -12,6 +12,38 @@ include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
 
+// =========================================================================================================
+// VALIDACIÓN DE DOMINIO GRAMMER (NUEVA LÓGICA)
+// =========================================================================================================
+// Como no tenemos el correo en la sesión, lo buscamos usando el ID del usuario
+$esGrammer = false; // Por defecto asumimos que NO es Grammer por seguridad
+
+if (isset($_SESSION['user_id'])) {
+    $idUsuario = $_SESSION['user_id'];
+
+    // Preparamos la consulta para buscar el correo de este usuario específico
+    // NOTA: Asegúrate de que tu columna en la BD se llame 'Correo'. Si se llama 'email', cámbialo aquí.
+    $stmtCorreo = $conex->prepare("SELECT Correo FROM Usuarios WHERE IdUsuario = ?");
+
+    if ($stmtCorreo) {
+        $stmtCorreo->bind_param("i", $idUsuario);
+        $stmtCorreo->execute();
+        $resultadoCorreo = $stmtCorreo->get_result();
+
+        if ($fila = $resultadoCorreo->fetch_assoc()) {
+            $correoUsuario = $fila['Correo'];
+
+            // Verificamos si el correo contiene @grammer.com
+            if (strpos(strtolower($correoUsuario), '@grammer.com') !== false) {
+                $esGrammer = true;
+            }
+        }
+        $stmtCorreo->close();
+    }
+}
+// =========================================================================================================
+
+
 // --- 1. MÉTRICAS ---
 
 // A. Solicitudes Abiertas (Estatus 1=Recibido, 2=Asignado, 3=En Proceso)
@@ -245,10 +277,15 @@ function getStatusClass($statusName) {
         <h1>Panel de Control de Contenciones</h1>
         <p>Sistema de Administración y Respuesta para Contenciones en Almacén. Inicie un nuevo registro o revise el estado de las solicitudes activas.</p>
         <div class="hero-buttons">
-            <a href="nueva_solicitud.php" class="cta-button">
-                <i class="fa-solid fa-plus"></i>
-                Nueva Solicitud
-            </a>
+
+            <!-- VALIDACIÓN GRAMMER: Solo si es grammer ve el botón de crear -->
+            <?php if ($esGrammer): ?>
+                <a href="nueva_solicitud.php" class="cta-button">
+                    <i class="fa-solid fa-plus"></i>
+                    Nueva Solicitud
+                </a>
+            <?php endif; ?>
+
             <a href="Historial.php" class="cta-button secondary">
                 <i class="fa-solid fa-list-check"></i>
                 Ver mis Solicitudes
@@ -268,28 +305,38 @@ function getStatusClass($statusName) {
                     <i class="fa-solid fa-chart-pie"></i>
                     Reportes
                 </a>
-                <a href="safe_launch.php" class="cta-button secondary">
-                    <i class="fa-solid fa-rocket"></i>
-                    Safe Launch
-                </a>
-                <a href="historial_safe_launch.php" class="cta-button secondary">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                    Historial Safe Launch
-                </a>
-                <a href="dashboard_reporte_sl.php" class="cta-button secondary">
-                    <i class="fa-solid fa-chart-bar"></i>
-                    Reportes Safe Launch
-                </a>
+
+                <!-- VALIDACIÓN GRAMMER para Admin: Safe Launch -->
+                <?php if ($esGrammer): ?>
+                    <a href="safe_launch.php" class="cta-button secondary">
+                        <i class="fa-solid fa-rocket"></i>
+                        Safe Launch
+                    </a>
+                    <a href="historial_safe_launch.php" class="cta-button secondary">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        Historial Safe Launch
+                    </a>
+                    <a href="dashboard_reporte_sl.php" class="cta-button secondary">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        Reportes Safe Launch
+                    </a>
+                <?php endif; ?>
+
             <?php else: ?>
                 <!-- Botones Usuario Estandard -->
-                <a href="safe_launch.php" class="cta-button secondary">
-                    <i class="fa-solid fa-rocket"></i>
-                    Safe Launch
-                </a>
-                <a href="historial_safe_launch.php" class="cta-button secondary">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                    Historial Safe Launch
-                </a>
+
+                <!-- VALIDACIÓN GRAMMER para Usuario Estándar: Safe Launch -->
+                <?php if ($esGrammer): ?>
+                    <a href="safe_launch.php" class="cta-button secondary">
+                        <i class="fa-solid fa-rocket"></i>
+                        Safe Launch
+                    </a>
+                    <a href="historial_safe_launch.php" class="cta-button secondary">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        Historial Safe Launch
+                    </a>
+                <?php endif; ?>
+
             <?php endif; ?>
         </div>
     </section>
