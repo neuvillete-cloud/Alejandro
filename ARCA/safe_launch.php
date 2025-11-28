@@ -3,6 +3,62 @@
 include_once("dao/verificar_sesion.php");
 if (!isset($_SESSION['loggedin'])) { header('Location: acceso.php'); exit(); }
 
+// =========================================================================================================
+// SEGURIDAD: VERIFICACIÓN DE DOMINIO (BLOQUEO DE ACCESO)
+// =========================================================================================================
+// Validación para evitar acceso por URL directa a usuarios externos.
+include_once("dao/conexionArca.php");
+$conSeguridad = new LocalConector();
+$conexSeguridad = $conSeguridad->conectar();
+
+$accesoPermitido = false;
+if (isset($_SESSION['user_id'])) {
+    $idUserCheck = $_SESSION['user_id'];
+    $stmtCheck = $conexSeguridad->prepare("SELECT Correo FROM Usuarios WHERE IdUsuario = ?");
+    $stmtCheck->bind_param("i", $idUserCheck);
+    $stmtCheck->execute();
+    $resCheck = $stmtCheck->get_result();
+    if ($filaCheck = $resCheck->fetch_assoc()) {
+        // Verificamos si es @grammer.com
+        if (strpos(strtolower($filaCheck['Correo']), '@grammer.com') !== false) {
+            $accesoPermitido = true;
+        }
+    }
+    $stmtCheck->close();
+}
+$conexSeguridad->close(); // Cerramos esta conexión de seguridad
+
+if (!$accesoPermitido) {
+    // Si no es de Grammer, mostramos mensaje de error y detenemos el script
+    echo '<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Acceso Restringido</title>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+        <style>
+            body { font-family: "Montserrat", sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f6f9; margin: 0; }
+            .error-card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 500px; }
+            h1 { color: #e74c3c; margin-top: 0; }
+            p { color: #555; line-height: 1.6; }
+            a { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #4a6984; color: white; text-decoration: none; border-radius: 5px; }
+            a:hover { background-color: #3b546a; }
+        </style>
+    </head>
+    <body>
+        <div class="error-card">
+            <h1><i class="fa-solid fa-lock"></i> Acceso Restringido</h1>
+            <p>Lo sentimos, solo el personal interno con correo corporativo (@grammer.com) tiene autorización para crear registros de Safe Launch.</p>
+            <a href="index.php">Volver al Dashboard</a>
+        </div>
+    </body>
+    </html>';
+    exit(); // DETIENE LA EJECUCIÓN AQUÍ
+}
+// =========================================================================================================
+
+
 $esSuperUsuario = (isset($_SESSION['user_rol']) && $_SESSION['user_rol'] == 1);
 
 // --- LÓGICA DE IDIOMA ---
@@ -12,6 +68,7 @@ if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
 }
 
 // --- CONEXIÓN A BD AÑADIDA ---
+// Usamos include_once, así que no hay conflicto con la inclusión de arriba
 include_once("dao/conexionArca.php");
 $con = new LocalConector();
 $conex = $con->conectar();
