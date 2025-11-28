@@ -19,10 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
             'section_classification': 'Clasificación', 'label_supplierModal': 'Proveedor', 'label_location': 'Lugar de Contención',
             'label_tertiary': 'Terciaria', 'section_workMethod': 'Método de Trabajo', 'section_defects': 'Defectos Registrados',
             'noDefects': 'No se registraron defectos para esta solicitud.', 'defect': 'Defecto', 'photo_ok': 'Foto OK', 'photo_nok': 'Foto NO OK',
-            'swal_sendTitle': 'Enviar Solicitud por Correo', 'swal_sendLabel': 'Dirección de correo electrónico del destinatario',
-            'swal_sendPlaceholder': 'ejemplo@dominio.com', 'swal_sendConfirm': 'Enviar', 'swal_sendCancel': 'Cancelar',
-            'swal_sendValidation': 'Por favor, ingresa una dirección de correo.', 'swal_sending': 'Enviando...',
-            'swal_sent': '¡Enviado!', 'swal_sentText': 'La solicitud ha sido enviada a',
+            'swal_sendTitle': 'Enviar Solicitud',
+            'swal_sendLabel': 'Dirección de correo electrónico del destinatario',
+            'swal_sendPlaceholder': 'ejemplo@dominio.com',
+            'swal_sendConfirm': 'Enviar Todo',
+            'swal_sendCancel': 'Cancelar',
+            'swal_sendValidation': 'Por favor, ingresa una dirección de correo válida.',
+            'swal_sending': 'Enviando...',
+            'swal_sent': '¡Enviado!',
+            'swal_sentText': 'La solicitud ha sido enviada.',
             'status_asignado': 'Asignado'
         },
         'en': {
@@ -40,10 +45,15 @@ document.addEventListener('DOMContentLoaded', function() {
             'section_classification': 'Classification', 'label_supplierModal': 'Supplier', 'label_location': 'Containment Location',
             'label_tertiary': 'Tertiary', 'section_workMethod': 'Work Method', 'section_defects': 'Registered Defects',
             'noDefects': 'No defects were registered for this request.', 'defect': 'Defect', 'photo_ok': 'OK Photo', 'photo_nok': 'NOK Photo',
-            'swal_sendTitle': 'Send Request by Email', 'swal_sendLabel': 'Recipient\'s email address',
-            'swal_sendPlaceholder': 'example@domain.com', 'swal_sendConfirm': 'Send', 'swal_sendCancel': 'Cancel',
-            'swal_sendValidation': 'Please enter an email address.', 'swal_sending': 'Sending...',
-            'swal_sent': 'Sent!', 'swal_sentText': 'The request has been sent to',
+            'swal_sendTitle': 'Send Request',
+            'swal_sendLabel': 'Recipient\'s email address',
+            'swal_sendPlaceholder': 'example@domain.com',
+            'swal_sendConfirm': 'Send All',
+            'swal_sendCancel': 'Cancel',
+            'swal_sendValidation': 'Please enter a valid email address.',
+            'swal_sending': 'Sending...',
+            'swal_sent': 'Sent!',
+            'swal_sentText': 'The request has been sent.',
             'status_asignado': 'Assigned'
         }
     };
@@ -128,14 +138,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeModal() {
         modal.classList.remove('visible');
     }
-    modalCloseBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape" && modal.classList.contains('visible')) closeModal();
-    });
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && modal.classList.contains('visible')) closeModal();
+        });
+    }
 
+    // Lógica para ver detalles
     document.querySelectorAll('.btn-details').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
@@ -195,37 +208,131 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    modalBody.addEventListener('click', function(e) {
-        if (e.target.tagName === 'IMG' && e.target.closest('.defect-photo-box')) {
-            const imageSrc = e.target.src;
-            const imageAlt = e.target.alt;
-            Swal.fire({
-                imageUrl: imageSrc, imageAlt: imageAlt, width: 'auto', padding: '0',
-                background: 'none', showConfirmButton: false, showCloseButton: true
-            });
-        }
-    });
+    if (modalBody) {
+        modalBody.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG' && e.target.closest('.defect-photo-box')) {
+                const imageSrc = e.target.src;
+                const imageAlt = e.target.alt;
+                Swal.fire({
+                    imageUrl: imageSrc, imageAlt: imageAlt, width: 'auto', padding: '0',
+                    background: 'none', showConfirmButton: false, showCloseButton: true
+                });
+            }
+        });
+    }
 
+    // --- LÓGICA DE ENVÍO MÚLTIPLE DE CORREOS ---
     document.querySelectorAll('.btn-email').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
             const clickedButton = this;
+            let correosLista = []; // Array para almacenar los correos temporalmente
+
+            // Función auxiliar para renderizar la lista de correos dentro del SweetAlert
+            const renderEmailList = () => {
+                const container = document.getElementById('email-list-container');
+                if (!container) return;
+
+                if (correosLista.length === 0) {
+                    container.innerHTML = '<div style="color: #999; font-style: italic; padding: 10px;">Ningún correo agregado aún</div>';
+                    return;
+                }
+
+                let html = '<ul style="list-style: none; padding: 0; margin: 10px 0; text-align: left;">';
+                correosLista.forEach((email, index) => {
+                    html += `
+                        <li style="background: #f1f3f5; margin-bottom: 5px; padding: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-user-envelope"></i> ${email}</span>
+                            <button type="button" class="remove-email-btn" data-index="${index}" style="background: none; border: none; color: #dc3545; cursor: pointer;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </li>`;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+
+                // Agregar eventos a los botones de eliminar
+                document.querySelectorAll('.remove-email-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = parseInt(e.currentTarget.dataset.index);
+                        correosLista.splice(idx, 1);
+                        renderEmailList();
+                    });
+                });
+            };
 
             Swal.fire({
-                title: translations[currentLang].swal_sendTitle, input: 'email',
-                inputLabel: translations[currentLang].swal_sendLabel,
-                inputPlaceholder: translations[currentLang].swal_sendPlaceholder,
-                showCancelButton: true, confirmButtonText: translations[currentLang].swal_sendConfirm,
-                cancelButtonText: translations[currentLang].swal_sendCancel,
-                preConfirm: (email) => { if (!email) { Swal.showValidationMessage(translations[currentLang].swal_sendValidation); } return email; }
+                title: translations[currentLang].swal_sendTitle || 'Enviar Solicitud',
+                html: `
+                    <p style="margin-bottom: 15px;">Ingresa los correos electrónicos de los destinatarios:</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="email" id="swal-input-email" class="swal2-input" placeholder="ejemplo@dominio.com" style="margin: 0; flex: 1;">
+                        <button type="button" id="btn-add-email" class="swal2-confirm swal2-styled" style="background-color: #6c757d; margin: 0; min-width: 60px;">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="email-list-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 5px;"></div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: translations[currentLang].swal_sendConfirm || 'Enviar Todo',
+                cancelButtonText: translations[currentLang].swal_sendCancel || 'Cancelar',
+                didOpen: () => {
+                    renderEmailList();
+                    const input = document.getElementById('swal-input-email');
+                    const addBtn = document.getElementById('btn-add-email');
+
+                    // Función para agregar correo
+                    const addEmail = () => {
+                        const email = input.value.trim();
+                        // Validación simple de email
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                        if (!emailRegex.test(email)) {
+                            Swal.showValidationMessage('Por favor ingresa un correo válido');
+                            return;
+                        }
+                        if (correosLista.includes(email)) {
+                            Swal.showValidationMessage('Este correo ya fue agregado');
+                            return;
+                        }
+
+                        correosLista.push(email);
+                        input.value = ''; // Limpiar input
+                        Swal.resetValidationMessage();
+                        renderEmailList();
+                        input.focus();
+                    };
+
+                    addBtn.addEventListener('click', addEmail);
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault(); // Evitar que Swal se cierre
+                            addEmail();
+                        }
+                    });
+                },
+                preConfirm: () => {
+                    if (correosLista.length === 0) {
+                        Swal.showValidationMessage('Debes agregar al menos un destinatario');
+                        return false;
+                    }
+                    return correosLista;
+                }
             }).then((result) => {
                 if (result.isConfirmed && result.value) {
-                    const email = result.value;
-                    Swal.fire({ title: translations[currentLang].swal_sending, text: `${translations[currentLang].swal_sentText} ${email}`, allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+                    const emailsToSend = result.value; // Esto ya es el array de correos
+
+                    Swal.fire({
+                        title: translations[currentLang].swal_sending || 'Enviando...',
+                        text: `Procesando ${emailsToSend.length} destinatario(s)...`,
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); }
+                    });
 
                     const formData = new FormData();
                     formData.append('id', id);
-                    formData.append('email', email);
+                    // IMPORTANTE: Enviamos el array como JSON string
+                    formData.append('emails_json', JSON.stringify(emailsToSend));
 
                     fetch('https://grammermx.com/Mailer/enviar_solicitud.php', {
                         method: 'POST',
@@ -236,23 +343,21 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (data.status === 'success') {
                                 Swal.fire('¡Enviado!', data.message, 'success');
 
-                                // Actualiza el estatus en la misma fila
+                                // Actualiza el estatus visualmente en la tabla
                                 const fila = clickedButton.closest('tr');
                                 if (fila) {
                                     const celdaEstatus = fila.querySelector('.status');
                                     if (celdaEstatus) {
-                                        celdaEstatus.textContent = translations[currentLang].status_asignado;
+                                        celdaEstatus.textContent = translations[currentLang].status_asignado || 'Asignado';
                                         celdaEstatus.className = "status status-asignado";
                                     }
                                 }
 
-                                // --- INICIO DE LA MODIFICACIÓN DEL BOTÓN ---
-                                clickedButton.disabled = true; // Desactiva el botón
-                                clickedButton.classList.add('sent'); // Añade una clase para estilizarlo (ej. color verde)
-                                clickedButton.innerHTML = '<i class="fa-solid fa-check"></i>'; // Cambia el ícono a una palomita
-                                clickedButton.title = translations[currentLang].title_emailSent; // Cambia el texto flotante (tooltip)
-                                // --- FIN DE LA MODIFICACIÓN DEL BOTÓN ---
-
+                                // Deshabilitar botón
+                                clickedButton.disabled = true;
+                                clickedButton.classList.add('sent');
+                                clickedButton.innerHTML = '<i class="fa-solid fa-check"></i>';
+                                clickedButton.title = translations[currentLang].title_emailSent || 'Correo Enviado';
                             } else {
                                 Swal.fire('Error', data.message, 'error');
                             }
