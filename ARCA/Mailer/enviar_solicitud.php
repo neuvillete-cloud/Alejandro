@@ -1,6 +1,5 @@
 <?php
 session_start();
-// Asegúrate de que las rutas a estos archivos sean correctas desde /dao/
 include_once("conexionArca.php");
 require 'Phpmailer/Exception.php';
 require 'Phpmailer/PHPMailer.php';
@@ -11,44 +10,44 @@ use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json; charset=UTF-8');
 
-if (!isset($_POST['id'], $_POST['email']) || !isset($_SESSION['loggedin'])) {
+// Validar sesión y datos recibidos
+// Nota: Ahora esperamos 'emails_json' en lugar de 'email' simple
+if (!isset($_POST['id'], $_POST['emails_json']) || !isset($_SESSION['loggedin'])) {
     echo json_encode(["status" => "error", "message" => "Datos incompletos o sesión no válida."]);
     exit;
 }
 
 $idSolicitud = intval($_POST['id']);
-$emailDestino = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
+// Decodificamos el JSON que envía el JS
+$emailsDestino = json_decode($_POST['emails_json'], true);
 
-if (!$emailDestino) {
-    echo json_encode(["status" => "error", "message" => "La dirección de correo no es válida."]);
+// Validación básica del array
+if (!is_array($emailsDestino) || empty($emailsDestino)) {
+    echo json_encode(["status" => "error", "message" => "La lista de correos no es válida."]);
+    exit;
+}
+
+// Filtrar correos inválidos del array
+$emailsValidos = [];
+foreach ($emailsDestino as $email) {
+    $emailLimpio = filter_var(trim($email), FILTER_VALIDATE_EMAIL);
+    if ($emailLimpio) {
+        $emailsValidos[] = $emailLimpio;
+    }
+}
+
+if (empty($emailsValidos)) {
+    echo json_encode(["status" => "error", "message" => "Ningún correo proporcionado es válido."]);
     exit;
 }
 
 $con = new LocalConector();
 $conex = $con->conectar();
+// Iniciamos transacción para asegurar que o se envían todos o no se guarda nada a medias
 $conex->begin_transaction();
 
 try {
-    // PASO 1: GENERAR Y GUARDAR EL TOKEN DE ACCESO
-    $token = bin2hex(random_bytes(32));
-    $stmt_token = $conex->prepare("INSERT INTO SolicitudesCompartidas (IdSolicitud, EmailDestino, Token) VALUES (?, ?, ?)");
-    $stmt_token->bind_param("iss", $idSolicitud, $emailDestino, $token);
-    if (!$stmt_token->execute()) {
-        throw new Exception("Error al generar el enlace seguro para compartir.");
-    }
-    $stmt_token->close();
-
-    // PASO 2: ACTUALIZAR EL ESTATUS DE LA SOLICITUD
-    $nuevoEstatus = 2; // '2' es el estatus "Asignado" o "En Revisión"
-    $stmt_update = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
-    $stmt_update->bind_param("ii", $nuevoEstatus, $idSolicitud);
-    if (!$stmt_update->execute()) {
-        throw new Exception("Error al actualizar el estatus de la solicitud.");
-    }
-    $stmt_update->close();
-
-    // --- PASO 3 (MODIFICADO): OBTENER DATOS MÁS COMPLETOS PARA EL CORREO ---
-    // Ahora también obtenemos la Cantidad.
+    // PASO 1: OBTENER DATOS DE LA SOLICITUD (Una sola vez)
     $stmt_data = $conex->prepare("SELECT NumeroParte, DescripcionParte, Cantidad FROM Solicitudes WHERE IdSolicitud = ?");
     $stmt_data->bind_param("i", $idSolicitud);
     $stmt_data->execute();
@@ -58,7 +57,7 @@ try {
     }
     $stmt_data->close();
 
-    // Obtenemos los nombres de los defectos asociados.
+    // Obtener defectos (Una sola vez)
     $stmt_defectos = $conex->prepare("SELECT cd.NombreDefecto FROM Defectos d JOIN CatalogoDefectos cd ON d.IdDefectoCatalogo = cd.IdDefectoCatalogo WHERE d.IdSolicitud = ?");
     $stmt_defectos->bind_param("i", $idSolicitud);
     $stmt_defectos->execute();
@@ -69,18 +68,50 @@ try {
     }
     $stmt_defectos->close();
 
+    // PASO 2: ACTUALIZAR EL ESTATUS DE LA SOLICITUD (Una sola vez)
+    $nuevoEstatus = 2; // Estatus "Asignado"
+    $stmt_update = $conex->prepare("UPDATE Solicitudes SET IdEstatus = ? WHERE IdSolicitud = ?");
+    $stmt_update->bind_param("ii", $nuevoEstatus, $idSolicitud);
+    if (!$stmt_update->execute()) {
+        throw new Exception("Error al actualizar el estatus de la solicitud.");
+    }
+    $stmt_update->close();
 
-    // PASO 4: CONSTRUIR EL LINK Y ENVIAR CORREO
+    // PASO 3: BUCLE PARA PROCESAR CADA CORREO
     $url_sitio = "https://grammermx.com/AleTest/ARCA"; // <-- ¡TU URL REAL!
-    $linkVerSolicitud = "$url_sitio/Historial.php?token=$token";
 
-    // Pasamos los nuevos datos a la función del correo.
-    enviarCorreoNotificacion($emailDestino, $idSolicitud, $solicitudData, $defectos_nombres, $linkVerSolicitud, $_SESSION['user_nombre']);
+    // Preparamos el INSERT para reutilizarlo en el bucle (Eficiencia)
+    $stmt_token = $conex->prepare("INSERT INTO SolicitudesCompartidas (IdSolicitud, EmailDestino, Token) VALUES (?, ?, ?)");
 
+    foreach ($emailsValidos as $email) {
+        // Generar Token ÚNICO para cada persona
+        $token = bin2hex(random_bytes(32));
+
+        // Insertar en BD
+        $stmt_token->bind_param("iss", $idSolicitud, $email, $token);
+        if (!$stmt_token->execute()) {
+            // Si falla uno, lanzamos error y el rollback cancelará todo
+            throw new Exception("Error al guardar enlace para: " . $email);
+        }
+
+        // Crear enlace personalizado
+        $linkVerSolicitud = "$url_sitio/Historial.php?token=$token";
+
+        // Enviar correo individualmente
+        enviarCorreoNotificacion($email, $idSolicitud, $solicitudData, $defectos_nombres, $linkVerSolicitud, $_SESSION['user_nombre']);
+    }
+
+    $stmt_token->close();
+
+    // Si todo salió bien, confirmamos los cambios en la BD
     $conex->commit();
-    echo json_encode(["status" => "success", "message" => "La solicitud ha sido enviada y su estatus actualizado."]);
+    echo json_encode([
+        "status" => "success",
+        "message" => "Se han enviado correos a " . count($emailsValidos) . " destinatarios correctamente."
+    ]);
 
 } catch (Exception $e) {
+    // Si algo falla, revertimos cualquier cambio en la BD
     $conex->rollback();
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 } finally {
@@ -89,14 +120,12 @@ try {
     }
 }
 
-
+// --- FUNCIÓN DE ENVÍO DE CORREO (Ligeramente ajustada para manejo de errores interno) ---
 function enviarCorreoNotificacion($emailDestino, $id, $solicitudData, $defectos_nombres, $link, $nombreRemitente) {
     $folio = "S-" . str_pad($id, 4, '0', STR_PAD_LEFT);
     $asunto = "Acción Requerida: Solicitud de Contención ARCA - Folio $folio";
 
-    // --- INICIO DE PLANTILLA DE CORREO MEJORADA ---
-
-    // Construimos la lista de defectos
+    // Construcción de lista HTML
     $listaDefectosHTML = '';
     if (!empty($defectos_nombres)) {
         foreach ($defectos_nombres as $defecto) {
@@ -107,6 +136,7 @@ function enviarCorreoNotificacion($emailDestino, $id, $solicitudData, $defectos_
         $listaDefectosHTML = "<span style='color: #888;'>No se especificaron defectos.</span>";
     }
 
+    // Plantilla HTML (Reutilizada de tu versión original)
     $contenidoHTML = "
     <!DOCTYPE html><html><head><style> @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'); </style></head><body style='margin:0;padding:0;background-color:#f8f9fa;font-family:\"Lato\", Arial, sans-serif;'>
     <table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td style='padding:20px 0;'>
@@ -149,8 +179,6 @@ function enviarCorreoNotificacion($emailDestino, $id, $solicitudData, $defectos_
     </td></tr></table>
     </body></html>";
 
-    // --- FIN DE PLANTILLA DE CORREO MEJORADA ---
-
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -172,11 +200,11 @@ function enviarCorreoNotificacion($emailDestino, $id, $solicitudData, $defectos_
         $mail->Body = $contenidoHTML;
 
         if (!$mail->send()) {
-            throw new Exception("Error al enviar correo: " . $mail->ErrorInfo);
+            throw new Exception("Error interno PHPMailer: " . $mail->ErrorInfo);
         }
     } catch (Exception $e) {
-        throw new Exception("El registro en BD fue exitoso, pero el correo no pudo ser enviado. Error: {$e->getMessage()}");
+        // Relanzamos la excepción para que el bloque catch principal haga rollback
+        throw new Exception("No se pudo enviar correo a $emailDestino. " . $e->getMessage());
     }
 }
 ?>
-
