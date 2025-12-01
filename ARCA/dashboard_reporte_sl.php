@@ -1118,12 +1118,12 @@ $conex->close();
             const currentLang = getCurrentLanguage();
             const dateLocale = currentLang === 'en' ? 'en-US' : 'es-MX';
 
-            // Paleta de colores
+            // --- PALETA DE COLORES ACTUALIZADA ---
             const colorPalette = {
-                primary: '#008FFB',
-                warning: '#FEB019',
-                success: '#00E396',
-                danger: '#FF4560',
+                primary: '#003D70', // Azul Oscuro (Pedido por usuario)
+                warning: '#E9E6DD', // Beige/Crema (Pedido por usuario - usado para líneas secundarias)
+                success: '#69A032', // Verde (Pedido por usuario)
+                danger: '#a83232',  // Rojo (Usando el rojo definido en CSS para rechazados)
                 dark: '#263238'
             };
             const fontFamily = 'Montserrat, sans-serif';
@@ -1180,7 +1180,7 @@ $conex->close();
                     dataLabels: {
                         enabled: true,
                         enabledOnSeries: [0, 1],
-                        style: { fontSize: '11px', colors: ['#333', colorPalette.warning] }
+                        style: { fontSize: '11px', colors: ['#333', colorPalette.primary] }
                     },
                     labels: paretoLabels,
                     yaxis: [{
@@ -1190,7 +1190,7 @@ $conex->close();
                         title: { text: translate('chart_cumulative'), style: { fontWeight: 600 } },
                         max: 100
                     }],
-                    colors: [colorPalette.primary, colorPalette.warning],
+                    colors: [colorPalette.primary, colorPalette.warning], // Azul barras, Beige línea
                     grid: { borderColor: '#f1f1f1' }
                 };
                 paretoChart = new ApexCharts(document.querySelector("#paretoChart"), paretoOptions);
@@ -1217,7 +1217,7 @@ $conex->close();
                         animations: { enabled: false },
                         dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15 }
                     },
-                    dataLabels: { enabled: true, style: { colors: [colorPalette.primary] } },
+                    dataLabels: { enabled: true, style: { colors: [colorPalette.danger] } },
                     stroke: { curve: 'smooth', width: 3 },
                     fill: {
                         type: 'gradient',
@@ -1229,7 +1229,7 @@ $conex->close();
                         }
                     },
                     xaxis: { categories: weeklyLabels },
-                    colors: [colorPalette.primary],
+                    colors: [colorPalette.danger], // Usar ROJO para rechazadas
                     grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
                 };
                 weeklyRejectsChart = new ApexCharts(document.querySelector("#weeklyRejectsChart"), weeklyOptions);
@@ -1266,7 +1266,7 @@ $conex->close();
                         },
                     },
                     fill: { opacity: 1 },
-                    colors: [colorPalette.success, colorPalette.danger],
+                    colors: [colorPalette.success, colorPalette.danger], // Verde vs Rojo
                     dataLabels: {
                         enabled: true,
                         style: { fontSize: '14px', fontWeight: 'bold', colors: ['#fff'] },
@@ -1351,7 +1351,7 @@ $conex->close();
                         title: { text: translate('chart_qty') },
                     },
                     fill: { opacity: 1 },
-                    colors: [colorPalette.success, colorPalette.danger],
+                    colors: [colorPalette.success, colorPalette.danger], // Verde vs Rojo
                     grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
                     tooltip: {
                         shared: true,
@@ -1401,7 +1401,7 @@ $conex->close();
                             formatter: (value) => value.toLocaleString()
                         }
                     },
-                    colors: [colorPalette.danger],
+                    colors: [colorPalette.danger], // PPM alto es malo, usamos Rojo
                     grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
                 };
                 ppmTrendChart = new ApexCharts(document.querySelector("#ppmTrendChart"), ppmOptions);
