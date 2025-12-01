@@ -274,15 +274,17 @@ function getStatusClass($statusName) {
 
 <main class="container">
     <section class="hero">
-        <h1>Panel de Control de Contenciones</h1>
+        <!-- MODIFICACIÓN: Nuevo título -->
+        <h1>Panel de Control de Contenciones / Safe-launch</h1>
         <p>Sistema de Administración y Respuesta para Contenciones en Almacén. Inicie un nuevo registro o revise el estado de las solicitudes activas.</p>
         <div class="hero-buttons">
 
             <!-- VALIDACIÓN GRAMMER: Solo si es grammer ve el botón de crear -->
             <?php if ($esGrammer): ?>
+                <!-- MODIFICACIÓN: Texto cambiado de "Nueva Solicitud" a "Contención" -->
                 <a href="nueva_solicitud.php" class="cta-button">
                     <i class="fa-solid fa-plus"></i>
-                    Nueva Solicitud
+                    Contención
                 </a>
             <?php endif; ?>
 
@@ -308,8 +310,10 @@ function getStatusClass($statusName) {
 
                 <!-- VALIDACIÓN GRAMMER para Admin: Safe Launch -->
                 <?php if ($esGrammer): ?>
-                    <a href="safe_launch.php" class="cta-button secondary">
-                        <i class="fa-solid fa-rocket"></i>
+                    <!-- MODIFICACIÓN: Safe Launch (Admin) mismo color y signo + -->
+                    <!-- Se eliminó la clase 'secondary' y se cambió fa-rocket por fa-plus -->
+                    <a href="safe_launch.php" class="cta-button">
+                        <i class="fa-solid fa-plus"></i>
                         Safe Launch
                     </a>
                     <a href="historial_safe_launch.php" class="cta-button secondary">
@@ -327,8 +331,10 @@ function getStatusClass($statusName) {
 
                 <!-- VALIDACIÓN GRAMMER para Usuario Estándar: Safe Launch -->
                 <?php if ($esGrammer): ?>
-                    <a href="safe_launch.php" class="cta-button secondary">
-                        <i class="fa-solid fa-rocket"></i>
+                    <!-- MODIFICACIÓN: Safe Launch (Usuario) mismo color y signo + -->
+                    <!-- Se eliminó la clase 'secondary' y se cambió fa-rocket por fa-plus -->
+                    <a href="safe_launch.php" class="cta-button">
+                        <i class="fa-solid fa-plus"></i>
                         Safe Launch
                     </a>
                     <a href="historial_safe_launch.php" class="cta-button secondary">
