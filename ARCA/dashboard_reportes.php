@@ -766,12 +766,11 @@ $conex->close();
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
 
-            // Colores más vibrantes y modernos
+            // Paleta de Colores Solicitada (Aplicada SOLO a gráficas)
             const colorPalette = {
-                primary: '#008FFB', // Azul vibrante
-                warning: '#FEB019', // Naranja/Amarillo
-                success: '#00E396', // Verde brillante
-                danger: '#FF4560',  // Rojo suave
+                primary: '#003D70',  // Azul Oscuro (Principal/Rechazos)
+                success: '#69A032',  // Verde (Aceptadas/Líneas positivas)
+                neutral: '#E9E6DD',  // Beige (Secundario/Fondo sutil)
                 dark: '#263238'
             };
 
@@ -839,7 +838,7 @@ $conex->close();
                         shade: 'light',
                         type: "vertical",
                         shadeIntensity: 0.5,
-                        gradientToColors: [colorPalette.primary], // Gradiente azul sobre azul
+                        gradientToColors: [colorPalette.primary], // Gradiente sobre azul
                         inverseColors: true,
                         opacityFrom: 0.9,
                         opacityTo: 0.9,
@@ -850,7 +849,7 @@ $conex->close();
                 dataLabels: {
                     enabled: true,
                     enabledOnSeries: [0, 1],
-                    style: { fontSize: '11px', colors: ['#333', colorPalette.warning] }
+                    style: { fontSize: '11px', colors: ['#333', colorPalette.success] }
                 },
                 labels: paretoData.map(d => d.defecto),
                 yaxis: [{
@@ -860,7 +859,8 @@ $conex->close();
                     title: { text: translate('chart_cumulative'), style: { fontWeight: 600 } },
                     max: 100
                 }],
-                colors: [colorPalette.primary, colorPalette.warning], // Azul y Naranja
+                // COLORES ACTUALIZADOS: Barras (Azul), Línea (Verde)
+                colors: [colorPalette.primary, colorPalette.success],
                 grid: { borderColor: '#f1f1f1' }
             };
             paretoChart = new ApexCharts(document.querySelector("#paretoChart"), paretoOptions);
@@ -896,6 +896,7 @@ $conex->close();
                     }
                 },
                 xaxis: { categories: weeklyLabels },
+                // COLOR ACTUALIZADO: Azul Oscuro
                 colors: [colorPalette.primary],
                 grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
             };
@@ -936,7 +937,8 @@ $conex->close();
                     },
                 },
                 fill: { opacity: 1 },
-                colors: [colorPalette.success, colorPalette.danger], // Verde y Rojo vibrantes
+                // COLORES ACTUALIZADOS: Aceptadas (Verde), Rechazadas (Azul Oscuro)
+                colors: [colorPalette.success, colorPalette.primary],
                 dataLabels: {
                     enabled: true,
                     style: { fontSize: '14px', fontWeight: 'bold', colors: ['#fff'] },
@@ -1020,7 +1022,8 @@ $conex->close();
                     title: { text: translate('chart_qty') },
                 },
                 fill: { opacity: 1 },
-                colors: [colorPalette.success, colorPalette.danger], // Verde, Rojo
+                // COLORES ACTUALIZADOS: Aceptadas (Verde), Rechazadas (Azul Oscuro)
+                colors: [colorPalette.success, colorPalette.primary],
                 grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
                 tooltip: {
                     shared: true,
