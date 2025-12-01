@@ -33,7 +33,7 @@ $conex->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* Estilos CSS (sin cambios) */
+        /* Estilos CSS (sin cambios, tal como solicitaste) */
         :root {
             --color-primario: #4a6984;
             --color-secundario: #5c85ad;
@@ -766,10 +766,11 @@ $conex->close();
             const dashboardData = data.dashboardData;
             const resumen = data.resumen;
 
-            // Paleta de Colores Solicitada (Aplicada SOLO a gráficas)
+            // Paleta de Colores Actualizada (con Rojo para Rechazados)
             const colorPalette = {
-                primary: '#003D70',  // Azul Oscuro (Principal/Rechazos)
-                success: '#69A032',  // Verde (Aceptadas/Líneas positivas)
+                primary: '#003D70',  // Azul Oscuro (Principal/Barras Pareto)
+                success: '#69A032',  // Verde (Aceptadas)
+                danger:  '#a83232',  // Rojo (Rechazadas - usando tu variable CSS)
                 neutral: '#E9E6DD',  // Beige (Secundario/Fondo sutil)
                 dark: '#263238'
             };
@@ -859,7 +860,7 @@ $conex->close();
                     title: { text: translate('chart_cumulative'), style: { fontWeight: 600 } },
                     max: 100
                 }],
-                // COLORES ACTUALIZADOS: Barras (Azul), Línea (Verde)
+                // Pareto: Barras Azules (Principal), Línea Verde (Acumulado)
                 colors: [colorPalette.primary, colorPalette.success],
                 grid: { borderColor: '#f1f1f1' }
             };
@@ -884,7 +885,7 @@ $conex->close();
                     animations: { enabled: false },
                     dropShadow: { enabled: true, top: 2, left: 0, blur: 4, opacity: 0.15 }
                 },
-                dataLabels: { enabled: true, style: { colors: [colorPalette.primary] } },
+                dataLabels: { enabled: true, style: { colors: [colorPalette.danger] } },
                 stroke: { curve: 'smooth', width: 3 },
                 fill: {
                     type: 'gradient',
@@ -896,8 +897,8 @@ $conex->close();
                     }
                 },
                 xaxis: { categories: weeklyLabels },
-                // COLOR ACTUALIZADO: Azul Oscuro
-                colors: [colorPalette.primary],
+                // Rechazadas por semana: COLOR ROJO
+                colors: [colorPalette.danger],
                 grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
             };
             weeklyRejectsChart = new ApexCharts(document.querySelector("#weeklyRejectsChart"), weeklyOptions);
@@ -937,8 +938,8 @@ $conex->close();
                     },
                 },
                 fill: { opacity: 1 },
-                // COLORES ACTUALIZADOS: Aceptadas (Verde), Rechazadas (Azul Oscuro)
-                colors: [colorPalette.success, colorPalette.primary],
+                // Colores: Aceptadas (Verde), Rechazadas (Rojo)
+                colors: [colorPalette.success, colorPalette.danger],
                 dataLabels: {
                     enabled: true,
                     style: { fontSize: '14px', fontWeight: 'bold', colors: ['#fff'] },
@@ -1022,8 +1023,8 @@ $conex->close();
                     title: { text: translate('chart_qty') },
                 },
                 fill: { opacity: 1 },
-                // COLORES ACTUALIZADOS: Aceptadas (Verde), Rechazadas (Azul Oscuro)
-                colors: [colorPalette.success, colorPalette.primary],
+                // Colores: Aceptadas (Verde), Rechazadas (Rojo)
+                colors: [colorPalette.success, colorPalette.danger],
                 grid: { borderColor: '#f1f1f1', strokeDashArray: 4 },
                 tooltip: {
                     shared: true,
