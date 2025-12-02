@@ -276,7 +276,7 @@ function getStatusClass($statusName) {
     <section class="hero">
         <!-- MODIFICACIÓN: Nuevo título -->
         <h1>Panel de Control de Contenciones / Safe-launch</h1>
-        <p>Sistema de Administración y Respuesta para Contenciones en Almacén. Inicie un nuevo registro o revise el estado de las solicitudes activas.</p>
+        <p>Sistema de Administración y Respuesta para Contenciones y Safe-launch. Inicie un nuevo registro o revise el estado de las solicitudes activas.</p>
         <div class="hero-buttons">
 
             <!-- VALIDACIÓN GRAMMER: Solo si es grammer ve el botón de crear -->
